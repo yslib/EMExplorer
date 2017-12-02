@@ -8,6 +8,7 @@
 #include <QVector>
 #include <QMessageBox>
 #include <QPainter>
+#include <cmath>
 
 class Histogram:public QWidget
 {

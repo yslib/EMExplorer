@@ -11,10 +11,6 @@ Histogram::Histogram(QWidget *parent):QWidget(parent),
     setMinimumSize(MIN_WIDTH,MIN_HEIGHT);
     resize(MIN_WIDTH,MIN_HEIGHT);
 
-    for(int i=250;i<BIN_COUNT;i++){
-        m_hist[i] = qrand()%1000;
-        m_count+=m_hist[i];
-    }
 }
 
 Histogram::Histogram(QWidget *parent, const QImage &image):Histogram(parent)
@@ -66,7 +62,7 @@ void Histogram::paintEvent(QPaintEvent *event)
 
        for(int i=0;i<BIN_COUNT;i++){
            qreal c = (static_cast<double>(m_hist[i])/static_cast<double>(m_count));
-           int binHeight = c*height;
+		   int binHeight = c*height*10;
            imagePainter.drawRect(QRectF
                                  (QPointF(i*binWidth,height-binHeight),QSize(binWidth,binHeight))
                    );

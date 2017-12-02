@@ -11,12 +11,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     _init();
-    m_hist = new Histogram(this);
-    ui->leftVLayout->addWidget(m_hist);
+    m_histogram = new Histogram(this);
+	m_zoomViwer = new ZoomViwer(this);
+    ui->leftVLayout->addWidget(m_histogram);
+	ui->leftVLayout->addWidget(m_zoomViwer);
+	connect(m_zoomViwer, SIGNAL(zoomRegionChanged(QRectF)), this, SLOT(onZoomRegionChanged(QRectF)));
 }
 
 MainWindow::~MainWindow()
 {
+	_destroy();
     delete ui;
 }
 
@@ -41,7 +45,7 @@ void MainWindow::on_actionOpen_triggered()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     }else{
         QString headerInfo = mrc.getMRCInfo();
-        //ui->textEdit->setText(headerInfo);
+        ui->textEdit->setText(headerInfo);
         //APPENDINFO(headerInfo)
         //m_mrcs.push_back(std::move(mrc));
         _createMRCContext(std::move(mrc));
@@ -139,7 +143,10 @@ void MainWindow::_setMRCContext(int index)
     ui->scaleSlider->setMinimum(0);
 
     /*Histogram*/
-    m_hist->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
+    m_histogram->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
+
+	/*ZoomViwer*/
+	m_zoomViwer->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
 
     m_currentContext = index;
 
@@ -214,6 +221,13 @@ void MainWindow::_init()
     ui->scaleSpinBox->setEnabled(false);
 }
 
+void MainWindow::_destroy()
+{
+	delete m_histogram;
+	delete m_zoomViwer;
+	delete m_imageLabel;
+}
+
 void MainWindow::on_sliceSlider_sliderMoved(int position)
 {
     //qDebug()<<"Slider moved:"<<position<<" "<<ui->sliceSlider->maximum();
@@ -253,5 +267,13 @@ void MainWindow::on_sliceSlider_valueChanged(int value)
     ui->sliceSlider->setValue(value);
     ui->sliceSpinBox->setValue(value);
     _displayImage(imageSize);
-    m_hist->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(value));
+    m_histogram->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(value));
+	m_zoomViwer->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(value));
+}
+
+void MainWindow::onZoomRegionChanged(QRectF region)
+{
+	int slice = ui->sliceSlider->value();
+	m_mrcs[m_currentContext].images[slice]= QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(slice).copy(QRect(region.x(),region.y(),region.width(),region.height())));
+	_displayImage(imageSize);
 }

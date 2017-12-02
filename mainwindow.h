@@ -14,6 +14,7 @@
 #include "testinfodialog.h"
 #include "mrc.h"
 #include "histogram.h"
+#include "zoomviwer.h"
 
 namespace Ui {
 class MainWindow;
@@ -46,7 +47,7 @@ private slots:
     void on_maxGraySlider_sliderMoved(int position);
     void on_minGraySlider_sliderMoved(int position);
     void on_sliceSlider_valueChanged(int value);
-
+	void onZoomRegionChanged(QRectF region);
 private:
     Ui::MainWindow *ui;
 
@@ -54,7 +55,9 @@ private:
     QVector<MRCContext> m_mrcs;
 
     QLabel * m_imageLabel;
-    Histogram * m_hist;
+    Histogram * m_histogram;
+	ZoomViwer * m_zoomViwer;
+
     QPixmap m_image;
     QBitmap m_mask;
 

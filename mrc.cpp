@@ -502,7 +502,6 @@ void MRC::_reset()
     bool m_opened = false;
     m_mrcDataSize = 0;
 }
-
 bool MRC::_init()
 {
     size_t nx = static_cast<size_t>(m_header.nx);
