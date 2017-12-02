@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QLayout>
 #include <QLabel>
-#include <QtCharts>
 #include "testinfodialog.h"
 #include "mrc.h"
 #include "histogram.h"

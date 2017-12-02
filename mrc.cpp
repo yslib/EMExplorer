@@ -413,7 +413,7 @@ bool MRC::_mrcHeaderRead(FILE * fp, MRCHeader *hd)
     return true;
 }
 
-std::__1::string MRC::_getMRCHeaderInfo(const MRC::MRCHeader *header) const
+std::string MRC::_getMRCHeaderInfo(const MRC::MRCHeader *header) const
 {
 
     std::stringstream ss;
