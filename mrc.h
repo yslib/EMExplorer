@@ -5,8 +5,9 @@
 #include <QImage>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 #include <QDebug>
-#include <QMessageBox>
 
 
 /* END_CODE */
@@ -118,7 +119,7 @@ public:
     MRC(const MRC & rhs);
     MRC(MRC && rhs);
     MRC& operator=(const MRC & rhs);
-    MRC &&operator=(MRC && rhs);
+    MRC& operator=(MRC && rhs);
 public:
 
     bool open(const QString & fileName);
@@ -128,14 +129,13 @@ public:
     int getWidth()const;           //first dimension
     int getHeight()const;          //second dimension
     int getSliceCount()const;          //third dimension
+    const unsigned char * data()const;
+    unsigned char * data();
 
-
-
-    QImage getSlice(int slice)const;
-
-    QVector<QImage> getSlices()const;
 
     QString getMRCInfo()const;
+    QImage getSlice(int slice)const;
+    QVector<QImage> getSlices()const;
     bool setSlice(const QImage & image,int slice);
 
     virtual ~MRC();
@@ -304,17 +304,29 @@ private:
 
 private:            //variance
     QString m_fileName;
+
     MRCHeader m_header;
+
     unsigned char *m_mrcData;
-    QVector<QImage> m_slices;
+
     size_t m_mrcDataSize;
+
+    QVector<QImage> m_slices;
+
+
+
+
+    //QVector<QPixmap> m_slicesPixmap;
+
+
+
     bool m_opened;
 private:
     MRC(const QString & fileName,bool opened):m_fileName(fileName),m_mrcData{nullptr},m_opened{opened},m_mrcDataSize{0}{}
 
 
     bool _mrcHeaderRead(FILE *fp,MRCHeader * header);
-    unsigned char * _getData(size_t start)const;
+    const unsigned char * _getData(size_t start)const;
     int _setData(size_t start,unsigned char * data,size_t size);
     std::string _getMRCHeaderInfo(const MRCHeader *header)const;
     bool _readDataFromFile(FILE * fp);

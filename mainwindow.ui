@@ -10,6 +10,12 @@
     <height>577</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -18,20 +24,23 @@
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="7,3">
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="leftGroupBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="title">
-         <string>GroupBox</string>
+         <string>Viewer</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="rightGroupBox">
         <property name="title">
-         <string>GroupBox</string>
+         <string>Properties</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QVBoxLayout" name="leftVLayout">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,8">
              <item>
@@ -42,7 +51,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox"/>
+              <widget class="QComboBox" name="mrcFileCBox"/>
              </item>
             </layout>
            </item>
@@ -56,14 +65,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider">
+              <widget class="QSlider" name="sliceSlider">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox"/>
+              <widget class="QSpinBox" name="sliceSpinBox"/>
              </item>
             </layout>
            </item>
@@ -72,19 +81,19 @@
              <item>
               <widget class="QLabel" name="label_2">
                <property name="text">
-                <string>MinValue:</string>
+                <string>MaxValue:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider_2">
+              <widget class="QSlider" name="maxGraySlider">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox_2"/>
+              <widget class="QSpinBox" name="maxGraySpinBox"/>
              </item>
             </layout>
            </item>
@@ -93,19 +102,19 @@
              <item>
               <widget class="QLabel" name="label_3">
                <property name="text">
-                <string>MacValue:</string>
+                <string>MinValue:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider_3">
+              <widget class="QSlider" name="minGraySlider">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBox_3"/>
+              <widget class="QSpinBox" name="minGraySpinBox"/>
              </item>
             </layout>
            </item>
@@ -119,14 +128,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="horizontalSlider_4">
+              <widget class="QSlider" name="scaleSlider">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+              <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
              </item>
             </layout>
            </item>

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,10 +25,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mrc.cpp
+    mrc.cpp \
+    histogram.cpp \
+    zoomviwer.cpp \
+    testinfodialog.cpp \
+    pixelviwer.cpp
 
 HEADERS  += mainwindow.h \
-    mrc.h
+    mrc.h \
+    histogram.h \
+    zoomviwer.h \
+    testinfodialog.h \
+    pixelviwer.h
 
 FORMS    += mainwindow.ui
 

@@ -226,9 +226,9 @@ MRC::MRC(const MRC &rhs)
 MRC::MRC(MRC &&rhs)
 {
     m_fileName = std::move(rhs.m_fileName);
-    m_header = rhs.m_header;
+    m_header = std::move(rhs.m_header);
     _init();
-    m_mrcData = rhs.m_mrcData;
+    m_mrcData = std::move(rhs.m_mrcData);
     m_opened = rhs.m_opened;
     rhs.m_mrcData = nullptr;
     m_slices = std::move(rhs.m_slices);
@@ -247,19 +247,21 @@ MRC & MRC::operator=(const MRC &rhs)
     memcpy(m_mrcData,rhs.m_mrcData,m_mrcDataSize*sizeof(unsigned char));
     m_slices = rhs.m_slices;
     m_opened = rhs.m_opened;
+    return *this;
 }
 
-MRC &&MRC::operator=(MRC &&rhs)
+MRC & MRC::operator=(MRC &&rhs)
 {
     //if(this == &rhs)return *this;
     _reset();
     m_fileName = std::move(rhs.m_fileName);
-    m_header = rhs.m_header;
+    m_header = std::move(rhs.m_header);
     _init();
-    rhs.m_mrcData = rhs.m_mrcData;
+    m_mrcData = std::move(rhs.m_mrcData);
     rhs.m_mrcData=nullptr;
     m_slices = std::move(rhs.m_slices);
     m_opened = rhs.m_opened;
+    return *this;
     qDebug()<<"move = operator has been called\n";
 }
 
@@ -319,11 +321,25 @@ int MRC::getSliceCount() const
 //                );
 //}
 
+
 QImage MRC::getSlice(int slice) const
 {
     int width = getWidth();
     int height = getHeight();
     return QImage(m_mrcData+slice*width*height,width,height,QImage::Format_Grayscale8);
+}
+
+
+const unsigned char *MRC::data() const
+{
+    return m_mrcData;
+}
+
+unsigned char *MRC::data()
+{
+    return const_cast<unsigned char*>(
+                static_cast<const MRC *>(this)->data()
+                );
 }
 
 QVector<QImage> MRC::getSlices() const
