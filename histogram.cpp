@@ -38,10 +38,55 @@ void Histogram::setImage(const QImage &image)
     updateGeometry();
 }
 
+QVector<int> Histogram::getHist() const
+{
+	return QVector<int>();
+}
+
 QSize Histogram::sizeHint() const
 {
     return m_histImage.size();
 }
+
+void Histogram::setMinimumValue(int value)
+{
+	if (value < 0) {
+		value = 0;
+	}
+	else if (value > 255) {
+		value = 255;
+	}
+	if (value > m_maxValue) {
+		m_maxValue = m_minValue = value;
+	}
+	else {
+		m_minValue = value;
+	}
+	update();
+	updateGeometry();
+	emit valueChanged(m_minValue, m_maxValue);
+}
+
+void Histogram::setMaximumValue(int value)
+{
+	if (value < 0) {
+		value = 0;
+	}
+	else if (value > 255) {
+		value = 255;
+	}
+	if (value < m_minValue) {
+		m_minValue = m_maxValue = value;
+	}
+	else {
+		m_maxValue = value;
+	}
+	update();
+	updateGeometry();
+	emit valueChanged(m_minValue, m_maxValue);
+}
+
+
 
 void Histogram::paintEvent(QPaintEvent *event)
 {
@@ -86,4 +131,8 @@ void Histogram::paintEvent(QPaintEvent *event)
 void Histogram::mouseMoveEvent(QMouseEvent *event)
 {
 
+}
+
+void Histogram::mousePressEvent(QMouseEvent * event)
+{
 }

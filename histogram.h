@@ -20,13 +20,16 @@ public:
     void setImage(const QImage & image);
     QVector<int> getHist()const;
     QSize sizeHint()const override;
+	void setMinimumValue(int value);
+	void setMaximumValue(int value);
 signals:
-    void minValueChanged();
-    void maxValueChanged();
-
+    //void minValueChanged(int value);
+    //void maxValueChanged(int value);
+	void valueChanged(int minVal, int maxVal);
 protected:
     void paintEvent(QPaintEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
 private:
     static const int MIN_WIDTH = 300;
     static const int MIN_HEIGHT = 100;

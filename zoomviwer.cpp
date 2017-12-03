@@ -1,7 +1,14 @@
 #include "zoomviwer.h"
 #include <QDebug>
 
-ZoomViwer::ZoomViwer(QWidget * parent) :QWidget(parent), m_originalHeight{ 0 }, m_originalWidth{ 0 }, m_thumbnail(QImage()), m_zoomRect{ QRectF() }
+ZoomViwer::ZoomViwer(QWidget * parent) :QWidget(parent), 
+m_originalHeight{ 0 }, 
+m_originalWidth{ 0 }, 
+m_thumbnail{ QImage() },
+m_zoomRect{ QRectF() },
+m_zoomFactor{1.0},
+m_minZoomFactor{0.1},
+m_imageRect{}
 {
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	setMinimumSize(WIDTH, HEIGHT);
@@ -47,6 +54,24 @@ QPointF ZoomViwer::zoomPosition() const
 	return QPointF(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
 }
 
+void ZoomViwer::setZoomFactor(qreal factor)
+{
+	if (factor > 1.0)
+		factor = 1.0;
+	else if (factor < m_minZoomFactor)
+		factor = m_minZoomFactor;
+	m_zoomRect.center();
+}
+
+void ZoomViwer::setMinZoomFactor(qreal minFactor)
+{
+	if (minFactor < 0.001)
+		minFactor = 0.001;
+	else if (minFactor > 1.0)
+		minFactor = 1.0;
+	else m_minZoomFactor = minFactor;
+}
+
 void ZoomViwer::paintEvent(QPaintEvent *event)
 {
 	
@@ -61,6 +86,7 @@ void ZoomViwer::paintEvent(QPaintEvent *event)
 	qreal topX = bgSize.width() / 2 - m_thumbnail.width() / 2;
 	qreal topY = bgSize.height() / 2 - m_thumbnail.height() / 2;
 	QPointF topLeft(topX, topY);
+	m_imageRect = QRectF(topLeft, QSizeF(m_thumbnail.width(), m_thumbnail.height()));
 	backgroundPainter.drawImage(topLeft, m_thumbnail);
 
 	//Drawing the rectangle
@@ -73,8 +99,57 @@ void ZoomViwer::paintEvent(QPaintEvent *event)
 }
 
 void ZoomViwer::mousePressEvent(QMouseEvent *event)
-{
-	qDebug() << "Mouse Press Event";
+{	
+	if (event->button() == Qt::LeftButton) {
+		QPoint mousePos = event->pos();
+		qreal dx = m_zoomRect.width() / 2;
+		qreal dy = m_zoomRect.height() / 2;
+		QRectF validCenterRegion = m_imageRect.adjusted(dx, dy, -dx, -dy);
+		if (validCenterRegion.isValid() == true) {
+			if (false == validCenterRegion.contains(mousePos)) {
+				qreal x = mousePos.x();
+				qreal y = mousePos.y();
+				qreal top = validCenterRegion.top();
+				qreal left = validCenterRegion.left();
+				qreal right = validCenterRegion.right();
+				qreal bottom = validCenterRegion.bottom();
+				if (x <= left && y <= top) {
+					mousePos = QPoint(left, top);
+				}
+				else if (x > left &&x <= right&& y <= top) {
+					mousePos = QPoint(x, top);
+				}
+				else if (x > right && y <= top) {
+					mousePos = QPoint(right, top);
+				}
+				else if (x <= left && y > top&&y <= bottom) {
+					mousePos = QPoint(left, y);
+				}
+				else if (x >= left && y > top&&y <= bottom) {
+					mousePos = QPoint(right, y);
+				}
+				else if (x <= left && y > bottom) {
+					mousePos = QPoint(left, bottom);
+				}
+				else if (x>left & x <= right && y>bottom) {
+					mousePos = QPoint(x, bottom);
+				}
+				else if (x > right && y > bottom) {
+					mousePos = QPoint(right, bottom);
+				}
+			}
+			/*Translate the global coords from widget origin
+			to local coords from image origin*/
+			QPointF newPos = QPointF(mousePos.x(), mousePos.y())
+				- m_imageRect.topLeft();
+			m_zoomRect.moveCenter(newPos);
+			update();
+			emit zoomRegionChanged(zoomRegion());
+		}
+	}
+	else {
+
+	}
 	
 }
 
@@ -85,13 +160,41 @@ void ZoomViwer::wheelEvent(QWheelEvent * event)
 		//Nothing
 	}
 	else {
-		qreal zoomFactor = 0.9;
+		qreal maxWidth = m_imageRect.width() - m_zoomRect.left();
+		qreal maxHeight = m_imageRect.height() - m_zoomRect.top(); 
+		qreal newWidth;
+		qreal newHeight;
 		if (event->delta() > 0)
-			zoomFactor = 1 / zoomFactor;
-		m_zoomRect.setWidth(m_zoomRect.width()*zoomFactor);
-		m_zoomRect.setHeight(m_zoomRect.height()*zoomFactor);
+		{
+			qreal newZoomFactor = m_zoomFactor + 0.05;
+			newWidth = m_imageRect.width()*(newZoomFactor);
+			newHeight = m_imageRect.height()*(newZoomFactor);
+			if (newWidth <= maxWidth && newHeight <= maxHeight) {
+				m_zoomFactor = newZoomFactor;
+			}
+			else {
+				return;
+			}
+			if (m_zoomFactor > 1.0) {
+				m_zoomFactor = 1.0;
+			}
+		}
+		else {
+			m_zoomFactor -= 0.05;
+			newWidth = m_imageRect.width()*(m_zoomFactor);
+			newHeight = m_imageRect.height()*(m_zoomFactor);
+			if (m_zoomFactor < m_minZoomFactor) {
+				m_zoomFactor = m_minZoomFactor;
+			}
+		}
+
+		qreal dx = newWidth > maxWidth ? maxWidth : newWidth;
+		qreal dy = newHeight > maxHeight ? maxHeight : newHeight;
+		m_zoomRect.setWidth(dx);
+		m_zoomRect.setHeight(dy);
 		update();
 		emit zoomRegionChanged(zoomRegion());
 	}
 }
+
 

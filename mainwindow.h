@@ -15,6 +15,7 @@
 #include "mrc.h"
 #include "histogram.h"
 #include "zoomviwer.h"
+#include "sliceviewer.h"
 
 namespace Ui {
 class MainWindow;
@@ -54,9 +55,11 @@ private:
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
 
-    QLabel * m_imageLabel;
+    //QLabel * m_imageLabel;
+	SliceViewer * m_sliceViewer;
     Histogram * m_histogram;
 	ZoomViwer * m_zoomViwer;
+
 
     QPixmap m_image;
     QBitmap m_mask;
@@ -71,7 +74,7 @@ private:
     void _setMRCContext(int index);
     void _saveMRCContext();
     void _updateGrayThreshold(int minGray,int maxGray);
-    void _displayImage(QSize size = QSize());
+    //void _displayImage(QSize size = QSize());
     void _init();
     void _destroy();
 };

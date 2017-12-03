@@ -50,7 +50,7 @@ void MainWindow::on_actionOpen_triggered()
         //m_mrcs.push_back(std::move(mrc));
         _createMRCContext(std::move(mrc));
         _setMRCContext(m_mrcs.size()-1);
-        _displayImage(imageSize);
+		m_sliceViewer->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(0));
         m_currentContext = m_mrcs.size() - 1;
         //ui->mrcFileCBox->insertItem(0,QIcon(),);
         ui->mrcFileCBox->addItem(name,m_currentContext);
@@ -91,9 +91,9 @@ void MainWindow::_createMRCContext(MRC && mrc)
     mrcContext.currentScale =1.0f;
     mrcContext.mrcFile = std::move(mrc);
     int imageCount = mrcContext.maxSlice;
-    for(int i=0;i<imageCount;i++){
-        mrcContext.images.push_back(QPixmap::fromImage(mrcContext.mrcFile.getSlice(i)));
-    }
+    //for(int i=0;i<imageCount;i++){
+    //    mrcContext.images.push_back(QPixmap::fromImage(mrcContext.mrcFile.getSlice(i)));
+    //}
     m_mrcs.push_back(mrcContext);
 }
 
@@ -164,50 +164,51 @@ void MainWindow::_saveMRCContext()
 
 void MainWindow::_updateGrayThreshold(int minGray, int maxGray)
 {
-    size_t width = m_mrcs[m_currentContext].mrcFile.getWidth();
-    size_t height = m_mrcs[m_currentContext].mrcFile.getHeight();
-    size_t length = width*height;
-    qDebug()<<"W & H of the image:"<<width<<" "<<height;
-    unsigned char *image = m_mrcs[m_currentContext].mrcFile.getSlice(ui->sliceSlider->value()).bits();
+    //size_t width = m_mrcs[m_currentContext].mrcFile.getWidth();
+    //size_t height = m_mrcs[m_currentContext].mrcFile.getHeight();
+    //size_t length = width*height;
+    //qDebug()<<"W & H of the image:"<<width<<" "<<height;
+    //unsigned char *image = m_mrcs[m_currentContext].mrcFile.getSlice(ui->sliceSlider->value()).bits();
 
 
-    //QPixmap pix = QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(ui->sliceSlider->value()));
-    m_mask = QBitmap(width,height);
-    QPainter painter(&m_mask);
-    for(int j=0;j<height;j++){
-        for(int i=0;i<width;i++){
-            int index = i+j*width;
-            if(image[index]>=minGray && image[index]<=maxGray){
-                painter.setPen(Qt::color1);
-                painter.drawPoint(QPoint(i,j));
+    ////QPixmap pix = QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(ui->sliceSlider->value()));
+    //m_mask = QBitmap(width,height);
+    //QPainter painter(&m_mask);
+    //for(int j=0;j<height;j++){
+    //    for(int i=0;i<width;i++){
+    //        int index = i+j*width;
+    //        if(image[index]>=minGray && image[index]<=maxGray){
+    //            painter.setPen(Qt::color1);
+    //            painter.drawPoint(QPoint(i,j));
 
-            }else{
-                painter.setPen(Qt::color0);
-                painter.drawPoint(QPoint(i,j));
-            }
-        }
-    }
-    //qDebug()<<m_mask;
-    //img.setMask(QBitmap());
-    //m_mrcs[m_currentContext].images[ui->sliceSlider->value()]=pix;
-    m_mrcs[m_currentContext].images[ui->sliceSlider->value()].setMask(m_mask);
+    //        }else{
+    //            painter.setPen(Qt::color0);
+    //            painter.drawPoint(QPoint(i,j));
+    //        }
+    //    }
+    //}
+    ////qDebug()<<m_mask;
+    ////img.setMask(QBitmap());
+    ////m_mrcs[m_currentContext].images[ui->sliceSlider->value()]=pix;
+    //m_mrcs[m_currentContext].images[ui->sliceSlider->value()].setMask(m_mask);
     //m_imageLabel->setPixmap(m_mrcs[m_currentContext].images[ui->sliceSlider->value()]);
 }
 
-void MainWindow::_displayImage(QSize size)
-{
-    int index = ui->sliceSlider->value();
-    m_image = m_mrcs[m_currentContext].images[index].scaled(size,Qt::IgnoreAspectRatio);
-    m_imageLabel->setPixmap(m_image);
-}
+//void MainWindow::_displayImage(QSize size)
+//{
+//    int index = ui->sliceSlider->value();
+//	m_sliceViewer->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(index).scaled(size, Qt::IgnoreAspectRatio));
+//    //m_image = m_mrcs[m_currentContext].images[index].scaled(size,Qt::IgnoreAspectRatio);
+//    //m_imageLabel->setPixmap(m_image);
+//}
 
 void MainWindow::_init()
 {
-    m_imageLabel =  new QLabel(this);
-    m_imageLabel->setScaledContents(true);
+	m_sliceViewer = new SliceViewer(this);
+    //m_imageLabel =  new QLabel(this);
+    //m_imageLabel->setScaledContents(true);
     QHBoxLayout * layout = new QHBoxLayout(this);
-
-    layout->addWidget(m_imageLabel);
+    layout->addWidget(m_sliceViewer);
     ui->leftGroupBox->setLayout(layout);
     m_currentContext = -1;
 
@@ -225,7 +226,7 @@ void MainWindow::_destroy()
 {
 	delete m_histogram;
 	delete m_zoomViwer;
-	delete m_imageLabel;
+	delete m_sliceViewer;
 }
 
 void MainWindow::on_sliceSlider_sliderMoved(int position)
@@ -237,14 +238,17 @@ void MainWindow::on_sliceSlider_sliderMoved(int position)
 
 void MainWindow::on_maxGraySlider_sliderMoved(int position)
 {
-    if(position < ui->minGraySlider->value()){
-        ui->minGraySlider->setValue(position);
-        ui->minGraySpinBox->setValue(position);
-    }
-    ui->maxGraySlider->setValue(position);
-    ui->maxGraySpinBox->setValue(position);
-    _updateGrayThreshold(ui->minGraySlider->value(),ui->maxGraySlider->value());
-    _displayImage(imageSize);
+	if (position < ui->minGraySlider->value()) {
+		ui->minGraySlider->setValue(position);
+		ui->minGraySpinBox->setValue(position);
+		m_histogram->setMinimumValue(position);
+	}
+	ui->maxGraySlider->setValue(position);
+	ui->maxGraySpinBox->setValue(position);
+	m_histogram->setMaximumValue(position);
+
+	//_updateGrayThreshold(ui->minGraySlider->value(), ui->maxGraySlider->value());
+	
 }
 
 void MainWindow::on_minGraySlider_sliderMoved(int position)
@@ -252,12 +256,13 @@ void MainWindow::on_minGraySlider_sliderMoved(int position)
     if(position > ui->maxGraySlider->value()){
         ui->maxGraySlider->setValue(position);
         ui->maxGraySpinBox->setValue(position);
+		m_histogram->setMaximumValue(position);
     }
     ui->minGraySlider->setValue(position);
     ui->minGraySpinBox->setValue(position);
-
-    _updateGrayThreshold(ui->minGraySlider->value(),ui->maxGraySlider->value());
-    _displayImage(imageSize);
+	m_histogram->setMinimumValue(position);
+    //_updateGrayThreshold(ui->minGraySlider->value(),ui->maxGraySlider->value());
+   
 }
 
 void MainWindow::on_sliceSlider_valueChanged(int value)
@@ -266,7 +271,8 @@ void MainWindow::on_sliceSlider_valueChanged(int value)
         return;
     ui->sliceSlider->setValue(value);
     ui->sliceSpinBox->setValue(value);
-    _displayImage(imageSize);
+	m_sliceViewer->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(value));
+    //_displayImage(imageSize);
     m_histogram->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(value));
 	m_zoomViwer->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(value));
 }
@@ -274,6 +280,9 @@ void MainWindow::on_sliceSlider_valueChanged(int value)
 void MainWindow::onZoomRegionChanged(QRectF region)
 {
 	int slice = ui->sliceSlider->value();
-	m_mrcs[m_currentContext].images[slice]= QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(slice).copy(QRect(region.x(),region.y(),region.width(),region.height())));
-	_displayImage(imageSize);
+	//m_mrcs[m_currentContext].images[slice]= QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(slice).copy(QRect(region.x(),region.y(),region.width(),region.height())));
+	//_displayImage(imageSize);
+	QImage image = m_mrcs[m_currentContext].mrcFile.getSlice(slice);
+	QRect reg(region.x(), region.y(), region.width(), region.height());
+	m_sliceViewer->setImage(image.copy(reg));
 }

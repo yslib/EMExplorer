@@ -14,6 +14,10 @@ public:
     void clearImage();
     QRectF zoomRegion()const;
     QPointF zoomPosition()const;
+	void setZoomFactor(qreal factor);
+	qreal zoomFactor()const { return m_zoomFactor; }
+	void setMinZoomFactor(qreal minFactor);
+	qreal minZoomFactor()const { return m_minZoomFactor; }
 protected:
     void paintEvent(QPaintEvent *event)override;
     void mousePressEvent(QMouseEvent *event)override;
@@ -24,8 +28,13 @@ private:
 	static const int WIDTH = 300;
 	static const int HEIGHT = 200;
 
-    QRectF m_zoomRect;
-	size_t m_originalWidth;
+	qreal m_zoomFactor;
+	qreal m_minZoomFactor;
+
+	QRectF m_imageRect;		//The position of the thumbnail in the Widget
+    QRectF m_zoomRect;		//The zoom region of the image in the thumbnail
+	/*Width and Height of original image*/
+	size_t m_originalWidth;	
 	size_t m_originalHeight;
 	QImage m_thumbnail;
 };
