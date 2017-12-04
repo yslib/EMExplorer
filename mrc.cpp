@@ -1,210 +1,8 @@
 #include "mrc.h"
 
-//int mrc_head_read(FILE *fin, MrcHeader *hdata)
-//{
-//  int i;
-//  int retval = 0;
-//  int datasize;
-//  ImodImageFile *iiFile;
-
-//  if (!fin)
-//    return(-1);
-
-//  iiFile = iiLookupFileFromFP(fin);
-//  if (iiFile) {
-//    return iiFillMrcHeader(iiFile, hdata);
-//  }
-
-//  b3dRewind(fin);
-
-//  i = fread(hdata, 4, 56, fin);
-//  if (i != 56) {
-//    b3dError(stderr, "ERROR: mrc_head_read - reading header data; %d of 56 words read, "
-//             "system error: %s\n", i, strerror(errno));
-//    return(-1);
-//  }
-
-
-//  hdata->swapped = 0;
-//  hdata->iiuFlags = 0;
-
-//  /* Test for byte-swapped data with image size and the map numbers and
-//     mark data as swapped if it fails */
-//  if (mrc_test_size(hdata))
-//    hdata->swapped = 1;
-
-//  /* DNM 7/30/02: test for old style header and rearrange origin info */
-//  if (hdata->cmap[0] != 'M' || hdata->cmap[1] != 'A' ||
-//      hdata->cmap[2] != 'P') {
-//    memcpy(&hdata->zorg, &hdata->cmap[0], 4);
-//    memcpy(&hdata->xorg, &hdata->stamp[0], 4);
-//    memcpy(&hdata->yorg, &hdata->rms, 4);
-//    hdata->rms = -1.;
-//    if (hdata->swapped)
-//      mrc_swap_floats(&hdata->rms, 1);
-//    mrc_set_cmap_stamp(hdata);
-//    hdata->iiuFlags |= IIUNIT_OLD_STYLE;
-//  }
-
-//  if (hdata->swapped) {
-//    mrc_swap_header(hdata);
-
-//    /* Test that this swapping makes values acceptable */
-//    /* Let calling program issue error message */
-//    if (mrc_test_size(hdata))
-//      return(1);
-//  }
-
-//  /* Set other run-time data and adjust min/max/mean up for signed bytes */
-//  hdata->headerSize = 1024;
-//  hdata->sectionSkip = 0;
-//  hdata->yInverted = 0;
-//  hdata->headerSize += hdata->next;
-//  hdata->packed4bits = 0;
-//  hdata->bytesSigned = readBytesSigned(hdata->imodStamp, hdata->imodFlags, hdata->mode,
-//                                       hdata->amin, hdata->amax);
-//  if (hdata->bytesSigned) {
-//    hdata->amin += 128.;
-//    hdata->amax += 128.;
-//    hdata->amean += 128.;
-//  }
-
-//  /* If not an IMOD file, clear out the flags, otherwise retain them */
-//  if (hdata->imodStamp != IMOD_MRC_STAMP)
-//    hdata->imodFlags = 0;
-
-//  /* Invert origin coming in if this flag is set (added for 4.7 release) or if the
-//     MRC version is standard */
-//  if ((hdata->imodStamp == IMOD_MRC_STAMP && (hdata->imodFlags & MRC_FLAGS_INV_ORIGIN)) ||
-//      mrcGetStandardVersion(hdata) > 0) {
-//    hdata->xorg *= -1;
-//    hdata->yorg *= -1;
-//    hdata->zorg *= -1;
-//  }
-
-//  /* Check for inversion either for the original form of FEI file or by MAPR = -2
-//     (which is tentative) */
-//  if (hdata->imodStamp != IMOD_MRC_STAMP &&
-//      ((mrcGetExtendedType(hdata, &i) == MRC_EXT_TYPE_FEI && mrcGetStandardVersion(hdata)
-//        == 20140) || hdata->mapr == -2)) {
-//    hdata->yInverted = 1;
-//    if (hdata->mapr == -2)
-//      hdata->mapr = 2;
-//    hdata->iiuFlags |= IIUNIT_Y_INVERTED;
-//  }
-
-//  for ( i = 0; i < MRC_NLABELS; i ++){
-//    if (fread(hdata->labels[i], MRC_LABEL_SIZE, 1, fin) == 0) {
-//      b3dError(stderr, "ERROR: mrc_head_read - reading label %d.\n", i);
-//      hdata->labels[i][MRC_LABEL_SIZE] = 0;
-//      return(-1);
-//    }
-//    hdata->labels[i][MRC_LABEL_SIZE] = 0;
-//    if (i < hdata->nlabl)
-//      fixTitlePadding(hdata->labels[i]);
-//  }
-
-//  /* Recognize 4 bit mode or packed 4-bit data in half-size byte file */
-//  if (hdata->mode == MRC_MODE_4BIT) {
-//    hdata->packed4bits = PACKED_4BIT_MODE;
-//    hdata->mode = MRC_MODE_BYTE;
-//    hdata->iiuFlags |= IIUNIT_4BIT_MODE;
-//  } else if (((hdata->imodFlags & MRC_FLAGS_4BIT_BYTES) && hdata->mode == MRC_MODE_BYTE) ||
-//             (hdata->mode == MRC_MODE_BYTE &&
-//              hdata->nlabl == 1 && strstr(hdata->labels[0], "4 bits packed") &&
-//              sizeCanBe4BitK2SuperRes(hdata->nx, hdata->ny))) {
-//    hdata->packed4bits = PACKED_HALF_XSIZE;
-//    hdata->iiuFlags |= IIUNIT_HALF_XSIZE;
-//    if (hdata->mx == hdata->nx) {
-//      hdata->mx *= 2;
-//      hdata->xlen *= 2.;
-//    }
-//    hdata->nx *= 2;
-//    if (hdata->bytesSigned) {
-//      b3dError(stderr, "ERROR: mrc_head_read - cannot read 4-bit data packed in signed "
-//               "bytes.\n");
-//      return(1);
-//    }
-//  }
-
-//  if ((hdata->mode > 31) || (hdata->mode < 0)) {
-//    b3dError(stderr, "ERROR: mrc_head_read - bad file mode %d.\n", hdata->mode);
-//    return(1);
-//  }
-//  if (hdata->nlabl > MRC_NLABELS) {
-//    b3dError(stderr, "ERROR: mrc_head_read - impossible number of "
-//             "labels, %d.\n", hdata->nlabl);
-//    return(1);
-//  }
-
-//  /* 12/31/13: If the map indexes are wrong just fix them */
-//  if ((hdata->mapc + 2) / 3 != 1 || (hdata->mapr + 2) / 3 != 1 ||
-//      (hdata->maps + 2) / 3 != 1 || hdata->mapc == hdata->mapr ||
-//      hdata->mapr == hdata->maps || hdata->mapc == hdata->maps) {
-//    hdata->mapc = 1;
-//    hdata->mapr = 2;
-//    hdata->maps = 3;
-//    hdata->iiuFlags |= IIUNIT_BAD_MAPCRS;
-//  }
-
-//  /* 12/9/12: To match what is done in irdhdr when mx or xlen is zero;
-//     also if Z pixel size is 0, set Z cell to match X pixel size */
-//  if (!hdata->mx || hdata->xlen < 1.e-5) {
-//    hdata->mx = hdata->my = hdata->mz = 1;
-//    hdata->xlen = hdata->ylen = hdata->zlen = 1.;
-//  }
-//  if (hdata->zlen < 1.e-5)
-//    hdata->zlen = hdata->mz * hdata->xlen / hdata->mx;
-
-//  /* DNM 6/10/04: Workaround to FEI goof in which nints was set to # of bytes, 4 * nreal*/
-//  if (hdata->nint == 128 && hdata->nreal == 32 &&
-//      (hdata->next == 131072 || strstr(hdata->labels[0], "Fei ") ==  hdata->labels[0])) {
-//    hdata->nint = 0;
-//    hdata->iiuFlags |= IIUNIT_NINT_BUG;
-//  }
-
-//  /* DNM 7/2/02: This calculation is won't work for big files and is
-//     a bad idea anyway, so comment out the test below */
-//  datasize = hdata->nx * hdata->ny * hdata->nz;
-//  switch(hdata->mode){
-//  case MRC_MODE_BYTE:
-//    break;
-//  case MRC_MODE_SHORT:
-//  case MRC_MODE_USHORT:
-//    datasize *= 2;
-//    break;
-//  case MRC_MODE_FLOAT:
-//  case MRC_MODE_COMPLEX_SHORT:
-//    datasize *= 4;
-//    break;
-//  case MRC_MODE_COMPLEX_FLOAT:
-//    datasize *= 8;
-//    break;
-//  case MRC_MODE_RGB:
-//    datasize *= 3;
-//    break;
-//  default:
-//    b3dError(stderr, "ERROR: mrc_head_read - bad file mode %d.\n",
-//             hdata->mode);
-//    return(1);
-//  }
-
-//  /* fseek(fin, 0, 2);
-//     filesize = ftell(fin); */
-//  b3dRewind(fin);
-
-//  /* if ((filesize - datasize) < 0)
-//     return(0);
-//     if ((filesize - datasize) > 512)
-//     return(0); */
-
-//  hdata->fp = fin;
-
-//  return(retval);
-//}
 MRC::MRC():MRC("",false)
 {
-    //Empty
+    //Do Nothing
 }
 
 MRC::MRC(const QString &fileName):MRC("",false)
@@ -253,6 +51,7 @@ MRC & MRC::operator=(const MRC &rhs)
 MRC & MRC::operator=(MRC &&rhs)
 {
     //if(this == &rhs)return *this;
+	qDebug() << "move assignment operator has been called\n";
     _reset();
     m_fileName = std::move(rhs.m_fileName);
     m_header = std::move(rhs.m_header);
@@ -262,7 +61,6 @@ MRC & MRC::operator=(MRC &&rhs)
     m_slices = std::move(rhs.m_slices);
     m_opened = rhs.m_opened;
     return *this;
-    qDebug()<<"move = operator has been called\n";
 }
 
 bool MRC::open(const QString &fileName)
@@ -290,6 +88,12 @@ bool MRC::open(const QString &fileName)
     return m_opened;
 }
 
+bool MRC::save(const QString & fileName)
+{
+	//TODO:
+	return false;
+}
+
 bool MRC::isOpened() const
 {
     return m_opened;
@@ -309,17 +113,6 @@ int MRC::getSliceCount() const
 {
     return m_header.nz;
 }
-
-
-
-//QImage & MRC::getSlice(int slice)
-//{
-//    /*It's safe to drop const qualifier in non-const member function*/
-//    return
-//         const_cast<QImage &>(
-//             static_cast<const MRC &>(*this).getSlice(slice)
-//                );
-//}
 
 
 QImage MRC::getSlice(int slice) const
@@ -352,6 +145,11 @@ QVector<QImage> MRC::getSlices() const
     return imgVec;
 }
 
+bool MRC::setSlice(const QImage & image, int slice)
+{
+	return false;
+}
+
 QString MRC::getMRCInfo()const
 {
     QString info = _getMRCHeaderInfo(&m_header).c_str();
@@ -364,7 +162,7 @@ MRC::~MRC()
     _destroy();
 }
 
-//Only for bytes and float
+//Only for byte and float data
 bool MRC::_mrcHeaderRead(FILE * fp, MRCHeader *hd)
 {
     if(fp == nullptr)return false;

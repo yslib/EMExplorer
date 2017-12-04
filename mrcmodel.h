@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
+#include <QImage>
 #include <QPair>
 #include <QRectF>
 #include "mrc.h"
@@ -17,7 +18,6 @@ public:
 	MRCModel(MRCModel && model) = delete;
 	MRCModel & operator=(const MRCModel & model) = delete;
 	MRCModel & operator=(MRCModel && model) = delete;
-
 	virtual ~MRCModel();
 
 	void setGrayscaleStrechingLowerBound(int value) { m_mrcContext.grayscaleStrechingLowerBound = value; }
@@ -31,12 +31,22 @@ public:
 	int getGrayscaleLowerBound()const { return m_mrcContext.grayscaleLowerBound; }
 	int getGrayscaleUpperBound()const { return m_mrcContext.grayscaleUpperBound; }
 	bool isValid()const { return m_mrcContext.valid;};
-
 	void setCurrentSlice(int slice) { m_mrcContext.currentSlice=slice; }
 	int getCurrentSlice()const { return m_mrcContext.currentSlice; }
+	bool save(const QString & fileName);
+	bool open(const QString & fileName);
+	bool openMarks(const QString & fileName);
+	bool saveMarks(const QString & fileName);
+	bool isOpened()const { return isValid();}
+
 
 	QString getMRCInfo()const { return m_mrcFile.getMRCInfo(); };
-
+	QImage getSlice(int index)const;
+	void setSlice(const QImage & image, int index);
+	QVector<QImage> getSlices()const;
+	void setMark(const QImage & iamge, int index);
+	QImage getMark(int index);
+	QVector<QImage> getMarks()const;
 
 private:
 	struct MRCContext {
@@ -58,5 +68,6 @@ private:
 private:
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
+	QVector<QImage> m_marks;
 };
 #endif

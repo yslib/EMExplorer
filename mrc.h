@@ -113,7 +113,7 @@ class MRC
 public:     //Type Definition
 
 public:
-    explicit MRC();
+    MRC();
     explicit MRC(const QString & fileName);
 
     MRC(const MRC & rhs);
@@ -132,7 +132,8 @@ public:
     const unsigned char * data()const;
     unsigned char * data();
 
-
+	//FIXME:
+	//This class should not depends on qt module
     QString getMRCInfo()const;
     QImage getSlice(int slice)const;
     QVector<QImage> getSlices()const;
@@ -312,13 +313,6 @@ private:            //variance
     size_t m_mrcDataSize;
 
     QVector<QImage> m_slices;
-
-
-
-
-    //QVector<QPixmap> m_slicesPixmap;
-
-
 
     bool m_opened;
 private:

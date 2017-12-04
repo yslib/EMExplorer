@@ -67,16 +67,13 @@ void MainWindow::_createMRCContext(const MRC &mrc)
     mrcContext.currentMinGray = 0;
     mrcContext.minSlice = 0;
     mrcContext.maxSlice=mrc.getSliceCount()-1;
-
-
     mrcContext.currentSlice = 0;
     mrcContext.currentScale =1.0f;
-
     mrcContext.mrcFile = mrc;
     int imageCount = mrcContext.maxSlice;
-    for(int i=0;i<imageCount;i++){
-        mrcContext.images.push_back(QPixmap::fromImage(mrcContext.mrcFile.getSlice(i)));
-    }
+	//for (int i = 0; i < imageCount; i++) {
+	//	mrcContext.images.push_back(QPixmap::fromImage(mrcContext.mrcFile.getSlice(i)));
+	//}
     m_mrcs.push_back(mrcContext);
 }
 
