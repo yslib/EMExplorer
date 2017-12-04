@@ -29,14 +29,18 @@ SOURCES += main.cpp\
     histogram.cpp \
     zoomviwer.cpp \
     testinfodialog.cpp \
-    pixelviwer.cpp
+    pixelviwer.cpp \
+    sliceviewer.cpp \
+    mrcmodel.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
     histogram.h \
     zoomviwer.h \
     testinfodialog.h \
-    pixelviwer.h
+    pixelviwer.h \
+    sliceviewer.h \
+    mrcmodel.h
 
 FORMS    += mainwindow.ui
 

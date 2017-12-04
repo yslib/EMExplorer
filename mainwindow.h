@@ -16,6 +16,7 @@
 #include "histogram.h"
 #include "zoomviwer.h"
 #include "sliceviewer.h"
+#include "mrcmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -55,16 +56,11 @@ private:
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
 
-    //QLabel * m_imageLabel;
+
 	SliceViewer * m_sliceViewer;
     Histogram * m_histogram;
 	ZoomViwer * m_zoomViwer;
-
-
-    QPixmap m_image;
-    QBitmap m_mask;
-
-    TestInfoDialog * TESTINFO;
+	MRCModel m_mrcModel;
 
 private:
     //void _initHistogram();
