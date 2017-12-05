@@ -40,7 +40,7 @@ void Histogram::setImage(const QImage &image)
 
 QVector<int> Histogram::getHist() const
 {
-	return QVector<int>();
+	return m_hist;
 }
 
 QSize Histogram::sizeHint() const

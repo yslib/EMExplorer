@@ -16,7 +16,7 @@
 #include "histogram.h"
 #include "zoomviwer.h"
 #include "sliceviewer.h"
-#include "mrcmodel.h"
+#include "MRCDataModel.h"
 
 namespace Ui {
 class MainWindow;
@@ -55,14 +55,16 @@ private:
 
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
-
-
 	SliceViewer * m_sliceViewer;
-    Histogram * m_histogram;
-	ZoomViwer * m_zoomViwer;
-	MRCModel m_mrcModel;
+    Histogram * m_histogramViewer;
+	ZoomViwer * m_zoomViewer;
+	QVector<MRCDataModel> m_mrcDataModels;
 
 private:
+	void _addMRCDataModel(const MRCDataModel & model);
+	void _addMRCDataModel(MRCDataModel && model);
+	void _setMRCDataModel(int index);
+	void _saveMRCDataModel();
     //void _initHistogram();
 
     void _createMRCContext(const MRC & mrc);

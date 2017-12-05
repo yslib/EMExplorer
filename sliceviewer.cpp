@@ -12,8 +12,17 @@ SliceViewer::SliceViewer(QWidget * parent, const QImage & image) :SliceViewer{ p
 }
 void SliceViewer::setImage(const QImage & image) {
 	m_image = image;
+	m_imageCopy = image;
+
 	update();
 	updateGeometry();
+}
+void SliceViewer::setGrayscaleStrechingLowerBound(int value)
+{
+
+}
+void SliceViewer::setGrayscaleStrechingUpperBound(int value)
+{
 }
 void SliceViewer::paintEvent(QPaintEvent *event) {
 	QPainter painter(this);

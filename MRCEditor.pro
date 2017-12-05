@@ -31,7 +31,7 @@ SOURCES += main.cpp\
     testinfodialog.cpp \
     pixelviwer.cpp \
     sliceviewer.cpp \
-    mrcmodel.cpp
+    MRCDataModel.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -40,7 +40,7 @@ HEADERS  += mainwindow.h \
     testinfodialog.h \
     pixelviwer.h \
     sliceviewer.h \
-    mrcmodel.h
+    MRCDataModel.h
 
 FORMS    += mainwindow.ui
 

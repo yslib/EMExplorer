@@ -14,6 +14,8 @@ public:
 	void setImage(const QImage & image);
 	void paintBegin() { m_paint = true; }
 	void paintEnd() { m_paint = false; }
+	void setGrayscaleStrechingLowerBound(int value);
+	void setGrayscaleStrechingUpperBound(int value);
 protected:
 	void paintEvent(QPaintEvent *event)override;
 private:
@@ -22,5 +24,6 @@ private:
 
 	bool m_paint;
 	QImage m_image;
+	QImage m_imageCopy;
 };
 #endif // !SLICEVIEWER_H_
