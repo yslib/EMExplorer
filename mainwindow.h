@@ -9,14 +9,19 @@
 #include <QPainter>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSlider>
+#include <QDoubleSpinBox>
+#include <QSpinBox>
 #include <QLayout>
 #include <QLabel>
+#include <QComboBox>
 #include "testinfodialog.h"
 #include "mrc.h"
 #include "histogram.h"
 #include "zoomviwer.h"
 #include "sliceviewer.h"
 #include "MRCDataModel.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -52,13 +57,33 @@ private slots:
 	void onZoomRegionChanged(QRectF region);
 private:
     Ui::MainWindow *ui;
-
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
-	SliceViewer * m_sliceViewer;
-    Histogram * m_histogramViewer;
-	ZoomViwer * m_zoomViewer;
 	QVector<MRCDataModel> m_mrcDataModels;
+private:		//ui
+
+	QLabel * m_mrcFileLabel;
+	QComboBox * m_mrcFileCBox;
+	
+
+	SliceViewer * m_sliceViewer;
+	QLabel * m_sliceLabel;
+	QSlider * m_sliceSlider;
+	QSpinBox *m_sliceSpinBox;
+
+    Histogram * m_histogramViewer;
+	QLabel * m_histMinLabel;
+	QLabel * m_histMaxLabel;
+	QSlider * m_histMinSlider;
+	QSlider * m_histMaxSlider;
+	QSpinBox * m_histMinSpinBox;
+	QSpinBox *m_histMaxSpinBox;
+
+	ZoomViwer * m_zoomViewer;
+	QLabel * m_zoomLabel;
+	QSlider * m_zoomSlider;
+	QDoubleSpinBox * m_zoomSpinBox;
+
 
 private:
 	void _addMRCDataModel(const MRCDataModel & model);
@@ -73,7 +98,8 @@ private:
     void _saveMRCContext();
     void _updateGrayThreshold(int minGray,int maxGray);
     //void _displayImage(QSize size = QSize());
-    void _init();
+    void _initUI();
+	void _connection();
     void _destroy();
 };
 

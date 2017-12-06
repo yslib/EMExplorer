@@ -10,14 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    _init();
-    m_histogramViewer = new Histogram(this);
-	m_zoomViewer = new ZoomViwer(this);
-    ui->leftVLayout->addWidget(m_histogramViewer);
-	ui->leftVLayout->addWidget(m_zoomViewer);
-	connect(m_zoomViewer, SIGNAL(zoomRegionChanged(QRectF)), this, SLOT(onZoomRegionChanged(QRectF)));
+    _initUI();
+	_connection();
 }
-
 MainWindow::~MainWindow()
 {
 	_destroy();
@@ -52,8 +47,8 @@ void MainWindow::on_actionOpen_triggered()
         _setMRCDataModel(m_mrcDataModels.size()-1);
 		//m_sliceViewer->setImage(m_mrcs[m_currentContext].mrcFile.getSlice(0));
         m_currentContext = m_mrcDataModels.size() - 1;
-        //ui->mrcFileCBox->insertItem(0,QIcon(),);
-        ui->mrcFileCBox->addItem(name,m_currentContext);
+		//m_mrcFileCBox->insertItem(m_mrcDataModels.size(),name, m_currentContext);
+        m_mrcFileCBox->addItem(name,m_currentContext);
         //m_imageView->setPixmap(QPixmap::fromImage(m_mrcs.back().getSlice(0)));
     }
 
@@ -72,44 +67,47 @@ void MainWindow::_addMRCDataModel(MRCDataModel && model)
 
 void MainWindow::_setMRCDataModel(int index)
 {
-	ui->sliceSlider->setEnabled(true);
-	ui->scaleSpinBox->setEnabled(true);
-	ui->minGraySlider->setEnabled(true);
-	ui->minGraySpinBox->setEnabled(true);
-	ui->maxGraySlider->setEnabled(true);
-	ui->maxGraySpinBox->setEnabled(true);
-	ui->scaleSlider->setEnabled(true);
-	ui->scaleSpinBox->setEnabled(true);
+	m_sliceSlider->setEnabled(true);
+	m_sliceSpinBox->setEnabled(true);
+
+	m_sliceSlider->setEnabled(true);
+	m_zoomSpinBox->setEnabled(true);
+	m_histMaxSlider->setEnabled(true);
+	m_histMaxSpinBox->setEnabled(true);
+	m_histMinSlider->setEnabled(true);
+	m_histMinSpinBox->setEnabled(true);
+	m_zoomSlider->setEnabled(true);
+	m_zoomSpinBox->setEnabled(true);
 
 	const MRCDataModel & model = m_mrcDataModels[index];
 
-	ui->sliceSlider->setMaximum(model.getSliceCount()-1);
-	ui->sliceSlider->setMinimum(0);
-	ui->sliceSlider->setValue(model.getCurrentSlice());
+	m_sliceSlider->setMaximum(model.getSliceCount()-1);
+	m_sliceSlider->setMinimum(0);
+	m_sliceSlider->setValue(model.getCurrentSlice());
 
-	ui->sliceSpinBox->setMaximum(model.getSliceCount()-1);
-	ui->sliceSpinBox->setMinimum(0);
-	ui->sliceSpinBox->setValue(model.getCurrentSlice());
+	m_sliceSpinBox->setMaximum(model.getSliceCount()-1);
+	m_sliceSpinBox->setMinimum(0);
+	m_sliceSpinBox->setValue(model.getCurrentSlice());
 
 	/*Max Gray Slider and SpinBox*/
-	ui->minGraySlider->setMinimum(model.getMinGrayscale());
-	ui->minGraySlider->setMaximum(model.getMaxGrayscale());
-	ui->minGraySlider->setValue(model.getGrayscaleStrechingLowerBound());
-	ui->minGraySpinBox->setMinimum(model.getMinGrayscale());
-	ui->minGraySpinBox->setMaximum(model.getMaxGrayscale());
-	ui->minGraySpinBox->setValue(model.getGrayscaleStrechingLowerBound());
+	m_histMinSlider->setMinimum(model.getMinGrayscale());
+	m_histMinSlider->setMaximum(model.getMaxGrayscale());
+	m_histMinSlider->setValue(model.getGrayscaleStrechingLowerBound());
+	m_histMinSlider->setMinimum(model.getMinGrayscale());
+	m_histMinSlider->setMaximum(model.getMaxGrayscale());
+	m_histMinSlider->setValue(model.getGrayscaleStrechingLowerBound());
 
 	/*Min Gray Slider and SpinBox*/
-	ui->maxGraySlider->setMinimum(model.getMinGrayscale());
-	ui->maxGraySlider->setMaximum(model.getMaxGrayscale());
-	ui->maxGraySlider->setValue(model.getGrayscaleStrechingUpperBound());
-	ui->maxGraySpinBox->setMinimum(model.getMinGrayscale());
-	ui->maxGraySpinBox->setMaximum(model.getMaxGrayscale());
-	ui->maxGraySpinBox->setValue(model.getGrayscaleStrechingUpperBound());
+	m_histMaxSlider->setMinimum(model.getMinGrayscale());
+	m_histMaxSlider->setMaximum(model.getMaxGrayscale());
+	m_histMaxSlider->setValue(model.getGrayscaleStrechingUpperBound());
+	m_histMaxSpinBox->setMinimum(model.getMinGrayscale());
+	m_histMaxSpinBox->setMaximum(model.getMaxGrayscale());
+	m_histMaxSpinBox->setValue(model.getGrayscaleStrechingUpperBound());
 
 	/*Scale Slider and SpinBox*/
-	ui->scaleSlider->setValue(model.getZoomFactor());
-	ui->scaleSlider->setMinimum(0);
+	m_zoomSlider->setValue(model.getZoomFactor());
+	m_zoomSlider->setMinimum(0);
 
 	const QImage & image = model.getSlice(model.getCurrentSlice());
 	/*Histogram*/
@@ -126,9 +124,9 @@ void MainWindow::_setMRCDataModel(int index)
 void MainWindow::_saveMRCDataModel()
 {
 	MRCDataModel & model = m_mrcDataModels[m_currentContext];
-	model.setCurrentSlice(ui->sliceSlider->value());
-	model.setGrayscaleStrechingLowerBound(ui->minGraySlider->value());
-	model.setGrayScaleStrechingUpperBound(ui->maxGraySlider->value());
+	model.setCurrentSlice(m_sliceSlider->value());
+	model.setGrayscaleStrechingLowerBound(m_histMinSlider->value());
+	model.setGrayScaleStrechingUpperBound(m_histMaxSlider->value());
 }
 
 void MainWindow::_createMRCContext(const MRC &mrc)
@@ -169,64 +167,64 @@ void MainWindow::_createMRCContext(MRC && mrc)
 void MainWindow::_setMRCContext(int index)
 {
 
-    ui->sliceSlider->setEnabled(true);
-    ui->scaleSpinBox->setEnabled(true);
-    ui->minGraySlider->setEnabled(true);
-    ui->minGraySpinBox->setEnabled(true);
-    ui->maxGraySlider->setEnabled(true);
-    ui->maxGraySpinBox->setEnabled(true);
-    ui->scaleSlider->setEnabled(true);
-    ui->scaleSpinBox->setEnabled(true);
+ //   ui->sliceSlider->setEnabled(true);
+ //   ui->scaleSpinBox->setEnabled(true);
+ //   ui->minGraySlider->setEnabled(true);
+ //   ui->minGraySpinBox->setEnabled(true);
+ //   ui->maxGraySlider->setEnabled(true);
+ //   ui->maxGraySpinBox->setEnabled(true);
+ //   ui->scaleSlider->setEnabled(true);
+ //   ui->scaleSpinBox->setEnabled(true);
 
-    const MRCContext CTX = m_mrcs[index];
+ //   const MRCContext CTX = m_mrcs[index];
 
-    //other settings
-    //ui->horizontalSlider->setMaximum(m_mrcs[index].maxSlice);
-    /*Min Gray Slider and SpinBox*/
-    ui->sliceSlider->setMaximum(CTX.maxSlice);
-    ui->sliceSlider->setMinimum(CTX.minSlice);
-    ui->sliceSlider->setValue(CTX.currentSlice);
+ //   //other settings
+ //   //ui->horizontalSlider->setMaximum(m_mrcs[index].maxSlice);
+ //   /*Min Gray Slider and SpinBox*/
+ //   ui->sliceSlider->setMaximum(CTX.maxSlice);
+ //   ui->sliceSlider->setMinimum(CTX.minSlice);
+ //   ui->sliceSlider->setValue(CTX.currentSlice);
 
-    ui->sliceSpinBox->setMaximum(CTX.maxSlice);
-    ui->sliceSpinBox->setMinimum(CTX.minSlice);
-    ui->sliceSpinBox->setValue(CTX.currentSlice);
+ //   ui->sliceSpinBox->setMaximum(CTX.maxSlice);
+ //   ui->sliceSpinBox->setMinimum(CTX.minSlice);
+ //   ui->sliceSpinBox->setValue(CTX.currentSlice);
 
-    /*Max Gray Slider and SpinBox*/
-    ui->minGraySlider->setMinimum(0);
-    ui->minGraySlider->setMaximum(255);
-    ui->minGraySlider->setValue(CTX.currentMinGray);
-    ui->minGraySpinBox->setMinimum(0);
-    ui->minGraySpinBox->setMaximum(255);
-    ui->minGraySpinBox->setValue(CTX.currentMinGray);
+ //   /*Max Gray Slider and SpinBox*/
+ //   ui->minGraySlider->setMinimum(0);
+ //   ui->minGraySlider->setMaximum(255);
+ //   ui->minGraySlider->setValue(CTX.currentMinGray);
+ //   ui->minGraySpinBox->setMinimum(0);
+ //   ui->minGraySpinBox->setMaximum(255);
+ //   ui->minGraySpinBox->setValue(CTX.currentMinGray);
 
-    /*Min Gray Slider and SpinBox*/
-    ui->maxGraySlider->setMinimum(0);
-    ui->maxGraySlider->setMaximum(255);
-    ui->maxGraySlider->setValue(CTX.currentMaxGray);
-    ui->maxGraySpinBox->setMinimum(0);
-    ui->maxGraySpinBox->setMaximum(255);
-    ui->maxGraySpinBox->setValue(CTX.currentMaxGray);
+ //   /*Min Gray Slider and SpinBox*/
+ //   ui->maxGraySlider->setMinimum(0);
+ //   ui->maxGraySlider->setMaximum(255);
+ //   ui->maxGraySlider->setValue(CTX.currentMaxGray);
+ //   ui->maxGraySpinBox->setMinimum(0);
+ //   ui->maxGraySpinBox->setMaximum(255);
+ //   ui->maxGraySpinBox->setValue(CTX.currentMaxGray);
 
-    /*Scale Slider and SpinBox*/
-    ui->scaleSlider->setValue(CTX.currentScale);
-    ui->scaleSlider->setMinimum(0);
+ //   /*Scale Slider and SpinBox*/
+ //   ui->scaleSlider->setValue(CTX.currentScale);
+ //   ui->scaleSlider->setMinimum(0);
 
-    /*Histogram*/
-    m_histogramViewer->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
+ //   /*Histogram*/
+ //   m_histogramViewer->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
 
-	/*ZoomViwer*/
-	m_zoomViewer->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
+	///*ZoomViwer*/
+	//m_zoomViewer->setImage(CTX.mrcFile.getSlice(CTX.currentSlice));
 
-    m_currentContext = index;
+ //   m_currentContext = index;
 
 }
 
 void MainWindow::_saveMRCContext()
 {
     MRCContext & CTX = m_mrcs[m_currentContext];
-    CTX.currentSlice = ui->sliceSlider->value();
-    CTX.currentMinGray = ui->minGraySlider->value();
-    CTX.currentMaxGray = ui->maxGraySlider->value();
+    CTX.currentSlice = m_sliceSlider->value();
+    CTX.currentMinGray = m_histMinSlider->value();
+    CTX.currentMaxGray = m_histMaxSlider->value();
     //CTX.currentScale = ui->scaleSlider->value();
 
 }
@@ -236,7 +234,7 @@ void MainWindow::_updateGrayThreshold(int lower, int upper)
     size_t width = m_mrcDataModels[m_currentContext].getWidth();
     size_t height = m_mrcDataModels[m_currentContext].getHeight();
     //qDebug()<<"W & H of the image:"<<width<<" "<<height;
-	QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalSlice(ui->sliceSlider->value());
+	QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalSlice(m_sliceSlider->value());
 	unsigned char *image = originalImage.bits();
 
 	qreal k = 256.0 / (upper - lower);
@@ -260,7 +258,7 @@ void MainWindow::_updateGrayThreshold(int lower, int upper)
         }
     }
 	//m_sliceViewer->setImage(strechingImage);
-	m_mrcDataModels[m_currentContext].setSlice(strechingImage,ui->sliceSlider->value());
+	m_mrcDataModels[m_currentContext].setSlice(strechingImage,m_sliceSlider->value());
 	
 }
 
@@ -272,24 +270,101 @@ void MainWindow::_updateGrayThreshold(int lower, int upper)
 //    //m_imageLabel->setPixmap(m_image);
 //}
 
-void MainWindow::_init()
+void MainWindow::_initUI()
 {
-	m_sliceViewer = new SliceViewer(this);
-    //m_imageLabel =  new QLabel(this);
-    //m_imageLabel->setScaledContents(true);
-    QHBoxLayout * layout = new QHBoxLayout(this);
-    layout->addWidget(m_sliceViewer);
-    ui->leftGroupBox->setLayout(layout);
-    m_currentContext = -1;
 
-    ui->sliceSlider->setEnabled(false);
-    ui->scaleSpinBox->setEnabled(false);
-    ui->minGraySlider->setEnabled(false);
-    ui->minGraySpinBox->setEnabled(false);
-    ui->maxGraySlider->setEnabled(false);
-    ui->maxGraySpinBox->setEnabled(false);
-    ui->scaleSlider->setEnabled(false);
-    ui->scaleSpinBox->setEnabled(false);
+	QVBoxLayout * leftMainLayout = new QVBoxLayout(this);
+	//MRCFile Combox
+	m_mrcFileLabel = new QLabel(this);
+	m_mrcFileLabel->setText(QStringLiteral("MrcFiles:"));
+	m_mrcFileCBox = new QComboBox(this);
+
+	QHBoxLayout * hLayout = new QHBoxLayout(this);
+	hLayout->addWidget(m_mrcFileLabel);
+	hLayout->addWidget(m_mrcFileCBox);
+	ui->leftVLayout->addLayout(hLayout);
+
+
+	//SliceViewer
+	m_sliceViewer = new SliceViewer(this);
+    QVBoxLayout * sliceViewerLayout = new QVBoxLayout(this);
+	
+	hLayout = new QHBoxLayout(this);
+	m_sliceLabel = new QLabel(this);
+	m_sliceLabel->setText(QStringLiteral("Slice:"));
+	hLayout->addWidget(m_sliceLabel);
+
+	m_sliceSlider = new QSlider(Qt::Horizontal, this);
+	m_sliceSlider->setEnabled(false);
+	hLayout->addWidget(m_sliceSlider);
+
+	m_sliceSpinBox = new QSpinBox(this);
+	m_sliceSpinBox->setEnabled(false);
+	hLayout->addWidget(m_sliceSpinBox);
+
+    sliceViewerLayout->addWidget(m_sliceViewer);		//add slice viewer
+	leftMainLayout->addLayout(hLayout);
+	leftMainLayout->addLayout(sliceViewerLayout);
+    ui->leftGroupBox->setLayout(leftMainLayout);
+
+	//Histgram
+	m_histogramViewer = new Histogram(this);
+	ui->leftVLayout->addWidget(m_histogramViewer);
+	m_histMinLabel = new QLabel(this);
+	m_histMinLabel->setText(QStringLiteral("Min:"));
+	m_histMinSlider = new QSlider(Qt::Horizontal, this);
+	m_histMinSlider->setEnabled(false);
+	m_histMinSpinBox = new QSpinBox(this);
+	m_histMinSpinBox->setEnabled(false);
+	hLayout = new QHBoxLayout(this);
+	hLayout->addWidget(m_histMinLabel);
+	hLayout->addWidget(m_histMinSlider);
+	hLayout->addWidget(m_histMinSpinBox);
+	ui->leftVLayout->addLayout(hLayout);
+	m_histMaxLabel = new QLabel(this);
+	m_histMaxLabel->setText(QStringLiteral("Max:"));
+	m_histMaxSlider = new QSlider(Qt::Horizontal, this);
+	m_histMaxSlider->setEnabled(false);
+	m_histMaxSpinBox = new QSpinBox(this);
+	m_histMaxSpinBox->setEnabled(false);
+	hLayout = new QHBoxLayout(this);
+	hLayout->addWidget(m_histMaxLabel);
+	hLayout->addWidget(m_histMaxSlider);
+	hLayout->addWidget(m_histMaxSpinBox);
+	ui->leftVLayout->addLayout(hLayout);
+
+	//ZoomViewer
+	m_zoomViewer = new ZoomViwer(this);
+	ui->leftVLayout->addWidget(m_zoomViewer);
+	m_zoomLabel = new QLabel(this);
+	m_zoomLabel->setText(QStringLiteral("Zoom:"));
+	m_zoomSlider = new QSlider(Qt::Horizontal, this);
+	m_zoomSpinBox = new QDoubleSpinBox(this);
+	m_zoomSpinBox->setEnabled(false);
+	hLayout = new QHBoxLayout(this);
+	hLayout->addWidget(m_zoomLabel);
+	hLayout->addWidget(m_zoomSlider);
+	hLayout->addWidget(m_zoomSpinBox);
+	ui->leftVLayout->addLayout(hLayout);
+
+    m_sliceSlider->setEnabled(false);
+    m_zoomSpinBox->setEnabled(false);
+    m_histMinSlider->setEnabled(false);
+    m_histMinSpinBox->setEnabled(false);
+    m_histMaxSlider->setEnabled(false);
+    m_histMaxSpinBox->setEnabled(false);
+    m_zoomSlider->setEnabled(false);
+    m_zoomSpinBox->setEnabled(false);
+
+    m_currentContext = -1;
+}
+
+void MainWindow::_connection()
+{
+	connect(m_zoomViewer, SIGNAL(zoomRegionChanged(QRectF)), this, SLOT(onZoomRegionChanged(QRectF)));
+	connect(m_sliceSlider, SIGNAL(valueChanged(int)), this, SLOT(on_sliceSlider_valueChanged(int)));
+	connect(m_histMinSlider, SIGNAL(sliderMoved(int)), this, SLOT(on_minGraySlider_sliderMoved(int)));
+	connect(m_histMaxSlider, SIGNAL(sliderMoved(int)), this, SLOT(on_maxGraySlider_sliderMoved(int)));
 }
 
 void MainWindow::_destroy()
@@ -308,40 +383,44 @@ void MainWindow::on_sliceSlider_sliderMoved(int position)
 
 void MainWindow::on_maxGraySlider_sliderMoved(int position)
 {
-	if (position < ui->minGraySlider->value()) {
-		ui->minGraySlider->setValue(position);
-		ui->minGraySpinBox->setValue(position);
+	if (position <m_histMinSlider->value()) {
+		m_histMinSlider->setValue(position);
+		m_histMinSpinBox->setValue(position);
 		m_histogramViewer->setMinimumValue(position);
 	}
-	ui->maxGraySlider->setValue(position);
-	ui->maxGraySpinBox->setValue(position);
+	m_histMaxSlider->setValue(position);
+	m_histMaxSpinBox->setValue(position);
 	m_histogramViewer->setMaximumValue(position);
-	_updateGrayThreshold(ui->minGraySlider->value(), ui->maxGraySlider->value());
-	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(ui->sliceSlider->value()));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(ui->sliceSlider->value()));
+	int maxValue = m_histMaxSlider->value();
+	int minValue = m_histMinSlider->value();
+	_updateGrayThreshold(minValue,maxValue);
+	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
+	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
 }
 
 void MainWindow::on_minGraySlider_sliderMoved(int position)
 {
-    if(position > ui->maxGraySlider->value()){
-        ui->maxGraySlider->setValue(position);
-        ui->maxGraySpinBox->setValue(position);
+    if(position > m_histMaxSlider->value()){
+		m_histMaxSlider->setValue(position);
+        m_histMaxSpinBox->setValue(position);
 		m_histogramViewer->setMaximumValue(position);
     }
-    ui->minGraySlider->setValue(position);
-    ui->minGraySpinBox->setValue(position);
+	m_histMinSlider->setValue(position);
+	m_histMinSpinBox->setValue(position);
 	m_histogramViewer->setMinimumValue(position);
-    _updateGrayThreshold(ui->minGraySlider->value(),ui->maxGraySlider->value());
-	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(ui->sliceSlider->value()));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(ui->sliceSlider->value()));;
+	int maxValue = m_histMaxSlider->value();
+	int minValue = m_histMinSlider->value();
+    _updateGrayThreshold(minValue,maxValue);
+	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
+	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
 }
 
 void MainWindow::on_sliceSlider_valueChanged(int value)
 {
-    if(value>= ui->sliceSlider->maximum())
+    if(value>= m_sliceSlider->maximum())
         return;
-    ui->sliceSlider->setValue(value);
-    ui->sliceSpinBox->setValue(value);
+	m_sliceSlider->setValue(value);
+    m_sliceSpinBox->setValue(value);
 	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
     //_displayImage(imageSize);
     m_histogramViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
@@ -350,7 +429,7 @@ void MainWindow::on_sliceSlider_valueChanged(int value)
 
 void MainWindow::onZoomRegionChanged(QRectF region)
 {
-	int slice = ui->sliceSlider->value();
+	int slice = m_sliceSlider->value();
 	//m_mrcs[m_currentContext].images[slice]= QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(slice).copy(QRect(region.x(),region.y(),region.width(),region.height())));
 	//_displayImage(imageSize);
 	QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);

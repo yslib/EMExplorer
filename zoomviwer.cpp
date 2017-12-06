@@ -10,6 +10,8 @@ m_zoomFactor{1.0},
 m_minZoomFactor{0.1},
 m_imageRect{}
 {
+
+
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	setMinimumSize(WIDTH, HEIGHT);
 	resize(WIDTH, HEIGHT);
@@ -70,6 +72,11 @@ void ZoomViwer::setMinZoomFactor(qreal minFactor)
 	else if (minFactor > 1.0)
 		minFactor = 1.0;
 	else m_minZoomFactor = minFactor;
+}
+
+ZoomViwer::~ZoomViwer()
+{
+
 }
 
 void ZoomViwer::paintEvent(QPaintEvent *event)

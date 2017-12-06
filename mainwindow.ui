@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1030</width>
-    <height>577</height>
+    <width>1105</width>
+    <height>877</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -39,108 +39,6 @@
          <string>Properties</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <layout class="QVBoxLayout" name="leftVLayout">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="2,8">
-             <item>
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>MrcFile:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="mrcFileCBox"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Slice:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="sliceSlider">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="sliceSpinBox"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>MaxValue:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="maxGraySlider">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="maxGraySpinBox"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>MinValue:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="minGraySlider">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="minGraySpinBox"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QLabel" name="label_4">
-               <property name="text">
-                <string>Scale:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="scaleSlider">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="scaleSpinBox"/>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
          <item row="1" column="0">
           <widget class="QTextEdit" name="textEdit">
            <property name="readOnly">
@@ -150,6 +48,9 @@
             <bool>true</bool>
            </property>
           </widget>
+         </item>
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="leftVLayout"/>
          </item>
         </layout>
        </widget>
@@ -163,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1030</width>
+     <width>1105</width>
      <height>22</height>
     </rect>
    </property>
