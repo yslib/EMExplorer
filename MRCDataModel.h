@@ -72,13 +72,14 @@ public:
 
 	bool openMarks(const QString & fileName);
 	bool saveMarks(const QString & fileName);
-	QString getMRCInfo()const { return m_mrcFile.getMRCInfo(); };
+    QString getMRCInfo()const { return m_mrcFile.getMRCInfo();}
 	QImage getSlice(int index)const;
 	void setSlice(const QImage & image, int index);
 	QVector<QImage> getSlices()const;
-	void setMark(QPicture & mark, int index);
+    void setMark(const QPicture & mark, int index);
+    void addMark(int slice,const QPicture& mark);
 	QPicture getMark(int index)const;
-	QVector<QPicture> getMarks()const;
+    QVector<QPicture> getMarks(int slice)const;
 
 private:
 	struct MRCContext {
@@ -105,8 +106,7 @@ private:
 private:
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
-
-	QVector<QPicture> m_marks;
+    QVector<QVector<QPicture>> m_marks;
 	QVector<QImage> m_modified;
 	QVector<bool> m_modifiedFlags;
 };

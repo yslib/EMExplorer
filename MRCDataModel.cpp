@@ -93,22 +93,22 @@ QVector<QImage> MRCDataModel::getSlices() const
 	return imgVec;
 }
 
-void MRCDataModel::setMark(QPicture& mark, int index)
+void MRCDataModel::setMark(const QPicture& mark, int index)
 {
-	//if (m_marks.size() != m_mrcFile.getSliceCount())return;
-	m_marks[index] = mark;
 
-	qDebug() << "Set Mark:" << mark.size() << m_marks[index].size() << index;
+}
+
+void MRCDataModel::addMark(int slice, const QPicture &mark)
+{
+   m_marks[slice].push_back(mark);
 }
 
 QPicture MRCDataModel::getMark(int index)const
 {
 
-	qDebug() << "Get mark:" <<m_marks[index].isNull()<< m_marks.size() << m_marks[index].size() << index;
-	return m_marks[index];
 }
 
-QVector<QPicture> MRCDataModel::getMarks() const
+QVector<QPicture> MRCDataModel::getMarks(int slice) const
 {
-	return m_marks;
+    return m_marks[slice];
 }

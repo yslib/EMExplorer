@@ -24,11 +24,18 @@ void SliceViewer::setImage(const QImage & image,const QRect & rect ) {
 
 void SliceViewer::setMark(const QPicture & mark)
 {
-	m_mark = mark;
+    m_mark = mark;
 	qDebug() << m_mark.size();
 	qDebug() << "Mark Setted\n";
 	update();
-	updateGeometry();
+    updateGeometry();
+}
+
+void SliceViewer::setMarks(const QVector<QPicture> &marks)
+{
+    m_marks= marks;
+    update();
+    updateGeometry();
 }
 
 void SliceViewer::setGrayscaleStrechingLowerBound(int value)
@@ -40,24 +47,13 @@ void SliceViewer::setGrayscaleStrechingUpperBound(int value)
 }
 void SliceViewer::paintEvent(QPaintEvent *event) {
 	QImage canvas = m_image;
-	QPainter canvasPainter(&canvas);
-	qDebug() << "In paintEvent:" << m_mark.size();
-	qDebug() << "Is Null:" << m_mark.isNull();
-	canvasPainter.drawPicture(0, 0, m_mark);
-	canvasPainter.end();
-
-	///////////////////////////////////////////////////////
-	QPainter p1(&m_mark);
-	p1.drawRect(0, 0, 50, 505);
-	p1.end();
-	//////
-
-	QPainter painter(this);
+    for(const QPicture & pic:m_marks){
+        QPainter canvasPainter(&canvas);
+        canvasPainter.drawPicture(0, 0, pic);
+    }
+    QPainter painter(this);
 	painter.drawImage(0, 0, canvas.copy(m_imageRect).scaled(size()));
-	painter.setPen(QColor(255,0,0));
-	painter.drawPicture(40,40,m_mark);
 	painter.end();
-	qDebug() << "Painted\n";
 }
 
 void SliceViewer::mousePressEvent(QMouseEvent * event)

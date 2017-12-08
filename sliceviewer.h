@@ -7,6 +7,7 @@
 #include <QMouseEvent>
 #include <QPicture>
 #include <QDebug>
+#include <QVector>
 
 class SliceViewer :public QWidget
 {
@@ -16,7 +17,7 @@ public:
 	SliceViewer(QWidget * parent, const QImage & image,const QRect & rect = QRect());
 	void setImage(const QImage & image,const QRect & rect = QRect());
 	void setMark(const QPicture & mark);
-	
+    void setMarks(const QVector<QPicture> & marks);
 
 	void originalSize(bool original = false) { m_originalSize = original; }
 	void setGrayscaleStrechingLowerBound(int value);
@@ -41,6 +42,7 @@ private:
 	QColor m_color;
 	QImage m_image;
 	QPicture m_mark;
+    QVector<QPicture> m_marks;
 	QRect m_imageRect;
 };
 #endif // !SLICEVIEWER_H_

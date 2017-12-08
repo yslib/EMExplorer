@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "testinfodialog.h"
 #include <QPen>
+#include <QRect>
 
 QSize imageSize(500,500);
 
@@ -470,31 +471,19 @@ void MainWindow::onZoomRegionChanged(QRectF region)
 
 void MainWindow::onSliceViewerDrawing(const QPoint & point)
 {
-	qDebug() << "Point:" << point;
 	int slice = m_sliceSlider->value();
-	QPicture mark = m_mrcDataModels[m_currentContext].getMark(slice);
-	QPicture a;
-	qDebug() << "a:" << a.size();
-
 	QPointF start = m_zoomViewer->zoomRegion().topLeft();
 	QPoint transformedPoint(point.x()+start.x(), point.y()+start.y());
-
-	qDebug() << "TransformedPoint:" << transformedPoint;
-	qDebug() << mark.size();
-	qDebug() << mark.isNull();
-	QColor color = m_sliceViewer->getMarkColor();
-
-	QPainter painter(&mark);
-	painter.setPen(color);
-	QPen pen;
-	pen.setWidth(5);
-	painter.setPen(pen);
-	painter.drawPoint(transformedPoint);
-	painter.drawEllipse(transformedPoint, 50, 50);
-	painter.end();
-	m_mrcDataModels[m_currentContext].setMark(mark,slice);
-	m_sliceViewer->setMark(mark);
-	
+    QColor color = m_sliceViewer->getMarkColor();
+    QPicture mark;
+    QPainter p(&mark);
+    QPen pen;
+    pen.setWidth(5);
+    p.setPen(pen);
+    p.drawPoint(transformedPoint);
+    p.end();
+    m_mrcDataModels[m_currentContext].addMark(slice,mark);
+    m_sliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(slice));
 }
 
 void MainWindow::onColorActionTriggered()
