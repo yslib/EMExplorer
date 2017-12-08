@@ -15,6 +15,8 @@
 #include <QLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QAction>
+#include <QColorDialog>
 #include "testinfodialog.h"
 #include "mrc.h"
 #include "histogram.h"
@@ -55,6 +57,8 @@ private slots:
     void on_minGraySlider_sliderMoved(int position);
     void on_sliceSlider_valueChanged(int value);
 	void onZoomRegionChanged(QRectF region);
+	void onSliceViewerDrawing(const QPoint & point);
+	void onColorActionTriggered();
 private:
     Ui::MainWindow *ui;
     int m_currentContext;
@@ -83,6 +87,9 @@ private:		//ui
 	QLabel * m_zoomLabel;
 	QSlider * m_zoomSlider;
 	QDoubleSpinBox * m_zoomSpinBox;
+
+	//actions
+	QAction * actionColor;
 
 
 private:

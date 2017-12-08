@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
+#include <QPicture>
 #include <QImage>
 #include <QPair>
 #include <QRectF>
@@ -75,9 +76,9 @@ public:
 	QImage getSlice(int index)const;
 	void setSlice(const QImage & image, int index);
 	QVector<QImage> getSlices()const;
-	void setMark(const QImage & image, int index);
-	QImage getMark(int index);
-	QVector<QImage> getMarks()const;
+	void setMark(QPicture & mark, int index);
+	QPicture getMark(int index)const;
+	QVector<QPicture> getMarks()const;
 
 private:
 	struct MRCContext {
@@ -105,7 +106,7 @@ private:
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
 
-	QVector<QImage> m_marks;
+	QVector<QPicture> m_marks;
 	QVector<QImage> m_modified;
 	QVector<bool> m_modifiedFlags;
 };

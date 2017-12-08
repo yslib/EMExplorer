@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "testinfodialog.h"
-
+#include <QPen>
 
 QSize imageSize(500,500);
 
@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     _initUI();
 	_connection();
+
 }
 MainWindow::~MainWindow()
 {
@@ -356,6 +357,19 @@ void MainWindow::_initUI()
     m_zoomSlider->setEnabled(false);
     m_zoomSpinBox->setEnabled(false);
 
+	//ToolBar and Actions
+	actionColor = new QAction(this);
+	actionColor->setText(QStringLiteral("Color"));
+	ui->mainToolBar->addAction(actionColor);
+	connect(actionColor, SIGNAL(triggered(bool)), this, SLOT(onColorActionTriggered()));
+
+
+	QAction * actionMark = new QAction(this);
+	actionMark->setText(QStringLiteral("Mark"));
+	actionMark->setCheckable(true);
+	ui->mainToolBar->addAction(actionMark);
+	connect(actionMark, SIGNAL(triggered(bool)), m_sliceViewer, SLOT(paintEnable(bool)));
+
     m_currentContext = -1;
 }
 
@@ -365,6 +379,7 @@ void MainWindow::_connection()
 	connect(m_sliceSlider, SIGNAL(valueChanged(int)), this, SLOT(on_sliceSlider_valueChanged(int)));
 	connect(m_histMinSlider, SIGNAL(sliderMoved(int)), this, SLOT(on_minGraySlider_sliderMoved(int)));
 	connect(m_histMaxSlider, SIGNAL(sliderMoved(int)), this, SLOT(on_maxGraySlider_sliderMoved(int)));
+	connect(m_sliceViewer, SIGNAL(onDrawing(const QPoint &)), this, SLOT(onSliceViewerDrawing(const QPoint &)));
 }
 
 void MainWindow::_destroy()
@@ -434,5 +449,57 @@ void MainWindow::onZoomRegionChanged(QRectF region)
 	//_displayImage(imageSize);
 	QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);
 	QRect reg(region.x(), region.y(), region.width(), region.height());
-	m_sliceViewer->setImage(image.copy(reg));
+
+	QPicture pic;
+	QPainter painter(&pic);
+	painter.setPen(m_sliceViewer->getMarkColor());
+	QPen pen;
+	pen.setWidth(5);
+	painter.setPen(pen);
+	painter.drawEllipse(500, 500, 500, 500);
+	painter.drawPoint(500, 500);
+	painter.drawRect(0, 0, 500, 500);
+	painter.end();
+
+	QPainter p2(&image);
+	p2.drawPicture(0, 0, pic);
+	//p2.drawRect(0, 0, 500, 500);
+	p2.end();
+	m_sliceViewer->setImage(image,reg);
+}
+
+void MainWindow::onSliceViewerDrawing(const QPoint & point)
+{
+	qDebug() << "Point:" << point;
+	int slice = m_sliceSlider->value();
+	QPicture mark = m_mrcDataModels[m_currentContext].getMark(slice);
+	QPicture a;
+	qDebug() << "a:" << a.size();
+
+	QPointF start = m_zoomViewer->zoomRegion().topLeft();
+	QPoint transformedPoint(point.x()+start.x(), point.y()+start.y());
+
+	qDebug() << "TransformedPoint:" << transformedPoint;
+	qDebug() << mark.size();
+	qDebug() << mark.isNull();
+	QColor color = m_sliceViewer->getMarkColor();
+
+	QPainter painter(&mark);
+	painter.setPen(color);
+	QPen pen;
+	pen.setWidth(5);
+	painter.setPen(pen);
+	painter.drawPoint(transformedPoint);
+	painter.drawEllipse(transformedPoint, 50, 50);
+	painter.end();
+	m_mrcDataModels[m_currentContext].setMark(mark,slice);
+	m_sliceViewer->setMark(mark);
+	
+}
+
+void MainWindow::onColorActionTriggered()
+{
+	qDebug() << "ColorActionTriggered";
+	QColor color = QColorDialog::getColor(Qt::white, this, QStringLiteral("Color Selection"));
+	m_sliceViewer->setMarkColor(color);
 }

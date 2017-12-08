@@ -1,11 +1,17 @@
 #include "MRCDataModel.h"
 #include <qdebug.h>
-MRCDataModel::MRCDataModel() :m_mrcContext{}
+MRCDataModel::MRCDataModel() :
+	m_mrcContext{},
+	m_modified{},
+	m_modifiedFlags{},
+	m_marks{}
 {
 }
 MRCDataModel::MRCDataModel(const QString & fileName):MRCDataModel()
 {
 	open(fileName);
+	if(m_mrcFile.isOpened() == true)
+		m_marks.resize(m_mrcFile.getSliceCount());
 }
 
 MRCDataModel::~MRCDataModel()
@@ -35,17 +41,23 @@ bool MRCDataModel::open(const QString & fileName)
 	m_mrcContext.currentSlice = 0;
 	m_modified.resize(m_mrcFile.getSliceCount());
 	m_modifiedFlags = QVector<bool>(m_mrcFile.getSliceCount(), false);
+	//m_marks.resize(m_mrcFile.getSliceCount());
 	return true;
 }
 
 bool MRCDataModel::openMarks(const QString & fileName)
 {
-	return false;
+	if (m_mrcFile.isOpened() == false)
+		return false;
+	//TODO:
+
+	return true;
 }
 
 bool MRCDataModel::saveMarks(const QString & fileName)
 {
-	return false;
+
+	return true;
 }
 
 QImage MRCDataModel::getSlice(int index) const
@@ -69,7 +81,6 @@ void MRCDataModel::setSlice(const QImage & image, int index)
 	//memcpy(m_mrcFile.data(), image.bits(), width*height * sizeof(unsigned char));
 	m_modifiedFlags[index] = true;
 	m_modified[index] = image;
-	qDebug() << "setSlice " << index;
 }
 
 QVector<QImage> MRCDataModel::getSlices() const
@@ -82,21 +93,22 @@ QVector<QImage> MRCDataModel::getSlices() const
 	return imgVec;
 }
 
-void MRCDataModel::setMark(const QImage & image, int index)
+void MRCDataModel::setMark(QPicture& mark, int index)
 {
-	if (m_marks.size() == 0)return;
-	m_marks[index] = image.copy(QRect());
+	//if (m_marks.size() != m_mrcFile.getSliceCount())return;
+	m_marks[index] = mark;
+
+	qDebug() << "Set Mark:" << mark.size() << m_marks[index].size() << index;
 }
 
-QImage MRCDataModel::getMark(int index)
+QPicture MRCDataModel::getMark(int index)const
 {
-	if (m_marks.size() == 0) {
-		return QImage();
-	}
+
+	qDebug() << "Get mark:" <<m_marks[index].isNull()<< m_marks.size() << m_marks[index].size() << index;
 	return m_marks[index];
 }
 
-QVector<QImage> MRCDataModel::getMarks() const
+QVector<QPicture> MRCDataModel::getMarks() const
 {
 	return m_marks;
 }
