@@ -1,4 +1,5 @@
 #include "MRCDataModel.h"
+#include <QPainter>
 #include <qdebug.h>
 MRCDataModel::MRCDataModel() :
 	m_mrcContext{},
@@ -6,6 +7,7 @@ MRCDataModel::MRCDataModel() :
 	m_modifiedFlags{},
 	m_marks{}
 {
+
 }
 MRCDataModel::MRCDataModel(const QString & fileName):MRCDataModel()
 {
@@ -41,7 +43,6 @@ bool MRCDataModel::open(const QString & fileName)
 	m_mrcContext.currentSlice = 0;
 	m_modified.resize(m_mrcFile.getSliceCount());
 	m_modifiedFlags = QVector<bool>(m_mrcFile.getSliceCount(), false);
-	//m_marks.resize(m_mrcFile.getSliceCount());
 	return true;
 }
 
@@ -54,9 +55,23 @@ bool MRCDataModel::openMarks(const QString & fileName)
 	return true;
 }
 
-bool MRCDataModel::saveMarks(const QString & fileName)
+bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 {
+	QVector<QImage> images;
+	for (int i = 0; i < m_marks.size();i++) {
+		images.push_back(QImage(getWidth(),getHeight(),
+			QImage::Format_Grayscale8));
+		for (auto & pic : m_marks[i]) {
+			QPainter p(&images[i]);
+			p.drawPicture(0,0,pic);
+		}
+	}
+	if (format == MarkFormat::MRC) {
+		//TODO:
+	}
+	else if(format == MarkFormat::RAW) {
 
+	}
 	return true;
 }
 

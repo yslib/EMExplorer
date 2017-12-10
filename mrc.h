@@ -2,6 +2,7 @@
 #define MRC_H
 #include <cstdio>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -108,32 +109,7 @@
 
 class MRC
 {
-public:     //Type Definition
 
-public:
-    MRC();
-    explicit MRC(const std::string & fileName);
-
-    MRC(const MRC & rhs);
-    MRC(MRC && rhs);
-    MRC& operator=(const MRC & rhs);
-    MRC& operator=(MRC && rhs);
-public:
-
-    bool open(const std::string & fileName);
-    bool save(const std::string & fileName);
-    bool isOpened()const;
-
-    int getWidth()const;           //first dimension
-    int getHeight()const;          //second dimension
-    int getSliceCount()const;          //third dimension
-    const unsigned char * data()const;
-    unsigned char * data();
-
-    std::string getMRCInfo()const;
-
-
-    virtual ~MRC();
 private:
     using MRCInt32 = int;
     using MRCFloat = float;
@@ -297,6 +273,31 @@ private:
 //      char *userData;
     };
 
+public:     //Type Definition
+		enum class Format { MRC, RAW };
+public:
+	MRC();
+	explicit MRC(const std::string & fileName);
+	MRC(unsigned char * data, int width,int height,int slice);
+	MRC(const MRC & rhs);
+	MRC(MRC && rhs);
+	MRC& operator=(const MRC & rhs);
+	MRC& operator=(MRC && rhs);
+public:
+	static MRC fromData(unsigned char * data, int width, int height, int slice);
+	bool open(const std::string & fileName);
+	bool save(const std::string & fileName, MRC::Format format = Format::MRC);
+	bool isOpened()const;
+
+	int getWidth()const;           //first dimension
+	int getHeight()const;          //second dimension
+	int getSliceCount()const;          //third dimension
+	const unsigned char * data()const;
+	unsigned char * data();
+	std::string getMRCInfo()const;
+	//some mrc header settings
+
+	virtual ~MRC();
 private:            //variance
     std::string m_fileName;
 
@@ -313,8 +314,9 @@ private:
 
 
     bool _mrcHeaderRead(FILE *fp,MRCHeader * header);
-    const unsigned char * _getData(size_t start)const;
-    int _setData(size_t start,unsigned char * data,size_t size);
+	bool _mrcHeaderWrite(FILE * fp, MRCHeader * header);
+	void _updateMRCHeader();
+
     std::string _getMRCHeaderInfo(const MRCHeader *header)const;
     bool _readDataFromFile(FILE * fp);
 

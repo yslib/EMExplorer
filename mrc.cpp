@@ -10,6 +10,14 @@ MRC::MRC(const std::string &fileName):MRC("",false)
     open(fileName);
 }
 
+MRC::MRC(unsigned char * data, int width, int height, int slice)
+{
+	_reset();
+	m_mrcData = data;
+	m_mrcDataSize = width*height*slice;
+
+}
+
 MRC::MRC(const MRC &rhs)
 {
     m_fileName = rhs.m_fileName;
@@ -57,6 +65,12 @@ MRC & MRC::operator=(MRC &&rhs)
     return *this;
 }
 
+MRC MRC::fromData(unsigned char * data, int width, int height, int slice)
+{
+
+	return MRC();
+}
+
 bool MRC::open(const std::string &fileName)
 {
     _reset();
@@ -81,10 +95,34 @@ bool MRC::open(const std::string &fileName)
     return m_opened;
 }
 
-bool MRC::save(const std::string & fileName)
+bool MRC::save(const std::string & fileName, MRC::Format format)
 {
-	//TODO:
-	return false;
+	FILE * fp = fopen(fileName.c_str(), "rb");
+	if (fp == false) {
+		std::cerr << "Cannot create file\n";
+		return false;
+	}
+	if (format == Format::MRC) {
+		_mrcHeaderWrite(fp, &m_header);
+		fseek(fp, MRC_HEADER_SIZE, SEEK_SET);
+		size_t count = fwrite(m_mrcData, sizeof(unsigned char), m_mrcDataSize, fp);
+		if (count != m_mrcDataSize) {
+			std::cerr << count << " of " << m_mrcDataSize << " Byte(s) have(has) been written\n";
+			fclose(fp);
+			return false;
+		}
+	}
+	else if (format == Format::RAW) {
+		rewind(fp);
+		size_t count = fwrite(m_mrcData, sizeof(unsigned char), m_mrcDataSize, fp);
+		if (count != m_mrcDataSize) {
+			std::cerr << count << " of " << m_mrcDataSize << " Byte(s) have(has) been written\n";
+			fclose(fp);
+			return false;
+		}
+	}
+	fclose(fp);
+	return true;
 }
 
 bool MRC::isOpened() const
@@ -176,6 +214,46 @@ bool MRC::_mrcHeaderRead(FILE * fp, MRCHeader *hd)
     memcpy(&hd->zorg,hdBuffer+ZORIGIN_OFFSET,sizeof(MRCFloat));
 
     return true;
+}
+
+bool MRC::_mrcHeaderWrite(FILE * fp, MRCHeader * hd)
+{
+	if (fp == nullptr)return false;
+	unsigned char hdBuffer[MRC_HEADER_SIZE];
+	memcpy(hdBuffer + NX_OFFSET, &hd->nx, sizeof(MRCInt32));
+	memcpy(hdBuffer + NY_OFFSET, &hd->ny,sizeof(MRCInt32));
+	memcpy(hdBuffer + NZ_OFFSET, &hd->nz,sizeof(MRCInt32));
+	memcpy(hdBuffer + MODE_OFFSET, &hd->mode,sizeof(MRCInt32));
+	memcpy(hdBuffer + NXSTART_OFFSET, &hd->nxstart, sizeof(MRCInt32));
+	memcpy(hdBuffer + NYSTART_OFFSET, &hd->nystart,  sizeof(MRCInt32));
+	memcpy(hdBuffer + NZSTART_OFFSET, &hd->nzstart, sizeof(MRCInt32));
+	memcpy(hdBuffer + MX_OFFSET, &hd->mx,  sizeof(MRCInt32));
+	memcpy(hdBuffer + MY_OFFSET, &hd->my,  sizeof(MRCInt32));
+	memcpy(hdBuffer + MZ_OFFSET, &hd->mz,  sizeof(MRCInt32));
+	memcpy(hdBuffer + XLEN_OFFSET, &hd->xlen, sizeof(MRCFloat));
+	memcpy(hdBuffer + YLEN_OFFSET, &hd->ylen,  sizeof(MRCFloat));
+	memcpy(hdBuffer + ZLEN_OFFSET, &hd->zlen,  sizeof(MRCFloat));
+	memcpy(hdBuffer + ALPHA_OFFSET, &hd->alpha,sizeof(MRCFloat));
+	memcpy(hdBuffer + BETA_OFFSET, &hd->beta, sizeof(MRCFloat));
+	memcpy(hdBuffer + GAMMA_OFFSET, &hd->gamma,sizeof(MRCFloat));
+	memcpy(hdBuffer + MAPC_OFFSET, &hd->mapc, sizeof(MRCInt32));
+	memcpy(hdBuffer + MAPR_OFFSET, &hd->mapr,  sizeof(MRCInt32));
+	memcpy(hdBuffer + MAPS_OFFSET, &hd->maps, sizeof(MRCInt32));
+	memcpy(hdBuffer + DMIN_OFFSET, &hd->dmin,  sizeof(MRCFloat));
+	memcpy(hdBuffer + DMAX_OFFSET, &hd->dmax, sizeof(MRCFloat));
+	memcpy(hdBuffer + DMEAN_OFFSET, &hd->dmean, sizeof(MRCFloat));
+	memcpy(hdBuffer + ISPG_OFFSET, &hd->ispg,sizeof(MRCInt32));
+	memcpy(hdBuffer + NSYMBT_OFFSET, &hd->nsymbt, sizeof(MRCInt32));
+
+	//memcpy(hd,hdBuffer,sizeof(24*4));
+	memcpy(hdBuffer + EXTTYP_OFFSET, &hd->extType,  sizeof(char) * 4);
+	memcpy(hdBuffer + NVERSION_OFFSET, &hd->nversion, sizeof(MRCInt32));
+	memcpy(hdBuffer + XORIGIN_OFFSET, &hd->xorg,sizeof(MRCFloat));
+	memcpy(hdBuffer + YORIGIN_OFFSET, &hd->yorg,  sizeof(MRCFloat));
+	memcpy(hdBuffer + ZORIGIN_OFFSET, &hd->zorg,sizeof(MRCFloat));
+	rewind(fp);
+	fwrite(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
+	return true;
 }
 
 std::string MRC::_getMRCHeaderInfo(const MRC::MRCHeader *header) const

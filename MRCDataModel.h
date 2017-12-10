@@ -34,6 +34,8 @@ class MRCDataModel //:public QObject
 {
 	//Q_OBJECT
 public:
+	enum class MarkFormat {MRC,RAW};
+public:
 	MRCDataModel();
 	explicit MRCDataModel(const QString & fileName);
 	//MRCDataModel(const MRCDataModel & model);
@@ -71,7 +73,7 @@ public:
 
 
 	bool openMarks(const QString & fileName);
-	bool saveMarks(const QString & fileName);
+	bool saveMarks(const QString & fileName,MarkFormat format = MarkFormat::MRC);
 	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.getMRCInfo().c_str())); }
 	QImage getSlice(int index)const;
 	void setSlice(const QImage & image, int index);
