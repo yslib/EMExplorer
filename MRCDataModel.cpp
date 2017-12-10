@@ -33,7 +33,7 @@ bool MRCDataModel::save(const QString & fileName)
 
 bool MRCDataModel::open(const QString & fileName)
 {
-	m_mrcFile.open(fileName);
+	m_mrcFile.open(fileName.toStdString());
 	m_mrcContext.valid = m_mrcFile.isOpened();
 	if (m_mrcFile.isOpened() == false) {
 		return false;
@@ -105,7 +105,7 @@ void MRCDataModel::addMark(int slice, const QPicture &mark)
 
 QPicture MRCDataModel::getMark(int index)const
 {
-
+	return QPicture();
 }
 
 QVector<QPicture> MRCDataModel::getMarks(int slice) const

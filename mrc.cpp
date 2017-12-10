@@ -5,7 +5,7 @@ MRC::MRC():MRC("",false)
     //Do Nothing
 }
 
-MRC::MRC(const QString &fileName):MRC("",false)
+MRC::MRC(const std::string &fileName):MRC("",false)
 {
     open(fileName);
 }
@@ -17,7 +17,6 @@ MRC::MRC(const MRC &rhs)
     _init();        //init property by header
     _allocate();    //allocate memory by header
     memcpy(m_mrcData,rhs.m_mrcData,m_mrcDataSize*sizeof(unsigned char));
-    m_slices = rhs.m_slices;
     m_opened = rhs.m_opened;
 }
 
@@ -29,8 +28,6 @@ MRC::MRC(MRC &&rhs)
     m_mrcData = std::move(rhs.m_mrcData);
     m_opened = rhs.m_opened;
     rhs.m_mrcData = nullptr;
-    m_slices = std::move(rhs.m_slices);
-    qDebug()<<"move constructor has been called\n";
 }
 
 MRC & MRC::operator=(const MRC &rhs)
@@ -43,7 +40,6 @@ MRC & MRC::operator=(const MRC &rhs)
     _init();
     _allocate();
     memcpy(m_mrcData,rhs.m_mrcData,m_mrcDataSize*sizeof(unsigned char));
-    m_slices = rhs.m_slices;
     m_opened = rhs.m_opened;
     return *this;
 }
@@ -51,23 +47,20 @@ MRC & MRC::operator=(const MRC &rhs)
 MRC & MRC::operator=(MRC &&rhs)
 {
     //if(this == &rhs)return *this;
-	qDebug() << "move assignment operator has been called\n";
     _reset();
     m_fileName = std::move(rhs.m_fileName);
     m_header = std::move(rhs.m_header);
     _init();
     m_mrcData = std::move(rhs.m_mrcData);
     rhs.m_mrcData=nullptr;
-    m_slices = std::move(rhs.m_slices);
     m_opened = rhs.m_opened;
     return *this;
 }
 
-bool MRC::open(const QString &fileName)
+bool MRC::open(const std::string &fileName)
 {
     _reset();
-    QByteArray cstr=fileName.toLatin1();
-    FILE * fp = fopen(cstr.data(),"rb");
+    FILE * fp = fopen(fileName.c_str(),"rb");
     if(fp != nullptr){
         bool noError = true;
         if(true == noError){
@@ -88,7 +81,7 @@ bool MRC::open(const QString &fileName)
     return m_opened;
 }
 
-bool MRC::save(const QString & fileName)
+bool MRC::save(const std::string & fileName)
 {
 	//TODO:
 	return false;
@@ -113,16 +106,6 @@ int MRC::getSliceCount() const
 {
     return m_header.nz;
 }
-
-
-QImage MRC::getSlice(int slice) const
-{
-    int width = getWidth();
-    int height = getHeight();
-    return QImage(m_mrcData+slice*width*height,width,height,QImage::Format_Grayscale8);
-}
-
-
 const unsigned char *MRC::data() const
 {
     return m_mrcData;
@@ -135,26 +118,10 @@ unsigned char *MRC::data()
                 );
 }
 
-QVector<QImage> MRC::getSlices() const
-{
-    QVector<QImage> imgVec;
-    int tot = getSliceCount();
-    for(int i=0;i<tot;i++){
-        imgVec.push_back(getSlice(i));
-    }
-    return imgVec;
-}
 
-bool MRC::setSlice(const QImage & image, int slice)
+std::string MRC::getMRCInfo()const
 {
-	return false;
-}
-
-QString MRC::getMRCInfo()const
-{
-    QString info = _getMRCHeaderInfo(&m_header).c_str();
-    //qDebug()<<info;
-    return info;
+	return _getMRCHeaderInfo(&m_header);
 }
 
 MRC::~MRC()
@@ -295,7 +262,7 @@ bool MRC::_readDataFromFile(FILE *fp)
 
 void MRC::_reset()
 {
-    m_fileName = QString();
+	m_fileName = "";
     _destroy();
     bool m_opened = false;
     m_mrcDataSize = 0;

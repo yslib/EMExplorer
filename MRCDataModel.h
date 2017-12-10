@@ -72,7 +72,7 @@ public:
 
 	bool openMarks(const QString & fileName);
 	bool saveMarks(const QString & fileName);
-    QString getMRCInfo()const { return m_mrcFile.getMRCInfo();}
+	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.getMRCInfo().c_str())); }
 	QImage getSlice(int index)const;
 	void setSlice(const QImage & image, int index);
 	QVector<QImage> getSlices()const;

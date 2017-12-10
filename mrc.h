@@ -1,13 +1,11 @@
 #ifndef MRC_H
 #define MRC_H
 #include <cstdio>
-#include <QString>
-#include <QImage>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <QDebug>
+
 
 
 /* END_CODE */
@@ -114,7 +112,7 @@ public:     //Type Definition
 
 public:
     MRC();
-    explicit MRC(const QString & fileName);
+    explicit MRC(const std::string & fileName);
 
     MRC(const MRC & rhs);
     MRC(MRC && rhs);
@@ -122,8 +120,8 @@ public:
     MRC& operator=(MRC && rhs);
 public:
 
-    bool open(const QString & fileName);
-    bool save(const QString & fileName);
+    bool open(const std::string & fileName);
+    bool save(const std::string & fileName);
     bool isOpened()const;
 
     int getWidth()const;           //first dimension
@@ -132,12 +130,8 @@ public:
     const unsigned char * data()const;
     unsigned char * data();
 
-	//FIXME:
-	//This class should not depends on qt module
-    QString getMRCInfo()const;
-    QImage getSlice(int slice)const;
-    QVector<QImage> getSlices()const;
-    bool setSlice(const QImage & image,int slice);
+    std::string getMRCInfo()const;
+
 
     virtual ~MRC();
 private:
@@ -304,7 +298,7 @@ private:
     };
 
 private:            //variance
-    QString m_fileName;
+    std::string m_fileName;
 
     MRCHeader m_header;
 
@@ -312,11 +306,10 @@ private:            //variance
 
     size_t m_mrcDataSize;
 
-    QVector<QImage> m_slices;
 
     bool m_opened;
 private:
-    MRC(const QString & fileName,bool opened):m_fileName(fileName),m_mrcData{nullptr},m_opened{opened},m_mrcDataSize{0}{}
+    MRC(const std::string & fileName,bool opened):m_fileName(fileName),m_mrcData{nullptr},m_opened{opened},m_mrcDataSize{0}{}
 
 
     bool _mrcHeaderRead(FILE *fp,MRCHeader * header);

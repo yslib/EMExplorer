@@ -57,7 +57,7 @@ private slots:
     void on_minGraySlider_sliderMoved(int position);
     void on_sliceSlider_valueChanged(int value);
 	void onZoomRegionChanged(QRectF region);
-	void onSliceViewerDrawing(const QPoint & point);
+	void onSliceViewerDrawingFinished(const QPicture & p);
 	void onColorActionTriggered();
 private:
     Ui::MainWindow *ui;

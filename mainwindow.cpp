@@ -380,7 +380,7 @@ void MainWindow::_connection()
 	connect(m_sliceSlider, SIGNAL(valueChanged(int)), this, SLOT(on_sliceSlider_valueChanged(int)));
 	connect(m_histMinSlider, SIGNAL(sliderMoved(int)), this, SLOT(on_minGraySlider_sliderMoved(int)));
 	connect(m_histMaxSlider, SIGNAL(sliderMoved(int)), this, SLOT(on_maxGraySlider_sliderMoved(int)));
-	connect(m_sliceViewer, SIGNAL(onDrawing(const QPoint &)), this, SLOT(onSliceViewerDrawing(const QPoint &)));
+	connect(m_sliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
 }
 
 void MainWindow::_destroy()
@@ -451,38 +451,28 @@ void MainWindow::onZoomRegionChanged(QRectF region)
 	QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);
 	QRect reg(region.x(), region.y(), region.width(), region.height());
 
-	QPicture pic;
-	QPainter painter(&pic);
-	painter.setPen(m_sliceViewer->getMarkColor());
-	QPen pen;
-	pen.setWidth(5);
-	painter.setPen(pen);
-	painter.drawEllipse(500, 500, 500, 500);
-	painter.drawPoint(500, 500);
-	painter.drawRect(0, 0, 500, 500);
-	painter.end();
+	//QPicture pic;
+	//QPainter painter(&pic);
+	//painter.setPen(m_sliceViewer->getMarkColor());
+	//QPen pen;
+	//pen.setWidth(5);
+	//painter.setPen(pen);
+	//painter.drawEllipse(500, 500, 500, 500);
+	//painter.drawPoint(500, 500);
+	//painter.drawRect(0, 0, 500, 500);
+	//painter.end();
 
-	QPainter p2(&image);
-	p2.drawPicture(0, 0, pic);
-	//p2.drawRect(0, 0, 500, 500);
-	p2.end();
+	//QPainter p2(&image);
+	//p2.drawPicture(0, 0, pic);
+	////p2.drawRect(0, 0, 500, 500);
+	//p2.end();
 	m_sliceViewer->setImage(image,reg);
 }
 
-void MainWindow::onSliceViewerDrawing(const QPoint & point)
+void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)
 {
 	int slice = m_sliceSlider->value();
-	QPointF start = m_zoomViewer->zoomRegion().topLeft();
-	QPoint transformedPoint(point.x()+start.x(), point.y()+start.y());
-    QColor color = m_sliceViewer->getMarkColor();
-    QPicture mark;
-    QPainter p(&mark);
-    QPen pen;
-    pen.setWidth(5);
-    p.setPen(pen);
-    p.drawPoint(transformedPoint);
-    p.end();
-    m_mrcDataModels[m_currentContext].addMark(slice,mark);
+    m_mrcDataModels[m_currentContext].addMark(slice,p);
     m_sliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(slice));
 }
 
