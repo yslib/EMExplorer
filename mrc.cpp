@@ -98,7 +98,7 @@ bool MRC::open(const std::string &fileName)
 bool MRC::save(const std::string & fileName, MRC::Format format)
 {
 	FILE * fp = fopen(fileName.c_str(), "rb");
-	if (fp == false) {
+    if (fp == nullptr) {
 		std::cerr << "Cannot create file\n";
 		return false;
 	}
