@@ -371,6 +371,11 @@ void MainWindow::_initUI()
 	ui->mainToolBar->addAction(actionMark);
 	connect(actionMark, SIGNAL(triggered(bool)), m_sliceViewer, SLOT(paintEnable(bool)));
 
+	QAction * actionSave = new QAction(this);
+	actionSave->setText(QStringLiteral("Save"));
+	ui->mainToolBar->addAction(actionSave);
+	connect(actionSave, SIGNAL(triggered()), this, SLOT(onSaveActionTriggered()));
+
     m_currentContext = -1;
 }
 
@@ -481,4 +486,26 @@ void MainWindow::onColorActionTriggered()
 	qDebug() << "ColorActionTriggered";
 	QColor color = QColorDialog::getColor(Qt::white, this, QStringLiteral("Color Selection"));
 	m_sliceViewer->setMarkColor(color);
+}
+
+void MainWindow::onSaveActionTriggered()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, QString("Mark Save"),
+		"", QString("Raw Files(*.raw)"));
+	if (fileName.isEmpty() == true)
+		return;
+	if (fileName.endsWith(QString(".raw")) == false) {
+		QMessageBox::critical(this,
+			QStringLiteral("Error"),
+			QStringLiteral("Only support .raw format now"),
+			QMessageBox::Ok, QMessageBox::Ok);
+		return;
+	}
+	bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName,MRCDataModel::MarkFormat::RAW);
+	if (ok == false) {
+		QMessageBox::critical(this,
+			QStringLiteral("Error"),
+			QStringLiteral("Can not open this marks"),
+			QMessageBox::Ok, QMessageBox::Ok);
+	}
 }

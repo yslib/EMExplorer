@@ -59,6 +59,7 @@ private slots:
 	void onZoomRegionChanged(QRectF region);
 	void onSliceViewerDrawingFinished(const QPicture & p);
 	void onColorActionTriggered();
+	void onSaveActionTriggered();
 private:
     Ui::MainWindow *ui;
     int m_currentContext;

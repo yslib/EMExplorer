@@ -107,9 +107,13 @@ private:
 	};
 private:
 	MRC m_mrcFile;
+
 	MRCContext m_mrcContext;
+
     QVector<QVector<QPicture>> m_marks;
+
 	QVector<QImage> m_modified;
+
 	QVector<bool> m_modifiedFlags;
 };
 #endif

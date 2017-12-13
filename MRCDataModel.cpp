@@ -30,6 +30,11 @@ QImage MRCDataModel::getOriginalSlice(int index) const
 
 bool MRCDataModel::save(const QString & fileName)
 {
+	//TODO:
+	/*This function need to check whether the data
+	* has been modified before saving
+	*/
+
 	return false;
 }
 
@@ -57,6 +62,9 @@ bool MRCDataModel::openMarks(const QString & fileName)
 
 bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 {
+	/*
+	*Transform the QPicture to images and save the pixel data
+	*/
 	QVector<QImage> images;
 	for (int i = 0; i < m_marks.size();i++) {
 		images.push_back(QImage(getWidth(),getHeight(),
@@ -68,10 +76,42 @@ bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 	}
 	if (format == MarkFormat::MRC) {
 		//TODO:
+		//Wait the save() member of MRC class to be implemented
+		//
+		std::cerr << __LINE__;
+		return false;
 	}
 	else if(format == MarkFormat::RAW) {
-
+		//Later,this need to be replace with Qt-style file IO
+		FILE * fp = fopen(fileName.toStdString().c_str(), "wb");
+		if (fp == nullptr){
+			std::cerr << __LINE__;
+			return false;
+		}
+		size_t totalCount = 0;
+		for (const QImage & image : images) {
+			int sizeOfWrite = fwrite(image.bits(),
+				sizeof(unsigned char),
+				image.width()*image.height(),
+				fp);
+			if (sizeOfWrite < image.width()*image.height()) {
+				std::cerr << __LINE__;
+				return false;
+			}
+			else {
+				totalCount += sizeOfWrite * sizeof(unsigned char);
+				fseek(fp, 0, SEEK_END);
+			}
+		}
+		size_t totalCountHasBeenWrite = ftell(fp);
+		fclose(fp);
+		//Check the size
+		if (totalCount != totalCountHasBeenWrite) {
+			std::cerr << __LINE__;
+			return false;
+		}
 	}
+
 	return true;
 }
 
