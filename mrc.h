@@ -107,6 +107,7 @@
 
 
 
+
 class MRC
 {
 
@@ -275,6 +276,7 @@ private:
 
 public:     //Type Definition
 		enum class Format { MRC, RAW };
+        enum class MRCDataDimensionType{SingleImage,ImageStack,SingleVolume,VolumeStack};
 public:
 	MRC();
 	explicit MRC(const std::string & fileName);
