@@ -8,6 +8,52 @@
 #include <vector>
 
 
+/*
+* http://www.sciencedirect.com/science/article/pii/S104784771500074X
+* The pdf above shows the details of the MRC 2014 format, and
+* explains what every field actually is in the MRC Header.It also 
+* talks about the concrete implements of MRC format in different popular softwares
+*
+*/
+
+/*
+*			NOTE:
+*			For the sake of simplicity,so far, 
+*			this MRC class only support :
+*			float data type reading,char data type reading
+*			and the creating of char data type with single image,
+*			image stack,single volume and volume stack dimension type.
+*			For creating MRC fils, only few of fields in the header are 
+*			considered.
+*/
+
+/*CONSIDERED FIELD WHEN READING A MRC FILE:
+* nx
+* ny
+* nz
+* mode
+* 
+*/
+
+/*
+* CONSIDERED FIELD WHEN CREATING A MRC FILE:
+* nx: [0,+)
+* ny: [0,+)
+* nz: [0,+]
+* mode:0 for 8bit signed integer
+* mx: equal to nx
+* my: equal to ny
+* mz:
+* mapc,mapr,mapc are 1,2,3 respectively
+* dmin
+* dmax
+* dmean
+* ispg
+* nversion: year*10+version
+
+*/
+
+
 
 /* END_CODE */
 
@@ -78,12 +124,15 @@
 #define MX_OFFSET               28
 #define MY_OFFSET               32
 #define MZ_OFFSET               36
+/*The follwing three are CELLA in the MRC header description*/
 #define XLEN_OFFSET             40
 #define YLEN_OFFSET             44
 #define ZLEN_OFFSET             48
+/*The follwing three are CELLB in the MRC header description*/
 #define ALPHA_OFFSET            52
 #define BETA_OFFSET             56
 #define GAMMA_OFFSET            60
+
 #define MAPC_OFFSET             64
 #define MAPR_OFFSET             68
 #define MAPS_OFFSET             72
@@ -106,6 +155,7 @@
 #define LABEL_OFFSET            224
 
 
+#define MRC_VERSION_FIELD(year,verion) ((year*10)+version)
 
 
 class MRC
@@ -276,15 +326,31 @@ private:
 
 public:     //Type Definition
 		enum class Format { MRC, RAW };
-        enum class MRCDataDimensionType{SingleImage,ImageStack,SingleVolume,VolumeStack};
+
+		enum class ImageDimensionType {SingleImage,ImageStack};
+		enum class VolumeDimensionType {SingleVolume,VolumeStack};
+		enum class DataType {Byte8,Integer16,Integer32,Real32,Complex16,Complex32};
+
 public:
 	MRC();
 	explicit MRC(const std::string & fileName);
-	MRC(unsigned char * data, int width,int height,int slice);
+	MRC(void * data, 
+		int width,
+		int height,
+		int slice,ImageDimensionType DimensionType,DataType dataType = MRC::DataType::Byte8);
+	MRC(void * data, 
+		int width, 
+		int height, 
+		int volumeZ,
+		int volumeCount,
+		VolumeDimensionType DimensionType,
+		DataType dataType = MRC::DataType::Byte8);
+
+
 	MRC(const MRC & rhs);
-	MRC(MRC && rhs);
+	MRC(MRC && rhs)noexcept;
 	MRC& operator=(const MRC & rhs);
-	MRC& operator=(MRC && rhs);
+	MRC& operator=(MRC && rhs)noexcept;
 public:
 	static MRC fromData(unsigned char * data, int width, int height, int slice);
 	bool open(const std::string & fileName);
@@ -299,7 +365,7 @@ public:
 	std::string getMRCInfo()const;
 	//some mrc header settings
 
-	virtual ~MRC();
+	virtual ~MRC()noexcept;
 private:            //variance
     std::string m_fileName;
 
@@ -308,15 +374,17 @@ private:            //variance
     unsigned char *m_mrcData;
 
     size_t m_mrcDataSize;
-
-
     bool m_opened;
 private:
     MRC(const std::string & fileName,bool opened):m_fileName(fileName),m_mrcData{nullptr},m_opened{opened},m_mrcDataSize{0}{}
 
 
+	void _nversion_Field(int year, int version = 0);	
+	void _dmin_dmax_dmean_rms_Field();
+
     bool _mrcHeaderRead(FILE *fp,MRCHeader * header);
 	bool _mrcHeaderWrite(FILE * fp, MRCHeader * header);
+	void _createMRCHeader();
 	void _updateMRCHeader();
 
     std::string _getMRCHeaderInfo(const MRCHeader *header)const;

@@ -34,7 +34,8 @@ class MRCDataModel //:public QObject
 {
 	//Q_OBJECT
 public:
-	enum class MarkFormat {MRC,RAW};
+    enum class MarkFormat {MRC,RAW,mks};
+    enum class DataFormat{mrc,raw};
 public:
 	MRCDataModel();
 	explicit MRCDataModel(const QString & fileName);
@@ -66,7 +67,7 @@ public:
 	void setCurrentSlice(int slice) { m_mrcContext.currentSlice=slice; }
 	int getCurrentSlice()const { return m_mrcContext.currentSlice; }
 	int getSliceCount()const { return m_mrcFile.getSliceCount(); }
-	bool save(const QString & fileName);
+    bool save(const QString & fileName, MRCDataModel::DataFormat formate = MRCDataModel::DataFormat::mrc);
 	bool open(const QString & fileName);
 	bool isOpened()const { return isValid(); }
 

@@ -52,19 +52,24 @@ public:
 
 private slots:
     void on_actionOpen_triggered();
-    void on_sliceSlider_sliderMoved(int position);
-    void on_maxGraySlider_sliderMoved(int position);
-    void on_minGraySlider_sliderMoved(int position);
-    void on_sliceSlider_valueChanged(int value);
+    void onMaxGrayValueChanged(int position);
+    void onMinGrayValueChanged(int position);
+    void onSliceValueChanged(int value);
+    void onZoomValueChanged(int value);
+    void onZoomDoubleSpinBoxValueChanged(double d);
+
 	void onZoomRegionChanged(QRectF region);
 	void onSliceViewerDrawingFinished(const QPicture & p);
 	void onColorActionTriggered();
 	void onSaveActionTriggered();
+    void onSaveDataAsActionTriggered();
 private:
     Ui::MainWindow *ui;
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
 	QVector<MRCDataModel> m_mrcDataModels;
+private:
+    static constexpr int ZOOM_SLIDER_MAX_VALUE=100;
 private:		//ui
 
 	QLabel * m_mrcFileLabel;
@@ -98,14 +103,10 @@ private:
 	void _addMRCDataModel(MRCDataModel && model);
 	void _setMRCDataModel(int index);
 	void _saveMRCDataModel();
-    //void _initHistogram();
 
-    void _createMRCContext(const MRC & mrc);
-    void _createMRCContext(MRC && mrc);
-    void _setMRCContext(int index);
-    void _saveMRCContext();
+    void _allControlWidgetsEnable(bool enable);
+
     void _updateGrayThreshold(int minGray,int maxGray);
-    //void _displayImage(QSize size = QSize());
     void _initUI();
 	void _connection();
     void _destroy();

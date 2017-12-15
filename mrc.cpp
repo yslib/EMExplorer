@@ -10,12 +10,56 @@ MRC::MRC(const std::string &fileName):MRC("",false)
     open(fileName);
 }
 
-MRC::MRC(unsigned char * data, int width, int height, int slice)
+MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType DimensionType, DataType dataType)
 {
-	_reset();
-	m_mrcData = data;
-	m_mrcDataSize = width*height*slice;
 
+	//DataType
+	if (dataType != DataType::Byte8) {
+		//NOTICE: Only support byte type
+		exit(-1);
+	}
+	m_header.mode = MRC_MODE_BYTE;
+
+	//There is a critical fault to reference a outer raw pointer directly
+	//This is a ad hoc.
+	m_mrcData = static_cast<unsigned char*>(data);
+	m_mrcDataSize = width*height*slice;
+	m_header.nx = width;
+	m_header.ny = height;
+	m_header.nz = slice;
+	m_header.mx = width;
+	m_header.my = height;
+	m_header.mz = slice;
+	m_header.nxstart = 0;
+	m_header.nystart = 0;
+	m_header.nzstart = 0;
+	m_header.mapc = 1;
+	m_header.mapr = 2;
+	m_header.maps = 3;
+	m_header.ispg = 0;
+	m_header.nsymbt = 0;
+	m_header.xlen = 0;
+	m_header.ylen = 0;
+	m_header.zlen = 0;
+	m_header.alpha = 90;
+	m_header.beta = 90;
+	m_header.gamma = 90;
+
+	_dmin_dmax_dmean_rms_Field();
+	m_opened = true;
+
+}
+
+MRC::MRC(void * data, 
+	int width,
+	int height, 
+	int volumeZ, 
+	int volumeCount, 
+	VolumeDimensionType type, 
+	DataType dataType)
+{
+
+	exit(-1);
 }
 
 MRC::MRC(const MRC &rhs)
@@ -28,7 +72,7 @@ MRC::MRC(const MRC &rhs)
     m_opened = rhs.m_opened;
 }
 
-MRC::MRC(MRC &&rhs)
+MRC::MRC(MRC &&rhs)noexcept
 {
     m_fileName = std::move(rhs.m_fileName);
     m_header = std::move(rhs.m_header);
@@ -52,7 +96,7 @@ MRC & MRC::operator=(const MRC &rhs)
     return *this;
 }
 
-MRC & MRC::operator=(MRC &&rhs)
+MRC & MRC::operator=(MRC &&rhs)noexcept
 {
     //if(this == &rhs)return *this;
     _reset();
@@ -97,7 +141,7 @@ bool MRC::open(const std::string &fileName)
 
 bool MRC::save(const std::string & fileName, MRC::Format format)
 {
-	FILE * fp = fopen(fileName.c_str(), "rb");
+	FILE * fp = fopen(fileName.c_str(), "wb");
     if (fp == nullptr) {
 		std::cerr << "Cannot create file\n";
 		return false;
@@ -165,6 +209,20 @@ std::string MRC::getMRCInfo()const
 MRC::~MRC()
 {
     _destroy();
+}
+
+
+void MRC::_dmin_dmax_dmean_rms_Field()
+{
+	/*For efficency
+	*DMAX < DMIN indicates that minimum and maximum of density are not determined.
+	DMEAN < (smaller of DMIN and DMAX) indicates that mean value of the density is not determined.
+	RMS < 0 indicates that RMS deviation of map from mean is not determined.
+	*/
+	m_header.dmax = 0;
+	m_header.dmin = 1;
+	m_header.dmean = -1;
+	m_header.rms = -1;
 }
 
 //Only for byte and float data

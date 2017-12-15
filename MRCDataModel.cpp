@@ -28,7 +28,7 @@ QImage MRCDataModel::getOriginalSlice(int index) const
 	return QImage(m_mrcFile.data() + index*width*height, width, height, QImage::Format_Grayscale8);
 }
 
-bool MRCDataModel::save(const QString & fileName)
+bool MRCDataModel::save(const QString & fileName,MRCDataModel::DataFormat formate)
 {
 	//TODO:
 	/*This function need to check whether the data
@@ -65,21 +65,56 @@ bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 	/*
 	*Transform the QPicture to images and save the pixel data
 	*/
+
+
+	/*This function is really really a mess. */
+	bool empty = true;
 	QVector<QImage> images;
 	for (int i = 0; i < m_marks.size();i++) {
 		images.push_back(QImage(getWidth(),getHeight(),
 			QImage::Format_Grayscale8));
 		for (auto & pic : m_marks[i]) {
+			if (pic.isNull() == false) {
+				empty = false;
+			}
 			QPainter p(&images[i]);
 			p.drawPicture(0,0,pic);
 		}
+	}
+
+	if (empty == true) {
+		qDebug() << "Empty marks";
+		return false;
 	}
 	if (format == MarkFormat::MRC) {
 		//TODO:
 		//Wait the save() member of MRC class to be implemented
 		//
-		std::cerr << __LINE__;
-		return false;
+		int width = getWidth();
+		int height = getHeight();
+		int sliceCount = getSliceCount();
+		unsigned char * data = new unsigned char[m_marks.size()*getWidth()*getHeight()];
+		if (data == nullptr) {
+			qDebug() << "allocating faild";
+			std::cerr << __LINE__;
+			return false;
+		}
+		//Copy memory
+		//This is a overhead operation
+		for (int i = 0; i <images.size(); i++) {
+			memcpy(data+i*width*height, images[i].bits(), sizeof(unsigned char)*width*height);
+		}
+
+		MRC mrcMarks(data,getWidth(),getHeight(),getSliceCount(),
+			MRC::ImageDimensionType::ImageStack,
+			MRC::DataType::Byte8);
+		if (mrcMarks.isOpened() == false) {
+			qDebug() << "Cannot create mrc marks file";
+			std::cerr << __LINE__;
+			return false;
+		}
+		mrcMarks.save(fileName.toStdString(), MRC::Format::MRC);
+		//delete[] data;
 	}
 	else if(format == MarkFormat::RAW) {
 		//Later,this need to be replace with Qt-style file IO

@@ -10,8 +10,6 @@ m_zoomFactor{1.0},
 m_minZoomFactor{0.1},
 m_imageRect{}
 {
-
-
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	setMinimumSize(WIDTH, HEIGHT);
 	resize(WIDTH, HEIGHT);
@@ -23,6 +21,8 @@ void ZoomViwer::setImage(const QImage & image)
 	m_originalHeight = image.height();
 	m_thumbnail = image.scaled(size(),Qt::KeepAspectRatio);
 	m_zoomRect = QRectF(QPointF(0.0, 0.0), m_thumbnail.size());
+	m_zoomFactor = 1;
+	//emit zoomRegionChanged(m_zoomRect);
 	update();
 	updateGeometry();
 }
@@ -62,7 +62,13 @@ void ZoomViwer::setZoomFactor(qreal factor)
 		factor = 1.0;
 	else if (factor < m_minZoomFactor)
 		factor = m_minZoomFactor;
+
+
+    //Change m_zoomRect;
 	m_zoomRect.center();
+
+    update();
+    updateGeometry();
 }
 
 void ZoomViwer::setMinZoomFactor(qreal minFactor)
