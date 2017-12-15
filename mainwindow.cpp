@@ -443,9 +443,11 @@ void MainWindow::on_sliceSlider_valueChanged(int value)
 	m_sliceSlider->setValue(value);
     m_sliceSpinBox->setValue(value);
 	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+	m_sliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(value));
     //_displayImage(imageSize);
     m_histogramViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
 	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+
 }
 
 void MainWindow::onZoomRegionChanged(QRectF region)
@@ -491,21 +493,26 @@ void MainWindow::onColorActionTriggered()
 void MainWindow::onSaveActionTriggered()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, QString("Mark Save"),
-		"", QString("Raw Files(*.raw)"));
+		"", QString("Raw Files(*.raw);;MRC Files(*.mrc)"));
 	if (fileName.isEmpty() == true)
 		return;
-	if (fileName.endsWith(QString(".raw")) == false) {
-		QMessageBox::critical(this,
-			QStringLiteral("Error"),
-			QStringLiteral("Only support .raw format now"),
-			QMessageBox::Ok, QMessageBox::Ok);
-		return;
+	if (fileName.endsWith(QString(".raw")) == true) {
+		bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName,MRCDataModel::MarkFormat::RAW);
+		if (ok == false) {
+			QMessageBox::critical(this,
+				QStringLiteral("Error"),
+				QStringLiteral("Can not save this marks"),
+				QMessageBox::Ok, QMessageBox::Ok);
+		}
 	}
-	bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName,MRCDataModel::MarkFormat::RAW);
-	if (ok == false) {
-		QMessageBox::critical(this,
-			QStringLiteral("Error"),
-			QStringLiteral("Can not open this marks"),
-			QMessageBox::Ok, QMessageBox::Ok);
+	else if (fileName.endsWith(QString(".mrc")) == true) {
+			bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName,MRCDataModel::MarkFormat::MRC);
+		if (ok == false) {
+				QMessageBox::critical(this,
+					QStringLiteral("Error"),
+					QStringLiteral("Can not save this marks"),
+					QMessageBox::Ok, QMessageBox::Ok);
+		}
 	}
+
 }
