@@ -11,9 +11,15 @@ MRCDataModel::MRCDataModel() :
 }
 MRCDataModel::MRCDataModel(const QString & fileName):MRCDataModel()
 {
-	open(fileName);
+
+    bool opened = open(fileName);
+    if(opened == false)
+        return;
 	if(m_mrcFile.isOpened() == true)
 		m_marks.resize(m_mrcFile.getSliceCount());
+
+    /*Initialzed the zoom region in the context */
+    m_mrcContext.zoomRegion=QRect(0,0,m_mrcFile.getWidth(),m_mrcFile.getHeight());
 }
 
 MRCDataModel::~MRCDataModel()

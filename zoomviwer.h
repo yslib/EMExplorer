@@ -14,24 +14,33 @@ class ZoomViwer:public QWidget
 	Q_OBJECT
 public:
     ZoomViwer(QWidget* parent = nullptr);
-    void setImage(const QImage & image);
+    void setImage(const QImage & image,const QRect & region = QRect());
     void clearImage();
+
     QRectF zoomRegion()const;
+    void setZoomRegion(const QRect &region);
     QPointF zoomPosition()const;
+
 	void setZoomFactor(qreal factor);
 	qreal zoomFactor()const { return m_zoomFactor; }
+
 	void setMinZoomFactor(qreal minFactor);
 	qreal minZoomFactor()const { return m_minZoomFactor; }
+
 	virtual ~ZoomViwer();
 protected:
     void paintEvent(QPaintEvent *event)override;
     void mousePressEvent(QMouseEvent *event)override;
 	void wheelEvent(QWheelEvent *event)override;
-signals:
-	void zoomRegionChanged(QRectF region);
 private:
-	static const int WIDTH = 300;
-	static const int HEIGHT = 200;
+    void _setZoomRect(qreal factor,const QPointF &leftTopPos = QPointF());
+    QRectF _regionToRect(const QRect &region);
+signals:
+    void zoomRegionChanged(const QRectF & region);
+    void zoomFactorChanged(qreal factor);
+private:
+    static constexpr int WIDTH = 300;
+    static constexpr int HEIGHT = 200;
 		
 
 	qreal m_zoomFactor;

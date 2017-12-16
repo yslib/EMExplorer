@@ -52,17 +52,19 @@ public:
 
 private slots:
     void on_actionOpen_triggered();
+    void onMRCFilesComboBoxIndexChanged(int index);
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);
     void onSliceValueChanged(int value);
     void onZoomValueChanged(int value);
     void onZoomDoubleSpinBoxValueChanged(double d);
 
-	void onZoomRegionChanged(QRectF region);
+    void onZoomRegionChanged(const QRectF &region);
 	void onSliceViewerDrawingFinished(const QPicture & p);
 	void onColorActionTriggered();
 	void onSaveActionTriggered();
     void onSaveDataAsActionTriggered();
+
 private:
     Ui::MainWindow *ui;
     int m_currentContext;
@@ -103,6 +105,7 @@ private:
 	void _addMRCDataModel(MRCDataModel && model);
 	void _setMRCDataModel(int index);
 	void _saveMRCDataModel();
+    void _deleteMRCDataModel(int index);
 
     void _allControlWidgetsEnable(bool enable);
 

@@ -44,12 +44,24 @@ void MainWindow::on_actionOpen_triggered()
         QString headerInfo = mrcModel.getMRCInfo();
         ui->textEdit->setText(headerInfo);
         _addMRCDataModel(std::move(mrcModel));
-        _setMRCDataModel(m_mrcDataModels.size()-1);
-        m_mrcFileCBox->addItem(name,m_currentContext);
+        _saveMRCDataModel();
+        int newCurrentContext = m_mrcDataModels.size() - 1;
+        _setMRCDataModel(newCurrentContext);
+        m_mrcFileCBox->addItem(name,newCurrentContext);
     }
 
 }
 
+void MainWindow::onMRCFilesComboBoxIndexChanged(int index)
+{
+    QVariant userData = m_mrcFileCBox->currentData();
+    if(userData.canConvert(QVariant::Int) == false)
+        return;
+    int context = userData.toInt();
+
+    _saveMRCDataModel();
+    _setMRCDataModel(index);
+}
 
 void MainWindow::_addMRCDataModel(const MRCDataModel & model)
 {
@@ -68,6 +80,7 @@ void MainWindow::_addMRCDataModel(MRCDataModel && model)
 void MainWindow::_setMRCDataModel(int index)
 {
     m_currentContext = index;
+
     const MRCDataModel & model = m_mrcDataModels[m_currentContext];
 
     /*sliceSlider's*/
@@ -115,13 +128,14 @@ void MainWindow::_setMRCDataModel(int index)
 
     const QImage & image = model.getSlice(currentSliceIndex);
 	/*Histogram*/
-	m_histogramViewer->setImage(image);
+    QRect region = model.getZoomRegion();
+    m_histogramViewer->setImage(image);
 
 	/*ZoomViwer*/
-	m_zoomViewer->setImage(image);
+    m_zoomViewer->setImage(image,region);
 
     /*There should be a image scale region context to be restored*/
-    m_sliceViewer->setImage(image,QRect());
+    m_sliceViewer->setImage(image,region);
 
     /*Set all widgets enable*/
     _allControlWidgetsEnable(true);
@@ -130,10 +144,26 @@ void MainWindow::_setMRCDataModel(int index)
 
 void MainWindow::_saveMRCDataModel()
 {
+    if(m_currentContext == -1)
+        return;
+
+    //Save previous context
 	MRCDataModel & model = m_mrcDataModels[m_currentContext];
-	model.setCurrentSlice(m_sliceSlider->value());
+
+    int sliceIndex = m_sliceSlider->value();
+
+    model.setCurrentSlice(sliceIndex);
+
 	model.setGrayscaleStrechingLowerBound(m_histMinSlider->value());
 	model.setGrayScaleStrechingUpperBound(m_histMaxSlider->value());
+
+    model.setZoomFactor(m_zoomViewer->zoomFactor());
+    QRectF rectf = m_zoomViewer->zoomRegion();
+    model.setZoomRegion(QRect(rectf.top(),rectf.left(),rectf.width(),rectf.height()));
+}
+
+void MainWindow::_deleteMRCDataModel(int index)
+{
 
 }
 
@@ -267,6 +297,7 @@ void MainWindow::_initUI()
 	m_zoomSlider = new QSlider(Qt::Horizontal, this);
 	m_zoomSpinBox = new QDoubleSpinBox(this);
 	m_zoomSpinBox->setEnabled(false);
+    m_zoomSpinBox->setReadOnly(true);
 	hLayout = new QHBoxLayout(this);
 	hLayout->addWidget(m_zoomLabel);
 	hLayout->addWidget(m_zoomSlider);
@@ -308,12 +339,15 @@ void MainWindow::_initUI()
 
 /*
  * This function sets all the connections
- * between signal and slot except for the action's
+ * between signal and slot except for the actions'
 */
 void MainWindow::_connection()
 {
-	connect(m_zoomViewer, SIGNAL(zoomRegionChanged(QRectF)), this, SLOT(onZoomRegionChanged(QRectF)));
-    connect(m_zoomSpinBox,SIGNAL(valueChanged(double)),this,SLOT(onZoomDoubleSpinBoxValueChanged(double)));
+    connect(m_mrcFileCBox,SIGNAL(currentIndexChanged(int)),this,SLOT(onMRCFilesComboBoxIndexChanged(int)));
+
+
+    connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
+    //connect(m_zoomSpinBox,SIGNAL(valueChanged(double)),this,SLOT(onZoomDoubleSpinBoxValueChanged(double)));
     connect(m_zoomSlider,SIGNAL(sliderMoved(int)),this,SLOT(onZoomValueChanged(int)));
 
     connect(m_sliceSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliceValueChanged(int)));
@@ -395,9 +429,10 @@ void MainWindow::onZoomValueChanged(int value)
 void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
 {
     //onZoomValueChanged(d*ZOOM_SLIDER_MAX_VALUE);
+
 }
 
-void MainWindow::onZoomRegionChanged(QRectF region)
+void MainWindow::onZoomRegionChanged(const QRectF &region)
 {
 	int slice = m_sliceSlider->value();
 	//m_mrcs[m_currentContext].images[slice]= QPixmap::fromImage(m_mrcs[m_currentContext].mrcFile.getSlice(slice).copy(QRect(region.x(),region.y(),region.width(),region.height())));

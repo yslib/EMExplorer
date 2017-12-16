@@ -18,7 +18,7 @@ public:
 public:
 	SliceViewer(QWidget * parent = nullptr);
 	SliceViewer(QWidget * parent, const QImage & image,const QRect & rect = QRect());
-	void setImage(const QImage & image,const QRect & rect = QRect());
+    void setImage(const QImage & image,const QRect & region = QRect());
 	void addMark(const QPicture & mark);
     void setMarks(const QVector<QPicture> & marks);
 

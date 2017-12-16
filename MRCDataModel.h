@@ -15,7 +15,7 @@ class MRCDataBaseModel
 public:
 
 	MRCDataBaseModel();
-	explicit MRCDataBaseModel(const QString & fileName);
+    MRCDataBaseModel(const QString & fileName,int width,int height);
 	virtual ~MRCDataBaseModel();
 
 	int getWidth()const { return m_mrcFile.getWidth(); }
@@ -38,7 +38,7 @@ public:
     enum class DataFormat{mrc,raw};
 public:
 	MRCDataModel();
-	explicit MRCDataModel(const QString & fileName);
+    explicit MRCDataModel(const QString & fileName);
 	//MRCDataModel(const MRCDataModel & model);
 	//MRCDataModel(MRCDataModel && model);
 	//MRCDataModel & operator=(const MRCDataModel & model);
@@ -55,14 +55,21 @@ public:
 	int getGrayscaleStrechingUpperBound()const { return m_mrcContext.grayscaleStrechingUpperBound; }
 	int getGrayscaleLowerBound()const { return m_mrcContext.grayscaleLowerBound; }
 	int getGrayscaleUpperBound()const { return m_mrcContext.grayscaleUpperBound; }
+
 	int getMinGrayscale()const { return m_mrcContext.minGrayscale; }
 	int getMaxGrayscale()const { return m_mrcContext.maxGrayscale; }
+
 	int getWidth()const { return m_mrcFile.getWidth(); }
 	int getHeight()const { return m_mrcFile.getHeight(); }
+
 	QImage getOriginalSlice(int index)const;
 
 	void setZoomFactor(qreal factor) { m_mrcContext.zoomFactor = factor; }
 	qreal getZoomFactor()const { return m_mrcContext.zoomFactor; }
+
+    void setZoomRegion(QRect region){m_mrcContext.zoomRegion = region;}
+    QRect getZoomRegion()const{return m_mrcContext.zoomRegion;}
+
 	bool isValid()const { return m_mrcContext.valid;}
 	void setCurrentSlice(int slice) { m_mrcContext.currentSlice=slice; }
 	int getCurrentSlice()const { return m_mrcContext.currentSlice; }
@@ -93,7 +100,8 @@ private:
 			minGrayscale{ 0 },
 			maxGrayscale{ 255 },
 			currentSlice{ -1 },
-			zoomFactor{0.0},
+            zoomFactor{1.0},
+            zoomRegion{},
 			valid{ false } {}
 		int grayscaleLowerBound;
 		int grayscaleUpperBound;
@@ -103,7 +111,7 @@ private:
 		int maxGrayscale;
 		int currentSlice;
 		qreal zoomFactor;
-		QRectF zoomRect;
+        QRect zoomRegion;
 		bool valid;
 	};
 private:
