@@ -140,6 +140,7 @@ void MainWindow::_setMRCDataModel(int index)
     m_zoomViewer->setImage(image,region);
     /*There should be a image scale region context to be restored*/
     m_sliceViewer->setImage(image,region);
+	m_sliceViewer->setMarks(model.getMarks(currentSliceIndex));
 
     /*Set all widgets enable*/
     _allControlWidgetsEnable(true);
@@ -162,9 +163,9 @@ void MainWindow::_saveMRCDataModel()
 	model.setGrayscaleStrechingLowerBound(m_histMinSlider->value());
 	model.setGrayScaleStrechingUpperBound(m_histMaxSlider->value());
 
-    model.setZoomFactor(m_zoomViewer->zoomFactor());
+    //model.setZoomFactor(m_zoomViewer->zoomFactor());
     QRectF rectf = m_zoomViewer->zoomRegion();
-    model.setZoomRegion(QRect(rectf.top(),rectf.left(),rectf.width(),rectf.height()));
+    model.setZoomRegion(QRect(rectf.left(),rectf.top(),rectf.width(),rectf.height()));
 }
 
 void MainWindow::_deleteMRCDataModel(int index)
@@ -392,8 +393,10 @@ void MainWindow::onMaxGrayValueChanged(int position)
 	int maxValue = m_histMaxSlider->value();
 	int minValue = m_histMinSlider->value();
 	_updateGrayThreshold(minValue,maxValue);
-	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
+	QRect rect = m_zoomViewer->zoomRegion().toRect();
+	
+	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()),rect);
+	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()),rect);
 }
 
 void MainWindow::onMinGrayValueChanged(int position)
@@ -410,8 +413,9 @@ void MainWindow::onMinGrayValueChanged(int position)
 	int maxValue = m_histMaxSlider->value();
 	int minValue = m_histMinSlider->value();
     _updateGrayThreshold(minValue,maxValue);
-	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()));
+	QRect rect = m_zoomViewer->zoomRegion().toRect();
+	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()),rect);
+	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_sliceSlider->value()),rect);
 }
 
 void MainWindow::onSliceValueChanged(int value)

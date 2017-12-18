@@ -117,7 +117,7 @@ void SliceViewer::mouseReleaseEvent(QMouseEvent * event)
 				QPicture pic;
 				QPainter p(&pic);
 				p.setPen(m_pen);
-				p.drawPolyline(transformedCoords.constData(), transformedCoords.size());
+				p.drawPolygon(transformedCoords.constData(), transformedCoords.size());
 				m_points.clear();
 				update();
 				emit drawingFinished(pic);
