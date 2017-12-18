@@ -32,12 +32,13 @@ void ZoomViwer::setImage(const QImage & image, const QRect & region)
 
     if(region != QRect()){
         m_zoomRect = _regionToRect(region);
-        qreal k1 = static_cast<qreal>(m_originalWidth)/static_cast<qreal>(region.width());
-        qreal k2 = static_cast<qreal>(m_originalHeight)/static_cast<qreal>(region.height());
+        qreal k1 = static_cast<qreal>(region.width())/static_cast<qreal>(m_originalWidth);
+        qreal k2 = static_cast<qreal>(region.height())/static_cast<qreal>(m_originalHeight);
         m_zoomFactor = k1>k2?k2:k1;
     }
+    qDebug()<<"m_zoomRect in setImage(const QIMage &,const QRect &):"<<m_zoomRect;
 	qDebug() << "m_zoomFactor in setImage(const QImage&,const QRect &):" << m_zoomFactor;
-	emit zoomFactorChanged(m_zoomFactor);
+//	emit zoomFactorChanged(m_zoomFactor);
 	qDebug() << "m_zoomRegion in setImage(const QImage &,const QRect &):" << zoomRegion();
     emit zoomRegionChanged(zoomRegion());
 	update();
@@ -51,7 +52,7 @@ void ZoomViwer::clearImage()
 	m_originalWidth = 0;
 	m_thumbnail = QImage();
 	m_zoomFactor = 1.0;
-	emit zoomFactorChanged(m_zoomFactor);
+    //emit zoomFactorChanged(m_zoomFactor);
 	emit zoomRegionChanged(zoomRegion());
 	update();
 	updateGeometry();
@@ -85,21 +86,21 @@ QPointF ZoomViwer::zoomPosition() const
 	return QPointF(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
 }
 
-void ZoomViwer::setZoomFactor(qreal factor)
-{
-	if (factor > 1.0)
-		factor = 1.0;
-	else if (factor < m_minZoomFactor)
-        factor = m_minZoomFactor;
-    m_zoomFactor = factor;
-    emit zoomFactorChanged(m_zoomFactor);
+//void ZoomViwer::setZoomFactor(qreal factor)
+//{
+//	if (factor > 1.0)
+//		factor = 1.0;
+//	else if (factor < m_minZoomFactor)
+//        factor = m_minZoomFactor;
+//    m_zoomFactor = factor;
+//    emit zoomFactorChanged(m_zoomFactor);
 
-    /*set zoom rect*/
-    _setZoomRect(factor);
-    emit zoomRegionChanged(zoomRegion());
-    update();
-    updateGeometry();
-}
+//    /*set zoom rect*/
+//    _setZoomRect(factor);
+//    emit zoomRegionChanged(zoomRegion());
+//    update();
+//    updateGeometry();
+//}
 
 void ZoomViwer::setMinZoomFactor(qreal minFactor)
 {
@@ -112,7 +113,7 @@ void ZoomViwer::setMinZoomFactor(qreal minFactor)
      * update current factor to min zoom factor and repaint*/
     if(m_minZoomFactor >m_zoomFactor){
         m_zoomFactor = m_minZoomFactor;
-        emit zoomFactorChanged(m_zoomFactor);
+        //emit zoomFactorChanged(m_zoomFactor);
         _setZoomRect(m_zoomFactor);
         emit zoomRegionChanged(zoomRegion());
         update();
@@ -247,7 +248,7 @@ void ZoomViwer::wheelEvent(QWheelEvent * event)
 		m_zoomRect.setWidth(dx);
 		m_zoomRect.setHeight(dy);
 		update();
-        emit zoomFactorChanged(m_zoomFactor);
+        //emit zoomFactorChanged(m_zoomFactor);
 		emit zoomRegionChanged(zoomRegion());
     }
 }
@@ -271,14 +272,16 @@ QRectF ZoomViwer::_regionToRect(const QRect &region)
 
     qreal kWidth = (region.width())/static_cast<qreal>(m_originalWidth);
     qreal kHeight = (region.height())/static_cast<qreal>(m_originalHeight);
+    qreal kLeft = (region.left())/static_cast<qreal>(m_originalWidth);
+    qreal kTop = (region.top())/static_cast<qreal>(m_originalHeight);
     if(kWidth < m_minZoomFactor || kHeight <m_minZoomFactor){
         kWidth = m_minZoomFactor;
         kHeight = m_minZoomFactor;
     }
 
 	return QRectF(
-		QPointF(kWidth*m_zoomRect.left(), kHeight*m_zoomRect.top()),
-		QSizeF(kWidth*m_zoomRect.width(), kHeight*m_zoomRect.height())
+        QPointF(kLeft*m_imageRect.width(), kTop*m_imageRect.height()),
+        QSizeF(kWidth*m_imageRect.width(), kHeight*m_imageRect.height())
 	);
 }
 

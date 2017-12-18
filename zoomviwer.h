@@ -21,7 +21,7 @@ public:
     void setZoomRegion(const QRect &region);
     QPointF zoomPosition()const;
 
-	void setZoomFactor(qreal factor);
+    //void setZoomFactor(qreal factor);
 	qreal zoomFactor()const { return m_zoomFactor; }
 
 	void setMinZoomFactor(qreal minFactor);
@@ -37,7 +37,7 @@ private:
     QRectF _regionToRect(const QRect &region);
 signals:
     void zoomRegionChanged(const QRectF & region);
-    void zoomFactorChanged(qreal factor);
+    //void zoomFactorChanged(qreal factor);
 private:
     static constexpr int WIDTH = 300;
     static constexpr int HEIGHT = 200;

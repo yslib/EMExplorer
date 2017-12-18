@@ -56,7 +56,7 @@ private slots:
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);
     void onSliceValueChanged(int value);
-    void onZoomValueChanged(int value);
+    //void onZoomValueChanged(int value);
     void onZoomDoubleSpinBoxValueChanged(double d);
 
     void onZoomRegionChanged(const QRectF &region);

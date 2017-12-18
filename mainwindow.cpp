@@ -130,14 +130,14 @@ void MainWindow::_setMRCDataModel(int index)
     m_zoomSpinBox->setValue(zoomFactor);
 
     const QImage & image = model.getSlice(currentSliceIndex);
+
 	/*Histogram*/
+
     QRect region = model.getZoomRegion();
 	qDebug() << "region:" << region;
     m_histogramViewer->setImage(image);
-
 	/*ZoomViwer*/
     m_zoomViewer->setImage(image,region);
-
     /*There should be a image scale region context to be restored*/
     m_sliceViewer->setImage(image,region);
 
@@ -357,7 +357,7 @@ void MainWindow::_connection()
 
     connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
     //connect(m_zoomSpinBox,SIGNAL(valueChanged(double)),this,SLOT(onZoomDoubleSpinBoxValueChanged(double)));
-    connect(m_zoomSlider,SIGNAL(sliderMoved(int)),this,SLOT(onZoomValueChanged(int)));
+    //connect(m_zoomSlider,SIGNAL(sliderMoved(int)),this,SLOT(onZoomValueChanged(int)));
 
     connect(m_sliceSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliceValueChanged(int)));
     //connect(m_sliceSlider,SIGNAL(sliderMoved(int)),this,SLOT(onSliceValueChanged(int)));
@@ -432,13 +432,13 @@ void MainWindow::onSliceValueChanged(int value)
 
 }
 
-void MainWindow::onZoomValueChanged(int value)
-{
-    qreal zoomFactor = 1.0/static_cast<qreal>(ZOOM_SLIDER_MAX_VALUE)*value;
-    m_zoomSpinBox->setValue(zoomFactor);
-    //m_zoomSlider->setValue(value);
-    m_zoomViewer->setZoomFactor(zoomFactor);
-}
+//void MainWindow::onZoomValueChanged(int value)
+//{
+//    qreal zoomFactor = 1.0/static_cast<qreal>(ZOOM_SLIDER_MAX_VALUE)*value;
+//    m_zoomSpinBox->setValue(zoomFactor);
+//    //m_zoomSlider->setValue(value);
+//    m_zoomViewer->setZoomFactor(zoomFactor);
+//}
 
 void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
 {
@@ -447,14 +447,14 @@ void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
 
 void MainWindow::onZoomRegionChanged(const QRectF &region)
 {
-	int slice = m_sliceSlider->value();
+    int slice = m_sliceSlider->value();
 
-	QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);
-	QRect reg(region.x(), region.y(), region.width(), region.height());
+    QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);
+    QRect reg(region.x(), region.y(), region.width(), region.height());
 
-	m_mrcDataModels[m_currentContext].setZoomRegion(reg);
+    //m_mrcDataModels[m_currentContext].setZoomRegion(reg);
 
-	m_sliceViewer->setImage(image,reg);
+    m_sliceViewer->setImage(image,reg);
 }
 
 void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)
