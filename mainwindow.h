@@ -51,7 +51,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionOpen_triggered();
+    void onActionOpenTriggered();
     void onMRCFilesComboBoxIndexChanged(int index);
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);

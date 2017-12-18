@@ -21,7 +21,9 @@ SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & re
 }
 void SliceViewer::setImage(const QImage & image, const QRect & region ) {
 	m_canvas = QPixmap::fromImage(image.convertToFormat(QImage::Format_ARGB32));
-    m_imageRect = region;
+	if (region != QRect()) {
+		m_imageRect = region;
+	}
 	update();
 	updateGeometry();
 }

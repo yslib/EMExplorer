@@ -22,6 +22,48 @@ MRCDataModel::MRCDataModel(const QString & fileName):MRCDataModel()
     m_mrcContext.zoomRegion=QRect(0,0,m_mrcFile.getWidth(),m_mrcFile.getHeight());
 }
 
+MRCDataModel::MRCDataModel(const MRCDataModel & model)
+{
+	m_mrcFile = model.m_mrcFile;
+	m_mrcContext = model.m_mrcContext;
+	m_marks = model.m_marks;
+	m_modified = model.m_modified;
+	m_modifiedFlags = model.m_modifiedFlags;
+}
+
+MRCDataModel::MRCDataModel(MRCDataModel && model)
+{
+	m_mrcFile = std::move(model.m_mrcFile);
+	m_mrcContext = model.m_mrcContext;
+	m_marks = std::move(model.m_marks);
+	m_modified = std::move(model.m_modified);
+	m_modifiedFlags = std::move(model.m_modifiedFlags);
+}
+
+MRCDataModel & MRCDataModel::operator=(const MRCDataModel & model)
+{
+	// TODO: insert return statement here
+	if (this == &model)
+		return *this;
+	m_mrcFile = model.m_mrcFile;
+	m_mrcContext = model.m_mrcContext;
+	m_marks = model.m_marks;
+	m_modified = model.m_modified;
+	m_modifiedFlags = model.m_modifiedFlags;
+}
+
+MRCDataModel & MRCDataModel::operator=(MRCDataModel && model)
+{
+	if (this == &model)
+		return *this;
+	m_mrcFile = std::move(model.m_mrcFile);
+	m_mrcContext = model.m_mrcContext;
+	m_marks = std::move(model.m_marks);
+	m_modified = std::move(model.m_modified);
+	m_modifiedFlags = std::move(model.m_modifiedFlags);
+	// TODO: insert return statement here
+}
+
 MRCDataModel::~MRCDataModel()
 {
 
@@ -43,6 +85,11 @@ bool MRCDataModel::save(const QString & fileName,MRCDataModel::DataFormat format
 
 	return false;
 }
+
+/// \brief This function is to open specific mrc file
+/// \param fileName file name to open
+/// \return return true if success,or false
+/// \exception no exception will be throw in this function
 
 bool MRCDataModel::open(const QString & fileName)
 {

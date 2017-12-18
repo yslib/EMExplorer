@@ -5,6 +5,7 @@
 #include <QString>
 #include <QVector>
 #include <QPicture>
+#include <qDebug>
 #include <QImage>
 #include <QPair>
 #include <QRectF>
@@ -39,10 +40,10 @@ public:
 public:
 	MRCDataModel();
     explicit MRCDataModel(const QString & fileName);
-	//MRCDataModel(const MRCDataModel & model);
-	//MRCDataModel(MRCDataModel && model);
-	//MRCDataModel & operator=(const MRCDataModel & model);
-	//MRCDataModel & operator=(MRCDataModel && model);
+	explicit MRCDataModel(const MRCDataModel & model);
+	explicit MRCDataModel(MRCDataModel && model);
+	MRCDataModel & operator=(const MRCDataModel & model);
+	MRCDataModel & operator=(MRCDataModel && model);
 	virtual ~MRCDataModel();
 
 	void setGrayscaleStrechingLowerBound(int value) { m_mrcContext.grayscaleStrechingLowerBound = value; }
@@ -67,8 +68,8 @@ public:
 	void setZoomFactor(qreal factor) { m_mrcContext.zoomFactor = factor; }
 	qreal getZoomFactor()const { return m_mrcContext.zoomFactor; }
 
-    void setZoomRegion(QRect region){m_mrcContext.zoomRegion = region;}
-    QRect getZoomRegion()const{return m_mrcContext.zoomRegion;}
+	void setZoomRegion(QRect region) { m_mrcContext.zoomRegion = region; qDebug() << "setZoomRegion:"<<region; }
+	QRect getZoomRegion()const { qDebug() << "getZoomRegion:"<<m_mrcContext.zoomRegion; return m_mrcContext.zoomRegion;  }
 
 	bool isValid()const { return m_mrcContext.valid;}
 	void setCurrentSlice(int slice) { m_mrcContext.currentSlice=slice; }
