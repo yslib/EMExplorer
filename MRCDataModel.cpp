@@ -160,10 +160,10 @@ bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 			memcpy(data+i*width*height, images[i].bits(), sizeof(unsigned char)*width*height);
 		}
 
-		//MRC mrcMarks(data,getWidth(),getHeight(),getSliceCount(),
-		//	MRC::ImageDimensionType::ImageStack,
-		//	MRC::DataType::Byte8);
-		MRC mrcMarks = MRC::fromMRC(m_mrcFile, data);
+        MRC mrcMarks(data,getWidth(),getHeight(),getSliceCount(),
+            MRC::ImageDimensionType::ImageStack,
+            MRC::DataType::Byte8);
+        //MRC mrcMarks = MRC::fromMRC(m_mrcFile, data);
 		if (mrcMarks.isOpened() == false) {
 			qDebug() << "Cannot create mrc marks file";
 			std::cerr << __LINE__;
