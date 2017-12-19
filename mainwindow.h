@@ -52,7 +52,7 @@ public:
 
 private slots:
     void onActionOpenTriggered();
-    void onMRCFilesComboBoxIndexChanged(int index);
+    void onMRCFilesComboBoxIndexActivated(int index);
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);
     void onSliceValueChanged(int value);

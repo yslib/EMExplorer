@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    _initUI();
+	setWindowTitle(tr("MRC Editor"));
+	_initUI();
 	_connection();
 
 }
@@ -46,20 +47,33 @@ void MainWindow::onActionOpenTriggered()
         _addMRCDataModel(std::move(mrcModel));
         int newCurrentContext = m_mrcDataModels.size() - 1;
 
-		// This call will emit currentIndexChanged(int) 
-		// signal to setting context
-        m_mrcFileCBox->addItem(name,newCurrentContext);
+		m_mrcFileCBox->addItem(name, newCurrentContext);
+		if (m_mrcFileCBox->count() != 1) {
+			//If there have already been items we need to select the 
+			//newest item manually
+			m_mrcFileCBox->setCurrentIndex(m_mrcFileCBox->count() - 1);
+			_saveMRCDataModel();
+			_setMRCDataModel(newCurrentContext);
+		}
+		else {
+			///Do nothing
+			//If there was not item before, it will emit activated() signal
+			//after addItem()
+		}
+		qDebug() << "NewCurrentContextId:" << newCurrentContext;
     }
 
 }
 
-void MainWindow::onMRCFilesComboBoxIndexChanged(int index)
+void MainWindow::onMRCFilesComboBoxIndexActivated(int index)
 {
-    QVariant userData = m_mrcFileCBox->currentData();
+	//Find first item to change
+    QVariant userData = m_mrcFileCBox->itemData(index);
     if(userData.canConvert(QVariant::Int) == false)
         return;
     int context = userData.toInt();
-
+	qDebug() << m_mrcFileCBox->currentText();
+	qDebug() << "to:" << context << " Index:" << index << " " << m_mrcFileCBox->currentIndex();
     _saveMRCDataModel();
     _setMRCDataModel(context);
 }
@@ -162,10 +176,7 @@ void MainWindow::_saveMRCDataModel()
 
 	model.setGrayscaleStrechingLowerBound(m_histMinSlider->value());
 	model.setGrayScaleStrechingUpperBound(m_histMaxSlider->value());
-
-    //model.setZoomFactor(m_zoomViewer->zoomFactor());
-    QRectF rectf = m_zoomViewer->zoomRegion();
-    model.setZoomRegion(QRect(rectf.left(),rectf.top(),rectf.width(),rectf.height()));
+    model.setZoomRegion(m_zoomViewer->zoomRegion().toRect());
 }
 
 void MainWindow::_deleteMRCDataModel(int index)
@@ -202,7 +213,7 @@ void MainWindow::_updateGrayThreshold(int lower, int upper)
 	QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalSlice(m_sliceSlider->value());
 	unsigned char *image = originalImage.bits();
 
-	qreal k = 256.0 / (upper - lower);
+	qreal k = 256.0 / static_cast<qreal>(upper - lower);
 	QImage strechingImage(width, height, QImage::Format_Grayscale8);
 	unsigned char * data = strechingImage.bits();
     for(int j=0;j<height;j++){
@@ -218,7 +229,7 @@ void MainWindow::_updateGrayThreshold(int lower, int upper)
 				data[index] = 255;
 			}
 			else {
-				data[index] = static_cast<unsigned char>(pixelGrayValue* k);
+				data[index] = static_cast<unsigned char>(pixelGrayValue* k+0.5);
 			}
         }
     }
@@ -257,12 +268,13 @@ void MainWindow::_initUI()
 	hLayout->addWidget(m_sliceLabel);
 
 	m_sliceSlider = new QSlider(Qt::Horizontal, this);
-	m_sliceSlider->setTracking(false);
+	//m_sliceSlider->setTracking(false);
 	m_sliceSlider->setEnabled(false);
 	hLayout->addWidget(m_sliceSlider);
 
 	m_sliceSpinBox = new QSpinBox(this);
 	m_sliceSpinBox->setEnabled(false);
+	m_sliceSpinBox->setReadOnly(true);
 	hLayout->addWidget(m_sliceSpinBox);
 
     sliceViewerLayout->addWidget(m_sliceViewer);		//add slice viewer
@@ -277,9 +289,10 @@ void MainWindow::_initUI()
 	m_histMinLabel->setText(QStringLiteral("Min:"));
 	m_histMinSlider = new QSlider(Qt::Horizontal, this);
 	m_histMinSlider->setEnabled(false);
-	m_histMinSlider->setTracking(false);
+	//m_histMinSlider->setTracking(false);
 	m_histMinSpinBox = new QSpinBox(this);
 	m_histMinSpinBox->setEnabled(false);
+	m_histMinSpinBox->setReadOnly(true);
 	hLayout = new QHBoxLayout(this);
 	hLayout->addWidget(m_histMinLabel);
 	hLayout->addWidget(m_histMinSlider);
@@ -289,9 +302,10 @@ void MainWindow::_initUI()
 	m_histMaxLabel->setText(QStringLiteral("Max:"));
 	m_histMaxSlider = new QSlider(Qt::Horizontal, this);
 	m_histMaxSlider->setEnabled(false);
-	m_histMaxSlider->setTracking(false);
+	//m_histMaxSlider->setTracking(false);
 	m_histMaxSpinBox = new QSpinBox(this);
 	m_histMaxSpinBox->setEnabled(false);
+	m_histMaxSpinBox->setReadOnly(true);
 	hLayout = new QHBoxLayout(this);
 	hLayout->addWidget(m_histMaxLabel);
 	hLayout->addWidget(m_histMaxSlider);
@@ -354,22 +368,22 @@ void MainWindow::_connection()
 {
 
 	connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(onActionOpenTriggered()));
-    connect(m_mrcFileCBox,SIGNAL(currentIndexChanged(int)),this,SLOT(onMRCFilesComboBoxIndexChanged(int)));
+    connect(m_mrcFileCBox,SIGNAL(currentIndexChanged(int)),this,SLOT(onMRCFilesComboBoxIndexActivated(int)));
 
     connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
     //connect(m_zoomSpinBox,SIGNAL(valueChanged(double)),this,SLOT(onZoomDoubleSpinBoxValueChanged(double)));
     //connect(m_zoomSlider,SIGNAL(sliderMoved(int)),this,SLOT(onZoomValueChanged(int)));
 
     connect(m_sliceSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliceValueChanged(int)));
-    //connect(m_sliceSlider,SIGNAL(sliderMoved(int)),this,SLOT(onSliceValueChanged(int)));
-    connect(m_sliceSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onSliceValueChanged(int)));
+    connect(m_sliceSlider,SIGNAL(sliderMoved(int)),this,SLOT(onSliceValueChanged(int)));
+    //connect(m_sliceSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onSliceValueChanged(int)));
 
     connect(m_histMinSlider,SIGNAL(valueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
-    //connect(m_histMinSlider, SIGNAL(sliderMoved(int)), this, SLOT(onMinGrayValueChanged(int)));
-    connect(m_histMinSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
+    connect(m_histMinSlider, SIGNAL(sliderMoved(int)), this, SLOT(onMinGrayValueChanged(int)));
+    //connect(m_histMinSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
     connect(m_histMaxSlider,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
-   // connect(m_histMaxSlider, SIGNAL(sliderMoved(int)), this, SLOT(onMaxGrayValueChanged(int)));
-    connect(m_histMaxSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+    connect(m_histMaxSlider, SIGNAL(sliderMoved(int)), this, SLOT(onMaxGrayValueChanged(int)));
+    //connect(m_histMaxSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
 
 
 	connect(m_sliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
@@ -387,7 +401,6 @@ void MainWindow::onMaxGrayValueChanged(int position)
 		m_histMinSpinBox->setValue(position);
 		m_histogramViewer->setMinimumValue(position);
 	}
-	//m_histMaxSlider->setValue(position);
 	m_histMaxSpinBox->setValue(position);
 	m_histogramViewer->setMaximumValue(position);
 	int maxValue = m_histMaxSlider->value();
@@ -406,7 +419,6 @@ void MainWindow::onMinGrayValueChanged(int position)
         m_histMaxSpinBox->setValue(position);
 		m_histogramViewer->setMaximumValue(position);
     }
-	//m_histMinSlider->setValue(position);
 	m_histMinSpinBox->setValue(position);
 
 	m_histogramViewer->setMinimumValue(position);
@@ -430,7 +442,6 @@ void MainWindow::onSliceValueChanged(int value)
 	qDebug() << "onSliceValueChanged(int):" << region;
 	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 	m_sliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(value));
-    //_displayImage(imageSize);
     m_histogramViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
 	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 
@@ -452,13 +463,8 @@ void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
 void MainWindow::onZoomRegionChanged(const QRectF &region)
 {
     int slice = m_sliceSlider->value();
-
     QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);
-    QRect reg(region.x(), region.y(), region.width(), region.height());
-
-    //m_mrcDataModels[m_currentContext].setZoomRegion(reg);
-
-    m_sliceViewer->setImage(image,reg);
+    m_sliceViewer->setImage(image,region.toRect());
 }
 
 void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)

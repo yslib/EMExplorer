@@ -158,19 +158,157 @@
 #define MRC_VERSION_FIELD(year,verion) ((year*10)+version)
 
 
+
+
+
 class MRC
 {
 
 private:
-    using MRCInt32 = int;
-    using MRCFloat = float;
-    using MRCInt16 = short;
-    using MRCUInt32 = unsigned int;
-    using MRCUint16 = unsigned short;
-    using MRCDouble = double;
-    using MRCByte = char;
-    using MRCUByte = unsigned char;
-    using MRCSizeType = size_t;
+	using MRCInt32 = int;
+	using MRCFloat = float;
+	using MRCInt16 = short;
+	using MRCUInt32 = unsigned int;
+	using MRCUint16 = unsigned short;
+	using MRCDouble = double;
+	using MRCByte = char;
+	using MRCUByte = unsigned char;
+	using MRCSizeType = size_t;
+
+	struct MRCHeader
+	{
+		MRCInt32   nx;         /*  # of Columns                  */
+		MRCInt32   ny;         /*  # of Rows                     */
+		MRCInt32   nz;         /*  # of Sections.                */
+		MRCInt32   mode;       /*  given by #define MRC_MODE...  */
+							   /*0 8-bit signed integer (range -128 to 127)
+							   1 16-bit signed integer
+							   2 32-bit signed real
+							   3 transform : complex 16-bit integers
+							   4 transform : complex 32-bit reals
+							   6 16-bit unsigned integer
+							   */
+
+		MRCInt32   nxstart;    /*  Starting point of sub image.  UNSUPPORTED */
+		MRCInt32   nystart;
+		MRCInt32   nzstart;
+
+		MRCInt32   mx;         /* "Grid size", # of pixels in "unit cell"    */
+		MRCInt32   my;         /* Keep the same as nx, ny, nz                */
+		MRCInt32   mz;
+
+		MRCFloat   xlen;       /* length of unit cell in Angstroms           */
+		MRCFloat   ylen;       /* get scale = xlen/nx ...                    */
+		MRCFloat   zlen;
+
+		MRCFloat   alpha;      /* cell angles, ignored, set to 90            */
+		MRCFloat   beta;
+		MRCFloat   gamma;
+
+		MRCInt32   mapc;       /* map column  1=x,2=y,3=z.     UNSUPPORTED  */
+		MRCInt32   mapr;       /* map row     1=x,2=y,3=z.                  */
+		MRCInt32   maps;       /* map section 1=x,2=y,3=z.                  */
+
+		MRCFloat   dmin;      //Minimum Pixel Value
+		MRCFloat   dmax;      //Maximum Pixel Value
+		MRCFloat   dmean;     //Mean of Pixel Value
+
+							  /* 1/12/12: Removed nsymbt and made ispg be 4 bytes to match standard */
+		MRCInt32   ispg;       /* space group number in the standard */ /* 64 bytes */
+
+		MRCInt32   nsymbt;     /* This is nsymbt in the MRC standard. */
+							   /*Number of bytes in extended header*/
+
+							   /*Following definition is not a part of standard.
+							   * */
+		MRCInt16   creatid;  /* Used to be creator id, hvem = 1000, now 0 */
+
+		MRCByte    blank[6];      //Blank data. First two bytes should be 0.
+
+								  /**/
+		MRCByte    extType[4]; /* Extended type. */
+		MRCInt32   nversion;  /* Version number in MRC 2014 standard */
+							  /**/
+
+		MRCByte    blank2[16]; /*Blank*/
+		MRCInt16   nint;
+		MRCInt16   nreal;
+
+		/*20 bytes blank*/
+		MRCInt16   sub;
+		MRCInt16   zfac;
+		MRCFloat   min2;
+		MRCFloat   max2;
+		MRCFloat   min3;
+		MRCFloat   max3;
+
+		MRCInt32   imodStamp;
+		MRCInt32   imodFlags;
+		/*Bit flags:
+		1 = bytes are stored as signed
+		2 = pixel spacing was set from size in extended header
+		4 = origin is stored with sign inverted from definition below
+		8 = RMS value is negative if it was not computed
+		16 = Bytes have two 4-bit values, the first one in the
+		low 4 bits and the second one in the high 4 bits*/
+
+		/*  UINT   extra[MRC_NEXTRA];*/
+
+		/* HVEM extra data */
+		/* DNM 3/16/01: divide idtype into two shorts */
+
+		MRCInt16   idtype;
+		MRCInt16   lens;
+		MRCInt16   nd1;     /* Devide by 100 to get float value. */
+		MRCInt16   nd2;
+		MRCInt16   vd1;
+		MRCInt16   vd2;
+		MRCFloat   tiltangles[6];  /* 0,1,2 = original:  3,4,5 = current */
+
+#ifdef OLD_STYLE_HEADER
+								   /* before 2.6.20 */
+								   /* DNM 3/16/01: redefine the last three floats as wavelength numbers */
+		MRCInt16   nwave;   /* # of wavelengths and values */
+		MRCInt16   wave1;
+		MRCInt16   wave2;
+		MRCInt16   wave3;
+		MRCInt16   wave4;
+		MRCInt16   wave5;
+		MRCFloat   zorg;           /* origin */
+
+		MRCFloat   xorg;
+		MRCFloat   yorg;
+#else
+								   /* MRC 2000 standard */
+		MRCFloat   xorg;
+		MRCFloat   yorg;
+		MRCFloat   zorg;
+		MRCByte    cmap[4];
+		MRCByte    stamp[4];
+		MRCFloat   rms;
+#endif
+
+		MRCInt32 nlabl;
+		MRCByte  labels[MRC_NLABELS][MRC_LABEL_SIZE + 1];
+
+		/* Internal data not stored in file header */
+		//      b3dUByte *symops;
+		//      FILE   *fp;
+		//      int    pos;
+		//      struct LoadInfo *li;
+		//      int    headerSize;
+		//      int    sectionSkip;
+		//      int    swapped;
+		//      int    bytesSigned;
+		//      int    yInverted;
+		//      int    iiuFlags;
+		//      int    packed4bits;
+
+		//      char *pathname;
+		//      char *filedesc;
+		//      char *userData;
+	};
+
 
     typedef struct  /*complex floating number*/
     {
@@ -190,139 +328,7 @@ private:
     /*The MRC Header is MRC2014 Version. Reading
     http://www.ccpem.ac.uk/mrc_format/mrc2014.php for more details*/
 
-    struct MRCHeader
-    {
-      MRCInt32   nx;         /*  # of Columns                  */
-      MRCInt32   ny;         /*  # of Rows                     */
-      MRCInt32   nz;         /*  # of Sections.                */
-      MRCInt32   mode;       /*  given by #define MRC_MODE...  */
-      /*0 8-bit signed integer (range -128 to 127)
-      1 16-bit signed integer
-      2 32-bit signed real
-      3 transform : complex 16-bit integers
-      4 transform : complex 32-bit reals
-      6 16-bit unsigned integer
-      */
-
-      MRCInt32   nxstart;    /*  Starting point of sub image.  UNSUPPORTED */
-      MRCInt32   nystart;
-      MRCInt32   nzstart;
-
-      MRCInt32   mx;         /* "Grid size", # of pixels in "unit cell"    */
-      MRCInt32   my;         /* Keep the same as nx, ny, nz                */
-      MRCInt32   mz;
-
-      MRCFloat   xlen;       /* length of unit cell in Angstroms           */
-      MRCFloat   ylen;       /* get scale = xlen/nx ...                    */
-      MRCFloat   zlen;
-
-      MRCFloat   alpha;      /* cell angles, ignored, set to 90            */
-      MRCFloat   beta;
-      MRCFloat   gamma;
-
-      MRCInt32   mapc;       /* map column  1=x,2=y,3=z.     UNSUPPORTED  */
-      MRCInt32   mapr;       /* map row     1=x,2=y,3=z.                  */
-      MRCInt32   maps;       /* map section 1=x,2=y,3=z.                  */
-
-      MRCFloat   dmin;      //Minimum Pixel Value
-      MRCFloat   dmax;      //Maximum Pixel Value
-      MRCFloat   dmean;     //Mean of Pixel Value
-
-      /* 1/12/12: Removed nsymbt and made ispg be 4 bytes to match standard */
-      MRCInt32   ispg;       /* space group number in the standard */ /* 64 bytes */
-
-      MRCInt32   nsymbt;     /* This is nsymbt in the MRC standard. */
-                            /*Number of bytes in extended header*/
-
-      /*Following definition is not a part of standard.
-       * */
-      MRCInt16   creatid;  /* Used to be creator id, hvem = 1000, now 0 */
-
-      MRCByte    blank[6];      //Blank data. First two bytes should be 0.
-
-      /**/
-      MRCByte    extType[4]; /* Extended type. */
-      MRCInt32   nversion;  /* Version number in MRC 2014 standard */
-      /**/
-
-      MRCByte    blank2[16]; /*Blank*/
-      MRCInt16   nint;
-      MRCInt16   nreal;
-
-      /*20 bytes blank*/
-      MRCInt16   sub;
-      MRCInt16   zfac;
-      MRCFloat   min2;
-      MRCFloat   max2;
-      MRCFloat   min3;
-      MRCFloat   max3;
-
-      MRCInt32   imodStamp;
-      MRCInt32   imodFlags;
-      /*Bit flags:
-         1 = bytes are stored as signed
-         2 = pixel spacing was set from size in extended header
-         4 = origin is stored with sign inverted from definition below
-         8 = RMS value is negative if it was not computed
-         16 = Bytes have two 4-bit values, the first one in the
-              low 4 bits and the second one in the high 4 bits*/
-
-      /*  UINT   extra[MRC_NEXTRA];*/
-
-      /* HVEM extra data */
-      /* DNM 3/16/01: divide idtype into two shorts */
-
-      MRCInt16   idtype;
-      MRCInt16   lens;
-      MRCInt16   nd1;     /* Devide by 100 to get float value. */
-      MRCInt16   nd2;
-      MRCInt16   vd1;
-      MRCInt16   vd2;
-      MRCFloat   tiltangles[6];  /* 0,1,2 = original:  3,4,5 = current */
-
-    #ifdef OLD_STYLE_HEADER
-      /* before 2.6.20 */
-      /* DNM 3/16/01: redefine the last three floats as wavelength numbers */
-      MRCInt16   nwave;   /* # of wavelengths and values */
-      MRCInt16   wave1;
-      MRCInt16   wave2;
-      MRCInt16   wave3;
-      MRCInt16   wave4;
-      MRCInt16   wave5;
-      MRCFloat   zorg;           /* origin */
-
-      MRCFloat   xorg;
-      MRCFloat   yorg;
-    #else
-      /* MRC 2000 standard */
-      MRCFloat   xorg;
-      MRCFloat   yorg;
-      MRCFloat   zorg;
-      MRCByte    cmap[4];
-      MRCByte    stamp[4];
-      MRCFloat   rms;
-    #endif
-
-      MRCInt32 nlabl;
-      MRCByte  labels[MRC_NLABELS][MRC_LABEL_SIZE + 1];
-
-      /* Internal data not stored in file header */
-//      b3dUByte *symops;
-//      FILE   *fp;
-//      int    pos;
-//      struct LoadInfo *li;
-//      int    headerSize;
-//      int    sectionSkip;
-//      int    swapped;
-//      int    bytesSigned;
-//      int    yInverted;
-//      int    iiuFlags;
-//      int    packed4bits;
-
-//      char *pathname;
-//      char *filedesc;
-//      char *userData;
-    };
+  
 
 public:     //Type Definition
 		enum class Format { MRC, RAW };
@@ -334,10 +340,14 @@ public:     //Type Definition
 public:
 	MRC();
 	explicit MRC(const std::string & fileName);
+
+	//image and image stack
 	MRC(void * data, 
 		int width,
 		int height,
 		int slice,ImageDimensionType DimensionType,DataType dataType = MRC::DataType::Byte8);
+	//volume and volume stack
+
 	MRC(void * data, 
 		int width, 
 		int height, 
@@ -346,6 +356,10 @@ public:
 		VolumeDimensionType DimensionType,
 		DataType dataType = MRC::DataType::Byte8);
 
+	//header from other MRC
+
+	MRC(const MRC & otherMRC, void * data);
+
 
 	MRC(const MRC & rhs);
 	MRC(MRC && rhs)noexcept;
@@ -353,6 +367,7 @@ public:
 	MRC& operator=(MRC && rhs)noexcept;
 public:
 	static MRC fromData(unsigned char * data, int width, int height, int slice);
+	static MRC fromMRC(const MRC & otherMRC, void * data);
 	bool open(const std::string & fileName);
 	bool save(const std::string & fileName, MRC::Format format = Format::MRC);
 	bool isOpened()const;
@@ -360,19 +375,16 @@ public:
 	int getWidth()const;           //first dimension
 	int getHeight()const;          //second dimension
 	int getSliceCount()const;          //third dimension
+
 	const unsigned char * data()const;
 	unsigned char * data();
 	std::string getMRCInfo()const;
 	//some mrc header settings
-
 	virtual ~MRC()noexcept;
-private:            //variance
+private:            
     std::string m_fileName;
-
     MRCHeader m_header;
-
     unsigned char *m_mrcData;
-
     size_t m_mrcDataSize;
     bool m_opened;
 private:

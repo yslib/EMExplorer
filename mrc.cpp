@@ -23,6 +23,7 @@ MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType Dimen
 	//There is a critical fault to reference a outer raw pointer directly
 	//This is a ad hoc.
 	m_mrcData = static_cast<unsigned char*>(data);
+
 	m_mrcDataSize = width*height*slice;
 	m_header.nx = width;
 	m_header.ny = height;
@@ -60,6 +61,19 @@ MRC::MRC(void * data,
 {
 
 	exit(-1);
+}
+
+MRC::MRC(const MRC & otherMRC, void * data)
+{
+	m_header = otherMRC.m_header;
+	_init();
+	_allocate();
+	memcpy(m_mrcData, data, m_mrcDataSize * sizeof(unsigned char));
+
+	m_header.mode = MRC_MODE_BYTE;
+
+	_dmin_dmax_dmean_rms_Field();
+	m_opened = true;
 }
 
 MRC::MRC(const MRC &rhs)
@@ -111,8 +125,12 @@ MRC & MRC::operator=(MRC &&rhs)noexcept
 
 MRC MRC::fromData(unsigned char * data, int width, int height, int slice)
 {
-
 	return MRC();
+}
+
+MRC MRC::fromMRC(const MRC & otherMRC, void * data)
+{
+	return MRC(otherMRC,data);
 }
 
 bool MRC::open(const std::string &fileName)
@@ -314,7 +332,7 @@ bool MRC::_mrcHeaderWrite(FILE * fp, MRCHeader * hd)
 	return true;
 }
 
-std::string MRC::_getMRCHeaderInfo(const MRC::MRCHeader *header) const
+std::string MRC::_getMRCHeaderInfo(const MRCHeader *header) const
 {
 
     std::stringstream ss;
