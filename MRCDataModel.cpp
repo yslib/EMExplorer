@@ -129,7 +129,7 @@ bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 		images.push_back(QImage(getWidth(),getHeight(),
 			QImage::Format_Grayscale8));
 		/*Uninitialized*/
-		images.back().fill(Qt::black);
+		images.back().fill(Qt::black); 
 		for (auto & pic : m_marks[i]) {
 			if (pic.isNull() == false) {
 				empty = false;
