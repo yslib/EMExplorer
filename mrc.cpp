@@ -1,4 +1,5 @@
 #include "mrc.h"
+#include <cstring>
 
 MRC::MRC():MRC("",false)
 {
