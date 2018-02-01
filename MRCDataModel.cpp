@@ -165,7 +165,11 @@ bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 		//MRC mrcMarks(data,getWidth(),getHeight(),getSliceCount(),
 		//	MRC::ImageDimensionType::ImageStack,
 		//	MRC::DataType::Byte8);
+
+
+
 		MRC mrcMarks = MRC::fromMRC(m_mrcFile, data);
+        /*This function will execute deep copy,so this is also a overhead operation*/
 		if (mrcMarks.isOpened() == false) {
 			qDebug() << "Cannot create mrc marks file";
 			std::cerr << __LINE__;
@@ -173,7 +177,7 @@ bool MRCDataModel::saveMarks(const QString & fileName,MarkFormat format)
 		}
 		mrcMarks.save(fileName.toStdString(), MRC::Format::MRC);
 
-		//delete[] data;
+        delete[] data;
 	}
 	else if(format == MarkFormat::RAW) {
 		//Later,this need to be replace with Qt-style file IO

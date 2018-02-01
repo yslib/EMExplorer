@@ -156,6 +156,9 @@ void MainWindow::_setMRCDataModel(int index)
     m_sliceViewer->setImage(image,region);
 	m_sliceViewer->setMarks(model.getMarks(currentSliceIndex));
 
+    /*PixelViewer*/
+    m_pixelViewer->setImage(image);
+
     /*Set all widgets enable*/
     _allControlWidgetsEnable(true);
 	
@@ -327,6 +330,12 @@ void MainWindow::_initUI()
 	hLayout->addWidget(m_zoomSpinBox);
 	ui->leftVLayout->addLayout(hLayout);
 
+    //PixelViewer
+    m_pixelViewer = new PixelViewer(this);
+
+    ui->leftVLayout->addWidget(m_pixelViewer);
+
+
 
     _allControlWidgetsEnable(false);
 
@@ -384,6 +393,9 @@ void MainWindow::_connection()
     connect(m_histMaxSlider,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
     connect(m_histMaxSlider, SIGNAL(sliderMoved(int)), this, SLOT(onMaxGrayValueChanged(int)));
     //connect(m_histMaxSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+
+    //PixelViewer
+    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint &)),m_pixelViewer,SLOT(onPositionChanged(const QPoint &)));
 
 
 	connect(m_sliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
@@ -460,6 +472,10 @@ void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
     //onZoomValueChanged(d*ZOOM_SLIDER_MAX_VALUE);
 }
 
+
+/*
+ *
+*/
 void MainWindow::onZoomRegionChanged(const QRectF &region)
 {
     int slice = m_sliceSlider->value();

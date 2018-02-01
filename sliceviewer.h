@@ -44,6 +44,7 @@ protected:
 signals:
 	void onDrawing(const QPoint & point);
 	void drawingFinished(const QPicture & points);
+    void onMouseMoving(const QPoint & pos);
 private:
 	const int WIDTH = 500;
 	const int HEIGHT = 500;

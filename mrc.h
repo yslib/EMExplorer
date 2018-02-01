@@ -367,7 +367,7 @@ public:
 	MRC& operator=(MRC && rhs)noexcept;
 public:
 	static MRC fromData(unsigned char * data, int width, int height, int slice);
-	static MRC fromMRC(const MRC & otherMRC, void * data);
+    static MRC fromMRC(const MRC & otherMRC, unsigned char *data);
 	bool open(const std::string & fileName);
 	bool save(const std::string & fileName, MRC::Format format = Format::MRC);
 	bool isOpened()const;

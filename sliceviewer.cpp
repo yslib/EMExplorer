@@ -146,9 +146,11 @@ void SliceViewer::mouseReleaseEvent(QMouseEvent * event)
 
 void SliceViewer::mouseMoveEvent(QMouseEvent * event)
 {
+    QPoint currentPoint = event->pos();
+    emit onMouseMoving(currentPoint);
 	if (m_paintEnable == true) {
 		if (m_painting == true) {
-			QPoint currentPoint = event->pos();
+
 			switch (m_shape)
 			{
 			case SliceViewer::Shape::Line:
