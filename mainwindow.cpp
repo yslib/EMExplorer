@@ -263,7 +263,7 @@ void MainWindow::_initUI()
 
 	//SliceViewer
 	m_sliceViewer = new SliceViewer(this);
-    QVBoxLayout * sliceViewerLayout = new QVBoxLayout(this);
+        QVBoxLayout * sliceViewerLayout = new QVBoxLayout(this);
 	
 	hLayout = new QHBoxLayout(this);
 	m_sliceLabel = new QLabel(this);
@@ -395,10 +395,10 @@ void MainWindow::_connection()
     //connect(m_histMaxSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
 
     //PixelViewer
-    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint &)),m_pixelViewer,SLOT(onPositionChanged(const QPoint &)));
+    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint &)),m_pixelViewer,SLOT(setPosition(const QPoint &)));
 
 
-	connect(m_sliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
+    connect(m_sliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
 }
 
 void MainWindow::_destroy()

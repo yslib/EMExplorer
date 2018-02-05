@@ -1,4 +1,4 @@
-#include "sliceviewer.h"
+ #include "sliceviewer.h"
 
 SliceViewer::SliceViewer(QWidget * parent /* = nullptr */) :
 	QWidget(parent),
@@ -147,7 +147,8 @@ void SliceViewer::mouseReleaseEvent(QMouseEvent * event)
 void SliceViewer::mouseMoveEvent(QMouseEvent * event)
 {
     QPoint currentPoint = event->pos();
-    emit onMouseMoving(currentPoint);
+    emit onMouseMoving(_thisCoordToImageCoord(currentPoint));
+    qDebug()<<"mouse moving in slice viewer";
 	if (m_paintEnable == true) {
 		if (m_painting == true) {
 

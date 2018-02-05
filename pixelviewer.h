@@ -7,6 +7,7 @@
 #include <QGridLayout>
 #include <QImage>
 #include <QPoint>
+#include <QSharedPointer>
 
 class PixelViewer:public QWidget
 {
@@ -19,13 +20,16 @@ public:
     void setHeight(int height);
     void setImage(const QImage & image);
 public slots:
-    void onPositionChanged(const QPoint & p);
+    void setPosition(const QPoint & p);
 private:
     void changeLayout(int width,int height);
     void changeValue(const QImage & image,const QPoint & pos);
 private:
     QImage m_image;
-    QVector<QLabel*> m_pixels;
+    QVector<QSharedPointer<QLabel>> m_pixelLabels;
+    QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;
+    QVector<QSharedPointer<QLabel>> m_rowHeadersLabels;
+    QSharedPointer<QLabel> m_cornerLabel;
     QPoint m_pos;
     int m_width;
     int m_height;

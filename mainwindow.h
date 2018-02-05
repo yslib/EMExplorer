@@ -105,6 +105,12 @@ private:		//ui
 
 
 private:
+
+    void createActions();
+    void createStatusBar();
+    void createDockWindows();
+
+
 	void _addMRCDataModel(const MRCDataModel & model);
 	void _addMRCDataModel(MRCDataModel && model);
 	void _setMRCDataModel(int index);
