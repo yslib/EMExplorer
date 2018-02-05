@@ -263,7 +263,7 @@ void MainWindow::_initUI()
 
 	//SliceViewer
 	m_sliceViewer = new SliceViewer(this);
-        QVBoxLayout * sliceViewerLayout = new QVBoxLayout(this);
+    QVBoxLayout * sliceViewerLayout = new QVBoxLayout(this);
 	
 	hLayout = new QHBoxLayout(this);
 	m_sliceLabel = new QLabel(this);

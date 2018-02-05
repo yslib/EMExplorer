@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     testinfodialog.cpp \
     sliceviewer.cpp \
     MRCDataModel.cpp \
-    pixelviewer.cpp
+    pixelviewer.cpp \
+    titledsliderwithspinbox.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     testinfodialog.h \
     sliceviewer.h \
     MRCDataModel.h \
-    pixelviewer.h
+    pixelviewer.h \
+    titledsliderwithspinbox.h
 
 FORMS    += mainwindow.ui
 

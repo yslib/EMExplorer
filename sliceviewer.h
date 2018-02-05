@@ -8,6 +8,10 @@
 #include <QPicture>
 #include <QDebug>
 #include <QVector>
+#include <QSlider>
+#include <QSpinBox>
+#include <QLayout>
+#include "titledsliderwithspinbox.h"
 
 class SliceViewer :public QWidget
 {
@@ -21,7 +25,6 @@ public:
     void setImage(const QImage & image,const QRect & region = QRect());
 	void addMark(const QPicture & mark);
     void setMarks(const QVector<QPicture> & marks);
-
 	void originalSize(bool original = false) { m_originalSize = original; }
 	void setGrayscaleStrechingLowerBound(int value);
 	void setGrayscaleStrechingUpperBound(int value);
@@ -29,13 +32,16 @@ public:
 	QColor getMarkColor()const { return m_pen.color(); }
 	void setPenWidth(int w) { m_pen.setWidth(w); }
 	void setShape(Shape shape) { m_shape = shape; }
-	Shape getShape()const { return m_shape; }
-	public slots:
+    Shape getShape()const { return m_shape; }
+
+
+public slots:
 	void paintEnable(bool enable) { m_paintEnable = enable; }
 private:
-	QPoint _thisCoordToImageCoord(const QPoint & p);
-	void _drawLineOnThis(const QPoint &p1, const QPoint &p2);
-	void _drawEllipseOnThis(const QPoint & center,int rx,int ry);
+    QPoint thisCoordToImageCoord(const QPoint & p);
+    void drawLineOnThis(const QPoint &p1, const QPoint &p2);
+    void drawEllipseOnThis(const QPoint & center,int rx,int ry);
+
 protected:
 	void paintEvent(QPaintEvent *event)override;
 	void mousePressEvent(QMouseEvent *event)override;
@@ -46,26 +52,57 @@ signals:
 	void drawingFinished(const QPicture & points);
     void onMouseMoving(const QPoint & pos);
 private:
+
+
+    //Size of the Widget
 	const int WIDTH = 500;
 	const int HEIGHT = 500;
+
+    //states for painting
 	bool m_originalSize;
 	bool m_paintEnable;
 	bool m_painting;
 
+    //Some temp varibles
 	Shape m_shape;
 	PaintState m_paintState;
 	QPoint m_linePoint1, m_linePoint2;
 	QPoint m_ellipseCenter;
-	int m_rx, m_ry;
+    int m_rx, m_ry;
 
+    //Temp points generated during painting
 	QVector<QPoint> m_points;
 	QPoint m_prevPoint;
 	QPoint m_firstPoint;
 	QPoint m_lastPoint;
 
+    //Pen properties
 	QPen m_pen;
-	QPixmap m_canvas;
-	QRect m_imageRect;
+    //canvas for painting
+    QPixmap m_canvas;
+    //a zoom rect for certain area of the image
+    QRect m_imageRect;
+    //marks displayed on the widgets
     QVector<QPicture> m_marks;
+
+    QGridLayout * m_gridLayout;
 };
+
+
+class NestedSliceViewer:public QWidget{
+    Q_OBJECT
+public:
+    NestedSliceViewer(QWidget * parent,const QImage & image,const QRect & rect = QRect());
+    void setImage(const QImage & image,const QRect & region = QRect());
+    void addMark(const QPicture & mark);
+    void setMarks(const QVector<QPicture> & marks);
+    void setMarkColor(const QColor & color);
+    QColor getMarkColor()const;
+private:
+    SliceViewer * m_sliceViewer;
+    QGridLayout * m_gridLayout;
+    TitledSliderWithSpinBox * m_easySliderWithSpinBox;
+};
+
+
 #endif // !SLICEVIEWER_H_
