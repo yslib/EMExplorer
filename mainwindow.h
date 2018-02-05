@@ -23,6 +23,7 @@
 #include "zoomviwer.h"
 #include "sliceviewer.h"
 #include "MRCDataModel.h"
+#include "pixelviewer.h"
 
 
 namespace Ui {
@@ -96,11 +97,20 @@ private:		//ui
 	QSlider * m_zoomSlider;
 	QDoubleSpinBox * m_zoomSpinBox;
 
+    PixelViewer * m_pixelViewer;
+
+
 	//actions
 	QAction * actionColor;
 
 
 private:
+
+    void createActions();
+    void createStatusBar();
+    void createDockWindows();
+
+
 	void _addMRCDataModel(const MRCDataModel & model);
 	void _addMRCDataModel(MRCDataModel && model);
 	void _setMRCDataModel(int index);

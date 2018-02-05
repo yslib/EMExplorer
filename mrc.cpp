@@ -1,4 +1,6 @@
 #include "mrc.h"
+#include <cstring>
+#include <cassert>
 
 MRC::MRC():MRC("",false)
 {
@@ -125,12 +127,13 @@ MRC & MRC::operator=(MRC &&rhs)noexcept
 
 MRC MRC::fromData(unsigned char * data, int width, int height, int slice)
 {
+    assert(false);
 	return MRC();
 }
 
-MRC MRC::fromMRC(const MRC & otherMRC, void * data)
+MRC MRC::fromMRC(const MRC & otherMRC,unsigned char * data)
 {
-	return MRC(otherMRC,data);
+    return MRC(otherMRC,data);
 }
 
 bool MRC::open(const std::string &fileName)

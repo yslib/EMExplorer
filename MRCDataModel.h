@@ -5,7 +5,8 @@
 #include <QString>
 #include <QVector>
 #include <QPicture>
-#include <qDebug>
+//#include <qDebug>
+#include <qdebug.h>
 #include <QImage>
 #include <QPair>
 #include <QRectF>
