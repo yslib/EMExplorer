@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <cmath>
+#include <QLayout>
+#include <titledsliderwithspinbox.h>
 
 class Histogram:public QWidget
 {
@@ -41,6 +43,27 @@ private:
     size_t m_count;
     QColor m_curColor;
     QImage m_histImage;
+};
+
+
+class HistogramViewer:public QWidget
+{
+    Q_OBJECT
+public:
+    explicit HistogramViewer(QWidget * parent = nullptr)noexcept;
+    explicit HistogramViewer(QWidget * parent, const QImage & image)noexcept;
+
+    void setImage(const QImage & image);
+    QVector<int> getHist()const;
+    void setMinimumValue(int value);
+    void setMaximumValue(int value);
+signals:
+    void valueChanged(int min,int max);
+private:
+    QGridLayout * m_layout;
+    Histogram * m_hist;
+    TitledSliderWithSpinBox * m_minSlider;
+    TitledSliderWithSpinBox * m_maxSlider;
 };
 
 #endif // HISTOGRAM_H

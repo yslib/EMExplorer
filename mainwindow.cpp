@@ -3,6 +3,7 @@
 #include "testinfodialog.h"
 #include <QPen>
 #include <QRect>
+#include <QDockWidget>
 
 QSize imageSize(500,500);
 
@@ -14,6 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	setWindowTitle(tr("MRC Editor"));
 	_initUI();
 	_connection();
+
+    createDockWindows();
+
+    //QDockWidget Test
 
 }
 MainWindow::~MainWindow()
@@ -34,24 +39,25 @@ void MainWindow::onActionOpenTriggered()
     if(fileName == ""){
         return;
     }
-   // ui->comboBox->addItem(fileName);
     //m_mrcs.push_back(MRC(fileName));
-	MRCDataModel mrcModel(fileName);
+    MRCDataModel mrcModel(fileName);
     QString name = fileName.mid(fileName.lastIndexOf('/')+1);
     if(mrcModel.isOpened() == false){
         QMessageBox::critical(NULL, "Error", tr("Can't open this file.\n%1").arg(fileName),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     }else{
         QString headerInfo = mrcModel.getMRCInfo();
-        ui->textEdit->setText(headerInfo);
+        //
+        m_fileInfoViewer->setText(headerInfo);
         _addMRCDataModel(std::move(mrcModel));
         int newCurrentContext = m_mrcDataModels.size() - 1;
+        m_fileInfoViewer->addItem(name,newCurrentContext);
 
-		m_mrcFileCBox->addItem(name, newCurrentContext);
-		if (m_mrcFileCBox->count() != 1) {
+
+        if (m_fileInfoViewer->count() != 1) {
 			//If there have already been items we need to select the 
 			//newest item manually
-			m_mrcFileCBox->setCurrentIndex(m_mrcFileCBox->count() - 1);
+            m_fileInfoViewer->setCurrentIndex(m_fileInfoViewer->count()-1);
 			_saveMRCDataModel();
 			_setMRCDataModel(newCurrentContext);
 		}
@@ -68,12 +74,10 @@ void MainWindow::onActionOpenTriggered()
 void MainWindow::onMRCFilesComboBoxIndexActivated(int index)
 {
 	//Find first item to change
-    QVariant userData = m_mrcFileCBox->itemData(index);
+    QVariant userData =m_fileInfoViewer->itemData(index);
     if(userData.canConvert(QVariant::Int) == false)
         return;
     int context = userData.toInt();
-	qDebug() << m_mrcFileCBox->currentText();
-	qDebug() << "to:" << context << " Index:" << index << " " << m_mrcFileCBox->currentIndex();
     _saveMRCDataModel();
     _setMRCDataModel(context);
 }
@@ -149,7 +153,7 @@ void MainWindow::_setMRCDataModel(int index)
 
     QRect region = model.getZoomRegion();
 	qDebug() << "region:" << region;
-    m_histogramViewer->setImage(image);
+    m_histogram->setImage(image);
 	/*ZoomViwer*/
     m_zoomViewer->setImage(image,region);
     /*There should be a image scale region context to be restored*/
@@ -238,10 +242,7 @@ void MainWindow::_updateGrayThreshold(int lower, int upper)
     }
 	//m_sliceViewer->setImage(strechingImage);
 	m_mrcDataModels[m_currentContext].setSlice(strechingImage,m_sliceSlider->value());
-	
 }
-
-
 /*
  * This function only sets the initial ui layout,
  * and it doesn't set their properties.
@@ -250,22 +251,14 @@ void MainWindow::_initUI()
 {
 
 	QVBoxLayout * leftMainLayout = new QVBoxLayout(this);
-	//MRCFile Combox
-	m_mrcFileLabel = new QLabel(this);
-	m_mrcFileLabel->setText(QStringLiteral("MrcFiles:"));
-	m_mrcFileCBox = new QComboBox(this);
 
-	QHBoxLayout * hLayout = new QHBoxLayout(this);
-	hLayout->addWidget(m_mrcFileLabel);
-	hLayout->addWidget(m_mrcFileCBox);
-	ui->leftVLayout->addLayout(hLayout);
 
 
 	//SliceViewer
 	m_sliceViewer = new SliceViewer(this);
     QVBoxLayout * sliceViewerLayout = new QVBoxLayout(this);
 	
-	hLayout = new QHBoxLayout(this);
+    QHBoxLayout * hLayout = new QHBoxLayout(this);
 	m_sliceLabel = new QLabel(this);
 	m_sliceLabel->setText(QStringLiteral("Slice:"));
 	hLayout->addWidget(m_sliceLabel);
@@ -286,8 +279,8 @@ void MainWindow::_initUI()
     ui->leftGroupBox->setLayout(leftMainLayout);
 
 	//Histgram
-	m_histogramViewer = new Histogram(this);
-	ui->leftVLayout->addWidget(m_histogramViewer);
+    m_histogram = new Histogram(this);
+    ui->leftVLayout->addWidget(m_histogram);
 	m_histMinLabel = new QLabel(this);
 	m_histMinLabel->setText(QStringLiteral("Min:"));
 	m_histMinSlider = new QSlider(Qt::Horizontal, this);
@@ -331,9 +324,8 @@ void MainWindow::_initUI()
 	ui->leftVLayout->addLayout(hLayout);
 
     //PixelViewer
-    m_pixelViewer = new PixelViewer(this);
 
-    ui->leftVLayout->addWidget(m_pixelViewer);
+    //ui->leftVLayout->addWidget(m_pixelViewer);
 
 
 
@@ -377,7 +369,7 @@ void MainWindow::_connection()
 {
 
 	connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(onActionOpenTriggered()));
-    connect(m_mrcFileCBox,SIGNAL(currentIndexChanged(int)),this,SLOT(onMRCFilesComboBoxIndexActivated(int)));
+
 
     connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
     //connect(m_zoomSpinBox,SIGNAL(valueChanged(double)),this,SLOT(onZoomDoubleSpinBoxValueChanged(double)));
@@ -395,7 +387,6 @@ void MainWindow::_connection()
     //connect(m_histMaxSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
 
     //PixelViewer
-    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint &)),m_pixelViewer,SLOT(setPosition(const QPoint &)));
 
 
     connect(m_sliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
@@ -411,10 +402,10 @@ void MainWindow::onMaxGrayValueChanged(int position)
 	if (position <m_histMinSlider->value()) {
 		m_histMinSlider->setValue(position);
 		m_histMinSpinBox->setValue(position);
-		m_histogramViewer->setMinimumValue(position);
+        m_histogram->setMinimumValue(position);
 	}
 	m_histMaxSpinBox->setValue(position);
-	m_histogramViewer->setMaximumValue(position);
+    m_histogram->setMaximumValue(position);
 	int maxValue = m_histMaxSlider->value();
 	int minValue = m_histMinSlider->value();
 	_updateGrayThreshold(minValue,maxValue);
@@ -429,11 +420,11 @@ void MainWindow::onMinGrayValueChanged(int position)
     if(position > m_histMaxSlider->value()){
 		m_histMaxSlider->setValue(position);
         m_histMaxSpinBox->setValue(position);
-		m_histogramViewer->setMaximumValue(position);
+        m_histogram->setMaximumValue(position);
     }
 	m_histMinSpinBox->setValue(position);
 
-	m_histogramViewer->setMinimumValue(position);
+    m_histogram->setMinimumValue(position);
 	int maxValue = m_histMaxSlider->value();
 	int minValue = m_histMinSlider->value();
     _updateGrayThreshold(minValue,maxValue);
@@ -454,7 +445,7 @@ void MainWindow::onSliceValueChanged(int value)
 	qDebug() << "onSliceValueChanged(int):" << region;
 	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 	m_sliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(value));
-    m_histogramViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+    m_histogram->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
 	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 
 }
@@ -536,4 +527,24 @@ void MainWindow::onSaveDataAsActionTriggered()
     }else if(fileName.endsWith(".mrc") == true){
         m_mrcDataModels[m_currentContext].save(fileName);
     }
+}
+
+void MainWindow::createDockWindows()
+{
+    m_fileInfoViewer = new MRCFileInfoViewer(this);
+    QDockWidget * dock = new QDockWidget(tr("Files"),this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+    dock->setWidget(m_fileInfoViewer);
+    addDockWidget(Qt::LeftDockWidgetArea,dock);
+    connect(m_fileInfoViewer,SIGNAL(currentIndexChanged(int)),this,SLOT(onMRCFilesComboBoxIndexActivated(int)));
+    //menuBar()->addAction(dock->toggleViewAction());
+
+
+
+    m_pixelViewer = new PixelViewer(this);
+    dock = new QDockWidget(tr("PixelViewer"),this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+    dock->setWidget(m_pixelViewer);
+    addDockWidget(Qt::LeftDockWidgetArea,dock);
+    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint &)),m_pixelViewer,SLOT(setPosition(const QPoint &)));
 }

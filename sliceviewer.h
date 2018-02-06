@@ -98,6 +98,10 @@ public:
     void setMarks(const QVector<QPicture> & marks);
     void setMarkColor(const QColor & color);
     QColor getMarkColor()const;
+signals:
+    void onDrawing(const QPoint & point);
+    void drawingFinished(const QPicture & points);
+    void onMouseMoving(const QPoint & pos);
 private:
     SliceViewer * m_sliceViewer;
     QGridLayout * m_gridLayout;

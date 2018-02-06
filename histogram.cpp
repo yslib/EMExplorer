@@ -136,3 +136,49 @@ void Histogram::mouseMoveEvent(QMouseEvent *event)
 void Histogram::mousePressEvent(QMouseEvent * event)
 {
 }
+
+
+
+
+/*
+ * HistogramViewer Definitions
+*/
+HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent)
+{
+    m_layout = new QGridLayout(this);
+    m_hist = new Histogram(this);
+    m_minSlider = new TitledSliderWithSpinBox(this,QString("MinValue:"));
+    m_maxSlider = new TitledSliderWithSpinBox(this,QString("MaxValue:"));
+
+    m_layout->addWidget(m_hist,0,0);
+    m_layout->addWidget(m_minSlider,1,0);
+    m_layout->addWidget(m_maxSlider,2,0);
+
+}
+
+HistogramViewer::HistogramViewer(QWidget *parent, const QImage &image)noexcept:HistogramViewer(parent)
+{
+   setImage(image);
+
+}
+
+void HistogramViewer::setImage(const QImage &image)
+{
+    m_hist->setImage(image);
+}
+
+QVector<int> HistogramViewer::getHist() const
+{
+    return m_hist->getHist();
+}
+void HistogramViewer::setMinimumValue(int value)
+{
+    m_hist->setMinimumValue(value);
+}
+
+void HistogramViewer::setMaximumValue(int value)
+{
+    m_hist->setMaximumValue(value);
+}
+
+

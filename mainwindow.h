@@ -24,6 +24,8 @@
 #include "sliceviewer.h"
 #include "MRCDataModel.h"
 #include "pixelviewer.h"
+#include "mrcfileinfoviewer.h"
+
 
 
 namespace Ui {
@@ -78,13 +80,15 @@ private:		//ui
 	QLabel * m_mrcFileLabel;
 	QComboBox * m_mrcFileCBox;
 	
+    MRCFileInfoViewer * m_fileInfoViewer;
+
 
 	SliceViewer * m_sliceViewer;
 	QLabel * m_sliceLabel;
 	QSlider * m_sliceSlider;
 	QSpinBox *m_sliceSpinBox;
 
-    Histogram * m_histogramViewer;
+    Histogram * m_histogram;
 	QLabel * m_histMinLabel;
 	QLabel * m_histMaxLabel;
 	QSlider * m_histMinSlider;
@@ -99,6 +103,7 @@ private:		//ui
 
     PixelViewer * m_pixelViewer;
 
+    HistogramViewer * m_histViewer;
 
 	//actions
 	QAction * actionColor;

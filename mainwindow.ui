@@ -39,16 +39,6 @@
          <string>Properties</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="0">
-          <widget class="QTextEdit" name="textEdit">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-           <property name="overwriteMode">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="0">
           <layout class="QVBoxLayout" name="leftVLayout"/>
          </item>
@@ -65,7 +55,7 @@
      <x>0</x>
      <y>0</y>
      <width>1105</width>
-     <height>22</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

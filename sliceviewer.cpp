@@ -232,14 +232,20 @@ NestedSliceViewer::NestedSliceViewer(QWidget *parent, const QImage &image, const
 
     m_gridLayout->addWidget(m_easySliderWithSpinBox,0,0);
     m_gridLayout->addWidget(m_sliceViewer,1,0);
+
+
+    connect(m_sliceViewer,SIGNAL(onDrawing(const QPoint&)),this,SIGNAL(onDrawing(const QPoint &)));
+    connect(m_sliceViewer,SIGNAL(drawingFinished(QPicture)),this,SIGNAL(drawingFinished(const QPicture&)));
+    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint&)),this,SIGNAL(onMouseMoving(const QPoint&)));
+
 }
 
 void NestedSliceViewer::setImage(const QImage &image, const QRect &region)
 {
     m_sliceViewer->setImage(image,region);
 }
-
-void NestedSliceViewer::addMark(const QPicture &mark){
+void NestedSliceViewer::addMark(const QPicture &mark)
+{
     m_sliceViewer->addMark(mark);
 }
 
@@ -249,7 +255,7 @@ void NestedSliceViewer::setMarks(const QVector<QPicture> &marks){
 void NestedSliceViewer::setMarkColor(const QColor &color){
     m_sliceViewer->setMarkColor(color);
 }
-QColor NestedSliceViewer::getMarkColor(){
+QColor NestedSliceViewer::getMarkColor()const{
     return m_sliceViewer->getMarkColor();
 }
 
