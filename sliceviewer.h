@@ -26,15 +26,11 @@ public:
 	void addMark(const QPicture & mark);
     void setMarks(const QVector<QPicture> & marks);
 	void originalSize(bool original = false) { m_originalSize = original; }
-	void setGrayscaleStrechingLowerBound(int value);
-	void setGrayscaleStrechingUpperBound(int value);
 	void setMarkColor(const QColor & color) { m_pen.setColor(color); }
 	QColor getMarkColor()const { return m_pen.color(); }
 	void setPenWidth(int w) { m_pen.setWidth(w); }
 	void setShape(Shape shape) { m_shape = shape; }
     Shape getShape()const { return m_shape; }
-
-
 public slots:
 	void paintEnable(bool enable) { m_paintEnable = enable; }
 private:
@@ -52,12 +48,9 @@ signals:
 	void drawingFinished(const QPicture & points);
     void onMouseMoving(const QPoint & pos);
 private:
-
-
     //Size of the Widget
 	const int WIDTH = 500;
 	const int HEIGHT = 500;
-
     //states for painting
 	bool m_originalSize;
 	bool m_paintEnable;
@@ -92,8 +85,10 @@ private:
 class NestedSliceViewer:public QWidget{
     Q_OBJECT
 public:
-    NestedSliceViewer(QWidget * parent,const QImage & image,const QRect & rect = QRect());
+    NestedSliceViewer(QWidget * parent);
     void setImage(const QImage & image,const QRect & region = QRect());
+    void setRightImage(const QImage & image);
+    void setFrontImage(const QImage & image);
     void addMark(const QPicture & mark);
     void setMarks(const QVector<QPicture> & marks);
     void setMarkColor(const QColor & color);
@@ -103,9 +98,16 @@ signals:
     void drawingFinished(const QPicture & points);
     void onMouseMoving(const QPoint & pos);
 private:
-    SliceViewer * m_sliceViewer;
     QGridLayout * m_gridLayout;
-    TitledSliderWithSpinBox * m_easySliderWithSpinBox;
+
+    SliceViewer * m_mainSliceViewer;
+    TitledSliderWithSpinBox * m_mainEasySlider;
+    SliceViewer * m_rightSliceViewer;
+    TitledSliderWithSpinBox * m_rightEasySlider;
+    SliceViewer * m_frontSliceViewer;
+    TitledSliderWithSpinBox * m_frontEasySlider;
+
+    QWidget * m_widgetsBar;
 };
 
 

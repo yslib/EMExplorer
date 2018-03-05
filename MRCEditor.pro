@@ -44,7 +44,7 @@ HEADERS  += mainwindow.h \
     MRCDataModel.h \
     pixelviewer.h \
     titledsliderwithspinbox.h \
-    mrcfileinfoviewer.h
+    mrcfileinfoviewer.h \
 
 FORMS    += mainwindow.ui
 

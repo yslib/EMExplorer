@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="7,3">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="7">
       <item>
        <widget class="QGroupBox" name="leftGroupBox">
         <property name="enabled">
@@ -31,18 +31,6 @@
         <property name="title">
          <string>Viewer</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="rightGroupBox">
-        <property name="title">
-         <string>Properties</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <layout class="QVBoxLayout" name="leftVLayout"/>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>
@@ -55,7 +43,7 @@
      <x>0</x>
      <y>0</y>
      <width>1105</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

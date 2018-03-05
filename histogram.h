@@ -22,16 +22,20 @@ public:
     void setImage(const QImage & image);
     QVector<int> getHist()const;
     QSize sizeHint()const override;
-	void setMinimumValue(int value);
-	void setMaximumValue(int value);
+    void setMinimumCursorValue(int value);
+    void setMaximumCursorValue(int value);
+    int getMinimumCursorValue()const;
+    int getMaximumCursorValue()const;
+    void setCursorEnable(bool enable);
 signals:
-    //void minValueChanged(int value);
-    //void maxValueChanged(int value);
-	void valueChanged(int minVal, int maxVal);
+    void minCursorValueChanged(int value);
+    void maxCursorValueChanged(int value);
+    void cursorValueChanged(int minVal, int maxVal);
 protected:
-    void paintEvent(QPaintEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event)override;
+    void mouseMoveEvent(QMouseEvent *event)override;
+    void mousePressEvent(QMouseEvent *event)override;
+    void mouseReleaseEvent(QMouseEvent *event)override;
 private:
     static const int MIN_WIDTH = 300;
     static const int MIN_HEIGHT = 100;
@@ -43,6 +47,17 @@ private:
     size_t m_count;
     QColor m_curColor;
     QImage m_histImage;
+
+    bool m_mousePressed;
+    bool m_rightCursorSelected;
+    bool m_leftCursorSelected;
+    bool m_cursorEnable;
+
+private:
+    qreal getXofLeftCursor();
+    qreal getXofRightCursor();
+
+
 };
 
 
@@ -55,8 +70,8 @@ public:
 
     void setImage(const QImage & image);
     QVector<int> getHist()const;
-    void setMinimumValue(int value);
-    void setMaximumValue(int value);
+    void setMinimumMarkPosition(int value);
+    void setMaximumMarkPosition(int value);
 signals:
     void valueChanged(int min,int max);
 private:

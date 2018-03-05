@@ -41,15 +41,6 @@ void SliceViewer::setMarks(const QVector<QPicture> &marks)
     update();
     updateGeometry();
 }
-
-void SliceViewer::setGrayscaleStrechingLowerBound(int value)
-{
-
-}
-void SliceViewer::setGrayscaleStrechingUpperBound(int value)
-{
-}
-
 inline QPoint SliceViewer::thisCoordToImageCoord(const QPoint & p)
 {
 	QSize windowSize = size();
@@ -222,40 +213,62 @@ void SliceViewer::drawEllipseOnThis(const QPoint & center, int rx, int ry)
 //}
 
 
-NestedSliceViewer::NestedSliceViewer(QWidget *parent, const QImage &image, const QRect &rect):
-    QWidget(parent),
-    m_sliceViewer(new SliceViewer(this,image,rect)),
-    m_easySliderWithSpinBox(new TitledSliderWithSpinBox(this,QString("Slice:"))){
+NestedSliceViewer::NestedSliceViewer(QWidget *parent):
+    QWidget(parent){
 
     m_gridLayout = new QGridLayout(this);
+    m_mainEasySlider = new TitledSliderWithSpinBox(this,tr("Slice:"));
+    m_mainSliceViewer = new SliceViewer(this);
+
+    m_rightSliceViewer = new SliceViewer(this);
+    m_rightEasySlider = new TitledSliderWithSpinBox(this,tr("L:"));
+
+    m_frontSliceViewer = new SliceViewer(this);
+    m_frontEasySlider = new TitledSliderWithSpinBox(this,tr("F:"));
     setLayout(m_gridLayout);
 
-    m_gridLayout->addWidget(m_easySliderWithSpinBox,0,0);
-    m_gridLayout->addWidget(m_sliceViewer,1,0);
+    //main slice
+    m_gridLayout->addWidget(m_mainEasySlider,0,0);
+    m_gridLayout->addWidget(m_mainSliceViewer,1,0,1,3);
 
+    //right slice
+    m_gridLayout->addWidget(m_rightSliceViewer,0,3,2,1);
+    m_gridLayout->addWidget(m_rightEasySlider,0,1);
 
-    connect(m_sliceViewer,SIGNAL(onDrawing(const QPoint&)),this,SIGNAL(onDrawing(const QPoint &)));
-    connect(m_sliceViewer,SIGNAL(drawingFinished(QPicture)),this,SIGNAL(drawingFinished(const QPicture&)));
-    connect(m_sliceViewer,SIGNAL(onMouseMoving(const QPoint&)),this,SIGNAL(onMouseMoving(const QPoint&)));
+    //front slice
+    m_gridLayout->addWidget(m_frontSliceViewer,2,0,1,4);
+    m_gridLayout->addWidget(m_frontEasySlider,0,2);
 
+    connect(m_mainSliceViewer,SIGNAL(onDrawing(const QPoint&)),this,SIGNAL(onDrawing(const QPoint &)));
+    connect(m_mainSliceViewer,SIGNAL(drawingFinished(QPicture)),this,SIGNAL(drawingFinished(const QPicture&)));
+    connect(m_mainSliceViewer,SIGNAL(onMouseMoving(const QPoint&)),this,SIGNAL(onMouseMoving(const QPoint&)));
 }
 
 void NestedSliceViewer::setImage(const QImage &image, const QRect &region)
 {
-    m_sliceViewer->setImage(image,region);
+    m_mainSliceViewer->setImage(image,region);
+}
+
+void NestedSliceViewer::setRightImage(const QImage &image)
+{
+    m_rightSliceViewer->setImage(image);
+}
+
+void NestedSliceViewer::setFrontImage(const QImage &image)
+{
+    m_frontSliceViewer->setImage(image);
 }
 void NestedSliceViewer::addMark(const QPicture &mark)
 {
-    m_sliceViewer->addMark(mark);
+    m_mainSliceViewer->addMark(mark);
 }
-
 void NestedSliceViewer::setMarks(const QVector<QPicture> &marks){
-    m_sliceViewer->setMarks(marks);
+    m_mainSliceViewer->setMarks(marks);
 }
 void NestedSliceViewer::setMarkColor(const QColor &color){
-    m_sliceViewer->setMarkColor(color);
+    m_mainSliceViewer->setMarkColor(color);
 }
 QColor NestedSliceViewer::getMarkColor()const{
-    return m_sliceViewer->getMarkColor();
+    return m_mainSliceViewer->getMarkColor();
 }
 
