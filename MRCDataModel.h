@@ -87,6 +87,8 @@ public:
 	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.getMRCInfo().c_str())); }
 	QImage getSlice(int index)const;
 	void setSlice(const QImage & image, int index);
+	QImage getRightSlice(int index) const;
+	QImage getFrontSlice(int index) const;
 	QVector<QImage> getSlices()const;
     void setMark(const QPicture & mark, int index);
     void addMark(int slice,const QPicture& mark);

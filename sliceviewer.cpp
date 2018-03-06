@@ -10,8 +10,8 @@ SliceViewer::SliceViewer(QWidget * parent /* = nullptr */) :
 	m_paintState {PaintState::All}
 {
 	resize(WIDTH, HEIGHT);
-	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-	setMinimumSize(WIDTH, HEIGHT);
+	//setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	//setMinimumSize(WIDTH, HEIGHT);
 	m_pen.setColor(Qt::black);
 	m_pen.setWidth(5);
 }
@@ -225,6 +225,7 @@ NestedSliceViewer::NestedSliceViewer(QWidget *parent):
 
     m_frontSliceViewer = new SliceViewer(this);
     m_frontEasySlider = new TitledSliderWithSpinBox(this,tr("F:"));
+
     setLayout(m_gridLayout);
 
     //main slice
@@ -232,16 +233,19 @@ NestedSliceViewer::NestedSliceViewer(QWidget *parent):
     m_gridLayout->addWidget(m_mainSliceViewer,1,0,1,3);
 
     //right slice
-    m_gridLayout->addWidget(m_rightSliceViewer,0,3,2,1);
+    m_gridLayout->addWidget(m_rightSliceViewer,1,3,1,1);
     m_gridLayout->addWidget(m_rightEasySlider,0,1);
 
     //front slice
-    m_gridLayout->addWidget(m_frontSliceViewer,2,0,1,4);
+    m_gridLayout->addWidget(m_frontSliceViewer,2,0,1,3);
     m_gridLayout->addWidget(m_frontEasySlider,0,2);
 
     connect(m_mainSliceViewer,SIGNAL(onDrawing(const QPoint&)),this,SIGNAL(onDrawing(const QPoint &)));
     connect(m_mainSliceViewer,SIGNAL(drawingFinished(QPicture)),this,SIGNAL(drawingFinished(const QPicture&)));
     connect(m_mainSliceViewer,SIGNAL(onMouseMoving(const QPoint&)),this,SIGNAL(onMouseMoving(const QPoint&)));
+	connect(m_mainEasySlider, SIGNAL(valueChanged(int)), this, SIGNAL(ZSliderChanged(int)));
+	connect(m_frontEasySlider, SIGNAL(valueChanged(int)), this, SIGNAL(YSliderChanged(int)));
+	connect(m_rightEasySlider, SIGNAL(valueChanged(int)), this, SIGNAL(XSliderChanged(int)));
 }
 
 void NestedSliceViewer::setImage(const QImage &image, const QRect &region)
@@ -270,5 +274,33 @@ void NestedSliceViewer::setMarkColor(const QColor &color){
 }
 QColor NestedSliceViewer::getMarkColor()const{
     return m_mainSliceViewer->getMarkColor();
+}
+
+void NestedSliceViewer::setMaximumImageCount(int main,int right,int front)
+{
+	m_mainEasySlider->setMaximum(main);
+	m_rightEasySlider->setMaximum(right);
+	m_frontEasySlider->setMaximum(front);
+}
+
+void NestedSliceViewer::setEnable(bool enable)
+{
+	m_mainEasySlider->setEnabled(enable);
+	m_mainSliceViewer->setEnabled(enable);
+	m_rightEasySlider->setEnabled(enable);
+	m_rightSliceViewer->setEnabled(enable);
+	m_frontEasySlider->setEnabled(enable);
+	m_frontSliceViewer->setEnabled(enable);
+}
+
+void NestedSliceViewer::resizeEvent(QResizeEvent * event)
+{
+	int width = m_mainSliceViewer->width();
+	int height = m_mainSliceViewer->height();
+	int depth = 30;
+
+	m_rightSliceViewer->resize(depth,height);
+	m_frontSliceViewer->resize(width, depth);
+
 }
 

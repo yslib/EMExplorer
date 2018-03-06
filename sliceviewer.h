@@ -93,10 +93,18 @@ public:
     void setMarks(const QVector<QPicture> & marks);
     void setMarkColor(const QColor & color);
     QColor getMarkColor()const;
+
+	void setMaximumImageCount(int main = 0, int right = 0, int front = 0);
+	void setEnable(bool enable);
 signals:
     void onDrawing(const QPoint & point);
     void drawingFinished(const QPicture & points);
     void onMouseMoving(const QPoint & pos);
+	void XSliderChanged(int index);
+	void YSliderChanged(int index);
+	void ZSliderChanged(int index);
+protected:
+	void resizeEvent(QResizeEvent* event) override;
 private:
     QGridLayout * m_gridLayout;
 

@@ -69,7 +69,7 @@ void TitledSliderWithSpinBox::setOrientation(Qt::Orientation orientation)
 void TitledSliderWithSpinBox::createConnections()
 {
     connect(m_slider,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
-    connect(m_spinBox,SIGNAL(valuedChanged(int)),this,SIGNAL(valueChanged(int)));
+    connect(m_spinBox,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
     connect(m_slider,SIGNAL(valueChanged(int)),m_spinBox,SLOT(setValue(int)));
     connect(m_spinBox,SIGNAL(valueChanged(int)),m_slider,SLOT(setValue(int)));
 }

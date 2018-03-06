@@ -59,6 +59,11 @@ private slots:
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);
     void onSliceValueChanged(int value);
+
+	void onZSliderValueChanged(int value);
+	void onYSliderValueChanged(int value);
+	void onXSliderValueChanged(int value);
+
     //void onZoomValueChanged(int value);
     void onZoomDoubleSpinBoxValueChanged(double d);
 
@@ -81,7 +86,7 @@ private:		//ui
 	QComboBox * m_mrcFileCBox;
 	
     MRCFileInfoViewer * m_fileInfoViewer;
-
+	NestedSliceViewer *m_nestedSliceViewer;
 
 	SliceViewer * m_sliceViewer;
 	QLabel * m_sliceLabel;
@@ -89,21 +94,21 @@ private:		//ui
 	QSpinBox *m_sliceSpinBox;
 
     Histogram * m_histogram;
-	QLabel * m_histMinLabel;
-	QLabel * m_histMaxLabel;
-	QSlider * m_histMinSlider;
-	QSlider * m_histMaxSlider;
-	QSpinBox * m_histMinSpinBox;
-	QSpinBox *m_histMaxSpinBox;
+	//QLabel * m_histMinLabel;
+	//QLabel * m_histMaxLabel;
+	//QSlider * m_histMinSlider;
+	//QSlider * m_histMaxSlider;
+	//QSpinBox * m_histMinSpinBox;
+	//QSpinBox *m_histMaxSpinBox;
 
 	ZoomViwer * m_zoomViewer;
-	QLabel * m_zoomLabel;
-	QSlider * m_zoomSlider;
-	QDoubleSpinBox * m_zoomSpinBox;
+	//QLabel * m_zoomLabel;
+	//QSlider * m_zoomSlider;
+	//QDoubleSpinBox * m_zoomSpinBox;
 
     PixelViewer * m_pixelViewer;
 
-    HistogramViewer * m_histViewer;
+    //HistogramViewer * m_histViewer;
 
 	//actions
 	QAction * actionColor;

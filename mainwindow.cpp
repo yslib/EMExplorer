@@ -36,11 +36,15 @@ MainWindow::MainWindow(QWidget *parent) :
     dock->setWidget(m_histogram);
     addDockWidget(Qt::RightDockWidgetArea,dock);
 
-    NestedSliceViewer * m_nestedSliceViewer = new NestedSliceViewer(this);
+    m_nestedSliceViewer = new NestedSliceViewer(this);
     dock = new QDockWidget(tr("SliceViewer"),this);
     dock->setAllowedAreas(Qt::RightDockWidgetArea);
     dock->setWidget(m_nestedSliceViewer);
     addDockWidget(Qt::RightDockWidgetArea,dock);
+
+	connect(m_nestedSliceViewer, SIGNAL(ZSliderChanged(int)), this, SLOT(onZSliderValueChanged(int)));
+	connect(m_nestedSliceViewer, SIGNAL(YSliderChanged(int)), this, SLOT(onYSliderValueChanged(int)));
+	connect(m_nestedSliceViewer, SIGNAL(XSliderChanged(int)), this, SLOT(onXSliderValueChanged(int)));
 
 
 
@@ -188,6 +192,12 @@ void MainWindow::_setMRCDataModel(int index)
     m_zoomViewer->setImage(image,region);
     /*There should be a image scale region context to be restored*/
     m_sliceViewer->setImage(image,region);
+
+	m_nestedSliceViewer->setImage(image,region);
+	m_nestedSliceViewer->setRightImage(model.getRightSlice(0));
+	m_nestedSliceViewer->setFrontImage(model.getFrontSlice(20));
+
+
 	m_sliceViewer->setMarks(model.getMarks(currentSliceIndex));
 
     /*PixelViewer*/
@@ -223,9 +233,11 @@ void MainWindow::_deleteMRCDataModel(int index)
 
 void MainWindow::_allControlWidgetsEnable(bool enable)
 {
-    //About Slice Viewer
+    //Slice Viewer
     m_sliceSlider->setEnabled(enable);
     m_sliceSpinBox->setEnabled(enable);
+
+	m_nestedSliceViewer->setEnable(enable);
 
     //About zoomViwer
     //m_zoomSlider->setEnabled(enable);
@@ -459,9 +471,6 @@ void MainWindow::onMinGrayValueChanged(int position)
 
 void MainWindow::onSliceValueChanged(int value)
 {
-    if(value>= m_sliceSlider->maximum())
-        return;
-	
     m_sliceSpinBox->setValue(value);
 
 	QRectF regionf = m_zoomViewer->zoomRegion();
@@ -469,9 +478,26 @@ void MainWindow::onSliceValueChanged(int value)
 	qDebug() << "onSliceValueChanged(int):" << region;
 	m_sliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 	m_sliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(value));
+	//
+
     m_histogram->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
 	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 
+}
+
+void MainWindow::onZSliderValueChanged(int value)
+{
+	onSliceValueChanged(value);
+
+}
+
+void MainWindow::onYSliderValueChanged(int value)
+{
+
+}
+
+void MainWindow::onXSliderValueChanged(int value)
+{
 }
 
 //void MainWindow::onZoomValueChanged(int value)
