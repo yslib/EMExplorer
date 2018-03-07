@@ -1,4 +1,3 @@
-#pragma once
 #ifndef SLICEVIEWER_H_
 #define SLICEVIEWER_H_
 #include <QWidget>
@@ -20,7 +19,7 @@ public:
 	enum class Shape{Line,Ellipse};
 	enum class PaintState{LineState,EllipseState,All};
 public:
-	SliceViewer(QWidget * parent = nullptr);
+    SliceViewer(const QSize & size,QWidget * parent = nullptr);
 	SliceViewer(QWidget * parent, const QImage & image,const QRect & rect = QRect());
     void setImage(const QImage & image,const QRect & region = QRect());
 	void addMark(const QPicture & mark);
@@ -57,6 +56,7 @@ private:
 	bool m_painting;
 
     //Some temp varibles
+
 	Shape m_shape;
 	PaintState m_paintState;
 	QPoint m_linePoint1, m_linePoint2;
@@ -73,6 +73,7 @@ private:
 	QPen m_pen;
     //canvas for painting
     QPixmap m_canvas;
+
     //a zoom rect for certain area of the image
     QRect m_imageRect;
     //marks displayed on the widgets
@@ -85,7 +86,7 @@ private:
 class NestedSliceViewer:public QWidget{
     Q_OBJECT
 public:
-    NestedSliceViewer(QWidget * parent);
+    NestedSliceViewer(const QSize & mainSize,const QSize & rightSize,const QSize & frontSize,QWidget * parent= nullptr);
     void setImage(const QImage & image,const QRect & region = QRect());
     void setRightImage(const QImage & image);
     void setFrontImage(const QImage & image);
@@ -93,9 +94,14 @@ public:
     void setMarks(const QVector<QPicture> & marks);
     void setMarkColor(const QColor & color);
     QColor getMarkColor()const;
-
 	void setMaximumImageCount(int main = 0, int right = 0, int front = 0);
 	void setEnable(bool enable);
+
+    int getXSliceValue()const{return m_rightEasySlider->value();}
+    int getYSliceValue()const{return m_frontEasySlider->value();}
+    int getZSliceValue()const{return m_mainEasySlider->value();}
+public slots:
+    void paintEnable(bool enable){return m_mainSliceViewer->paintEnable(enable);}
 signals:
     void onDrawing(const QPoint & point);
     void drawingFinished(const QPicture & points);
@@ -107,15 +113,12 @@ protected:
 	void resizeEvent(QResizeEvent* event) override;
 private:
     QGridLayout * m_gridLayout;
-
     SliceViewer * m_mainSliceViewer;
     TitledSliderWithSpinBox * m_mainEasySlider;
     SliceViewer * m_rightSliceViewer;
     TitledSliderWithSpinBox * m_rightEasySlider;
     SliceViewer * m_frontSliceViewer;
     TitledSliderWithSpinBox * m_frontEasySlider;
-
-    QWidget * m_widgetsBar;
 };
 
 

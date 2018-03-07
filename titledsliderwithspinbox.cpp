@@ -12,6 +12,7 @@ TitledSliderWithSpinBox::TitledSliderWithSpinBox(QWidget *parent, const QString 
     m_slider = new QSlider(orientation,this);
     m_spinBox = new QSpinBox(this);
     m_layout = new QGridLayout(this);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     m_layout->addWidget(m_label,0,0);
     createLayout(orientation);
     createConnections();

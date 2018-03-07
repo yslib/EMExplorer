@@ -1,6 +1,6 @@
  #include "sliceviewer.h"
 
-SliceViewer::SliceViewer(QWidget * parent /* = nullptr */) :
+SliceViewer::SliceViewer(const QSize &size, QWidget * parent /* = nullptr */) :
 	QWidget(parent),
 	m_paintEnable{ false },
 	m_painting{ false },
@@ -9,9 +9,12 @@ SliceViewer::SliceViewer(QWidget * parent /* = nullptr */) :
 	m_pen{},
 	m_paintState {PaintState::All}
 {
-	resize(WIDTH, HEIGHT);
-	//setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    //resize(WIDTH, HEIGHT);
+
+    resize(size);
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	//setMinimumSize(WIDTH, HEIGHT);
+    //resize(500,30);
 	m_pen.setColor(Qt::black);
 	m_pen.setWidth(5);
 }
@@ -20,12 +23,13 @@ SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & re
 	setImage(image,rect);
 }
 void SliceViewer::setImage(const QImage & image, const QRect & region ) {
-	m_canvas = QPixmap::fromImage(image.convertToFormat(QImage::Format_ARGB32));
+    m_canvas = QPixmap::fromImage(image.convertToFormat(QImage::Format_ARGB32));
+
 	if (region != QRect()) {
 		m_imageRect = region;
 	}
-	update();
-	updateGeometry();
+    update();
+    updateGeometry();
 }
 
 void SliceViewer::addMark(const QPicture & mark)
@@ -50,7 +54,9 @@ inline QPoint SliceViewer::thisCoordToImageCoord(const QPoint & p)
 }
 
 void SliceViewer::paintEvent(QPaintEvent *event) {
-		/*Repainting image decide by the rect and all marks*/
+
+    Q_UNUSED(event);
+        /*Repainting image decide by the rect and all marks*/
 		//QImage canvas = m_image;
 		//QImage canvas = m_image.convertToFormat(QImage::Format_ARGB32);
 
@@ -164,6 +170,7 @@ void SliceViewer::mouseMoveEvent(QMouseEvent * event)
 				m_paintState = PaintState::All;
 				QPoint center = (currentPoint - m_firstPoint) / 2 + m_firstPoint;
 				QPoint r = currentPoint - m_firstPoint;
+                Q_UNUSED(r);
 				update();
 			}
 				break;
@@ -213,18 +220,23 @@ void SliceViewer::drawEllipseOnThis(const QPoint & center, int rx, int ry)
 //}
 
 
-NestedSliceViewer::NestedSliceViewer(QWidget *parent):
+NestedSliceViewer::NestedSliceViewer(const QSize &mainSize, const QSize &rightSize, const QSize &frontSize, QWidget *parent):
     QWidget(parent){
 
     m_gridLayout = new QGridLayout(this);
-    m_mainEasySlider = new TitledSliderWithSpinBox(this,tr("Slice:"));
-    m_mainSliceViewer = new SliceViewer(this);
+    //m_gridLayout->setMargin(10);
 
-    m_rightSliceViewer = new SliceViewer(this);
+    //m_gridLayout->setSpacing(10);
+    m_mainEasySlider = new TitledSliderWithSpinBox(this,tr("Slice:"));
+    m_mainSliceViewer = new SliceViewer(mainSize,this);
+
+    m_rightSliceViewer = new SliceViewer(rightSize,this);
     m_rightEasySlider = new TitledSliderWithSpinBox(this,tr("L:"));
 
-    m_frontSliceViewer = new SliceViewer(this);
+    m_frontSliceViewer = new SliceViewer(frontSize,this);
     m_frontEasySlider = new TitledSliderWithSpinBox(this,tr("F:"));
+
+    qDebug()<<"In NestedSliceViewer Constructor"<<m_frontSliceViewer->size();
 
     setLayout(m_gridLayout);
 
@@ -285,7 +297,7 @@ void NestedSliceViewer::setMaximumImageCount(int main,int right,int front)
 
 void NestedSliceViewer::setEnable(bool enable)
 {
-	m_mainEasySlider->setEnabled(enable);
+    m_mainEasySlider->setEnabled(enable);
 	m_mainSliceViewer->setEnabled(enable);
 	m_rightEasySlider->setEnabled(enable);
 	m_rightSliceViewer->setEnabled(enable);
@@ -295,12 +307,12 @@ void NestedSliceViewer::setEnable(bool enable)
 
 void NestedSliceViewer::resizeEvent(QResizeEvent * event)
 {
-	int width = m_mainSliceViewer->width();
-	int height = m_mainSliceViewer->height();
-	int depth = 30;
-
-	m_rightSliceViewer->resize(depth,height);
-	m_frontSliceViewer->resize(width, depth);
-
+    Q_UNUSED(event);
+    int width = m_mainSliceViewer->width();
+    int height = m_mainSliceViewer->height();
+    int depth = 30;
+    m_rightSliceViewer->resize(depth,height);
+    m_frontSliceViewer->resize(width,depth);
+    qDebug()<<"frontSliceViewerSizeHint"<<m_frontSliceViewer->size();
 }
 

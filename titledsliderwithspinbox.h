@@ -43,7 +43,7 @@ private:
 class TitledSliderWidthDoubleSpinBox:public QWidget{
   Q_OBJECT
 public:
-    explicit TitledSliderWidthDoubleSpinBox(QWidget * parent = nullptr){
+    explicit TitledSliderWidthDoubleSpinBox(QWidget * parent = nullptr):QWidget(parent){
 
     }
 };
