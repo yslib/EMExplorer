@@ -18,9 +18,9 @@ SliceViewer::SliceViewer(const QSize &size, QWidget * parent /* = nullptr */) :
 	m_pen.setColor(Qt::black);
 	m_pen.setWidth(5);
 }
-SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & rect) :SliceViewer{ parent } 
+SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & rect) :SliceViewer(image.size(),parent)
 {
-	setImage(image,rect);
+    setImage(image,rect);
 }
 void SliceViewer::setImage(const QImage & image, const QRect & region ) {
     m_canvas = QPixmap::fromImage(image.convertToFormat(QImage::Format_ARGB32));

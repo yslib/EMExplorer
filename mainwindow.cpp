@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dock->setWidget(m_histogram);
     addDockWidget(Qt::RightDockWidgetArea,dock);
 
-    m_nestedSliceViewer = new NestedSliceViewer(this);
+    NestedSliceViewer * m_nestedSliceViewer = new NestedSliceViewer(QSize(500,500),QSize(30,500),QSize(500,30),this);
     //dock = new QDockWidget(tr("SliceViewer"),this);
     //dock->setAllowedAreas(Qt::RightDockWidgetArea);
     //dock->setWidget(m_nestedSliceViewer);
@@ -248,7 +248,7 @@ void MainWindow::_allControlWidgetsEnable(bool enable)
     //m_sliceSlider->setEnabled(enable);
     //m_sliceSpinBox->setEnabled(enable);
 
-	m_nestedSliceViewer->setEnable(enable);
+    //m_nestedSliceViewer->setEnable(enable);
 
     //About zoomViwer
     //m_zoomSlider->setEnabled(enable);
