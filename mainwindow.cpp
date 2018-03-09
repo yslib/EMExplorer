@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dock->setWidget(m_histogram);
     addDockWidget(Qt::RightDockWidgetArea,dock);
 
-    NestedSliceViewer * m_nestedSliceViewer = new NestedSliceViewer(QSize(500,500),QSize(30,500),QSize(500,30),this);
+    m_nestedSliceViewer = new NestedSliceViewer(QSize(),QSize(),QSize(),this);
     //dock = new QDockWidget(tr("SliceViewer"),this);
     //dock->setAllowedAreas(Qt::RightDockWidgetArea);
     //dock->setWidget(m_nestedSliceViewer);

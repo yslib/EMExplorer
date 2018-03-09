@@ -19,7 +19,7 @@ public:
 	enum class Shape{Line,Ellipse};
 	enum class PaintState{LineState,EllipseState,All};
 public:
-    SliceViewer(const QSize & size,QWidget * parent = nullptr);
+    SliceViewer(QWidget * parent = nullptr);
 	SliceViewer(QWidget * parent, const QImage & image,const QRect & rect = QRect());
     void setImage(const QImage & image,const QRect & region = QRect());
 	void addMark(const QPicture & mark);
@@ -86,7 +86,7 @@ private:
 class NestedSliceViewer:public QWidget{
     Q_OBJECT
 public:
-    NestedSliceViewer(const QSize & mainSize,const QSize & rightSize,const QSize & frontSize,QWidget * parent= nullptr);
+    NestedSliceViewer(const QSize &mainSize, const QSize &rightSize, const QSize &frontSize, QWidget * parent= nullptr);
     void setImage(const QImage & image,const QRect & region = QRect());
     void setRightImage(const QImage & image);
     void setFrontImage(const QImage & image);

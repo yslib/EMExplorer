@@ -1,6 +1,6 @@
  #include "sliceviewer.h"
 
-SliceViewer::SliceViewer(const QSize &size, QWidget * parent /* = nullptr */) :
+SliceViewer::SliceViewer(QWidget * parent /* = nullptr */) :
 	QWidget(parent),
 	m_paintEnable{ false },
 	m_painting{ false },
@@ -11,14 +11,14 @@ SliceViewer::SliceViewer(const QSize &size, QWidget * parent /* = nullptr */) :
 {
     //resize(WIDTH, HEIGHT);
 
-    resize(size);
+    //resize(size);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	//setMinimumSize(WIDTH, HEIGHT);
     //resize(500,30);
 	m_pen.setColor(Qt::black);
 	m_pen.setWidth(5);
 }
-SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & rect) :SliceViewer(image.size(),parent)
+SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & rect) :SliceViewer(parent)
 {
     setImage(image,rect);
 }
@@ -224,19 +224,19 @@ NestedSliceViewer::NestedSliceViewer(const QSize &mainSize, const QSize &rightSi
     QWidget(parent){
 
     m_gridLayout = new QGridLayout(this);
-    //m_gridLayout->setMargin(10);
+    m_gridLayout->setMargin(30);
 
     //m_gridLayout->setSpacing(10);
-    m_mainEasySlider = new TitledSliderWithSpinBox(this,tr("Slice:"));
-    m_mainSliceViewer = new SliceViewer(mainSize,this);
+    m_mainEasySlider = new TitledSliderWithSpinBox(this,tr("T:"));
+    m_mainSliceViewer = new SliceViewer(this);
 
-    m_rightSliceViewer = new SliceViewer(rightSize,this);
+    m_rightSliceViewer = new SliceViewer(this);
     m_rightEasySlider = new TitledSliderWithSpinBox(this,tr("L:"));
 
-    m_frontSliceViewer = new SliceViewer(frontSize,this);
+    m_frontSliceViewer = new SliceViewer(this);
     m_frontEasySlider = new TitledSliderWithSpinBox(this,tr("F:"));
 
-    qDebug()<<"In NestedSliceViewer Constructor"<<m_frontSliceViewer->size();
+    //qDebug()<<"In NestedSliceViewer Constructor"<<m_frontSliceViewer->size();
 
     setLayout(m_gridLayout);
 
