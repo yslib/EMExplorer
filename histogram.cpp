@@ -1,11 +1,17 @@
 #include "histogram.h"
 #include <qdebug.h>
+#include <QMouseEvent>
+#include <algorithm>
 
 Histogram::Histogram(QWidget *parent):QWidget(parent),
     m_hist{QVector<int>(BIN_COUNT)},
     m_minValue{0},
     m_maxValue{BIN_COUNT-1},
-    m_count{0}
+    m_count{0},
+    m_mousePressed{false},
+    m_rightCursorSelected{false},
+    m_leftCursorSelected{false},
+    m_cursorEnable{true}
 {
     setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
     setMinimumSize(MIN_WIDTH,MIN_HEIGHT);
@@ -48,7 +54,7 @@ QSize Histogram::sizeHint() const
     return m_histImage.size();
 }
 
-void Histogram::setMinimumValue(int value)
+void Histogram::setMinimumCursorValue(int value)
 {
 	if (value < 0) {
 		value = 0;
@@ -64,10 +70,10 @@ void Histogram::setMinimumValue(int value)
 	}
 	update();
 	updateGeometry();
-	emit valueChanged(m_minValue, m_maxValue);
+    emit cursorValueChanged(m_minValue, m_maxValue);
 }
 
-void Histogram::setMaximumValue(int value)
+void Histogram::setMaximumCursorValue(int value)
 {
 	if (value < 0) {
 		value = 0;
@@ -83,7 +89,22 @@ void Histogram::setMaximumValue(int value)
 	}
 	update();
 	updateGeometry();
-	emit valueChanged(m_minValue, m_maxValue);
+    emit cursorValueChanged(m_minValue, m_maxValue);
+}
+
+int Histogram::getMinimumCursorValue() const
+{
+   return m_minValue;
+}
+
+int Histogram::getMaximumCursorValue() const
+{
+    return m_maxValue;
+}
+
+void Histogram::setCursorEnable(bool enable)
+{
+    m_cursorEnable = enable;
 }
 
 
@@ -100,7 +121,7 @@ void Histogram::paintEvent(QPaintEvent *event)
    qreal width = static_cast<qreal>(image.width());
    qreal binWidth = width/BIN_COUNT;
 
-     //Drawing histogram
+   //Drawing histogram
    if(m_count != 0){
        imagePainter.setPen(QColor(0,0,0));
        imagePainter.setBrush(QBrush(QColor(0,0,0)));
@@ -126,13 +147,101 @@ void Histogram::paintEvent(QPaintEvent *event)
    imagePainter.end();
    QPainter widgetPainter(this);
    widgetPainter.drawImage(0,0,image);
+
 }
 
 void Histogram::mouseMoveEvent(QMouseEvent *event)
 {
-
+    if(m_mousePressed == true){
+        if(m_rightCursorSelected == true){
+            int value = static_cast<qreal>(event->pos().x())/width()*BIN_COUNT;
+            m_maxValue = value<m_minValue?m_minValue:value;
+            emit maxCursorValueChanged(m_maxValue);
+        }else if(m_leftCursorSelected == true){
+            int value = static_cast<qreal>(event->pos().x())/width()*BIN_COUNT;
+            m_minValue = value>m_maxValue?m_maxValue:value;
+            emit minCursorValueChanged(m_minValue);
+        }
+        update();
+        updateGeometry();
+        emit cursorValueChanged(m_minValue,m_maxValue);
+    }
 }
 
 void Histogram::mousePressEvent(QMouseEvent * event)
 {
+    m_mousePressed = true;
+    if(m_cursorEnable == true){
+       qreal x = event->pos().x();
+       qreal dl = std::abs(x - getXofLeftCursor());
+       qreal dr = std::abs(x - getXofRightCursor());
+       if(dl < dr && dl < 5.0){
+           m_leftCursorSelected = true;
+       }else if(dr < dl && dr < 5.0){
+           m_rightCursorSelected = true;
+       }
+    }
 }
+
+void Histogram::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(m_mousePressed == true)
+        m_mousePressed = false;
+    m_leftCursorSelected = false;
+    m_rightCursorSelected = false;
+}
+
+qreal Histogram::getXofLeftCursor()
+{
+    qreal binWidth = static_cast<qreal>(size().width())/BIN_COUNT;
+    qreal x = m_minValue*binWidth+binWidth/2;
+    return x;
+}
+
+qreal Histogram::getXofRightCursor()
+{
+    qreal binWidth = static_cast<qreal>(size().width())/BIN_COUNT;
+    qreal x = m_maxValue*binWidth+binWidth/2;
+    return x;
+}
+/*
+ * HistogramViewer Definitions
+*/
+HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent)
+{
+    m_layout = new QGridLayout(this);
+    m_hist = new Histogram(this);
+    m_minSlider = new TitledSliderWithSpinBox(this,QString("MinValue:"));
+    m_maxSlider = new TitledSliderWithSpinBox(this,QString("MaxValue:"));
+
+    m_layout->addWidget(m_hist,0,0);
+    m_layout->addWidget(m_minSlider,1,0);
+    m_layout->addWidget(m_maxSlider,2,0);
+
+}
+
+HistogramViewer::HistogramViewer(QWidget *parent, const QImage &image)noexcept:HistogramViewer(parent)
+{
+   setImage(image);
+}
+
+void HistogramViewer::setImage(const QImage &image)
+{
+    m_hist->setImage(image);
+}
+
+QVector<int> HistogramViewer::getHist() const
+{
+    return m_hist->getHist();
+}
+void HistogramViewer::setMinimumMarkPosition(int value)
+{
+    m_hist->setMinimumCursorValue(value);
+}
+
+void HistogramViewer::setMaximumMarkPosition(int value)
+{
+    m_hist->setMaximumCursorValue(value);
+}
+
+

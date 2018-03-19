@@ -1,12 +1,20 @@
 #include "titledsliderwithspinbox.h"
+#include <QLabel>
+#include <QSlider>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QLayout>
 
-TitledSliderWithSpinBox::TitledSliderWithSpinBox(QWidget *parent, const QString &title):QWidget(parent)
+
+TitledSliderWithSpinBox::TitledSliderWithSpinBox(QWidget *parent, const QString &title, Qt::Orientation orientation):QWidget(parent)
 {
     m_label = new QLabel(title,this);
-    m_slider = new QSlider(Qt::Horizontal,this);
+    m_slider = new QSlider(orientation,this);
     m_spinBox = new QSpinBox(this);
-
-    createLayout();
+    m_layout = new QGridLayout(this);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+    m_layout->addWidget(m_label,0,0);
+    createLayout(orientation);
     createConnections();
 }
 
@@ -54,23 +62,30 @@ void TitledSliderWithSpinBox::setEnabled(bool enabled)
    m_spinBox->setEnabled(enabled);
 }
 
+void TitledSliderWithSpinBox::setOrientation(Qt::Orientation orientation)
+{
+    createLayout(orientation);
+}
+
 void TitledSliderWithSpinBox::createConnections()
 {
     connect(m_slider,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
-    connect(m_spinBox,SIGNAL(valuedChanged(int)),this,SIGNAL(valueChanged(int)));
+    connect(m_spinBox,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
     connect(m_slider,SIGNAL(valueChanged(int)),m_spinBox,SLOT(setValue(int)));
     connect(m_spinBox,SIGNAL(valueChanged(int)),m_slider,SLOT(setValue(int)));
 }
 
-void TitledSliderWithSpinBox::createLayout()
+void TitledSliderWithSpinBox::createLayout(Qt::Orientation orientation)
 {
-    QHBoxLayout * layout = new QHBoxLayout(this);
-    layout->setMargin(0);
-    setLayout(layout);
-
-    layout->addWidget(m_label);
-    layout->addWidget(m_slider);
-    layout->addWidget(m_spinBox);
+    m_layout->removeWidget(m_slider);
+    m_layout->removeWidget(m_spinBox);
+    if(orientation == Qt::Vertical){
+        m_layout->addWidget(m_slider,1,0);
+        m_layout->addWidget(m_spinBox,2,0);
+    }else{
+        m_layout->addWidget(m_slider,0,1);
+        m_layout->addWidget(m_spinBox,0,2);
+    }
 }
 
 

@@ -5,10 +5,10 @@
 #include <QLabel>
 #include <QVariant>
 #include <QGridLayout>
+#include <QPushButton>
 #include <QImage>
 #include <QPoint>
 #include <QSharedPointer>
-
 class PixelViewer:public QWidget
 {
     Q_OBJECT
@@ -26,13 +26,15 @@ private:
     void changeValue(const QImage & image,const QPoint & pos);
 private:
     QImage m_image;
-    QVector<QSharedPointer<QLabel>> m_pixelLabels;
+    QVector<QSharedPointer<QPushButton>> m_pixelLabels;
     QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;
     QVector<QSharedPointer<QLabel>> m_rowHeadersLabels;
     QSharedPointer<QLabel> m_cornerLabel;
     QPoint m_pos;
     int m_width;
     int m_height;
+    int m_minValueIndex;
+    int m_maxValueIndex;
     QGridLayout * layout;
 };
 

@@ -24,6 +24,8 @@
 #include "sliceviewer.h"
 #include "MRCDataModel.h"
 #include "pixelviewer.h"
+#include "mrcfileinfoviewer.h"
+
 
 
 namespace Ui {
@@ -57,6 +59,11 @@ private slots:
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);
     void onSliceValueChanged(int value);
+
+	void onZSliderValueChanged(int value);
+	void onYSliderValueChanged(int value);
+	void onXSliderValueChanged(int value);
+
     //void onZoomValueChanged(int value);
     void onZoomDoubleSpinBoxValueChanged(double d);
 
@@ -78,30 +85,20 @@ private:		//ui
 	QLabel * m_mrcFileLabel;
 	QComboBox * m_mrcFileCBox;
 	
+    MRCFileInfoViewer * m_fileInfoViewer;
+	NestedSliceViewer *m_nestedSliceViewer;
 
-	SliceViewer * m_sliceViewer;
-	QLabel * m_sliceLabel;
-	QSlider * m_sliceSlider;
-	QSpinBox *m_sliceSpinBox;
 
-    Histogram * m_histogramViewer;
-	QLabel * m_histMinLabel;
-	QLabel * m_histMaxLabel;
-	QSlider * m_histMinSlider;
-	QSlider * m_histMaxSlider;
-	QSpinBox * m_histMinSpinBox;
-	QSpinBox *m_histMaxSpinBox;
+    Histogram * m_histogram;
 
 	ZoomViwer * m_zoomViewer;
-	QLabel * m_zoomLabel;
-	QSlider * m_zoomSlider;
-	QDoubleSpinBox * m_zoomSpinBox;
 
     PixelViewer * m_pixelViewer;
 
-
 	//actions
-	QAction * actionColor;
+    QAction * m_actionColor;
+    QAction * m_actionOpen;
+
 
 
 private:

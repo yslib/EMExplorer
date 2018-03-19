@@ -1,6 +1,8 @@
 #include "MRCDataModel.h"
 #include <QPainter>
 #include <qdebug.h>
+#include <memory>
+#include <cassert>
 MRCDataModel::MRCDataModel() :
 	m_mrcContext{},
 	m_modified{},
@@ -234,6 +236,47 @@ void MRCDataModel::setSlice(const QImage & image, int index)
 	//memcpy(m_mrcFile.data(), image.bits(), width*height * sizeof(unsigned char));
 	m_modifiedFlags[index] = true;
 	m_modified[index] = image;
+}
+
+
+QImage MRCDataModel::getRightSlice(int index) const
+{
+	int width = m_mrcFile.getWidth();
+	int height = m_mrcFile.getHeight();
+	int slice = m_mrcFile.getSliceCount();
+	int size = width * height *slice;
+	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
+	auto data = m_mrcFile.data();
+	for(int i=0;i<height;i++)
+	{
+		for(int j =0;j<slice;j++)
+		{
+			int idx = index + i * width + j * width*height;
+			assert(idx < size);
+			imageBuffer[j + i * slice] = data[idx];
+		}
+	}
+	return QImage(imageBuffer.get(), slice, height, QImage::Format_Grayscale8).copy();
+}
+
+QImage MRCDataModel::getFrontSlice(int index) const
+{
+	int width = m_mrcFile.getWidth();
+	int height = m_mrcFile.getHeight();
+	int slice = m_mrcFile.getSliceCount();
+	int size = width * height *slice;
+	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
+	auto data = m_mrcFile.data();
+	for(int i=0;i<slice;i++)
+	{
+		for(int j =0;j<width;j++)
+		{
+			int idx = j + index * width+ i* width*height;
+			assert(idx < size);
+			imageBuffer[j + i * width] = data[idx];
+		}
+	}
+	return QImage(imageBuffer.get(),width,slice, QImage::Format_Grayscale8).copy();
 }
 
 QVector<QImage> MRCDataModel::getSlices() const
