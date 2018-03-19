@@ -88,30 +88,17 @@ private:		//ui
     MRCFileInfoViewer * m_fileInfoViewer;
 	NestedSliceViewer *m_nestedSliceViewer;
 
-    //SliceViewer * m_sliceViewer;
-    //QLabel * m_sliceLabel;
-    //QSlider * m_sliceSlider;
-    //QSpinBox *m_sliceSpinBox;
 
     Histogram * m_histogram;
-	//QLabel * m_histMinLabel;
-	//QLabel * m_histMaxLabel;
-	//QSlider * m_histMinSlider;
-	//QSlider * m_histMaxSlider;
-	//QSpinBox * m_histMinSpinBox;
-	//QSpinBox *m_histMaxSpinBox;
 
 	ZoomViwer * m_zoomViewer;
-	//QLabel * m_zoomLabel;
-	//QSlider * m_zoomSlider;
-	//QDoubleSpinBox * m_zoomSpinBox;
 
     PixelViewer * m_pixelViewer;
 
-    //HistogramViewer * m_histViewer;
-
 	//actions
-	QAction * actionColor;
+    QAction * m_actionColor;
+    QAction * m_actionOpen;
+
 
 
 private:

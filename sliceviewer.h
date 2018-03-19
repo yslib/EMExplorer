@@ -54,21 +54,17 @@ private:
 	bool m_originalSize;
 	bool m_paintEnable;
 	bool m_painting;
-
     //Some temp varibles
-
 	Shape m_shape;
 	PaintState m_paintState;
 	QPoint m_linePoint1, m_linePoint2;
 	QPoint m_ellipseCenter;
     int m_rx, m_ry;
-
     //Temp points generated during painting
 	QVector<QPoint> m_points;
 	QPoint m_prevPoint;
 	QPoint m_firstPoint;
 	QPoint m_lastPoint;
-
     //Pen properties
 	QPen m_pen;
     //canvas for painting
