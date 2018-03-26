@@ -39,11 +39,18 @@ struct MRCContext{
     int minSlice;
     int currentSlice;
     double currentScale;
-
     MRC mrcFile;
     QVector<QPixmap> images;
 
 };
+
+
+class Histogram;
+class HistogramViewer;
+class SliceViewer;
+class PixelViewer;
+class ImageViewer;
+class MRCFileInfoViewer;
 
 class MainWindow : public QMainWindow
 {
@@ -81,41 +88,31 @@ private:
 private:
     static constexpr int ZOOM_SLIDER_MAX_VALUE=100;
 private:		//ui
-
 	QLabel * m_mrcFileLabel;
 	QComboBox * m_mrcFileCBox;
-	
     MRCFileInfoViewer * m_fileInfoViewer;
 	NestedSliceViewer *m_nestedSliceViewer;
-
-
     Histogram * m_histogram;
-
+    HistogramViewer * m_histogramView;
 	ZoomViwer * m_zoomViewer;
-
     PixelViewer * m_pixelViewer;
-
 	//actions
     QAction * m_actionColor;
     QAction * m_actionOpen;
 
 
-
+    //test
+    ImageViewer * m_imageViewer;
 private:
-
     void createActions();
     void createStatusBar();
     void createDockWindows();
-
-
 	void _addMRCDataModel(const MRCDataModel & model);
 	void _addMRCDataModel(MRCDataModel && model);
 	void _setMRCDataModel(int index);
 	void _saveMRCDataModel();
     void _deleteMRCDataModel(int index);
-
     void _allControlWidgetsEnable(bool enable);
-
     void _updateGrayThreshold(int minGray,int maxGray);
     void _initUI();
 	void _connection();

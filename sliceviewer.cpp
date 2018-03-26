@@ -10,13 +10,13 @@ SliceViewer::SliceViewer(QWidget * parent /* = nullptr */) :
 	m_paintState {PaintState::All}
 {
     //resize(WIDTH, HEIGHT);
-
     //resize(size);
-    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 	//setMinimumSize(WIDTH, HEIGHT);
     //resize(500,30);
 	m_pen.setColor(Qt::black);
 	m_pen.setWidth(5);
+    setStyleSheet(QString("border:1px solid red"));
 }
 SliceViewer::SliceViewer(QWidget * parent, const QImage & image,const QRect & rect) :SliceViewer(parent)
 {

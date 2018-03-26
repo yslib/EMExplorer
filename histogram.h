@@ -18,19 +18,19 @@ class Histogram:public QWidget
 public:
     explicit Histogram(QWidget *parent = nullptr);
     explicit Histogram(QWidget *parent, const QImage & image);
-
     void setImage(const QImage & image);
     QVector<int> getHist()const;
     QSize sizeHint()const override;
-    void setMinimumCursorValue(int value);
-    void setMaximumCursorValue(int value);
     int getMinimumCursorValue()const;
     int getMaximumCursorValue()const;
-    void setCursorEnable(bool enable);
+    int getBinCount()const;
+    void setDragEnable(bool enable);
+public slots:
+    void setLeftCursorValue(int value);
+    void setRightCursorValue(int value);
 signals:
-    void minCursorValueChanged(int value);
-    void maxCursorValueChanged(int value);
-    void cursorValueChanged(int minVal, int maxVal);
+    void minValueChanged(int value);
+    void maxValueChanged(int value);
 protected:
     void paintEvent(QPaintEvent *event)override;
     void mouseMoveEvent(QMouseEvent *event)override;
@@ -56,8 +56,6 @@ private:
 private:
     qreal getXofLeftCursor();
     qreal getXofRightCursor();
-
-
 };
 
 
@@ -67,13 +65,17 @@ class HistogramViewer:public QWidget
 public:
     explicit HistogramViewer(QWidget * parent = nullptr)noexcept;
     explicit HistogramViewer(QWidget * parent, const QImage & image)noexcept;
-
     void setImage(const QImage & image);
     QVector<int> getHist()const;
-    void setMinimumMarkPosition(int value);
-    void setMaximumMarkPosition(int value);
+    void setEnabled(bool enable);
+    int getLeftCursorValue()const;
+    int getRightCursorValue()const;
+public slots:
+    void setLeftCursorValue(int value);
+    void setRightCursorValue(int value);
 signals:
-    void valueChanged(int min,int max);
+    void minValueChanged(int value);
+    void maxValueChanged(int value);
 private:
     QGridLayout * m_layout;
     Histogram * m_hist;

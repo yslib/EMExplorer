@@ -6,6 +6,7 @@
 #include <QDockWidget>
 #include <QMenu>
 #include <QAction>
+#include "imageviewer.h"
 
 QSize imageSize(500,500);
 
@@ -42,14 +43,33 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
 
     //histogram dock widget
-    m_histogram = new Histogram(this);
-    dock = new QDockWidget(tr("Histogram"),this);
+//    m_histogram = new Histogram(this);
+//    dock = new QDockWidget(tr("Histogram"),this);
+//    dock->setAllowedAreas(Qt::RightDockWidgetArea);
+//    dock->setWidget(m_histogram);
+//    addDockWidget(Qt::RightDockWidgetArea,dock);
+//    viewMenu->addAction(dock->toggleViewAction());
+//    connect(m_histogram,SIGNAL(minCursorValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
+//    connect(m_histogram,SIGNAL(maxCursorValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+
+    m_histogramView = new HistogramViewer(this);
+    dock = new QDockWidget(tr("Histgoram"),this);
     dock->setAllowedAreas(Qt::RightDockWidgetArea);
-    dock->setWidget(m_histogram);
+    dock->setWidget(m_histogramView);
     addDockWidget(Qt::RightDockWidgetArea,dock);
     viewMenu->addAction(dock->toggleViewAction());
-    connect(m_histogram,SIGNAL(minCursorValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
-    connect(m_histogram,SIGNAL(maxCursorValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+
+    connect(m_histogramView,SIGNAL(minValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
+    connect(m_histogramView,SIGNAL(maxValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+
+    //Image Viewer
+    m_imageViewer = new ImageViewer(this);
+    dock = new QDockWidget(tr("Image Viewer"),this);
+    dock->setAllowedAreas(Qt::RightDockWidgetArea);
+    dock->setWidget(m_imageViewer);
+    addDockWidget(Qt::RightDockWidgetArea,dock);
+    viewMenu->addAction(dock->toggleViewAction());
+
 
     //file infomation viwer widget
     m_fileInfoViewer = new MRCFileInfoViewer(this);
@@ -214,19 +234,25 @@ void MainWindow::_setMRCDataModel(int index)
     int maxGrayscaleValue = model.getMaxGrayscale();
     int grayscaleStrechingLowerBound = model.getGrayscaleStrechingLowerBound();
 
-    m_histogram->setMinimumCursorValue(grayscaleStrechingLowerBound);
+    //m_histogram->setLeftCursorValue(grayscaleStrechingLowerBound);
+    m_histogramView->setLeftCursorValue(grayscaleStrechingLowerBound);
 
 	/*Min Gray Slider and SpinBox*/
     int grayscaleStrechingUpperBound = model.getGrayscaleStrechingUpperBound();
-    m_histogram->setMaximumCursorValue(grayscaleStrechingUpperBound);
-
+    //m_histogram->setRightCursorValue(grayscaleStrechingUpperBound);
+    m_histogramView->setRightCursorValue(grayscaleStrechingUpperBound);
 
     const QImage & image = model.getSlice(currentSliceIndex);
+
+    //ImageViewer
+
+    //m_imageViewer->setImage(image);
 
 	/*Histogram*/
 
     QRect region = model.getZoomRegion();
-    m_histogram->setImage(image);
+    //m_histogram->setImage(image);
+    m_histogramView->setImage(image);
 	/*ZoomViwer*/
     m_zoomViewer->setImage(image,region);
     /*There should be a image scale region context to be restored*/
@@ -260,8 +286,8 @@ void MainWindow::_saveMRCDataModel()
 
     model.setCurrentSlice(sliceIndex);
 
-    model.setGrayscaleStrechingLowerBound(m_histogram->getMinimumCursorValue());
-    model.setGrayScaleStrechingUpperBound(m_histogram->getMaximumCursorValue());
+    model.setGrayscaleStrechingLowerBound(m_histogramView->getLeftCursorValue());
+    model.setGrayScaleStrechingUpperBound(m_histogramView->getRightCursorValue());
     model.setZoomRegion(m_zoomViewer->zoomRegion().toRect());
 }
 
@@ -272,8 +298,7 @@ void MainWindow::_deleteMRCDataModel(int index)
 
 void MainWindow::_allControlWidgetsEnable(bool enable)
 {
-    m_histogram->setEnabled(enable);
-
+    m_histogramView->setEnabled(enable);
 }
 
 
@@ -333,8 +358,12 @@ void MainWindow::_destroy()
 
 void MainWindow::onMaxGrayValueChanged(int position)
 {
-    int minv = m_histogram->getMinimumCursorValue();
-    int maxv = m_histogram->getMaximumCursorValue();
+    //int minv = m_histogram->getMinimumCursorValue();
+    //int maxv = m_histogram->getMaximumCursorValue();
+    int minv = m_histogramView->getLeftCursorValue();
+    int maxv = m_histogramView->getRightCursorValue();
+
+
     qDebug()<<minv<<" "<<maxv;
     _updateGrayThreshold(minv,maxv);
 
@@ -346,8 +375,12 @@ void MainWindow::onMaxGrayValueChanged(int position)
 
 void MainWindow::onMinGrayValueChanged(int position)
 {
-    int minv = m_histogram->getMinimumCursorValue();
-    int maxv = m_histogram->getMaximumCursorValue();
+
+    //int minv = m_histogram->getMinimumCursorValue();
+    //int maxv = m_histogram->getMaximumCursorValue();
+    int minv = m_histogramView->getLeftCursorValue();
+    int maxv = m_histogramView->getRightCursorValue();
+
     qDebug()<<minv<<" "<<maxv;
 
     _updateGrayThreshold(minv,maxv);
@@ -368,7 +401,8 @@ void MainWindow::onZSliderValueChanged(int value)
     m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
     m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(value));
     //
-    m_histogram->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+    //m_histogram->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+    m_histogramView->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
     m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
 }
 
