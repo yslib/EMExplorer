@@ -246,7 +246,9 @@ void MainWindow::_setMRCDataModel(int index)
 
     //ImageViewer
 
-    //m_imageViewer->setImage(image);
+    m_imageViewer->setTopImage(image);
+    m_imageViewer->setRightImage(model.getRightSlice(0));
+    m_imageViewer->setFrontImage(model.getFrontSlice(0));
 
 	/*Histogram*/
 
@@ -260,7 +262,7 @@ void MainWindow::_setMRCDataModel(int index)
 
 	m_nestedSliceViewer->setImage(image,region);
 	m_nestedSliceViewer->setRightImage(model.getRightSlice(0));
-	m_nestedSliceViewer->setFrontImage(model.getFrontSlice(20));
+    m_nestedSliceViewer->setFrontImage(model.getFrontSlice(0));
 
 
     m_nestedSliceViewer->setMarks(model.getMarks(currentSliceIndex));
