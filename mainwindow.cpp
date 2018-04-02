@@ -71,6 +71,15 @@ MainWindow::MainWindow(QWidget *parent) :
     viewMenu->addAction(dock->toggleViewAction());
 
 
+    //Test ImageView
+    m_imageView = new ImageView(this);
+    dock = new QDockWidget(tr("Image Viewer"),this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+    dock->setWidget(m_imageView);
+    addDockWidget(Qt::LeftDockWidgetArea,dock);
+    viewMenu->addAction(dock->toggleViewAction());
+
+
     //file infomation viwer widget
     m_fileInfoViewer = new MRCFileInfoViewer(this);
     dock = new QDockWidget(tr("Files"),this);
@@ -246,11 +255,14 @@ void MainWindow::_setMRCDataModel(int index)
 
     //ImageViewer
 
+
     m_imageViewer->setTopImage(image);
     m_imageViewer->setRightImage(model.getRightSlice(0));
     m_imageViewer->setFrontImage(model.getFrontSlice(0));
+    m_imageView->setTopImage(image);
 
 	/*Histogram*/
+
 
     QRect region = model.getZoomRegion();
     //m_histogram->setImage(image);

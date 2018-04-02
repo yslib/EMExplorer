@@ -51,6 +51,7 @@ class SliceViewer;
 class PixelViewer;
 class ImageViewer;
 class MRCFileInfoViewer;
+class ImageView;
 
 class MainWindow : public QMainWindow
 {
@@ -103,6 +104,7 @@ private:		//ui
 
     //test
     ImageViewer * m_imageViewer;
+    ImageView * m_imageView;
 private:
     void createActions();
     void createStatusBar();

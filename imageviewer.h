@@ -7,12 +7,14 @@
 #include <QPicture>
 #include <QVector>
 #include <QList>
-
+#include <QGraphicsView>
 
 QT_BEGIN_NAMESPACE
 class QGridLayout;
 class QLabel;
 class QWheelEvent;
+class QGraphicsView;
+class QGraphicsScene;
 QT_END_NAMESPACE
 
 class ImageViewer : public QScrollArea
@@ -76,5 +78,40 @@ private:
 
 public slots:
 };
+
+
+
+class GraphicsScene:public QGraphicsScene
+{
+public:
+    GraphicsScene(QObject * parent =nullptr);
+protected:
+
+};
+
+class GraphicsView:public QGraphicsView
+{
+public:
+    GraphicsView(QWidget * parent = nullptr);
+protected:
+
+};
+
+class ImageView:public QWidget
+{
+    Q_OBJECT
+    GraphicsView * m_view;
+    GraphicsScene * m_scene;
+    QGridLayout *m_layout;
+public:
+    ImageView(QWidget * parent = nullptr);
+    void setTopImage(const QImage &image);
+    void setRightImage(const QImage &image);
+    void setFrontImage(const QImage & image);
+public slots:
+
+};
+
+
 
 #endif // IMAGEVIEWER_H
