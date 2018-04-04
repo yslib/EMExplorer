@@ -220,19 +220,20 @@ ImageView::ImageView(QWidget *parent):QWidget(parent)
 {
     m_view = new GraphicsView(this);
     m_scene = new GraphicsScene(this);
+    m_scene->setSceneRect(0,0,500,500);
     m_view->setScene(m_scene);
+    m_view->scale(0.1,0.1);
     m_layout = new QGridLayout(this);
     m_layout->addWidget(m_view);
-    //m_view->resize(QSize(500,500));
-    m_view->scale(0.1,0.1);
+    m_paint = false;
     setLayout(m_layout);
 }
 
 void ImageView::setTopImage(const QImage &image)
 {
-    QGraphicsPixmapItem * item = m_scene->addPixmap(QPixmap::fromImage(image));
-    item->setPos(500,500);
-    m_scene->update();
+    m_slice = m_scene->addPixmap(QPixmap::fromImage(image));
+    QSize size= image.size();
+    m_slice->setPos(-size.width()/2,-size.height()/2);
 }
 
 void ImageView::setRightImage(const QImage &image)
@@ -244,10 +245,42 @@ void ImageView::setFrontImage(const QImage &image)
 {
 
 }
-
-GraphicsView::GraphicsView(QWidget *parent):QGraphicsView(parent)
+GraphicsView::GraphicsView(QWidget *parent):QGraphicsView(parent),m_scaleFactor(0.5),m_paint(false)
 {
+    scale(m_scaleFactor,m_scaleFactor);
 
+}
+
+void GraphicsView::wheelEvent(QWheelEvent *event){
+    int delta = event->delta();
+    if(delta > 0){
+        scale(1.1,1.1);
+    }else{
+        scale(0.9,0.9);
+    }
+}
+
+void GraphicsView::mousePressEvent(QMouseEvent *event)
+{
+    qDebug()<<"View mouse press event";
+    m_paint =true;
+    m_points.clear();
+}
+
+void GraphicsView::mouseMoveEvent(QMouseEvent *event)
+{
+    if(m_paint == true){
+        m_points<<event->pos();
+    }
+}
+
+void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
+{
+    m_paint = false;
+
+    QPointF firstPoint(m_points.first());
+
+    QGraphicsItem * item = scene()->itemAt(firstPoint);
 }
 
 GraphicsScene::GraphicsScene(QObject *parent):QGraphicsScene(parent)

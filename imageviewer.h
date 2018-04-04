@@ -8,13 +8,16 @@
 #include <QVector>
 #include <QList>
 #include <QGraphicsView>
-
+#include <QGraphicsItem>
+#include <QScopedPointer>
+#include <memory>
 QT_BEGIN_NAMESPACE
 class QGridLayout;
 class QLabel;
 class QWheelEvent;
 class QGraphicsView;
 class QGraphicsScene;
+class QMouseEvent;
 QT_END_NAMESPACE
 
 class ImageViewer : public QScrollArea
@@ -80,6 +83,16 @@ public slots:
 };
 
 
+class StrokeMark:public QGraphicsItem{
+    QRectF m_boundingRect;
+    QPainterPath m_painterPath;
+    QList<QPoint> m_points;
+public:
+    StrokeMark(QGraphicsItem * parent = nullptr);
+    QRectF boundingRect()const override;
+    QPainterPath shape()const override;
+    void paint(QPainter * painter,const QStyleOptionGraphicsItem * option,QWidget * widget)override;
+};
 
 class GraphicsScene:public QGraphicsScene
 {
@@ -91,10 +104,16 @@ protected:
 
 class GraphicsView:public QGraphicsView
 {
+    qreal m_scaleFactor;
+    bool m_paint;
+    QList<QPoint> m_points;
 public:
     GraphicsView(QWidget * parent = nullptr);
 protected:
-
+    void mousePressEvent(QMouseEvent * event)override;
+    void mouseMoveEvent(QMouseEvent * event)override;
+    void mouseReleaseEvent(QMouseEvent * event)override;
+    void wheelEvent(QWheelEvent * event)override;
 };
 
 class ImageView:public QWidget
@@ -103,13 +122,15 @@ class ImageView:public QWidget
     GraphicsView * m_view;
     GraphicsScene * m_scene;
     QGridLayout *m_layout;
+    QGraphicsPixmapItem * m_slice;
+    //QList<QPoint> m_points;
+    bool m_paint;
 public:
     ImageView(QWidget * parent = nullptr);
     void setTopImage(const QImage &image);
     void setRightImage(const QImage &image);
     void setFrontImage(const QImage & image);
 public slots:
-
 };
 
 
