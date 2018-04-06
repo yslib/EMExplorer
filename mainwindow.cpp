@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include <QPen>
 #include <QRect>
 #include <QDockWidget>
@@ -363,7 +362,7 @@ void MainWindow::_initUI()
 void MainWindow::_connection()
 {
 
-    }
+}
 
 void MainWindow::_destroy()
 {

@@ -18,6 +18,8 @@ class QWheelEvent;
 class QGraphicsView;
 class QGraphicsScene;
 class QMouseEvent;
+class QGraphicsSceneMouseEvent;
+class QGraphicsSceneWheelEvent;
 QT_END_NAMESPACE
 
 class ImageViewer : public QScrollArea
@@ -83,30 +85,66 @@ public slots:
 };
 
 
-class StrokeMark:public QGraphicsItem{
+enum ItemTypes
+{
+	Slice =1 ,
+	Mark
+};
+
+
+class StrokeMarkItem:public QGraphicsItem{
     QRectF m_boundingRect;
     QPainterPath m_painterPath;
-    QList<QPoint> m_points;
+    QList<QPointF> m_points;
 public:
-    StrokeMark(QGraphicsItem * parent = nullptr);
-    QRectF boundingRect()const override;
-    QPainterPath shape()const override;
+	enum { Type = UserType + Mark };
+    StrokeMarkItem(QGraphicsItem * parent = nullptr);
+	QRectF boundingRect()const override { return m_boundingRect; }
+	QPainterPath shape()const override { return QPainterPath(); }
+	void addPoint(const QPointF & p);
     void paint(QPainter * painter,const QStyleOptionGraphicsItem * option,QWidget * widget)override;
+	int type() const override { return Type; }
+private:
+	QRectF unionWith(const QRectF & rect,const QPointF & p);
+protected:
+	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+	void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+	void wheelEvent(QGraphicsSceneWheelEvent* event) override;
 };
+
+class SliceItem:public QGraphicsPixmapItem
+{
+public:
+	enum{Type = UserType + Slice};
+	SliceItem(QGraphicsItem * parent = nullptr):QGraphicsPixmapItem(parent){}
+	SliceItem(const QPixmap & pixmap, QGraphicsItem * parent = nullptr):QGraphicsPixmapItem(pixmap,parent){}
+	int type() const override { return Type; }
+	virtual  ~SliceItem() = default;
+protected:
+	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+	void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+	void wheelEvent(QGraphicsSceneWheelEvent* event) override;
+};
+
 
 class GraphicsScene:public QGraphicsScene
 {
 public:
     GraphicsScene(QObject * parent =nullptr);
 protected:
-
+	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+	void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+	void wheelEvent(QGraphicsSceneWheelEvent* event) override;
 };
 
 class GraphicsView:public QGraphicsView
 {
     qreal m_scaleFactor;
-    bool m_paint;
-    QList<QPoint> m_points;
+    QVector<QPoint> m_points;
+	SliceItem * m_currentPaintItem;
 public:
     GraphicsView(QWidget * parent = nullptr);
 protected:
@@ -122,9 +160,7 @@ class ImageView:public QWidget
     GraphicsView * m_view;
     GraphicsScene * m_scene;
     QGridLayout *m_layout;
-    QGraphicsPixmapItem * m_slice;
-    //QList<QPoint> m_points;
-    bool m_paint;
+	SliceItem * m_slice;
 public:
     ImageView(QWidget * parent = nullptr);
     void setTopImage(const QImage &image);
