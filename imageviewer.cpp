@@ -388,47 +388,47 @@ QRectF StrokeMarkItem::unionWith(const QRectF & rect, const QPointF & p)
 
 void StrokeMarkItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-	qDebug() << "mousePressEvent in item";
+
 	QGraphicsItem::mousePressEvent(event);
 }
 
 void StrokeMarkItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-	qDebug() << "mouseMoveEvent in item";
+
 	QGraphicsItem::mouseMoveEvent(event);
 }
 
 void StrokeMarkItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-	qDebug() << "mouseReleaseEvent in item";
+
 	QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void StrokeMarkItem::wheelEvent(QGraphicsSceneWheelEvent * event)
 {
-	qDebug() << "wheelEvent in item";
+
 	QGraphicsItem::wheelEvent(event);
 }
 void SliceItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-	qDebug() << "mousePressEvent in item";
+
 	QGraphicsPixmapItem::mousePressEvent(event);
 }
 
 void SliceItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-	qDebug() << "mouseMoveEvent in item";
+
 	QGraphicsPixmapItem::mouseMoveEvent(event);
 }
 
 void SliceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-	qDebug() << "mouseReleaseEvent in item";
+
 	QGraphicsPixmapItem::mouseReleaseEvent(event);
 }
 
 void SliceItem::wheelEvent(QGraphicsSceneWheelEvent* event)
 {
-	qDebug() << "wheelEvent in item";
+
 	QGraphicsPixmapItem::wheelEvent(event);
 }
