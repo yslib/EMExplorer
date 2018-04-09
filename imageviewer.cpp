@@ -12,7 +12,6 @@
 #include <QGraphicsPixmapItem>
 #include <QPolygon>
 #include <cassert>
-#define saaa(x)  asdfsadf$a;
 
 
 bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
