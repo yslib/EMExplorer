@@ -24,11 +24,13 @@ void TitledSliderWithSpinBox::setMinimum(int value)
    m_spinBox->setMinimum(value);
 }
 
+
 void TitledSliderWithSpinBox::setMaximum(int value)
 {
     m_slider->setMaximum(value);
     m_spinBox->setMaximum(value);
 }
+
 
 void TitledSliderWithSpinBox::setRange(int min, int max)
 {

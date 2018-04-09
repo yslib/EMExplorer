@@ -62,8 +62,11 @@ public:
     ~MainWindow();
 
 private slots:
+
+
     void onActionOpenTriggered();
     void onMRCFilesComboBoxIndexActivated(int index);
+
     void onMaxGrayValueChanged(int position);
     void onMinGrayValueChanged(int position);
     void onSliceValueChanged(int value);
@@ -92,7 +95,9 @@ private:		//ui
 	QLabel * m_mrcFileLabel;
 	QComboBox * m_mrcFileCBox;
     MRCFileInfoViewer * m_fileInfoViewer;
-	NestedSliceViewer *m_nestedSliceViewer;
+
+	//NestedSliceViewer *m_nestedSliceViewer;
+
     Histogram * m_histogram;
     HistogramViewer * m_histogramView;
 	ZoomViwer * m_zoomViewer;
@@ -100,22 +105,21 @@ private:		//ui
 	//actions
     QAction * m_actionColor;
     QAction * m_actionOpen;
-
-
     //test
-    ImageViewer * m_imageViewer;
+    //ImageViewer * m_imageViewer;
     ImageView * m_imageView;
 private:
     void createActions();
     void createStatusBar();
     void createDockWindows();
-	void _addMRCDataModel(const MRCDataModel & model);
-	void _addMRCDataModel(MRCDataModel && model);
-	void _setMRCDataModel(int index);
-	void _saveMRCDataModel();
-    void _deleteMRCDataModel(int index);
-    void _allControlWidgetsEnable(bool enable);
-    void _updateGrayThreshold(int minGray,int maxGray);
+
+	void addMRCDataModel(const MRCDataModel & model);
+	void addMRCDataModel(MRCDataModel && model);
+	void setMRCDataModel(int index);
+	void saveMRCDataModel();
+    void deleteMRCDataModel(int index);
+    void allControlWidgetsEnable(bool enable);
+    void updateGrayThreshold(int minGray,int maxGray);
     void _initUI();
 	void _connection();
     void _destroy();
