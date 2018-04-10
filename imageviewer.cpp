@@ -21,7 +21,7 @@ bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
 			m_topImageEnablePaint = true;
 			auto e = static_cast<QMouseEvent*>(event);
 			m_prevPaint = e->pos();
-			qDebug() << m_prevPaint;
+			//qDebug() << m_prevPaint;
 			return true;
 		}
 		else if (event->type() == QEvent::MouseMove) {
@@ -141,7 +141,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QScrollArea(parent), m_factor(1.0), 
 
 void ImageViewer::setTopImage(const QImage &image)
 {
-	qDebug() << "Set Image";
+	//qDebug() << "Set Image";
 	m_topImageLabel->setPixmap(QPixmap::fromImage(image));
 	//m_topImageLabel->resize(image.size());
 	m_topImage = image;
@@ -152,7 +152,7 @@ void ImageViewer::setTopImage(const QImage &image)
 
 void ImageViewer::setRightImage(const QImage &image)
 {
-	qDebug() << "Set Right Image";
+	//qDebug() << "Set Right Image";
 	m_rightImageLabel->setPixmap(QPixmap::fromImage(image));
 	m_loaded = true;
 	setVisible(true);
@@ -162,7 +162,7 @@ void ImageViewer::setRightImage(const QImage &image)
 
 void ImageViewer::setFrontImage(const QImage &image)
 {
-	qDebug() << "Set Front Image";
+	//qDebug() << "Set Front Image";
 	m_frontImageLabel->setPixmap(QPixmap::fromImage(image));
 	m_loaded = true;
 	setVisible(true);
@@ -338,10 +338,12 @@ void ImageView::onTopSliceTimer(bool enable)
 	if(enable)
 	{
 		m_topTimerId = startTimer(10);
+		//qDebug() << "onTopSliceTimer" << m_topTimerId;
 		m_topSlicePlayDirection = Direction::Forward;
 	}else
 	{
 		killTimer(m_topTimerId);
+		m_topTimerId = 0;
 	}
 }
 
@@ -350,10 +352,12 @@ void ImageView::onRightSliceTimer(bool enable)
 	if(enable)
 	{
 		m_rightTimerId = startTimer(10);
+		//qDebug() << "onRightSliceTimer" << m_rightTimerId;
 		m_rightSlicePlayDirection = Direction::Forward;
 	}else
 	{
 		killTimer(m_rightTimerId);
+		m_rightTimerId = 0;
 	}
 }
 
@@ -362,10 +366,12 @@ void ImageView::onFrontSliceTimer(bool enable)
 	if(enable)
 	{
 		m_frontTimerId = startTimer(10);
+	    //qDebug() << "onFrontSliceTimer" << m_frontTimerId;
 		m_frontSlicePlayDirection = Direction::Forward;
 	}else
 	{
 		killTimer(m_frontTimerId);
+		m_frontTimerId = 0;
 	}
 }
 
@@ -476,7 +482,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 		QPoint itemPoint = slice->mapFromScene(pos).toPoint();
 		if(slice ==m_topSlice)
 		{
-			qDebug() << "emit z slice point" << itemPoint;
+			//qDebug() << "emit z slice point" << itemPoint;
 			emit zSliceSelected(itemPoint);
 		}else if(slice == m_rightSlice)
 		{

@@ -151,7 +151,7 @@ void SliceViewer::mouseMoveEvent(QMouseEvent * event)
 {
     QPoint currentPoint = event->pos();
     emit onMouseMoving(thisCoordToImageCoord(currentPoint));
-    qDebug()<<"mouse moving in slice viewer";
+    //qDebug()<<"mouse moving in slice viewer";
 	if (m_paintEnable == true) {
 		if (m_painting == true) {
 
@@ -313,6 +313,6 @@ void NestedSliceViewer::resizeEvent(QResizeEvent * event)
     int depth = 30;
     m_rightSliceViewer->resize(depth,height);
     m_frontSliceViewer->resize(width,depth);
-    qDebug()<<"frontSliceViewerSizeHint"<<m_frontSliceViewer->size();
+    //qDebug()<<"frontSliceViewerSizeHint"<<m_frontSliceViewer->size();
 }
 

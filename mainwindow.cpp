@@ -400,7 +400,7 @@ void MainWindow::onMaxGrayValueChanged(int position)
     int maxv = m_histogramView->getRightCursorValue();
 
 
-    qDebug()<<minv<<" "<<maxv;
+    //qDebug()<<minv<<" "<<maxv;
     updateGrayThreshold(minv,maxv);
 
 	QRect rect = m_zoomViewer->zoomRegion().toRect();
@@ -420,7 +420,7 @@ void MainWindow::onMinGrayValueChanged(int position)
     //int maxv = m_histogram->getMaximumCursorValue();
     int minv = m_histogramView->getLeftCursorValue();
     int maxv = m_histogramView->getRightCursorValue();
-    qDebug()<<minv<<" "<<maxv;
+    //qDebug()<<minv<<" "<<maxv;
     updateGrayThreshold(minv,maxv);
 	QRect rect = m_zoomViewer->zoomRegion().toRect();
 
@@ -488,7 +488,7 @@ void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)
 
 void MainWindow::onColorActionTriggered()
 {
-	qDebug() << "ColorActionTriggered";
+	//qDebug() << "ColorActionTriggered";
 	QColor color = QColorDialog::getColor(Qt::white, this, QStringLiteral("Color Selection"));
     //m_nestedSliceViewer->setMarkColor(color);
 }
