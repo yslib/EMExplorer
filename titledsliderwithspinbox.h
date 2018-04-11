@@ -19,8 +19,6 @@ public:
     void setMinimum(int value);
     void setMaximum(int value);
     void setRange(int min,int max);
-    void getMinimum()const;
-    void getMaximum()const;
     int minimum()const;
     int maximum()const;
     int value()const;

@@ -36,10 +36,10 @@ void ZoomViwer::setImage(const QImage & image, const QRect & region)
         qreal k2 = static_cast<qreal>(region.height())/static_cast<qreal>(m_originalHeight);
         m_zoomFactor = k1>k2?k2:k1;
     }
-    qDebug()<<"m_zoomRect in setImage(const QIMage &,const QRect &):"<<m_zoomRect;
-	qDebug() << "m_zoomFactor in setImage(const QImage&,const QRect &):" << m_zoomFactor;
+    //qDebug()<<"m_zoomRect in setImage(const QIMage &,const QRect &):"<<m_zoomRect;
+	//qDebug() << "m_zoomFactor in setImage(const QImage&,const QRect &):" << m_zoomFactor;
 //	emit zoomFactorChanged(m_zoomFactor);
-	qDebug() << "m_zoomRegion in setImage(const QImage &,const QRect &):" << zoomRegion();
+	//qDebug() << "m_zoomRegion in setImage(const QImage &,const QRect &):" << zoomRegion();
     emit zoomRegionChanged(zoomRegion());
 	update();
 	updateGeometry();
@@ -209,7 +209,7 @@ void ZoomViwer::mousePressEvent(QMouseEvent *event)
 
 void ZoomViwer::wheelEvent(QWheelEvent * event)
 {
-	qDebug() << "Wheel Event";
+	//qDebug() << "Wheel Event";
 	if (event->orientation() == Qt::Horizontal) {
 		//Nothing
 	}
