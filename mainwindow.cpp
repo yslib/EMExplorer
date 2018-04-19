@@ -1,10 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QPen>
 #include <QRect>
 #include <QDockWidget>
+#include <QColorDialog>
 #include <QMenu>
 #include <QAction>
+#include <QTreeView>
 #include "imageviewer.h"
 #include <qglobal.h>
 
@@ -40,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
     viewMenu->addAction(dock->toggleViewAction());
     connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
 
+	//Tree View Model
+
     //histogram dock widget
 //    m_histogram = new Histogram(this);
 //    dock = new QDockWidget(tr("Histogram"),this);
@@ -49,6 +52,17 @@ MainWindow::MainWindow(QWidget *parent) :
 //    viewMenu->addAction(dock->toggleViewAction());
 //    connect(m_histogram,SIGNAL(minCursorValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
 //    connect(m_histogram,SIGNAL(maxCursorValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+
+	m_treeView = new QTreeView(this);
+	dock = new QDockWidget(tr("File Information View"),this);
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+	dock->setWidget(m_treeView);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+	viewMenu->addAction(dock->toggleViewAction());
+
+	
+	m_treeViewModel = new InformationModel(QString(), this);
+	m_treeView->setModel(m_treeViewModel);
 
     m_histogramView = new HistogramViewer(this);
     dock = new QDockWidget(tr("Histgoram"),this);
@@ -181,6 +195,8 @@ void MainWindow::onActionOpenTriggered()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     }else{
         QString headerInfo = mrcModel.getMRCInfo();
+
+		m_treeViewModel->addNewFileInfo(fileName, headerInfo);
         //
         m_fileInfoViewer->setText(headerInfo);
         addMRCDataModel(std::move(mrcModel));

@@ -2,22 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPicture>
 #include <QImage>
 #include <QPixmap>
-#include <QBitmap>
-#include <QPainter>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QSlider>
-#include <QDoubleSpinBox>
-#include <QSpinBox>
-#include <QLayout>
-#include <QLabel>
-#include <QComboBox>
 #include <QAction>
-#include <QColorDialog>
-#include "testinfodialog.h"
 #include "mrc.h"
 #include "histogram.h"
 #include "zoomviwer.h"
@@ -52,6 +40,8 @@ class PixelViewer;
 class ImageViewer;
 class MRCFileInfoViewer;
 class ImageView;
+
+class QTreeView;
 
 class MainWindow : public QMainWindow
 {
@@ -92,9 +82,13 @@ private:
 private:
     static constexpr int ZOOM_SLIDER_MAX_VALUE=100;
 private:		//ui
+
 	QLabel * m_mrcFileLabel;
 	QComboBox * m_mrcFileCBox;
     MRCFileInfoViewer * m_fileInfoViewer;
+
+	QTreeView * m_treeView;
+	InformationModel * m_treeViewModel;
 
 	//NestedSliceViewer *m_nestedSliceViewer;
 
