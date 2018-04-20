@@ -60,7 +60,9 @@ InformationModel::InformationModel(const QString & data, QObject * parent):QAbst
 	///TODO:: construct a new root
 	QVector<QVariant> headers;
 	headers << "File" << "Info";
+
 	m_rootItem = new TreeItem(headers);
+
 }
 
 InformationModel::~InformationModel()
@@ -123,7 +125,7 @@ bool InformationModel::insertRows(int row, int count, const QModelIndex & parent
 	TreeItem * item = getItem(parent);
 
 	beginInsertRows(parent, row, count + row - 1);
-	bool success = item->insertChildren(row, count, 1);
+	bool success = item->insertChildren(row, count, columnCount());
 	endInsertRows();
 
 	return success;
@@ -187,10 +189,7 @@ int InformationModel::rowCount(const QModelIndex & parent) const
 	//Only a item with 0 column number has children
 	if (parent.column() > 0)
 		return 0;
-
-
 	TreeItem * item = getItem(parent);
-
 	return item->childCount();
 }
 
@@ -203,22 +202,31 @@ int InformationModel::columnCount(const QModelIndex & parent) const
 
 void InformationModel::addNewFileInfo(const QString & fileName, const QString & info)
 {
-	QVector<QVariant> data;
-	data << fileName;
-	TreeItem * fileItem = new TreeItem(data, m_rootItem);
+	{
+		bool success;
+		success = insertRows(rowCount(), 1);		//add a new file to as the last child of the parent
+		if (success == false)
+			return;
+	}
+
+	QModelIndex newFileNode = index(rowCount() - 1, 0);
+	setData(newFileNode, fileName);
 	QStringList lines = info.split('\n', QString::SkipEmptyParts);
 	for(auto & it:lines)
 	{
 		auto line = it.split(':', QString::SkipEmptyParts);
-
-		QVector<QVariant> data;
-		//line[1] should be some parameters about the file
-		//line[2] shoule be the description of the parameter
-		qDebug() << line[0] << line[1];
-		data << line.value(1) << line.value(0);
-		new TreeItem(data, fileItem);
+		{
+			bool success;
+			success = insertRows(rowCount(newFileNode),1, newFileNode);
+			int lastRow = rowCount(newFileNode)-1;
+			QModelIndex valueIndex = index(lastRow,0, newFileNode);
+			QModelIndex descIndex = index(lastRow,1, newFileNode);
+			if (success == true) {
+				setData(valueIndex, line.value(1));
+				setData(descIndex, line.value(0));
+			}
+		}
 	}
-	
 }
 
 

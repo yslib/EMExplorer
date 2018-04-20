@@ -195,8 +195,11 @@ void MainWindow::onActionOpenTriggered()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     }else{
         QString headerInfo = mrcModel.getMRCInfo();
+		
 
+		///TODO:: TEST,insert row into TreeView 
 		m_treeViewModel->addNewFileInfo(fileName, headerInfo);
+
         //
         m_fileInfoViewer->setText(headerInfo);
         addMRCDataModel(std::move(mrcModel));

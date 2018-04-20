@@ -339,35 +339,35 @@ std::string MRC::_getMRCHeaderInfo(const MRCHeader *header) const
 {
 
     std::stringstream ss;
-    ss<<"NX:\t\t"<<header->nx<<std::endl
-    <<"NY:\t\t"<<header->ny<<std::endl
-    <<"NZ:\t\t"<<header->nz<<std::endl
-    <<"MODE:\t\t"<<header->mode<<std::endl
-    <<"NX START:\t\t"<<header->nxstart<<std::endl
-    <<"NY START:\t\t"<<header->nystart<<std::endl
-    <<"NZ START:\t\t"<<header->nzstart<<std::endl
-    <<"MX:\t\t"<<header->mx<<std::endl
-    <<"MY:\t\t"<<header->my<<std::endl
-    <<"MZ:\t\t"<<header->my<<std::endl
-    <<"XLEN:\t\t"<<header->xlen<<std::endl
-    <<"YLEN:\t\t"<<header->ylen<<std::endl
-    <<"ZLEN:\t\t"<<header->zlen<<std::endl
-    <<"Alpha:\t\t"<<header->alpha<<std::endl
-    <<"Beta:\t\t"<<header->beta<<std::endl
-    <<"Gamma:\t\t"<<header->gamma<<std::endl
-    <<"mapc:\t\t"<<header->mapc<<std::endl
-    <<"mapr:\t\t"<<header->mapr<<std::endl
-    <<"mapr:\t\t"<<header->maps<<std::endl
-    <<"dmin:\t\t"<<header->dmax<<std::endl
-    <<"dmax:\t\t"<<header->dmin<<std::endl
-    <<"dmean:\t\t"<<header->dmean<<std::endl
-    <<"ispg:\t\t"<<header->ispg<<std::endl
-    <<"nysmbt:\t\t"<<header->nystart<<std::endl
-    <<"ExtTyp:\t\t"<<header->extType[0]<<" "<<header->extType[1]<<" "<<header->extType[2]<<" "<<header->extType[3]<<std::endl
-    <<"nVersion:\t\t"<<header->nversion<<std::endl
-    <<"xorg:\t\t"<<header->xorg<<std::endl
-    <<"yorg:\t\t"<<header->yorg<<std::endl
-    <<"zorg:\t\t"<<header->zorg<<std::endl;
+    ss<<"NX:"<<header->nx<<std::endl
+    <<"NY:"<<header->ny<<std::endl
+    <<"NZ:"<<header->nz<<std::endl
+    <<"MODE:"<<header->mode<<std::endl
+    <<"NX START:"<<header->nxstart<<std::endl
+    <<"NY START:"<<header->nystart<<std::endl
+    <<"NZ START:"<<header->nzstart<<std::endl
+    <<"MX:"<<header->mx<<std::endl
+    <<"MY:"<<header->my<<std::endl
+    <<"MZ:"<<header->my<<std::endl
+    <<"XLEN:"<<header->xlen<<std::endl
+    <<"YLEN:"<<header->ylen<<std::endl
+    <<"ZLEN:"<<header->zlen<<std::endl
+    <<"Alpha:"<<header->alpha<<std::endl
+    <<"Beta:"<<header->beta<<std::endl
+    <<"Gamma:"<<header->gamma<<std::endl
+    <<"mapc:"<<header->mapc<<std::endl
+    <<"mapr:"<<header->mapr<<std::endl
+    <<"mapr:"<<header->maps<<std::endl
+    <<"dmin:"<<header->dmax<<std::endl
+    <<"dmax:"<<header->dmin<<std::endl
+    <<"dmean:"<<header->dmean<<std::endl
+    <<"ispg:"<<header->ispg<<std::endl
+    <<"nysmbt:"<<header->nystart<<std::endl
+    <<"ExtTyp:"<<header->extType[0]<<" "<<header->extType[1]<<" "<<header->extType[2]<<" "<<header->extType[3]<<std::endl
+    <<"nVersion:"<<header->nversion<<std::endl
+    <<"xorg:"<<header->xorg<<std::endl
+    <<"yorg:"<<header->yorg<<std::endl
+    <<"zorg:"<<header->zorg<<std::endl;
     return ss.str();
 }
 
