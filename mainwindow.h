@@ -74,6 +74,9 @@ private slots:
 	void onSaveActionTriggered();
     void onSaveDataAsActionTriggered();
 
+
+	void onTreeViewDoubleClicked(const QModelIndex & index);
+
 private:
     Ui::MainWindow *ui;
     int m_currentContext;

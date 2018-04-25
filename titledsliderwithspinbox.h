@@ -24,6 +24,7 @@ public:
     int value()const;
     void setEnabled(bool enabled);
     void setOrientation(Qt::Orientation orientation);
+
 public slots:
     void setValue(int value);
 signals:

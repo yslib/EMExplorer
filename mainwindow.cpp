@@ -62,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	
 	m_treeViewModel = new InformationModel(QString(), this);
+
+	connect(m_treeView,&QTreeView::doubleClicked,this,&MainWindow::onTreeViewDoubleClicked);
+
 	m_treeView->setModel(m_treeViewModel);
 
     m_histogramView = new HistogramViewer(this);
@@ -198,7 +201,7 @@ void MainWindow::onActionOpenTriggered()
 		
 
 		///TODO:: TEST,insert row into TreeView 
-		m_treeViewModel->addNewFileInfo(fileName, headerInfo);
+		m_treeViewModel->addFileInfoItem(fileName, headerInfo);
 
         //
         m_fileInfoViewer->setText(headerInfo);
@@ -550,6 +553,12 @@ void MainWindow::onSaveDataAsActionTriggered()
     }else if(fileName.endsWith(".mrc") == true){
         m_mrcDataModels[m_currentContext].save(fileName);
     }
+}
+
+void MainWindow::onTreeViewDoubleClicked(const QModelIndex & index)
+{
+	qDebug() << index;
+
 }
 
 void MainWindow::createDockWindows()

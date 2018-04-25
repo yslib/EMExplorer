@@ -9,6 +9,9 @@
 #include <QTreeView>
 
 
+
+class MRC;
+
 class MRCFileInfoViewer : public QWidget
 {
     Q_OBJECT
@@ -20,11 +23,9 @@ public:
    void getText()const;
    int count()const;
    QVariant itemData(int index, int role = Qt::UserRole)const;
-
 private:
     QGridLayout * m_layout;
     QLabel * m_label;
-
     QComboBox * m_filesComboBox;
     QTextEdit * m_filesInfoTextEdit;
 private:
@@ -48,7 +49,6 @@ public:
 	explicit TreeItem(const QVector<QVariant> & data,TreeItem * parent = nullptr):m_data(data),m_parent(parent){}
 	~TreeItem() { qDeleteAll(m_children); }
 
-	
 	void appendChild(TreeItem * child) { m_children.append(child); }
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
 	TreeItem* parentItem()const { return m_parent; };
@@ -137,7 +137,7 @@ class InformationModel:public QAbstractItemModel
 	Q_OBJECT
 	TreeItem * m_rootItem;
 
-
+	QList<QModelIndex> m_itemRootIndex;
 	/**
 	 * \brief 
 	 * \param index 
@@ -152,6 +152,15 @@ class InformationModel:public QAbstractItemModel
 		}
 		return m_rootItem;
 	}
+
+private:
+
+	QModelIndex appendChild(const QModelIndex & parent = QModelIndex(),bool * success = nullptr);
+	bool removeChild(const QModelIndex & index, const QModelIndex & parent = QModelIndex());
+	QModelIndex modelIndexOf(int column,const QModelIndex & parent);
+	void insertRootItemIndex(const QModelIndex & index,int position = -1);
+	void removeRootItemIndex(int position);
+	QModelIndex rootItemIndex(int position);
 
 public:
 	explicit InformationModel(const QString & data, QObject * parent = nullptr);
@@ -177,6 +186,16 @@ public:
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 	//test file
-	void addNewFileInfo(const QString & fileName,const QString & info);
+	void addFileInfoItem(const QString & fileName,const QString & info);
+
+	void addItem(const QSharedPointer<MRC> & item);
+
+
+	//void addData(data);
+	//void addMarks(data,marks);
+
+	//bool saveData(data);
+	//bool saveMarks(data);
+
 };
 #endif // MRCFILEINFO_H

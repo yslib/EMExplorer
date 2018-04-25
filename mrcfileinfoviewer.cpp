@@ -1,68 +1,103 @@
 #include "mrcfileinfoviewer.h"
+#include "mrc.h"
 #include <QDebug>
-MRCFileInfoViewer::MRCFileInfoViewer(QWidget *parent)noexcept:QWidget(parent){
-   m_layout = new QGridLayout(this);
-   m_label = new QLabel(this);
-   m_filesComboBox = new QComboBox(this);
-   m_filesInfoTextEdit = new QTextEdit(this);
+MRCFileInfoViewer::MRCFileInfoViewer(QWidget *parent)noexcept:QWidget(parent) {
+	m_layout = new QGridLayout(this);
+	m_label = new QLabel(this);
+	m_filesComboBox = new QComboBox(this);
+	m_filesInfoTextEdit = new QTextEdit(this);
 
-   m_filesInfoTextEdit->setReadOnly(true);
+	m_filesInfoTextEdit->setReadOnly(true);
 
-   m_label->setText(tr("MRCFiles:"));
-
-
-   m_layout->addWidget(m_label,0,0);
-   m_layout->addWidget(m_filesComboBox,0,1);
-   m_layout->addWidget(m_filesInfoTextEdit,1,0,1,2);
+	m_label->setText(tr("MRCFiles:"));
 
 
-   createConnections();
+	m_layout->addWidget(m_label, 0, 0);
+	m_layout->addWidget(m_filesComboBox, 0, 1);
+	m_layout->addWidget(m_filesInfoTextEdit, 1, 0, 1, 2);
+
+
+	createConnections();
 }
 void MRCFileInfoViewer::addFileName(const QString &fileName)
 {
-    m_filesComboBox->addItem(fileName);
+	m_filesComboBox->addItem(fileName);
 }
 
 void MRCFileInfoViewer::addItem(const QString &fileName, const QVariant &userData)
 {
-   m_filesComboBox->addItem(fileName,userData);
+	m_filesComboBox->addItem(fileName, userData);
 }
 
 void MRCFileInfoViewer::setText(const QString &info)
 {
-   m_filesInfoTextEdit->setText(info);
+	m_filesInfoTextEdit->setText(info);
 }
 
 void MRCFileInfoViewer::createConnections()
 {
-    connect(m_filesComboBox,SIGNAL(currentIndexChanged(int)),this,SIGNAL(currentIndexChanged(int)));
-    connect(m_filesComboBox,SIGNAL(activated(int)),this,SIGNAL(activated(int)));
+	connect(m_filesComboBox, SIGNAL(currentIndexChanged(int)), this, SIGNAL(currentIndexChanged(int)));
+	connect(m_filesComboBox, SIGNAL(activated(int)), this, SIGNAL(activated(int)));
 }
 
 void MRCFileInfoViewer::setCurrentIndex(int index)
 {
-    m_filesComboBox->setCurrentIndex(index);
+	m_filesComboBox->setCurrentIndex(index);
 }
-int MRCFileInfoViewer::count()const{
-    return m_filesComboBox->count();
+int MRCFileInfoViewer::count()const {
+	return m_filesComboBox->count();
 }
-QVariant MRCFileInfoViewer::itemData(int index,int role) const{
-    return m_filesComboBox->itemData(index,role);
+QVariant MRCFileInfoViewer::itemData(int index, int role) const {
+	return m_filesComboBox->itemData(index, role);
 }
 
 
 
 
 //InformationModel Defination
+QModelIndex InformationModel::appendChild(const QModelIndex & parent, bool * success)
+{
+	bool flag = insertRows(rowCount(parent), 1, parent);
+	if (success)*success = flag;
+	return index(rowCount(parent) - 1, 0, parent);
+}
 
-InformationModel::InformationModel(const QString & data, QObject * parent):QAbstractItemModel(parent)
+bool InformationModel::removeChild(const QModelIndex & index, const QModelIndex & parent)
+{
+	return removeRows(0, rowCount(parent), parent);
+}
+
+QModelIndex InformationModel::modelIndexOf(int column,const QModelIndex & itemIndex)
+{
+	TreeItem * item = static_cast<TreeItem*>(itemIndex.internalPointer());
+	if (item == nullptr)return QModelIndex();
+	return index(item->row(),column,parent(itemIndex));
+}
+
+void InformationModel::insertRootItemIndex(const QModelIndex & index, int position)
+{
+	if (position == -1)
+		m_itemRootIndex.append(index);
+	else
+		m_itemRootIndex.insert(position, index);
+}
+
+void InformationModel::removeRootItemIndex(int position)
+{
+	m_itemRootIndex.removeAt(position);
+}
+
+QModelIndex InformationModel::rootItemIndex(int position)
+{
+	return m_itemRootIndex.value(position);
+}
+
+InformationModel::InformationModel(const QString & data, QObject * parent) :QAbstractItemModel(parent)
 {
 	///TODO:: construct a new root
 	QVector<QVariant> headers;
-	headers << "File" << "Info";
-
+	headers << "Value:" << "Descption:";
 	m_rootItem = new TreeItem(headers);
-
 }
 
 InformationModel::~InformationModel()
@@ -72,7 +107,7 @@ InformationModel::~InformationModel()
 
 QVariant InformationModel::data(const QModelIndex & index, int role) const
 {
-	if(role != Qt::DisplayRole)
+	if (role != Qt::DisplayRole)
 		return QVariant();
 	if (index.isValid() == false)
 		return QVariant();
@@ -91,7 +126,7 @@ Qt::ItemFlags InformationModel::flags(const QModelIndex & index) const
 bool InformationModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if (role != Qt::EditRole)return false;
-	
+
 	TreeItem * item = getItem(index);
 
 	bool ok = item->setData(index.column(), value);
@@ -123,11 +158,10 @@ bool InformationModel::removeColumns(int column, int count, const QModelIndex & 
 bool InformationModel::insertRows(int row, int count, const QModelIndex & parent)
 {
 	TreeItem * item = getItem(parent);
-
 	beginInsertRows(parent, row, count + row - 1);
+	//the number of inserted column is the same as the root, i.e 2
 	bool success = item->insertChildren(row, count, columnCount());
 	endInsertRows();
-
 	return success;
 }
 
@@ -172,14 +206,14 @@ QModelIndex InformationModel::index(int row, int column, const QModelIndex & par
 QModelIndex InformationModel::parent(const QModelIndex & index) const
 {
 	//Index points to a root item
-	if (index.isValid() == false)return QModelIndex();			
+	if (index.isValid() == false)return QModelIndex();
 
 	TreeItem * item = getItem(index);
 	TreeItem * parentItem = item->parentItem();
 
 	//If index points to a child item of root item
-	if (parentItem == m_rootItem)		
-		return QModelIndex();				
+	if (parentItem == m_rootItem)
+		return QModelIndex();
 
 	return createIndex(parentItem->row(), 0, parentItem);
 }
@@ -200,33 +234,63 @@ int InformationModel::columnCount(const QModelIndex & parent) const
 	return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
 }
 
-void InformationModel::addNewFileInfo(const QString & fileName, const QString & info)
+void InformationModel::addFileInfoItem(const QString & fileName, const QString & info)
 {
-	{
-		bool success;
-		success = insertRows(rowCount(), 1);		//add a new file to as the last child of the parent
-		if (success == false)
-			return;
-	}
+	bool success;
+	const QModelIndex & newRootItemIndex = appendChild(QModelIndex(), &success);//add a new file to as the last child of the parent
+	if (success == false)
+		return;
 
-	QModelIndex newFileNode = index(rowCount() - 1, 0);
-	setData(newFileNode, fileName);
+	//get the newest index inserted before
+	//const QModelIndex & newRootItemIndex = index(rowCount() - 1, 0);
+
+	//add file row
+	insertRootItemIndex(newRootItemIndex);
+	setData(newRootItemIndex, fileName);
+
+
+	//add information row
+
+	//success = insertRows(rowCount(newRootItemIndex), 1, newRootItemIndex);
+	//if (success == false)
+	//	return;
+	//const QModelIndex & informationIndex = index(rowCount(newRootItemIndex)-1, 0, newRootItemIndex);
+
+	const QModelIndex & informationIndex = appendChild(newRootItemIndex, &success);
+	if (success == false)
+		return;
+
+	setData(informationIndex, QStringLiteral("Properties"));
+
 	QStringList lines = info.split('\n', QString::SkipEmptyParts);
-	for(auto & it:lines)
+	for (auto & it : lines)
 	{
 		auto line = it.split(':', QString::SkipEmptyParts);
 		{
-			bool success;
-			success = insertRows(rowCount(newFileNode),1, newFileNode);
-			int lastRow = rowCount(newFileNode)-1;
-			QModelIndex valueIndex = index(lastRow,0, newFileNode);
-			QModelIndex descIndex = index(lastRow,1, newFileNode);
+			//success = insertRows(rowCount(informationIndex), 1, informationIndex);
+			//int lastRow = rowCount(informationIndex) - 1;
+			//QModelIndex valueIndex = index(lastRow, 0, informationIndex);
+			//QModelIndex descIndex = index(lastRow, 1, informationIndex);
+			QModelIndex newInserted = appendChild(informationIndex, &success);
+			QModelIndex valueIndex = modelIndexOf(0, newInserted);
+			QModelIndex descIndex = modelIndexOf(1, newInserted);
 			if (success == true) {
 				setData(valueIndex, line.value(1));
 				setData(descIndex, line.value(0));
 			}
 		}
 	}
+
+
+}
+
+void InformationModel::addItem(const QSharedPointer<MRC>& item)
+{
+	const auto fileName = QString::fromStdString(item->getFileName());
+	const auto info = QString::fromStdString(item->getMRCInfo());
+	addFileInfoItem(fileName, info);
+
+	///TODO::add MRC data to TreeItem
 }
 
 
