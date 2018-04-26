@@ -2,15 +2,15 @@
 #define HISTOGRAM_H
 
 #include <QObject>
-#include <QWidget>
-#include <QImage>
-#include <QColor>
-#include <QVector>
-#include <QMessageBox>
 #include <QPainter>
-#include <cmath>
 #include <QLayout>
-#include <titledsliderwithspinbox.h>
+#include <QAbstractItemView>
+
+#include "titledsliderwithspinbox.h"
+#include "ItemContext.h"
+
+
+class QMouseEvent;
 
 class Histogram:public QWidget
 {
@@ -65,22 +65,45 @@ class HistogramViewer:public QWidget
 public:
     explicit HistogramViewer(QWidget * parent = nullptr)noexcept;
     explicit HistogramViewer(QWidget * parent, const QImage & image)noexcept;
+
+
     void setImage(const QImage & image);
     QVector<int> getHist()const;
     void setEnabled(bool enable);
     int getLeftCursorValue()const;
     int getRightCursorValue()const;
+
+	//model interface
+	void setModel(DataItemModel * model);
+	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+	void activeItem(const QModelIndex & index);
+
+
+
 public slots:
     void setLeftCursorValue(int value);
     void setRightCursorValue(int value);
+
+	void onMinValueChanged(int value);
+	void onMaxValueChanged(int value);
+
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
 private:
+
+	void update();
+	QModelIndex getDataIndex(const QModelIndex & index);
+
+
     QGridLayout * m_layout;
     Histogram * m_hist;
     TitledSliderWithSpinBox * m_minSlider;
     TitledSliderWithSpinBox * m_maxSlider;
+	//
+	QAbstractItemModel * m_model;
+	QModelIndex m_modelIndex;
+	QSharedPointer<ItemContext> m_ptr;
 };
 
 #endif // HISTOGRAM_H

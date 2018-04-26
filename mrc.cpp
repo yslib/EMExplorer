@@ -7,7 +7,7 @@ MRC::MRC():MRC("",false)
     //Do Nothing
 }
 
-MRC::MRC(const std::string &fileName):MRC("",false)
+MRC::MRC(const std::string &fileName):MRC(fileName,false)
 {
     open(fileName);
 }
@@ -157,6 +157,7 @@ bool MRC::open(const std::string &fileName)
         m_opened = noError;
         fclose(fp);
     }
+	m_fileName = fileName;
     return m_opened;
 }
 

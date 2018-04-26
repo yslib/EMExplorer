@@ -30,11 +30,12 @@ SOURCES += main.cpp\
     zoomviwer.cpp \
     testinfodialog.cpp \
     sliceviewer.cpp \
-    MRCDataModel.cpp \
+    ItemContext.cpp \
     pixelviewer.cpp \
     titledsliderwithspinbox.cpp \
     mrcfileinfoviewer.cpp \
-    imageviewer.cpp
+    imageviewer.cpp \
+    tinyviewinterface.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -42,11 +43,12 @@ HEADERS  += mainwindow.h \
     zoomviwer.h \
     testinfodialog.h \
     sliceviewer.h \
-    MRCDataModel.h \
+    ItemContext.h \
     pixelviewer.h \
     titledsliderwithspinbox.h \
     mrcfileinfoviewer.h \
-    imageviewer.h
+    imageviewer.h \
+    tinyviewinterface.h
 
 FORMS    += mainwindow.ui
 

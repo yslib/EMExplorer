@@ -1,16 +1,18 @@
+/*Custom Headers*/
 #include "imageviewer.h"
 #include "titledsliderwithspinbox.h"
+/*Qt Headers*/
 #include <QToolBar>
 #include <QLabel>
 #include <QLayout>
 #include <QWheelEvent>
 #include <QDebug>
-#include <QMouseEvent>
 #include <QPainter>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QPolygon>
+#include <QColorDialog>
 #include <cassert>
 
 
@@ -231,63 +233,67 @@ void ImageViewer::paintLine(const QPoint &begin, const QPoint &end, QPaintDevice
 //     return QObject::event(event);
 //}
 
-ImageView::ImageView(QWidget *parent) :QWidget(parent), m_topSlice(nullptr), m_rightSlice(nullptr), m_frontSlice(nullptr)
+void ImageView::createActions()
 {
-	//layout
-	m_layout = new QGridLayout(this);
-
-	//QGraphicsView
-	m_view = new GraphicsView(this);
-	m_layout->addWidget(m_view, 1, 0);
-
-
-	//m_view->setScene(m_scene);
-
-	//sliders
-	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
-	m_rightSlider = new TitledSliderWithSpinBox(this, tr("X:"));
-	m_frontSlider = new TitledSliderWithSpinBox(this, tr("Y:"));
-
-	//actions
+	//createActions()
 	m_topSlicePlayAction = new QAction(tr("Play"), this);
 	m_topSlicePlayAction->setCheckable(true);
 	m_rightSlicePlayAction = new QAction(tr("Play"), this);
 	m_rightSlicePlayAction->setCheckable(true);
 	m_frontSlicePlayAction = new QAction(tr("Play"), this);
 	m_frontSlicePlayAction->setCheckable(true);
-    m_markAction = new QAction(tr("Mark"), this);
+	m_markAction = new QAction(tr("Mark"), this);
 	m_markAction->setCheckable(true);
-
+	m_colorAction = new QAction(tr("Color"), this);
 
 	//tool bar
 	m_toolBar = new QToolBar(this);
-
 	m_layout->addWidget(m_toolBar, 0, 0);
-
 	m_toolBar->addWidget(m_topSlider);
 	m_toolBar->addAction(m_topSlicePlayAction);
 	m_toolBar->addWidget(m_rightSlider);
 	m_toolBar->addAction(m_rightSlicePlayAction);
 	m_toolBar->addWidget(m_frontSlider);
 	m_toolBar->addAction(m_frontSlicePlayAction);
+	m_toolBar->addAction(m_colorAction);
 	m_toolBar->addAction(m_markAction);
 
-
-	//
-	connect(m_topSlider, SIGNAL(valueChanged(int)), this, SIGNAL(ZSliderChanged(int)));
-	connect(m_rightSlider, SIGNAL(valueChanged(int)), this, SIGNAL(YSliderChanged(int)));
-	connect(m_frontSlider, SIGNAL(valueChanged(int)), this, SIGNAL(XSliderChanged(int)));
-
-	connect(m_view, SIGNAL(zSliceSelected(const QPoint &)), this, SIGNAL(zSliceSelected(const QPoint &)));
-	connect(m_view, SIGNAL(ySliceSelected(const QPoint &)), this, SIGNAL(ySliceSelected(const QPoint &)));
-	connect(m_view, SIGNAL(xSliceSelected(const QPoint &)), this, SIGNAL(xSliceSelected(const QPoint &)));
-
-	//action
 	connect(m_markAction, SIGNAL(triggered(bool)), m_view, SLOT(paintEnable(bool)));
 	connect(m_topSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onTopSliceTimer(bool)));
 	connect(m_rightSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onRightSliceTimer(bool)));
 	connect(m_frontSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onFrontSliceTimer(bool)));
 
+	connect(m_colorAction, &QAction::triggered, this, &ImageView::onColorChanged);
+}
+
+void ImageView::updateActions()
+{
+	///TODO::updateActions
+
+}
+
+ImageView::ImageView(QWidget *parent) :QWidget(parent), m_topSlice(nullptr), m_rightSlice(nullptr), m_frontSlice(nullptr)
+{
+	//layout
+	m_layout = new QGridLayout(this);
+	//QGraphicsView
+	m_view = new GraphicsView(this);
+	m_layout->addWidget(m_view, 1, 0);
+	//m_view->setScene(m_scene);
+
+	//sliders
+	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
+	m_rightSlider = new TitledSliderWithSpinBox(this, tr("X:"));
+	m_frontSlider = new TitledSliderWithSpinBox(this, tr("Y:"));
+	connect(m_topSlider, SIGNAL(valueChanged(int)), this, SIGNAL(ZSliderChanged(int)));
+	connect(m_rightSlider, SIGNAL(valueChanged(int)), this, SIGNAL(YSliderChanged(int)));
+	connect(m_frontSlider, SIGNAL(valueChanged(int)), this, SIGNAL(XSliderChanged(int)));
+	connect(m_view, SIGNAL(zSliceSelected(const QPoint &)), this, SIGNAL(zSliceSelected(const QPoint &)));
+	connect(m_view, SIGNAL(ySliceSelected(const QPoint &)), this, SIGNAL(ySliceSelected(const QPoint &)));
+	connect(m_view, SIGNAL(xSliceSelected(const QPoint &)), this, SIGNAL(xSliceSelected(const QPoint &)));
+
+	//action
+	createActions();
 	setLayout(m_layout);
 }
 
@@ -375,6 +381,14 @@ void ImageView::onFrontSliceTimer(bool enable)
 	}
 }
 
+void ImageView::onColorChanged()
+{
+	qDebug() << "color";
+	QColor color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color"));
+	///TODO:: update color
+	m_view->setColor(color);
+}
+
 void ImageView::timerEvent(QTimerEvent* event)
 {
 	int timeId = event->timerId();
@@ -448,6 +462,7 @@ m_scaleFactor(0.5),
 m_currentPaintItem(nullptr),
 m_paint(false),
 m_moveble(true),
+m_color(Qt::black),
 m_topSlice(nullptr),
 m_rightSlice(nullptr),
 m_frontSlice(nullptr)
@@ -549,7 +564,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 				polyF = m_currentPaintItem->mapFromScene(polyF);
 				QGraphicsPolygonItem * polyItem = new QGraphicsPolygonItem(polyF, m_currentPaintItem);
-				QBrush aBrush(QColor(12, 0, 0));
+				QBrush aBrush(m_color);
 				QPen aPen(aBrush, 5, Qt::SolidLine);
 				polyItem->setPen(aPen);
 				polyItem->setZValue(100);

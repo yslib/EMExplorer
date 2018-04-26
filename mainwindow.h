@@ -10,7 +10,7 @@
 #include "histogram.h"
 #include "zoomviwer.h"
 #include "sliceviewer.h"
-#include "MRCDataModel.h"
+#include "ItemContext.h"
 #include "pixelviewer.h"
 #include "mrcfileinfoviewer.h"
 
@@ -81,7 +81,7 @@ private:
     Ui::MainWindow *ui;
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
-	QVector<MRCDataModel> m_mrcDataModels;
+	QVector<ItemContext> m_mrcDataModels;
 private:
     static constexpr int ZOOM_SLIDER_MAX_VALUE=100;
 private:		//ui
@@ -91,15 +91,16 @@ private:		//ui
     MRCFileInfoViewer * m_fileInfoViewer;
 
 	QTreeView * m_treeView;
-	InformationModel * m_treeViewModel;
+	DataItemModel * m_treeViewModel;
 
 	//NestedSliceViewer *m_nestedSliceViewer;
 
-    Histogram * m_histogram;
+    //Histogram * m_histogram;
     HistogramViewer * m_histogramView;
-	ZoomViwer * m_zoomViewer;
+	//ZoomViwer * m_zoomViewer;
     PixelViewer * m_pixelViewer;
 	//actions
+
     QAction * m_actionColor;
     QAction * m_actionOpen;
     //test
@@ -110,8 +111,8 @@ private:
     void createStatusBar();
     void createDockWindows();
 
-	void addMRCDataModel(const MRCDataModel & model);
-	void addMRCDataModel(MRCDataModel && model);
+	void addMRCDataModel(const ItemContext & model);
+	void addMRCDataModel(ItemContext && model);
 	void setMRCDataModel(int index);
 	void saveMRCDataModel();
     void deleteMRCDataModel(int index);

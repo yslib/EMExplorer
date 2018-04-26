@@ -1,17 +1,13 @@
 #ifndef IMAGEVIEWER_H
 #define IMAGEVIEWER_H
-#include <QWidget>
 #include <QMainWindow>
-#include <QScrollArea>
 #include <QImage>
-#include <QPainter>
 #include <QPicture>
 #include <QVector>
 #include <QList>
 #include <QGraphicsView>
 #include <QGraphicsItem>
-#include <QScopedPointer>
-#include <memory>
+
 QT_BEGIN_NAMESPACE
 class QGridLayout;
 class QLabel;
@@ -21,41 +17,33 @@ class QGraphicsScene;
 class QMouseEvent;
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
-class TitledSliderWithSpinBox;
 QT_END_NAMESPACE
+
+class TitledSliderWithSpinBox;
 
 class ImageViewer : public QScrollArea
 {
     Q_OBJECT
     QWidget * m_displayWidget;
-
     QLabel *m_topImageLabel;
     QImage m_topImage;
     bool m_topImageEnablePaint;
     QVector<QPicture> m_marksOnTop;
-
     QLabel *m_rightImageLabel;
     QImage m_rightImage;
     bool m_rightImageEnablePaint;
     QVector<QPicture> m_marksOnRight;
-
     QLabel *m_frontImageLabel;
     QImage m_frontImage;
     bool m_frontImageEnablePaint;
     QVector<QPicture> m_marksOnFront;
-
     QGridLayout * m_layout;
     qreal m_factor;
     bool m_loaded;
-
     QPoint m_firstPoint;
     QPoint m_prevPaint;
     QList<QPoint> m_pointBuffer;
-
-
-
     QPainter m_painter;
-
     static constexpr int Width= 500;
     static constexpr int Height = 500;
 protected:
@@ -93,7 +81,6 @@ enum ItemTypes
 	Mark
 };
 
-
 class StrokeMarkItem:public QGraphicsItem{
     QRectF m_boundingRect;
     QPainterPath m_painterPath;
@@ -121,7 +108,6 @@ public:
 	enum{Type = UserType + Slice};
 	SliceItem(QGraphicsItem * parent = nullptr):QGraphicsPixmapItem(parent){}
 	SliceItem(const QPixmap & pixmap, QGraphicsItem * parent = nullptr):QGraphicsPixmapItem(pixmap,parent){}
-	
 	int type() const override { return Type; }
 	virtual  ~SliceItem() = default;
 protected:
@@ -145,15 +131,14 @@ protected:
 class GraphicsView:public QGraphicsView
 {
 	Q_OBJECT
-
 	GraphicsScene *m_scene;
     qreal m_scaleFactor;
     QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
-
 	bool m_paint;
 	bool m_moveble;
 	QPointF m_prevScenePoint;
+	QColor m_color;
 	SliceItem * m_topSlice;
 	SliceItem * m_rightSlice;
 	SliceItem * m_frontSlice;
@@ -163,10 +148,10 @@ public:
 public slots:
 	void paintEnable(bool enable) { m_paint = enable; }
 	void moveEnable(bool enable) { m_moveble = enable; }
-
 	void setTopImage(const QImage &image);
 	void setRightImage(const QImage &image);
 	void setFrontImage(const QImage & image);
+	void setColor(const QColor & color) { m_color = color;}
 protected:
     void mousePressEvent(QMouseEvent * event)override;
     void mouseMoveEvent(QMouseEvent * event)override;
@@ -199,6 +184,8 @@ class ImageView:public QWidget
 
 	//actions
 	QAction *m_markAction;
+	QAction *m_colorAction;
+
 	QAction *m_topSlicePlayAction;
 	Direction m_topSlicePlayDirection;
 	int m_topTimerId;
@@ -208,6 +195,9 @@ class ImageView:public QWidget
 	QAction *m_frontSlicePlayAction;
 	Direction m_frontSlicePlayDirection;
 	int m_frontTimerId;
+private:
+	void createActions();
+	void updateActions();
 
 public:
     ImageView(QWidget * parent = nullptr);
@@ -218,24 +208,21 @@ public:
     void setTopImage(const QImage &image);
     void setRightImage(const QImage &image);
     void setFrontImage(const QImage & image);
-
 	int getZSliceValue()const;
 	int getYSliceValue()const;
 	int getXSliceValue()const;
-
 signals:
 	void ZSliderChanged(int value);
 	void YSliderChanged(int value);
 	void XSliderChanged(int value);
-
 	void zSliceSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
-
 public slots:
 	void onTopSliceTimer(bool enable);
 	void onRightSliceTimer(bool enable);
 	void onFrontSliceTimer(bool enable);
+	void onColorChanged();
 protected:
 	void timerEvent(QTimerEvent* event) override;
 };
