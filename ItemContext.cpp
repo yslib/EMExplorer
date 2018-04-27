@@ -103,7 +103,10 @@ bool ItemContext::open(const QString & fileName)
 	if (m_mrcFile.isOpened() == false) {
 		return false;
 	}
-	m_mrcContext.currentSlice = 0;
+	m_mrcContext.currentTopSliceIndex = 0;
+	m_mrcContext.currentRightSliceIndex = 0;
+	m_mrcContext.currentFrontSliceIndex = 0;
+
 	m_modified.resize(m_mrcFile.getSliceCount());
 	m_modifiedFlags = QVector<bool>(m_mrcFile.getSliceCount(), false);
 	return true;
@@ -154,7 +157,7 @@ bool ItemContext::saveMarks(const QString & fileName,MarkFormat format)
 		//
 		int width = getWidth();
 		int height = getHeight();
-		int sliceCount = getSliceCount();
+		int sliceCount = getTopSliceCount();
 		unsigned char * data = new unsigned char[m_marks.size()*getWidth()*getHeight()];
 		if (data == nullptr) {
 			qDebug() << "allocating faild";

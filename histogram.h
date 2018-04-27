@@ -67,33 +67,29 @@ public:
     explicit HistogramViewer(QWidget * parent, const QImage & image)noexcept;
 
 
-    void setImage(const QImage & image);
     QVector<int> getHist()const;
     void setEnabled(bool enable);
+
     int getLeftCursorValue()const;
     int getRightCursorValue()const;
 
 	//model interface
 	void setModel(DataItemModel * model);
 	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-	void activeItem(const QModelIndex & index);
-
-
-
+	void activateItem(const QModelIndex & index);
 public slots:
-    void setLeftCursorValue(int value);
-    void setRightCursorValue(int value);
-
+    //void setLeftCursorValue(int value);
+    //void setRightCursorValue(int value);
 	void onMinValueChanged(int value);
 	void onMaxValueChanged(int value);
-
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
 private:
 
+    void setImage(const QImage & image);
 	void update();
-	QModelIndex getDataIndex(const QModelIndex & index);
+	QModelIndex getDataIndex(const QModelIndex & itemIndex);
 
 
     QGridLayout * m_layout;

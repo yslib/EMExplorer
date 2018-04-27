@@ -1,8 +1,9 @@
 #include "pixelviewer.h"
-#include <numeric>
+#include <QVector>
+#include <QVariant>
 
 PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & image ):
-    m_width(width),m_height(height),m_image(image),
+    m_width(width),m_height(height),m_image(image),m_model(nullptr),
     QWidget(parent)
 {
 
@@ -36,12 +37,55 @@ void PixelViewer::setImage(const QImage &image)
     changeValue(m_image,m_pos);
 }
 
+void PixelViewer::setModel(DataItemModel * model)
+{
+	if(m_model != model)
+	{
+		m_model = model;
+		disconnect(m_model, &DataItemModel::dataChanged, this, &PixelViewer::dataChanged);
+		connect(m_model, &DataItemModel::dataChanged, this, &PixelViewer::dataChanged);
+
+		///TODO::get corresponding data
+		/*
+		 * We don't need to get coreesponding data here for now,because this is not a strict MVC framework
+		 * So far,we only need activateItem(...) method to activate pull data
+		 */
+	}
+}
+
+void PixelViewer::activateItem(const QModelIndex & index)
+{
+	if(m_model == nullptr)
+	{
+		qWarning("Model is empty.");
+		return;
+	}
+
+	QVariant var = m_model->data(getDataIndex(index));
+	if(var .canConvert<QSharedPointer<ItemContext>>() == true)
+	{
+		m_activedIndex = index;
+		auto p = var.value<QSharedPointer<ItemContext>>();
+		m_ptr = p;
+		int currentSlice = p->getCurrentSliceIndex();
+		setImage(p->getOriginalSlice(currentSlice));
+	}
+
+}
+
+void PixelViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+{
+	///TODO::fecth updated currentSlice
+	qDebug("PixelViewer:data model has been updated");
+
+
+}
+
 void PixelViewer::setPosition(const QPoint &p)
 {
     m_pos = p;
     changeValue(m_image,m_pos);
 }
-
 
 
 void PixelViewer::changeLayout(int width, int height)
@@ -150,4 +194,13 @@ void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
             m_rowHeadersLabels[i-startRow]->setText(QString::number(i));
         }
     }
+}
+
+QModelIndex PixelViewer::getDataIndex(const QModelIndex & itemIndex)
+{
+	if (m_model == nullptr)
+	{
+		qWarning("Model is empty.");
+	}
+	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
 }

@@ -263,26 +263,24 @@ void HistogramViewer::setModel(DataItemModel * model)
 	if(m_model != model)
 	{
 		m_model = model;
-
 		disconnect(m_model, &DataItemModel::dataChanged, this, &HistogramViewer::dataChanged);
 		connect(m_model, &DataItemModel::dataChanged, this, &HistogramViewer::dataChanged);
 		///TODO::get corresponding data i.e. current slice, and draw the histgoram 
-
 	}
 }
 
 void HistogramViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
 {
-	//qDebug() << "In HistogramViewer,data in model has changed";
+	qDebug() << "HistogramViewer:model has been updated";
 	///TODO::update data
 	//This widget does not need to fetch any updated data
 }
 
-void HistogramViewer::activeItem(const QModelIndex & index)
+void HistogramViewer::activateItem(const QModelIndex & index)
 {
 	if (m_model == nullptr)
 	{
-		qWarning("Model Pointer is nullptr");
+		qWarning("Model is empty.",__LINE__);
 		return;
 	}
 	
@@ -294,24 +292,19 @@ void HistogramViewer::activeItem(const QModelIndex & index)
 		auto p = var.value<QSharedPointer<ItemContext>>();
 		m_ptr = p;
 
-		int currentSlice = p->getCurrentSlice();
+		int currentSlice = p->getCurrentSliceIndex();
 		int low = p->getGrayscaleStrechingLowerBound();
 		int high = p->getGrayscaleStrechingUpperBound();
-		this->setLeftCursorValue(low);
-		this->setRightCursorValue(high);
+
+		m_minSlider->setValue(low);
+		m_maxSlider->setValue(high);
+		m_hist->setLeftCursorValue(low);
+		m_hist->setRightCursorValue(high);
 		setImage(p->getSlice(currentSlice));
 	}
 }
 
-void HistogramViewer::setLeftCursorValue(int value)
-{
-    m_hist->setLeftCursorValue(value);
-}
 
-void HistogramViewer::setRightCursorValue(int value)
-{
-    m_hist->setRightCursorValue(value);
-}
 
 void HistogramViewer::onMinValueChanged(int value)
 {
@@ -335,7 +328,7 @@ void HistogramViewer::update()
 	int minValue = m_minSlider->value();
 	int maxValue = m_maxSlider->value();
 
-	int currentSlice = m_ptr->getCurrentSlice();
+	int currentSlice = m_ptr->getCurrentSliceIndex();
 
 	//update min and max value
 	m_ptr->setGrayscaleStrechingLowerBound(minValue);
@@ -376,13 +369,13 @@ void HistogramViewer::update()
 
 }
 
-QModelIndex HistogramViewer::getDataIndex(const QModelIndex & index)
+QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)
 {
 	if(m_model == nullptr)
 	{
 		qWarning("Model pointer is nullptr");
 	}
-	return m_model->index(index.row(), 1, m_model->parent(index));
+	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
 }
 
 

@@ -13,26 +13,26 @@
 
 #include "mrc.h"
 
-class MRCDataBaseModel
-{
-public:
-
-	MRCDataBaseModel();
-    MRCDataBaseModel(const QString & fileName,int width,int height);
-	virtual ~MRCDataBaseModel();
-
-	int getWidth()const { return m_mrcFile.getWidth(); }
-	int getHeight()const { return m_mrcFile.getHeight(); }
-	int getSliceCount()const { return m_mrcFile.getSliceCount(); }
-	bool save(const QString & fileName);
-	bool open(const QString & fileName);
-
-	bool isOpened()const { return m_mrcFile.isOpened(); }
-	//const QSharedPointer<MRC> & getMRC()const { return QSharedPointer<MRC>(m_mrcFile); }
-private:
-	MRC m_mrcFile;
-
-};
+//class MRCDataBaseModel
+//{
+//public:
+//
+//	MRCDataBaseModel();
+//    MRCDataBaseModel(const QString & fileName,int width,int height);
+//	virtual ~MRCDataBaseModel();
+//
+//	int getWidth()const { return m_mrcFile.getWidth(); }
+//	int getHeight()const { return m_mrcFile.getHeight(); }
+//	int getSliceCount()const { return m_mrcFile.getSliceCount(); }
+//	bool save(const QString & fileName);
+//	bool open(const QString & fileName);
+//
+//	bool isOpened()const { return m_mrcFile.isOpened(); }
+//	//const QSharedPointer<MRC> & getMRC()const { return QSharedPointer<MRC>(m_mrcFile); }
+//private:
+//	MRC m_mrcFile;
+//
+//};
 
 class ItemContext //:public QObject
 {
@@ -69,15 +69,21 @@ public:
 
 	void setZoomFactor(qreal factor) { m_mrcContext.zoomFactor = factor; }
 	qreal getZoomFactor()const { return m_mrcContext.zoomFactor; }
-	void setZoomRegion(QRect region) { m_mrcContext.zoomRegion = region; qDebug() << "setZoomRegion:"<<region; }
-	QRect getZoomRegion()const { qDebug() << "getZoomRegion:"<<m_mrcContext.zoomRegion; return m_mrcContext.zoomRegion;  }
+	void setZoomRegion(QRect region) { m_mrcContext.zoomRegion = region;}
+	QRect getZoomRegion()const { return m_mrcContext.zoomRegion;  }
 
 	bool isValid()const { return m_mrcContext.valid;}
 
-	void setCurrentSlice(int slice) { m_mrcContext.currentSlice=slice; }
-	int getCurrentSlice()const { return m_mrcContext.currentSlice; }
-	int getSliceCount()const { return m_mrcFile.getSliceCount(); }
+	void setCurrentSliceIndex(int slice) { m_mrcContext.currentTopSliceIndex=slice; }
+	int getCurrentSliceIndex()const { return m_mrcContext.currentTopSliceIndex; }
 
+	void setCurrentRightSliceIndex(int index) { m_mrcContext.currentRightSliceIndex = index; }
+	int getCurrentRightSliceIndex()const { return m_mrcContext.currentRightSliceIndex; }
+
+	void setCurrentFrontSliceIndex(int index) { m_mrcContext.currentFrontSliceIndex = index; }
+	int getCurrentFrontSliceIndex()const { return m_mrcContext.currentFrontSliceIndex; }
+
+	int getTopSliceCount()const { return m_mrcFile.getSliceCount(); }
 
     bool save(const QString & fileName, ItemContext::DataFormat formate = ItemContext::DataFormat::mrc);
 	bool open(const QString & fileName);
@@ -110,7 +116,9 @@ private:
 			grayscaleLowerBound{ 0 },
 			minGrayscale{ 0 },
 			maxGrayscale{ 255 },
-			currentSlice{ -1 },
+			currentTopSliceIndex{ -1 },
+			currentRightSliceIndex(-1),
+			currentFrontSliceIndex(-1),
             zoomFactor{1.0},
             zoomRegion{},
 			valid{ false } {}
@@ -121,7 +129,9 @@ private:
 		int grayscaleStrechingUpperBound;
 		int minGrayscale;
 		int maxGrayscale;
-		int currentSlice;
+		int currentTopSliceIndex;
+		int currentRightSliceIndex;
+		int currentFrontSliceIndex;
 		qreal zoomFactor;
         QRect zoomRegion;
 		bool valid;
@@ -129,6 +139,8 @@ private:
 private:
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
+
+
 
 	QVector<QImage> m_modified;
 	QVector<bool> m_modifiedFlags;
@@ -271,7 +283,7 @@ private:
 public:
 	explicit DataItemModel(const QString & data, QObject * parent = nullptr);
 	~DataItemModel();
-	QVariant data(const QModelIndex & index, int role)const Q_DECL_OVERRIDE;
+	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex())const Q_DECL_OVERRIDE;
 	QModelIndex parent(const QModelIndex&index)const Q_DECL_OVERRIDE;

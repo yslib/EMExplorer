@@ -14,6 +14,7 @@
 #include <QPolygon>
 #include <QColorDialog>
 #include <cassert>
+#include "histogram.h"
 
 
 bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
@@ -262,17 +263,24 @@ void ImageView::createActions()
 	connect(m_topSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onTopSliceTimer(bool)));
 	connect(m_rightSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onRightSliceTimer(bool)));
 	connect(m_frontSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onFrontSliceTimer(bool)));
-
 	connect(m_colorAction, &QAction::triggered, this, &ImageView::onColorChanged);
+
+
+	updateActions();
 }
 
 void ImageView::updateActions()
 {
-	///TODO::updateActions
-
+	bool enable = (m_model != nullptr && m_modelIndex.isValid() == true && m_ptr.isNull() == false);
+	setEnabled(enable);
 }
 
-ImageView::ImageView(QWidget *parent) :QWidget(parent), m_topSlice(nullptr), m_rightSlice(nullptr), m_frontSlice(nullptr)
+ImageView::ImageView(QWidget *parent) :
+	QWidget(parent),
+	m_topSlice(nullptr),
+	m_rightSlice(nullptr),
+	m_frontSlice(nullptr),
+	m_model(nullptr)
 {
 	//layout
 	m_layout = new QGridLayout(this);
@@ -285,9 +293,18 @@ ImageView::ImageView(QWidget *parent) :QWidget(parent), m_topSlice(nullptr), m_r
 	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
 	m_rightSlider = new TitledSliderWithSpinBox(this, tr("X:"));
 	m_frontSlider = new TitledSliderWithSpinBox(this, tr("Y:"));
+
 	connect(m_topSlider, SIGNAL(valueChanged(int)), this, SIGNAL(ZSliderChanged(int)));
 	connect(m_rightSlider, SIGNAL(valueChanged(int)), this, SIGNAL(YSliderChanged(int)));
 	connect(m_frontSlider, SIGNAL(valueChanged(int)), this, SIGNAL(XSliderChanged(int)));
+
+
+	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::onZSliderValueChanged);
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::onYSliderValueChanged);
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::onXSliderValueChanged);
+
+
+
 	connect(m_view, SIGNAL(zSliceSelected(const QPoint &)), this, SIGNAL(zSliceSelected(const QPoint &)));
 	connect(m_view, SIGNAL(ySliceSelected(const QPoint &)), this, SIGNAL(ySliceSelected(const QPoint &)));
 	connect(m_view, SIGNAL(xSliceSelected(const QPoint &)), this, SIGNAL(xSliceSelected(const QPoint &)));
@@ -299,15 +316,15 @@ ImageView::ImageView(QWidget *parent) :QWidget(parent), m_topSlice(nullptr), m_r
 
 void ImageView::setTopSliceCount(int value)
 {
-	m_topSlider->setMaximum(value);
+	m_topSlider->setMaximum(value-1);
 }
 void ImageView::setRightSliceCount(int value)
 {
-	m_rightSlider->setMaximum(value);
+	m_rightSlider->setMaximum(value-1);
 }
 void ImageView::setFrontSliceCount(int value)
 {
-	m_frontSlider->setMaximum(value);
+	m_frontSlider->setMaximum(value-1);
 }
 void ImageView::setTopImage(const QImage &image)
 {
@@ -339,14 +356,167 @@ int ImageView::getXSliceValue() const
 	return m_frontSlider->value();
 }
 
+void ImageView::setModel(DataItemModel * model)
+{
+	if (m_model != model)
+	{
+		m_model = model;
+		disconnect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
+
+		connect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
+		///TODO::get corresponding data i.e. current slice (top)
+
+	}
+
+}
+
+void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int>& roles)
+{
+
+	///TODO:: This function needs parameters to determine whether the update is trival for this view
+
+	///TODO:: marks need to be drawn
+
+	qDebug() << "In ImageView:Model has been updated.";
+
+	if (m_ptr.isNull() == true)
+		return;
+	const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
+	const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
+	const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
+
+	setTopSliceCount(m_ptr->getTopSliceCount());
+	setRightSliceCount(m_ptr->getRightSliceCount());
+	setFrontSliceCount(m_ptr->getFrontSliceCount());
+
+
+	/**!
+	 *Note:Don't allow these methods to emit signal for cycling calling.
+	 *setValue will emit valueChanged(int) and will update model,and this function
+	 *will be called recursively.
+	 */
+
+	bool old;
+	old = m_topSlider->blockSignals(false);
+	m_topSlider->setValue(currentTopSliceIndex);
+	m_topSlider->blockSignals(old);
+
+	old = m_rightSlider->blockSignals(false);
+	m_rightSlider->setValue(currentRightSliceIndex);
+	m_rightSlider->blockSignals(old);
+
+	old = m_frontSlider->blockSignals(false);
+	m_frontSlider->setValue(currentFrontSliceIndex);
+	m_frontSlider->blockSignals(old);
+
+
+	setTopImage(m_ptr->getSlice(currentTopSliceIndex));
+	setRightImage(m_ptr->getRightSlice(currentRightSliceIndex));
+	setFrontImage(m_ptr->getFrontSlice(currentFrontSliceIndex));
+
+	updateActions();
+}
+
+void ImageView::activateItem(const QModelIndex & index)
+{
+	if (m_model == nullptr)
+	{
+		qWarning("Model is empty.");
+		return;
+	}
+
+	QVariant var = m_model->data(getDataIndex(index));
+
+
+	if (var.canConvert<QSharedPointer<ItemContext>>() == true)
+	{
+		m_modelIndex = index;
+		m_ptr = var.value<QSharedPointer<ItemContext>>();
+
+		const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
+		const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
+		const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
+		qDebug() << currentTopSliceIndex << " " << currentRightSliceIndex << " " << currentFrontSliceIndex;
+
+		setTopSliceCount(m_ptr->getTopSliceCount());
+		setRightSliceCount(m_ptr->getRightSliceCount());
+		setFrontSliceCount(m_ptr->getFrontSliceCount());
+
+
+		bool old;
+		old = m_topSlider->blockSignals(false);
+		m_topSlider->setValue(currentTopSliceIndex);
+		m_topSlider->blockSignals(old);
+
+		old = m_rightSlider->blockSignals(false);
+		m_rightSlider->setValue(currentRightSliceIndex);
+		m_rightSlider->blockSignals(old);
+
+		old = m_frontSlider->blockSignals(false);
+		m_frontSlider->setValue(currentFrontSliceIndex);
+		m_frontSlider->blockSignals(old);
+
+
+		///TODO:: set Marks
+	}
+	else
+	{
+		//invalid
+		m_ptr.reset();
+		m_modelIndex = QModelIndex();
+	}
+	updateActions();
+
+}
+
+void ImageView::setEnabled(bool enable)
+{
+	m_view->setEnabled(enable);
+	m_topSlider->setEnabled(enable);
+	m_frontSlider->setEnabled(enable);
+	m_rightSlider->setEnabled(enable);
+
+	m_colorAction->setEnabled(enable);
+	m_markAction->setEnabled(enable);
+
+	m_frontSlicePlayAction->setEnabled(enable);
+	m_topSlicePlayAction->setEnabled(enable);
+	m_rightSlicePlayAction->setEnabled(enable);
+}
+
+void ImageView::onZSliderValueChanged(int value)
+{
+	qDebug() << "zslider";
+	Q_ASSERT(m_ptr.isNull() == false);
+	setTopImage(m_ptr->getSlice(value));
+	updateModel();
+}
+
+void ImageView::onYSliderValueChanged(int value)
+{
+	qDebug() << "yslider";
+	Q_ASSERT(m_ptr.isNull() == false);
+	setRightImage(m_ptr->getRightSlice(value));
+	updateModel();
+}
+
+void ImageView::onXSliderValueChanged(int value)
+{
+	qDebug() << "xslider";
+	Q_ASSERT(m_ptr.isNull() == false);
+	setFrontImage(m_ptr->getFrontSlice(value));
+	updateModel();
+}
+
 void ImageView::onTopSliceTimer(bool enable)
 {
-	if(enable)
+	if (enable)
 	{
 		m_topTimerId = startTimer(10);
 		//qDebug() << "onTopSliceTimer" << m_topTimerId;
 		m_topSlicePlayDirection = Direction::Forward;
-	}else
+	}
+	else
 	{
 		killTimer(m_topTimerId);
 		m_topTimerId = 0;
@@ -355,12 +525,13 @@ void ImageView::onTopSliceTimer(bool enable)
 
 void ImageView::onRightSliceTimer(bool enable)
 {
-	if(enable)
+	if (enable)
 	{
 		m_rightTimerId = startTimer(10);
 		//qDebug() << "onRightSliceTimer" << m_rightTimerId;
 		m_rightSlicePlayDirection = Direction::Forward;
-	}else
+	}
+	else
 	{
 		killTimer(m_rightTimerId);
 		m_rightTimerId = 0;
@@ -369,12 +540,13 @@ void ImageView::onRightSliceTimer(bool enable)
 
 void ImageView::onFrontSliceTimer(bool enable)
 {
-	if(enable)
+	if (enable)
 	{
 		m_frontTimerId = startTimer(10);
-	    //qDebug() << "onFrontSliceTimer" << m_frontTimerId;
+		//qDebug() << "onFrontSliceTimer" << m_frontTimerId;
 		m_frontSlicePlayDirection = Direction::Forward;
-	}else
+	}
+	else
 	{
 		killTimer(m_frontTimerId);
 		m_frontTimerId = 0;
@@ -392,26 +564,29 @@ void ImageView::onColorChanged()
 void ImageView::timerEvent(QTimerEvent* event)
 {
 	int timeId = event->timerId();
-	if(timeId == m_topTimerId)
+	if (timeId == m_topTimerId)
 	{
 		int maxSlice = m_topSlider->maximum();
 		int cur = m_topSlider->value();
-		if(m_topSlicePlayDirection == Direction::Forward)
+		if (m_topSlicePlayDirection == Direction::Forward)
 		{
 			cur++;
-		}else
+		}
+		else
 		{
 			cur--;
 		}
-		if(cur >= maxSlice)
+		if (cur >= maxSlice)
 		{
 			m_topSlicePlayDirection = Direction::Backward;
-		}else if(cur <=0)
+		}
+		else if (cur <= 0)
 		{
 			m_topSlicePlayDirection = Direction::Forward;
 		}
 		m_topSlider->setValue(cur);
-	}else if(timeId == m_rightTimerId)
+	}
+	else if (timeId == m_rightTimerId)
 	{
 		int maxSlice = m_rightSlider->maximum();
 		int cur = m_rightSlider->value();
@@ -433,7 +608,8 @@ void ImageView::timerEvent(QTimerEvent* event)
 		}
 		m_rightSlider->setValue(cur);
 
-	}else if(timeId == m_frontTimerId)
+	}
+	else if (timeId == m_frontTimerId)
 	{
 		int maxSlice = m_frontSlider->maximum();
 		int cur = m_frontSlider->value();
@@ -455,6 +631,41 @@ void ImageView::timerEvent(QTimerEvent* event)
 		}
 		m_frontSlider->setValue(cur);
 	}
+}
+
+QModelIndex ImageView::getDataIndex(const QModelIndex & itemIndex)
+{
+
+	if (m_model == nullptr)
+	{
+		qWarning("Model pointer is nullptr");
+		return QModelIndex();
+	}
+	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
+}
+
+void ImageView::updateModel()
+{
+	///TODO:: update marks added
+
+	if (m_model == nullptr)
+	{
+		qWarning("Model is empty.");
+		return;
+	}
+	Q_ASSERT(m_model != nullptr);
+	Q_ASSERT(m_ptr.isNull() == false);
+
+	const int newCurrentTopSliceIndex = m_topSlider->value();
+	const int newCurrentRightSliceIndex = m_rightSlider->value();
+	const int newCurrentFrontSliceIndex = m_frontSlider->value();
+
+	QModelIndex dataIndex = getDataIndex(m_modelIndex);
+	Q_ASSERT(dataIndex.isValid());
+	m_ptr->setCurrentSliceIndex(newCurrentTopSliceIndex);
+	m_ptr->setCurrentRightSliceIndex(newCurrentRightSliceIndex);
+	m_ptr->setCurrentFrontSliceIndex(newCurrentFrontSliceIndex);
+	m_model->setData(dataIndex, QVariant::fromValue(m_ptr));
 }
 
 GraphicsView::GraphicsView(QWidget *parent) :QGraphicsView(parent),
@@ -495,14 +706,16 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 	for (const auto & item : items) {
 		SliceItem * slice = qgraphicsitem_cast<SliceItem*>(item);
 		QPoint itemPoint = slice->mapFromScene(pos).toPoint();
-		if(slice ==m_topSlice)
+		if (slice == m_topSlice)
 		{
 			//qDebug() << "emit z slice point" << itemPoint;
 			emit zSliceSelected(itemPoint);
-		}else if(slice == m_rightSlice)
+		}
+		else if (slice == m_rightSlice)
 		{
 			emit ySliceSelected(itemPoint);
-		}else if(slice == m_frontSlice)
+		}
+		else if (slice == m_frontSlice)
 		{
 			emit xSliceSelected(itemPoint);
 		}

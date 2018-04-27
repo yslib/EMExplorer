@@ -2,11 +2,11 @@
 #define IMAGEVIEWER_H
 #include <QMainWindow>
 #include <QImage>
-#include <QPicture>
 #include <QVector>
 #include <QList>
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include "ItemContext.h"
 
 QT_BEGIN_NAMESPACE
 class QGridLayout;
@@ -132,6 +132,7 @@ class GraphicsView:public QGraphicsView
 {
 	Q_OBJECT
 	GraphicsScene *m_scene;
+
     qreal m_scaleFactor;
     QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
@@ -165,14 +166,68 @@ signals:
 };
 class ImageView:public QWidget
 {
+	Q_OBJECT
+public:
+    ImageView(QWidget * parent = nullptr);
+	//MVC pattern will be employed later and these function will be removed
+	int getZSliceValue()const;
+	int getYSliceValue()const;
+	int getXSliceValue()const;
+	void setModel(DataItemModel * model);
+	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+	void activateItem(const QModelIndex & index);
+signals:
+	void ZSliderChanged(int value);
+	void YSliderChanged(int value);
+	void XSliderChanged(int value);
+	void zSliceSelected(const QPoint & point);
+	void ySliceSelected(const QPoint & point);
+	void xSliceSelected(const QPoint & point);
+public slots:
+	void setEnabled(bool enable);
+
+	void onZSliderValueChanged(int value);
+	void onYSliderValueChanged(int value);
+	void onXSliderValueChanged(int value);
+
+	void onTopSliceTimer(bool enable);
+	void onRightSliceTimer(bool enable);
+	void onFrontSliceTimer(bool enable);
+	void onColorChanged();
+protected:
+	void timerEvent(QTimerEvent* event) override;
+
+private:
+	QModelIndex getDataIndex(const QModelIndex & itemIndex);
+	void updateModel();
+
+	void createActions();
+	void updateActions();
+
+
+	void setTopSliceCount(int value);
+	void setRightSliceCount(int value);
+	void setFrontSliceCount(int value);
+	void setTopImage(const QImage &image);
+	void setRightImage(const QImage &image);
+	void setFrontImage(const QImage & image);
+
+
+
 	enum class Direction {
 		Forward,
 		Backward
 	};
-    Q_OBJECT
-    QGridLayout *m_layout;
-    GraphicsView * m_view;
-    //GraphicsScene * m_scene;
+
+	//Model
+	QAbstractItemModel * m_model;
+	QModelIndex m_modelIndex;
+	QSharedPointer<ItemContext> m_ptr;
+	//------
+	
+	QGridLayout *m_layout;
+	GraphicsView * m_view;
+	//GraphicsScene * m_scene;
 
 	QToolBar * m_toolBar;
 	SliceItem * m_topSlice;
@@ -195,36 +250,7 @@ class ImageView:public QWidget
 	QAction *m_frontSlicePlayAction;
 	Direction m_frontSlicePlayDirection;
 	int m_frontTimerId;
-private:
-	void createActions();
-	void updateActions();
 
-public:
-    ImageView(QWidget * parent = nullptr);
-	//MVC pattern will be employed later and these function will be removed
-	void setTopSliceCount(int value);
-	void setRightSliceCount(int value);
-	void setFrontSliceCount(int value);
-    void setTopImage(const QImage &image);
-    void setRightImage(const QImage &image);
-    void setFrontImage(const QImage & image);
-	int getZSliceValue()const;
-	int getYSliceValue()const;
-	int getXSliceValue()const;
-signals:
-	void ZSliderChanged(int value);
-	void YSliderChanged(int value);
-	void XSliderChanged(int value);
-	void zSliceSelected(const QPoint & point);
-	void ySliceSelected(const QPoint & point);
-	void xSliceSelected(const QPoint & point);
-public slots:
-	void onTopSliceTimer(bool enable);
-	void onRightSliceTimer(bool enable);
-	void onFrontSliceTimer(bool enable);
-	void onColorChanged();
-protected:
-	void timerEvent(QTimerEvent* event) override;
 };
 
 

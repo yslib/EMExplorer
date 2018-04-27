@@ -1,14 +1,13 @@
 #ifndef PIXELVIWER_H
 #define PIXELVIWER_H
-#include <QWidget>
-#include <QVector>
 #include <QLabel>
-#include <QVariant>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QImage>
 #include <QPoint>
 #include <QSharedPointer>
+#include "ItemContext.h"
+
 class PixelViewer:public QWidget
 {
     Q_OBJECT
@@ -18,13 +17,28 @@ public:
     int getHeight()const;
     void setWidth(int width);
     void setHeight(int height);
+
+
     void setImage(const QImage & image);
+
+	//model interface
+	void setModel(DataItemModel * model);
+	void activateItem(const QModelIndex & index);
+
 public slots:
+	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+
     void setPosition(const QPoint & p);
 private:
     void changeLayout(int width,int height);
     void changeValue(const QImage & image,const QPoint & pos);
 private:
+	QModelIndex getDataIndex(const QModelIndex & itemIndex);
+	QAbstractItemModel * m_model;
+	QSharedPointer<ItemContext> m_ptr;
+	QModelIndex m_activedIndex;
+
+
     QImage m_image;
     QVector<QSharedPointer<QPushButton>> m_pixelLabels;
     QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;

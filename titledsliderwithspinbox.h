@@ -30,7 +30,7 @@ public slots:
 signals:
     void valueChanged(int value);
 private:
-    void createConnections();
+    void createConnections()const;
     void createLayout(Qt::Orientation orientation = Qt::Horizontal);
 private:
     QSpinBox * m_spinBox;
