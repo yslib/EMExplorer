@@ -34,4 +34,6 @@ public slots:
    void setCurrentIndex(int index);
 };
 
+
+
 #endif // MRCFILEINFO_H
