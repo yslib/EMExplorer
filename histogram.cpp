@@ -1,7 +1,8 @@
 #include "histogram.h"
+
 #include <qdebug.h>
 #include <QMouseEvent>
-#include <algorithm>
+#include <QMessageBox>
 
 Histogram::Histogram(QWidget *parent):QWidget(parent),
     m_hist{QVector<int>(BIN_COUNT)},
@@ -215,7 +216,7 @@ qreal Histogram::getXofRightCursor()
 /*
  * HistogramViewer Definitions
 */
-HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent)
+HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent),m_model(nullptr)
 {
     m_layout = new QGridLayout(this);
     m_hist = new Histogram(this);
@@ -231,6 +232,10 @@ HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent)
     connect(m_maxSlider,SIGNAL(valueChanged(int)),this,SIGNAL(maxValueChanged(int)));
     connect(m_minSlider,SIGNAL(valueChanged(int)),m_hist,SLOT(setLeftCursorValue(int)));
     connect(m_maxSlider,SIGNAL(valueChanged(int)),m_hist,SLOT(setRightCursorValue(int)));
+
+	connect(m_minSlider, SIGNAL(valueChanged(int)), this, SLOT(onMinValueChanged(int)));
+	connect(m_maxSlider, SIGNAL(valueChanged(int)), this, SLOT(onMaxValueChanged(int)));
+	
 
     int maxValue = m_hist->getBinCount()-1;
     m_maxSlider->setMaximum(maxValue);
@@ -253,15 +258,126 @@ QVector<int> HistogramViewer::getHist() const
 {
     return m_hist->getHist();
 }
-void HistogramViewer::setLeftCursorValue(int value)
+void HistogramViewer::setModel(DataItemModel * model)
 {
-    m_hist->setLeftCursorValue(value);
+	if(m_model != model)
+	{
+		m_model = model;
+		disconnect(m_model, &DataItemModel::dataChanged, this, &HistogramViewer::dataChanged);
+		connect(m_model, &DataItemModel::dataChanged, this, &HistogramViewer::dataChanged);
+		///TODO::get corresponding data i.e. current slice, and draw the histgoram 
+	}
 }
 
-void HistogramViewer::setRightCursorValue(int value)
+void HistogramViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
 {
-    m_hist->setRightCursorValue(value);
+	qDebug() << "HistogramViewer:model has been updated";
+	///TODO::update data
+	//This widget does not need to fetch any updated data
 }
+
+void HistogramViewer::activateItem(const QModelIndex & index)
+{
+	if (m_model == nullptr)
+	{
+		qWarning("Model is empty.",__LINE__);
+		return;
+	}
+	
+	QVariant var = m_model->data(getDataIndex(index));
+
+	if(var.canConvert<QSharedPointer<ItemContext>>() == true)
+	{
+		m_modelIndex = index;
+		auto p = var.value<QSharedPointer<ItemContext>>();
+		m_ptr = p;
+
+		int currentSlice = p->getCurrentSliceIndex();
+		int low = p->getGrayscaleStrechingLowerBound();
+		int high = p->getGrayscaleStrechingUpperBound();
+
+		m_minSlider->setValue(low);
+		m_maxSlider->setValue(high);
+		m_hist->setLeftCursorValue(low);
+		m_hist->setRightCursorValue(high);
+		setImage(p->getSlice(currentSlice));
+	}
+}
+
+
+
+void HistogramViewer::onMinValueChanged(int value)
+{
+	update();
+}
+
+void HistogramViewer::onMaxValueChanged(int value)
+{
+	update();
+}
+
+void HistogramViewer::update()
+{
+
+	if(m_ptr == nullptr)
+	{
+		qWarning("Model Pointer is Nullptr");
+		return;
+	}
+	///TODO::update data
+	int minValue = m_minSlider->value();
+	int maxValue = m_maxSlider->value();
+
+	int currentSlice = m_ptr->getCurrentSliceIndex();
+
+	//update min and max value
+	m_ptr->setGrayscaleStrechingLowerBound(minValue);
+	m_ptr->setGrayScaleStrechingUpperBound(maxValue);
+
+
+	QImage originalImage = m_ptr->getOriginalSlice(currentSlice);
+
+	unsigned char *image = originalImage.bits();
+	int width = originalImage.width();
+	int height = originalImage.height();
+
+	qreal k = 256.0 / static_cast<qreal>(maxValue - minValue);
+	QImage strechingImage(width, height, QImage::Format_Grayscale8);
+	///TODO::a time-cost processure
+	unsigned char * data = strechingImage.bits();
+	for (int j = 0; j<height; j++) {
+		for (int i = 0; i<width; i++) {
+			int index = i + j * width;
+			unsigned char pixelGrayValue = image[index];
+			unsigned char clower = static_cast<unsigned char>(minValue);
+			unsigned char cupper = static_cast<unsigned char>(maxValue);
+			if (pixelGrayValue < clower) {
+				data[index] = 0;
+			}
+			else if (pixelGrayValue>cupper) {
+				data[index] = 255;
+			}
+			else {
+				data[index] = static_cast<unsigned char>(pixelGrayValue* k + 0.5);
+			}
+		}
+	}
+
+	m_ptr->setSlice(strechingImage, currentSlice);
+	//
+	m_model->setData(m_modelIndex,QVariant::fromValue(m_ptr));
+
+}
+
+QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)
+{
+	if(m_model == nullptr)
+	{
+		qWarning("Model pointer is nullptr");
+	}
+	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
+}
+
 
 void HistogramViewer::setEnabled(bool enable)
 {

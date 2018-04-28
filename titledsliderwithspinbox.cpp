@@ -69,7 +69,7 @@ void TitledSliderWithSpinBox::setOrientation(Qt::Orientation orientation)
     createLayout(orientation);
 }
 
-void TitledSliderWithSpinBox::createConnections()
+void TitledSliderWithSpinBox::createConnections() const
 {
     connect(m_slider,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
     connect(m_spinBox,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));

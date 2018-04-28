@@ -1,11 +1,15 @@
 #ifndef MRCFILEINFO_H
 #define MRCFILEINFO_H
 
-#include <QWidget>
 #include <QLabel>
 #include <QComboBox>
 #include <QTextEdit>
 #include <QLayout>
+#include <QTreeView>
+
+
+
+class MRC;
 
 class MRCFileInfoViewer : public QWidget
 {
@@ -18,11 +22,9 @@ public:
    void getText()const;
    int count()const;
    QVariant itemData(int index, int role = Qt::UserRole)const;
-
 private:
     QGridLayout * m_layout;
     QLabel * m_label;
-
     QComboBox * m_filesComboBox;
     QTextEdit * m_filesInfoTextEdit;
 private:
