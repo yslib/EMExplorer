@@ -117,15 +117,15 @@ public:
 
     void setTopSliceMark(const QGraphicsPolygonItem& mark, int index);
     void addTopSliceMark(int slice, const QGraphicsPolygonItem& mark);
-	QList<QGraphicsPolygonItem> getTopSliceMarks(int slice)const;
+	QVector<QGraphicsPolygonItem> getTopSliceMarks(int slice)const;
 
     void setRightSliceMark(const QGraphicsPolygonItem& mark, int index);
     void addRightSliceMark(int slice, const QGraphicsPolygonItem& mark);
-	QList<QGraphicsPolygonItem> getRightSliceMarks(int slice)const;
+	QVector<QGraphicsPolygonItem> getRightSliceMarks(int slice)const;
 
     void setFrontSliceMark(const QGraphicsPolygonItem& mark, int index);
     void addFrontSliceMark(int slice, const QGraphicsPolygonItem& mark);
-	QList<QGraphicsPolygonItem> getFribtSliceMarks(int slice)const;
+	QVector<QGraphicsPolygonItem> getFribtSliceMarks(int slice)const;
 
 	const MRC & getMRCFile()const { return m_mrcFile; }
 
@@ -170,9 +170,9 @@ private:
 	QVector<QImage> m_modifiedFrontSlice;
 	QVector<bool> m_modifiedFrontSliceFlags;
 
-	QVector<QList<QGraphicsPolygonItem>> m_topSliceMarks;
-	QVector<QList<QGraphicsPolygonItem>> m_rightSliceMarks;
-	QVector<QList<QGraphicsPolygonItem>> m_frontSliceMarks;
+	QVector<QVector<QGraphicsPolygonItem>> m_topSliceMarks;
+	QVector<QVector<QGraphicsPolygonItem>> m_rightSliceMarks;
+	QVector<QVector<QGraphicsPolygonItem>> m_frontSliceMarks;
 };
 
 
