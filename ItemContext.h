@@ -9,7 +9,7 @@
 #include <QImage>
 #include <QRectF>
 #include <QAbstractItemModel>
-#include <QSharedPointer>
+#include <QGraphicsPolygonItem>
 
 #include "mrc.h"
 
@@ -49,24 +49,28 @@ public:
 	ItemContext & operator=(ItemContext && model)noexcept;
 	virtual ~ItemContext();
 
+
+	/*lower and upper*/
 	void setGrayscaleStrechingLowerBound(int value) { m_mrcContext.grayscaleStrechingLowerBound = value; }
 	void setGrayScaleStrechingUpperBound(int value) { m_mrcContext.grayscaleStrechingUpperBound = value; }
 	void setGrayscaleStrechBound(int lower, int upper) { setGrayscaleStrechingLowerBound(lower); setGrayScaleStrechingUpperBound(upper); }
+	int getGrayscaleStrechingLowerBound()const { return m_mrcContext.grayscaleStrechingLowerBound; }
+	int getGrayscaleStrechingUpperBound()const { return m_mrcContext.grayscaleStrechingUpperBound; }
+	/*min and max streching*/
 	void setGrayscaleLowerBound(int value) { m_mrcContext.grayscaleLowerBound = value; }
 	void setGrayscaleUpperBound(int value) { m_mrcContext.grayscaleUpperBound = value; }
 	void setGrayscaleBound(int lower, int upper) { setGrayscaleLowerBound(lower); setGrayscaleUpperBound(upper); }
-	int getGrayscaleStrechingLowerBound()const { return m_mrcContext.grayscaleStrechingLowerBound; }
-	int getGrayscaleStrechingUpperBound()const { return m_mrcContext.grayscaleStrechingUpperBound; }
 	int getGrayscaleLowerBound()const { return m_mrcContext.grayscaleLowerBound; }
 	int getGrayscaleUpperBound()const { return m_mrcContext.grayscaleUpperBound; }
-
+	/*min and max grayscale*/
 	int getMinGrayscale()const { return m_mrcContext.minGrayscale; }
 	int getMaxGrayscale()const { return m_mrcContext.maxGrayscale; }
 
+
 	int getWidth()const { return m_mrcFile.getWidth(); }
 	int getHeight()const { return m_mrcFile.getHeight(); }
-	QImage getOriginalSlice(int index)const;
 
+	/*zoom factor*/
 	void setZoomFactor(qreal factor) { m_mrcContext.zoomFactor = factor; }
 	qreal getZoomFactor()const { return m_mrcContext.zoomFactor; }
 	void setZoomRegion(QRect region) { m_mrcContext.zoomRegion = region;}
@@ -89,23 +93,40 @@ public:
 	bool open(const QString & fileName);
 	bool isOpened()const { return isValid(); }
 
-
-
 	bool openMarks(const QString & fileName);
 	bool saveMarks(const QString & fileName,MarkFormat format = MarkFormat::MRC);
 	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.getMRCInfo().c_str())); }
-	QImage getSlice(int index)const;
-	void setSlice(const QImage & image, int index);
-	QImage getRightSlice(int index) const;
-    int getRightSliceCount()const{return m_mrcFile.getWidth();}
-    int getFrontSliceCount()const{return m_mrcFile.getHeight();}
-	QImage getFrontSlice(int index) const;
 
-	QVector<QImage> getSlices()const;
-    void setMark(const QPicture & mark, int index);
-    void addMark(int slice,const QPicture& mark);
-	QPicture getMark(int index)const;
-    QVector<QPicture> getMarks(int slice)const;
+	QImage getOriginalTopSlice(int index)const;
+	QImage getTopSlice(int index)const;
+	void setTopSlice(const QImage & image, int index);
+
+
+    int getRightSliceCount()const{return m_mrcFile.getWidth();}
+	QImage getOriginalRightSlice(int index) const;
+	QImage getRightSlice(int index)const;
+	void setRightSlice(const QImage & image, int index);
+
+
+    int getFrontSliceCount()const{return m_mrcFile.getHeight();}
+	QImage getOriginalFrontSlice(int index) const;
+	QImage getFrontSlice(int index)const;
+	void setFrontSlice(const QImage & image, int index);
+
+	//QVector<QImage> getSlices()const;
+
+    void setTopSliceMark(const QGraphicsPolygonItem& mark, int index);
+    void addTopSliceMark(int slice, const QGraphicsPolygonItem& mark);
+	QList<QGraphicsPolygonItem> getTopSliceMarks(int slice)const;
+
+    void setRightSliceMark(const QGraphicsPolygonItem& mark, int index);
+    void addRightSliceMark(int slice, const QGraphicsPolygonItem& mark);
+	QList<QGraphicsPolygonItem> getRightSliceMarks(int slice)const;
+
+    void setFrontSliceMark(const QGraphicsPolygonItem& mark, int index);
+    void addFrontSliceMark(int slice, const QGraphicsPolygonItem& mark);
+	QList<QGraphicsPolygonItem> getFribtSliceMarks(int slice)const;
+
 	const MRC & getMRCFile()const { return m_mrcFile; }
 
 private:
@@ -140,14 +161,18 @@ private:
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
 
+	QVector<QImage> m_modifiedTopSlice;
+	QVector<bool> m_modifiedTopSliceFlags;
 
+	QVector<QImage> m_modifiedRightSlice;
+	QVector<bool> m_modifiedRightSliceFlags;
 
-	QVector<QImage> m_modified;
-	QVector<bool> m_modifiedFlags;
-	///Useless
-    QVector<QVector<QPicture>> m_marks;
+	QVector<QImage> m_modifiedFrontSlice;
+	QVector<bool> m_modifiedFrontSliceFlags;
 
-
+	QVector<QList<QGraphicsPolygonItem>> m_topSliceMarks;
+	QVector<QList<QGraphicsPolygonItem>> m_rightSliceMarks;
+	QVector<QList<QGraphicsPolygonItem>> m_frontSliceMarks;
 };
 
 

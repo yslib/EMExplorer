@@ -300,7 +300,7 @@ void HistogramViewer::activateItem(const QModelIndex & index)
 		m_maxSlider->setValue(high);
 		m_hist->setLeftCursorValue(low);
 		m_hist->setRightCursorValue(high);
-		setImage(p->getSlice(currentSlice));
+		setImage(p->getTopSlice(currentSlice));
 	}
 }
 
@@ -335,7 +335,7 @@ void HistogramViewer::update()
 	m_ptr->setGrayScaleStrechingUpperBound(maxValue);
 
 
-	QImage originalImage = m_ptr->getOriginalSlice(currentSlice);
+	QImage originalImage = m_ptr->getOriginalTopSlice(currentSlice);
 
 	unsigned char *image = originalImage.bits();
 	int width = originalImage.width();
@@ -363,7 +363,7 @@ void HistogramViewer::update()
 		}
 	}
 
-	m_ptr->setSlice(strechingImage, currentSlice);
+	m_ptr->setTopSlice(strechingImage, currentSlice);
 	//
 	m_model->setData(m_modelIndex,QVariant::fromValue(m_ptr));
 

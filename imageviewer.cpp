@@ -303,8 +303,6 @@ ImageView::ImageView(QWidget *parent) :
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::onYSliderValueChanged);
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::onXSliderValueChanged);
 
-
-
 	connect(m_view, SIGNAL(zSliceSelected(const QPoint &)), this, SIGNAL(zSliceSelected(const QPoint &)));
 	connect(m_view, SIGNAL(ySliceSelected(const QPoint &)), this, SIGNAL(ySliceSelected(const QPoint &)));
 	connect(m_view, SIGNAL(xSliceSelected(const QPoint &)), this, SIGNAL(xSliceSelected(const QPoint &)));
@@ -373,6 +371,10 @@ void ImageView::setModel(DataItemModel * model)
 void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int>& roles)
 {
 
+	/**
+	 * the modification invoked by dataChanged should not yield any data model change again.
+	 */
+
 	///TODO:: This function needs parameters to determine whether the update is trival for this view
 
 	///TODO:: marks need to be drawn
@@ -381,6 +383,7 @@ void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bot
 
 	if (m_ptr.isNull() == true)
 		return;
+
 	const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
 	const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
 	const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
@@ -397,22 +400,22 @@ void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bot
 	 */
 
 	bool old;
-	old = m_topSlider->blockSignals(false);
+	old = m_topSlider->blockSignals(true);
 	m_topSlider->setValue(currentTopSliceIndex);
 	m_topSlider->blockSignals(old);
 
-	old = m_rightSlider->blockSignals(false);
+	old = m_rightSlider->blockSignals(true);
 	m_rightSlider->setValue(currentRightSliceIndex);
 	m_rightSlider->blockSignals(old);
 
-	old = m_frontSlider->blockSignals(false);
+	old = m_frontSlider->blockSignals(true);
 	m_frontSlider->setValue(currentFrontSliceIndex);
 	m_frontSlider->blockSignals(old);
 
 
-	setTopImage(m_ptr->getSlice(currentTopSliceIndex));
-	setRightImage(m_ptr->getRightSlice(currentRightSliceIndex));
-	setFrontImage(m_ptr->getFrontSlice(currentFrontSliceIndex));
+	setTopImage(m_ptr->getTopSlice(currentTopSliceIndex));
+	setRightImage(m_ptr->getOriginalRightSlice(currentRightSliceIndex));
+	setFrontImage(m_ptr->getOriginalFrontSlice(currentFrontSliceIndex));
 
 	updateActions();
 }
@@ -426,7 +429,6 @@ void ImageView::activateItem(const QModelIndex & index)
 	}
 
 	QVariant var = m_model->data(getDataIndex(index));
-
 
 	if (var.canConvert<QSharedPointer<ItemContext>>() == true)
 	{
@@ -444,15 +446,15 @@ void ImageView::activateItem(const QModelIndex & index)
 
 
 		bool old;
-		old = m_topSlider->blockSignals(false);
+		old = m_topSlider->blockSignals(true);
 		m_topSlider->setValue(currentTopSliceIndex);
 		m_topSlider->blockSignals(old);
 
-		old = m_rightSlider->blockSignals(false);
+		old = m_rightSlider->blockSignals(true);
 		m_rightSlider->setValue(currentRightSliceIndex);
 		m_rightSlider->blockSignals(old);
 
-		old = m_frontSlider->blockSignals(false);
+		old = m_frontSlider->blockSignals(true);
 		m_frontSlider->setValue(currentFrontSliceIndex);
 		m_frontSlider->blockSignals(old);
 
@@ -486,27 +488,26 @@ void ImageView::setEnabled(bool enable)
 
 void ImageView::onZSliderValueChanged(int value)
 {
-	qDebug() << "zslider";
 	Q_ASSERT(m_ptr.isNull() == false);
-	setTopImage(m_ptr->getSlice(value));
+	setTopImage(m_ptr->getTopSlice(value));
 	updateModel();
 }
 
 void ImageView::onYSliderValueChanged(int value)
 {
-	qDebug() << "yslider";
 	Q_ASSERT(m_ptr.isNull() == false);
-	setRightImage(m_ptr->getRightSlice(value));
+	setRightImage(m_ptr->getOriginalRightSlice(value));
 	updateModel();
 }
 
 void ImageView::onXSliderValueChanged(int value)
 {
-	qDebug() << "xslider";
 	Q_ASSERT(m_ptr.isNull() == false);
-	setFrontImage(m_ptr->getFrontSlice(value));
+	setFrontImage(m_ptr->getOriginalFrontSlice(value));
 	updateModel();
 }
+
+
 
 void ImageView::onTopSliceTimer(bool enable)
 {

@@ -90,12 +90,11 @@ private:
     void setImage(const QImage & image);
 	void update();
 	QModelIndex getDataIndex(const QModelIndex & itemIndex);
-
-
     QGridLayout * m_layout;
     Histogram * m_hist;
     TitledSliderWithSpinBox * m_minSlider;
     TitledSliderWithSpinBox * m_maxSlider;
+
 	//
 	QAbstractItemModel * m_model;
 	QModelIndex m_modelIndex;

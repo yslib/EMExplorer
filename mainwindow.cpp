@@ -68,7 +68,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
 	m_treeView->setModel(m_treeViewModel);
 
+	
 	m_histogramView = new HistogramViewer(this);
+
 	m_histogramView->setModel(m_treeViewModel);
 
 	dock = new QDockWidget(tr("Histgoram"), this);
@@ -119,7 +121,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	dock->setWidget(m_pixelViewer);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());
-	//m_pixelViewer->setModel(m_treeViewModel);
+	m_pixelViewer->setModel(m_treeViewModel);
 
 	//slice viewer
 
@@ -287,12 +289,12 @@ void MainWindow::setMRCDataModel(int index)
 	//TODO::m_histogramView
 	//m_histogramView->setRightCursorValue(grayscaleStrechingUpperBound);
 
-	const QImage & image = model.getSlice(currentSliceIndex);
+	const QImage & image = model.getTopSlice(currentSliceIndex);
 
 	//ImageView
 	//m_imageView->setTopImage(image);
-	//m_imageView->setRightImage(model.getRightSlice(0));
-	//m_imageView->setFrontImage(model.getFrontSlice(0));
+	//m_imageView->setRightImage(model.getOriginalRightSlice(0));
+	//m_imageView->setFrontImage(model.getOriginalFrontSlice(0));
 
 	int topSliceCount = model.getTopSliceCount();
 	int rightSliceCount = model.getRightSliceCount();
@@ -319,11 +321,11 @@ void MainWindow::setMRCDataModel(int index)
 	//m_sliceViewer->setImage(image,region);
 
 	//m_nestedSliceViewer->setImage(image,region);
-	//m_nestedSliceViewer->setRightImage(model.getRightSlice(0));
-	//m_nestedSliceViewer->setFrontImage(model.getFrontSlice(0));
+	//m_nestedSliceViewer->setRightImage(model.getOriginalRightSlice(0));
+	//m_nestedSliceViewer->setFrontImage(model.getOriginalFrontSlice(0));
 
 
-	//m_nestedSliceViewer->setMarks(model.getMarks(currentSliceIndex));
+	//m_nestedSliceViewer->setMarks(model.getTopSliceMarks(currentSliceIndex));
 
 	/*PixelViewer*/
 	//m_pixelViewer->setImage(image);
@@ -373,8 +375,8 @@ void MainWindow::updateGrayThreshold(int lower, int upper)
 	//   size_t width = m_mrcDataModels[m_currentContext].getWidth();
 	//   size_t height = m_mrcDataModels[m_currentContext].getHeight();
 
-	//   //QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalSlice(m_nestedSliceViewer->getZSliceValue());
-	//   QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalSlice(m_imageView->getZSliceValue());
+	//   //QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalTopSlice(m_nestedSliceViewer->getZSliceValue());
+	//   QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalTopSlice(m_imageView->getZSliceValue());
 
 	   //unsigned char *image = originalImage.bits();
 
@@ -399,8 +401,8 @@ void MainWindow::updateGrayThreshold(int lower, int upper)
 	//       }
 	//   }
 	   //m_sliceViewer->setImage(strechingImage);
-	   //m_mrcDataModels[m_currentContext].setSlice(strechingImage,m_nestedSliceViewer->getZSliceValue());
-	   //m_mrcDataModels[m_currentContext].setSlice(strechingImage,m_imageView->getZSliceValue());
+	   //m_mrcDataModels[m_currentContext].setTopSlice(strechingImage,m_nestedSliceViewer->getZSliceValue());
+	   //m_mrcDataModels[m_currentContext].setTopSlice(strechingImage,m_imageView->getZSliceValue());
 }
 /*
  * This function only sets the initial ui layout,
@@ -438,12 +440,12 @@ void MainWindow::onMaxGrayValueChanged(int position)
 	//QRect rect = m_zoomViewer->zoomRegion().toRect();
 
 	/*int slice = m_nestedSliceViewer->getZSliceValue();
-	m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(slice),rect);
-	m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getSlice(slice));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(slice),rect);*/
+	m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(slice),rect);
+	m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
+	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(slice),rect);*/
 
 	//int slice = m_imageView->getZSliceValue();
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getSlice(slice));
+	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
 }
 
 void MainWindow::onMinGrayValueChanged(int position)
@@ -456,12 +458,12 @@ void MainWindow::onMinGrayValueChanged(int position)
 	updateGrayThreshold(minv, maxv);
 	//QRect rect = m_zoomViewer->zoomRegion().toRect();
 
-	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_nestedSliceViewer->getZSliceValue()),rect);
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getSlice(m_nestedSliceViewer->getZSliceValue()));
-	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(m_nestedSliceViewer->getZSliceValue()),rect);
+	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()),rect);
+	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()));
+	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()),rect);
 
 	//int slice = m_imageView->getZSliceValue();
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getSlice(slice));
+	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
 
 }
 
@@ -474,29 +476,29 @@ void MainWindow::onZSliderValueChanged(int value)
 	//QRectF regionf = m_zoomViewer->zoomRegion();
 	//QRect region = QRect(regionf.left(),regionf.top(),regionf.width(),regionf.height());
 	//qDebug() << "onSliceValueChanged(int):" << region;
-	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
-	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(value));
+	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value),region);
+	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getTopSliceMarks(value));
 	//
-	//m_histogram->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+	//m_histogram->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
 
 	//TODO::m_histogramView
-   // m_histogramView->setImage(m_mrcDataModels[m_currentContext].getSlice(value));
+   // m_histogramView->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
 
 
-	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getSlice(value),region);
-	//m_imageView->setTopImage(m_mrcDataModels[m_currentContext].getSlice(value));
+	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value),region);
+	//m_imageView->setTopImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
 }
 
 void MainWindow::onYSliderValueChanged(int value)
 {
-	//m_nestedSliceViewer->setFrontImage(m_mrcDataModels[m_currentContext].getFrontSlice(value));
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getFrontSlice(value));
+	//m_nestedSliceViewer->setFrontImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
+	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
 }
 
 void MainWindow::onXSliderValueChanged(int value)
 {
-	//m_nestedSliceViewer->setRightImage(m_mrcDataModels[m_currentContext].getFrontSlice(value));
-	//m_imageView->setRightImage(m_mrcDataModels[m_currentContext].getRightSlice(value));
+	//m_nestedSliceViewer->setRightImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
+	//m_imageView->setRightImage(m_mrcDataModels[m_currentContext].getOriginalRightSlice(value));
 }
 
 
@@ -511,7 +513,7 @@ void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
 void MainWindow::onZoomRegionChanged(const QRectF &region)
 {
 	//int slice = m_nestedSliceViewer->getZSliceValue();
-	//QImage image = m_mrcDataModels[m_currentContext].getSlice(slice);
+	//QImage image = m_mrcDataModels[m_currentContext].getTopSlice(slice);
 	//m_nestedSliceViewer->setImage(image,region.toRect());
 }
 
@@ -519,7 +521,7 @@ void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)
 {
 	//int slice = m_nestedSliceViewer->getZSliceValue();
 	//m_mrcDataModels[m_currentContext].addMark(slice,p);
-	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getMarks(slice));
+	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getTopSliceMarks(slice));
 }
 
 void MainWindow::onColorActionTriggered()
@@ -579,9 +581,7 @@ void MainWindow::onTreeViewDoubleClicked(const QModelIndex & index)
 	while ((parent = m_treeViewModel->parent(rootItem)).isValid())
 		rootItem = parent;
 	m_histogramView->activateItem(rootItem);
-
 	m_imageView->activateItem(rootItem);
-
 	m_pixelViewer->activateItem(rootItem);
 }
 void MainWindow::createDockWindows()

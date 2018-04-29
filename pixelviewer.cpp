@@ -68,7 +68,7 @@ void PixelViewer::activateItem(const QModelIndex & index)
 		auto p = var.value<QSharedPointer<ItemContext>>();
 		m_ptr = p;
 		int currentSlice = p->getCurrentSliceIndex();
-		setImage(p->getOriginalSlice(currentSlice));
+		setImage(p->getOriginalTopSlice(currentSlice));
 	}
 
 }
