@@ -8,9 +8,9 @@
 
 ItemContext::ItemContext() :
 	m_mrcContext{},
-	m_modified{},
-	m_modifiedFlags{},
-	m_marks{}
+	m_modifiedTopSlice{},
+	m_modifiedTopSliceFlags{},
+	m_topSliceMarks{}
 {
 
 }
@@ -21,7 +21,10 @@ ItemContext::ItemContext(const QString & fileName):ItemContext()
     if(opened == false)
         return;
 	if(m_mrcFile.isOpened() == true)
-		m_marks.resize(m_mrcFile.getSliceCount());
+	{
+		
+	}
+		m_topSliceMarks.resize(m_mrcFile.getSliceCount());
 
     /*Initialzed the zoom region in the context */
     m_mrcContext.zoomRegion=QRect(0,0,m_mrcFile.getWidth(),m_mrcFile.getHeight());
@@ -31,18 +34,18 @@ ItemContext::ItemContext(const ItemContext & model)
 {
 	m_mrcFile = model.m_mrcFile;
 	m_mrcContext = model.m_mrcContext;
-	m_marks = model.m_marks;
-	m_modified = model.m_modified;
-	m_modifiedFlags = model.m_modifiedFlags;
+	m_topSliceMarks = model.m_topSliceMarks;
+	m_modifiedTopSlice = model.m_modifiedTopSlice;
+	m_modifiedTopSliceFlags = model.m_modifiedTopSliceFlags;
 }
 
 ItemContext::ItemContext(ItemContext && model)noexcept
 {
 	m_mrcFile = std::move(model.m_mrcFile);
 	m_mrcContext = model.m_mrcContext;
-	m_marks = std::move(model.m_marks);
-	m_modified = std::move(model.m_modified);
-	m_modifiedFlags = std::move(model.m_modifiedFlags);
+	m_topSliceMarks = std::move(model.m_topSliceMarks);
+	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
+	m_modifiedTopSliceFlags = std::move(model.m_modifiedTopSliceFlags);
 }
 
 ItemContext & ItemContext::operator=(const ItemContext & model)
@@ -52,9 +55,9 @@ ItemContext & ItemContext::operator=(const ItemContext & model)
 		return *this;
 	m_mrcFile = model.m_mrcFile;
 	m_mrcContext = model.m_mrcContext;
-	m_marks = model.m_marks;
-	m_modified = model.m_modified;
-	m_modifiedFlags = model.m_modifiedFlags;
+	m_topSliceMarks = model.m_topSliceMarks;
+	m_modifiedTopSlice = model.m_modifiedTopSlice;
+	m_modifiedTopSliceFlags = model.m_modifiedTopSliceFlags;
 }
 
 ItemContext & ItemContext::operator=(ItemContext && model)noexcept
@@ -63,9 +66,9 @@ ItemContext & ItemContext::operator=(ItemContext && model)noexcept
 		return *this;
 	m_mrcFile = std::move(model.m_mrcFile);
 	m_mrcContext = model.m_mrcContext;
-	m_marks = std::move(model.m_marks);
-	m_modified = std::move(model.m_modified);
-	m_modifiedFlags = std::move(model.m_modifiedFlags);
+	m_topSliceMarks = std::move(model.m_topSliceMarks);
+	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
+	m_modifiedTopSliceFlags = std::move(model.m_modifiedTopSliceFlags);
 	// TODO: insert return statement here
 }
 
@@ -74,7 +77,7 @@ ItemContext::~ItemContext()
 
 }
 
-QImage ItemContext::getOriginalSlice(int index) const
+QImage ItemContext::getOriginalTopSlice(int index) const
 {
 	int width = m_mrcFile.getWidth();
 	int height = m_mrcFile.getHeight();
@@ -107,8 +110,8 @@ bool ItemContext::open(const QString & fileName)
 	m_mrcContext.currentRightSliceIndex = 0;
 	m_mrcContext.currentFrontSliceIndex = 0;
 
-	m_modified.resize(m_mrcFile.getSliceCount());
-	m_modifiedFlags = QVector<bool>(m_mrcFile.getSliceCount(), false);
+	m_modifiedTopSlice.resize(m_mrcFile.getSliceCount());
+	m_modifiedTopSliceFlags = QVector<bool>(m_mrcFile.getSliceCount(), false);
 	return true;
 }
 
@@ -130,21 +133,24 @@ bool ItemContext::saveMarks(const QString & fileName,MarkFormat format)
 
 	/*This function is really really a mess. */
 
-	/*Convert QPicture to QImage */
+	/*Convert QGraphicsPolygonItem to QImage */
+
 	bool empty = true;
 	QVector<QImage> images;
-	for (int i = 0; i < m_marks.size();i++) {
-		images.push_back(QImage(getWidth(),getHeight(),
-			QImage::Format_Grayscale8));
-		/*Uninitialized*/
-		images.back().fill(Qt::black); 
-		for (auto & pic : m_marks[i]) {
-			if (pic.isNull() == false) {
-				empty = false;
-			}
-			QPainter p(&images[i]);
-			p.drawPicture(0,0,pic);
-		}
+	for (int i = 0; i < m_topSliceMarks.size();i++) {
+		///TODO::Convert QGraphicsPolygonItem into qimage
+		//images.push_back(QImage(getWidth(),getHeight(),
+		//	QImage::Format_Grayscale8));
+		///*Uninitialized*/
+		//images.back().fill(Qt::black); 
+		//for (auto & pic : m_topSliceMarks[i]) {
+		//	
+		//	if (pic.isNull() == false) {
+		//		empty = false;
+		//	}
+		//	QPainter p(&images[i]);
+		//	p.drawPicture(0,0,pic);
+		//}
 	}
 
 	if (empty == true) {
@@ -158,7 +164,7 @@ bool ItemContext::saveMarks(const QString & fileName,MarkFormat format)
 		int width = getWidth();
 		int height = getHeight();
 		int sliceCount = getTopSliceCount();
-		unsigned char * data = new unsigned char[m_marks.size()*getWidth()*getHeight()];
+		unsigned char * data = new unsigned char[m_topSliceMarks.size()*getWidth()*getHeight()];
 		if (data == nullptr) {
 			qDebug() << "allocating faild";
 			std::cerr << __LINE__;
@@ -221,17 +227,17 @@ bool ItemContext::saveMarks(const QString & fileName,MarkFormat format)
 	return true;
 }
 
-QImage ItemContext::getSlice(int index) const
+QImage ItemContext::getTopSlice(int index) const
 {
-	if (m_modifiedFlags[index] == false) {
-		return getOriginalSlice(index);
+	if (m_modifiedTopSliceFlags[index] == false) {
+		return getOriginalTopSlice(index);
 	}
 	else {
-		return m_modified[index];
+		return m_modifiedTopSlice[index];
 	}
 }
 
-void ItemContext::setSlice(const QImage & image, int index)
+void ItemContext::setTopSlice(const QImage & image, int index)
 {
 	if (image.format() != QImage::Format_Grayscale8)
 		return;
@@ -240,12 +246,12 @@ void ItemContext::setSlice(const QImage & image, int index)
 	if (width != m_mrcFile.getWidth() || height != m_mrcFile.getHeight())
 		return;
 	//memcpy(m_mrcFile.data(), image.bits(), width*height * sizeof(unsigned char));
-	m_modifiedFlags[index] = true;
-	m_modified[index] = image;
+	m_modifiedTopSliceFlags[index] = true;
+	m_modifiedTopSlice[index] = image;
 }
 
 
-QImage ItemContext::getRightSlice(int index) const
+QImage ItemContext::getOriginalRightSlice(int index) const
 {
 	int width = m_mrcFile.getWidth();
 	int height = m_mrcFile.getHeight();
@@ -265,7 +271,16 @@ QImage ItemContext::getRightSlice(int index) const
 	return QImage(imageBuffer.get(), slice, height, QImage::Format_Grayscale8).copy();
 }
 
-QImage ItemContext::getFrontSlice(int index) const
+QImage ItemContext::getRightSlice(int index) const
+{
+	return QImage();
+}
+
+void ItemContext::setRightSlice(const QImage & image, int index)
+{
+}
+
+QImage ItemContext::getOriginalFrontSlice(int index) const
 {
 	int width = m_mrcFile.getWidth();
 	int height = m_mrcFile.getHeight();
@@ -285,34 +300,65 @@ QImage ItemContext::getFrontSlice(int index) const
 	return QImage(imageBuffer.get(),width,slice, QImage::Format_Grayscale8).copy();
 }
 
-QVector<QImage> ItemContext::getSlices() const
+QImage ItemContext::getFrontSlice(int index) const
 {
-	QVector<QImage> imgVec;
-	int slices = m_mrcFile.getSliceCount();
-	for (int i = 0; i < slices; i++) {
-		imgVec.push_back(getSlice(i));
-	}
-	return imgVec;
+	return QImage();
 }
 
-void ItemContext::setMark(const QPicture& mark, int index)
+void ItemContext::setFrontSlice(const QImage & image, int index)
+{
+}
+
+//QVector<QImage> ItemContext::getSlices() const
+//{
+//	QVector<QImage> imgVec;
+//	int slices = m_mrcFile.getSliceCount();
+//	for (int i = 0; i < slices; i++) {
+//		imgVec.push_back(getTopSlice(i));
+//	}
+//	return imgVec;
+//}
+
+void ItemContext::setTopSliceMark(const QGraphicsPolygonItem& mark, int index)
 {
 
 }
 
-void ItemContext::addMark(int slice, const QPicture &mark)
+void ItemContext::addTopSliceMark(int slice, const QGraphicsPolygonItem& mark)
 {
-   m_marks[slice].push_back(mark);
+   m_topSliceMarks[slice].push_back(mark);
 }
 
-QPicture ItemContext::getMark(int index)const
+
+QList<QGraphicsPolygonItem> ItemContext::getTopSliceMarks(int slice) const
 {
-	return QPicture();
+    return m_topSliceMarks[slice];
 }
 
-QVector<QPicture> ItemContext::getMarks(int slice) const
+void ItemContext::setRightSliceMark(const QGraphicsPolygonItem & mark, int index)
 {
-    return m_marks[slice];
+}
+
+void ItemContext::addRightSliceMark(int slice, const QGraphicsPolygonItem & mark)
+{
+}
+
+QList<QGraphicsPolygonItem> ItemContext::getRightSliceMarks(int slice) const
+{
+	return QList<QGraphicsPolygonItem>();
+}
+
+void ItemContext::setFrontSliceMark(const QGraphicsPolygonItem & mark, int index)
+{
+}
+
+void ItemContext::addFrontSliceMark(int slice, const QGraphicsPolygonItem & mark)
+{
+}
+
+QList<QGraphicsPolygonItem> ItemContext::getFribtSliceMarks(int slice) const
+{
+	return QList<QGraphicsPolygonItem>();
 }
 
 
