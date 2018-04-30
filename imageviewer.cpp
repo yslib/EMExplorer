@@ -1,10 +1,11 @@
 /*Custom Headers*/
 #include "imageviewer.h"
 #include "titledsliderwithspinbox.h"
+#include "histogram.h"
+#include "ItemContext.h"
 /*Qt Headers*/
 #include <QToolBar>
 #include <QLabel>
-#include <QLayout>
 #include <QWheelEvent>
 #include <QDebug>
 #include <QPainter>
@@ -13,8 +14,8 @@
 #include <QGraphicsPixmapItem>
 #include <QPolygon>
 #include <QColorDialog>
+#include <QPicture>
 #include <cassert>
-#include "histogram.h"
 
 
 bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
@@ -307,6 +308,45 @@ ImageView::ImageView(QWidget *parent) :
 	connect(m_view, SIGNAL(ySliceSelected(const QPoint &)), this, SIGNAL(ySliceSelected(const QPoint &)));
 	connect(m_view, SIGNAL(xSliceSelected(const QPoint &)), this, SIGNAL(xSliceSelected(const QPoint &)));
 
+
+	connect(m_view, &GraphicsView::zSliceMarkAdded, [=](QGraphicsItem * item)
+	{
+		//update model
+		if (m_model == nullptr)
+		{
+			qWarning("Model is empty.");
+			return;
+		}
+		Q_ASSERT(m_model != nullptr);
+		Q_ASSERT(m_ptr.isNull() == false);
+		m_ptr->addTopSliceMark(m_topSlider->value(), item);
+		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
+	});
+	connect(m_view, &GraphicsView::ySliceMarkAdded, [=](QGraphicsItem * item)
+	{
+		if (m_model == nullptr)
+		{
+			qWarning("Model is empty.");
+			return;
+		}
+		Q_ASSERT(m_model != nullptr);
+		Q_ASSERT(m_ptr.isNull() == false);
+		m_ptr->addRightSliceMark(m_rightSlider->value(), item);
+		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
+	});
+	connect(m_view, &GraphicsView::xSliceMarkAdded, [=](QGraphicsItem * item)
+	{
+		if (m_model == nullptr)
+		{
+			qWarning("Model is empty.");
+			return;
+		}
+		Q_ASSERT(m_model != nullptr);
+		Q_ASSERT(m_ptr.isNull() == false);
+		m_ptr->addFrontSliceMark(m_frontSlider->value(), item);
+		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
+
+	});
 	//action
 	createActions();
 	setLayout(m_layout);
@@ -364,6 +404,8 @@ void ImageView::setModel(DataItemModel * model)
 		connect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
 		///TODO::get corresponding data i.e. current slice (top)
 
+
+
 	}
 
 }
@@ -377,7 +419,7 @@ void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bot
 
 	///TODO:: This function needs parameters to determine whether the update is trival for this view
 
-	///TODO:: marks need to be drawn
+	
 
 	qDebug() << "In ImageView:Model has been updated.";
 
@@ -416,6 +458,16 @@ void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bot
 	setTopImage(m_ptr->getTopSlice(currentTopSliceIndex));
 	setRightImage(m_ptr->getOriginalRightSlice(currentRightSliceIndex));
 	setFrontImage(m_ptr->getOriginalFrontSlice(currentFrontSliceIndex));
+
+	///TODO:: marks need to be drawn
+	m_view->clearTopSliceMarks();
+	m_view->clearRightSliceMarks();
+	m_view->clearFrontSliceMarks();
+
+	m_view->setTopSliceMarks(m_ptr->getTopSliceMarks(currentTopSliceIndex));
+	m_view->setRightSliceMarks(m_ptr->getRightSliceMarks(currentRightSliceIndex));
+	m_view->setFrontSliceMarks(m_ptr->getFribtSliceMarks(currentFrontSliceIndex));
+
 
 	updateActions();
 }
@@ -457,9 +509,18 @@ void ImageView::activateItem(const QModelIndex & index)
 		old = m_frontSlider->blockSignals(true);
 		m_frontSlider->setValue(currentFrontSliceIndex);
 		m_frontSlider->blockSignals(old);
-
-
 		///TODO:: set Marks
+
+		//clear old marks
+		m_view->clearTopSliceMarks();
+		m_view->clearRightSliceMarks();
+		m_view->clearFrontSliceMarks();
+	
+		m_view->setTopSliceMarks(m_ptr->getTopSliceMarks(currentTopSliceIndex));
+		m_view->setRightSliceMarks(m_ptr->getRightSliceMarks(currentRightSliceIndex));
+		m_view->setFrontSliceMarks(m_ptr->getFribtSliceMarks(currentFrontSliceIndex));
+
+
 	}
 	else
 	{
@@ -649,6 +710,7 @@ void ImageView::updateModel()
 {
 	///TODO:: update marks added
 
+
 	if (m_model == nullptr)
 	{
 		qWarning("Model is empty.");
@@ -666,6 +728,7 @@ void ImageView::updateModel()
 	m_ptr->setCurrentSliceIndex(newCurrentTopSliceIndex);
 	m_ptr->setCurrentRightSliceIndex(newCurrentRightSliceIndex);
 	m_ptr->setCurrentFrontSliceIndex(newCurrentFrontSliceIndex);
+
 	m_model->setData(dataIndex, QVariant::fromValue(m_ptr));
 }
 
@@ -684,6 +747,30 @@ m_frontSlice(nullptr)
 	scale(m_scaleFactor, m_scaleFactor);
 }
 
+void GraphicsView::setTopSliceMarks(const QList<QGraphicsItem*>& items)
+{
+	foreach(QGraphicsItem * item,items)
+	{
+		item->setParentItem(m_topSlice);
+	}
+}
+
+void GraphicsView::setRightSliceMarks(const QList<QGraphicsItem*>& items)
+{
+	foreach(QGraphicsItem * item,items)
+	{
+		item->setParentItem(m_rightSlice);
+	}
+}
+
+void GraphicsView::setFrontSliceMarks(const QList<QGraphicsItem*>& items)
+{
+	foreach(QGraphicsItem * item,items)
+	{
+		item->setParentItem(m_frontSlice);
+	}
+}
+
 void GraphicsView::wheelEvent(QWheelEvent *event) {
 	double numDegrees = -event->delta() / 8.0;
 	double numSteps = numDegrees / 15.0;
@@ -698,6 +785,8 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
 	//}
 	//qDebug() << "wheelEvent in View";
 }
+
+
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
 	QPoint viewPos = event->pos();
@@ -782,6 +871,18 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 				QPen aPen(aBrush, 5, Qt::SolidLine);
 				polyItem->setPen(aPen);
 				polyItem->setZValue(100);
+
+				//emit
+				if(m_currentPaintItem == m_topSlice)
+				{
+					emit zSliceMarkAdded(polyItem);
+				}else if(m_currentPaintItem == m_rightSlice)
+				{
+					emit ySliceMarkAdded(polyItem);
+				}else if(m_currentPaintItem == m_frontSlice)
+				{
+					emit zSliceMarkAdded(polyItem);
+				}
 				return;
 			}
 		}
@@ -905,6 +1006,7 @@ void GraphicsView::setTopImage(const QImage & image)
 	}
 	QSize size = image.size();
 	m_topSlice->setPos(-size.width() / 2, -size.height() / 2);
+
 }
 
 void GraphicsView::setRightImage(const QImage & image)
@@ -940,4 +1042,46 @@ void GraphicsView::setFrontImage(const QImage & image)
 	assert(m_topSlice != nullptr);
 	QSize size = m_topSlice->pixmap().size();
 	m_frontSlice->setPos(m_topSlice->pos() + QPointF(0, size.height() + 40));
+}
+
+void GraphicsView::clearTopSliceMarks()
+{
+	if(m_topSlice == nullptr)
+	{
+		qWarning("Top slice is empty.");
+		return;
+	}
+	auto children = m_topSlice->childItems();
+	foreach(QGraphicsItem * item,children)
+	{
+		item->setParentItem(nullptr);
+	}
+}
+
+void GraphicsView::clearRightSliceMarks()
+{
+	if(m_rightSlice == nullptr)
+	{
+		qWarning("Right slice is empty.");
+		return;
+	}
+	auto children = m_rightSlice->childItems();
+	foreach(QGraphicsItem * item,children)
+	{
+		item->setParentItem(nullptr);
+	}
+}
+
+void GraphicsView::clearFrontSliceMarks()
+{
+	if(m_frontSlice == nullptr)
+	{
+		qWarning("Front slice is empty.");
+		return;
+	}
+	auto children = m_frontSlice->childItems();
+	foreach(QGraphicsItem * item,children)
+	{
+		item->setParentItem(nullptr);
+	}
 }

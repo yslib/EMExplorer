@@ -6,7 +6,10 @@
 #include <QList>
 #include <QGraphicsView>
 #include <QGraphicsItem>
-#include "ItemContext.h"
+#include <QSharedPointer>
+#include <QModelIndex>
+//#include "ItemContext.h"
+
 
 QT_BEGIN_NAMESPACE
 class QGridLayout;
@@ -17,9 +20,13 @@ class QGraphicsScene;
 class QMouseEvent;
 class QGraphicsSceneMouseEvent;
 class QGraphicsSceneWheelEvent;
+class QAbstractItemModel;
+class QGraphicsItem;
 QT_END_NAMESPACE
 
 class TitledSliderWithSpinBox;
+class ItemContext;
+class DataItemModel;
 
 class ImageViewer : public QScrollArea
 {
@@ -132,7 +139,6 @@ class GraphicsView:public QGraphicsView
 {
 	Q_OBJECT
 	GraphicsScene *m_scene;
-
     qreal m_scaleFactor;
     QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
@@ -146,13 +152,23 @@ class GraphicsView:public QGraphicsView
 
 public:
     GraphicsView(QWidget * parent = nullptr);
+	void setTopSliceMarks(const QList<QGraphicsItem*> & items);
+	void setRightSliceMarks(const QList<QGraphicsItem*> & items);
+	void setFrontSliceMarks(const QList<QGraphicsItem*> & items);
+
+
 public slots:
 	void paintEnable(bool enable) { m_paint = enable; }
 	void moveEnable(bool enable) { m_moveble = enable; }
 	void setTopImage(const QImage &image);
 	void setRightImage(const QImage &image);
 	void setFrontImage(const QImage & image);
+
 	void setColor(const QColor & color) { m_color = color;}
+
+	void clearTopSliceMarks();
+	void clearRightSliceMarks();
+	void clearFrontSliceMarks();
 protected:
     void mousePressEvent(QMouseEvent * event)override;
     void mouseMoveEvent(QMouseEvent * event)override;
@@ -163,6 +179,10 @@ signals:
 	void zSliceSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
+
+	void zSliceMarkAdded(QGraphicsItem * item);
+	void ySliceMarkAdded(QGraphicsItem * item);
+	void xSliceMarkAdded(QGraphicsItem * item);
 };
 class ImageView:public QWidget
 {
@@ -173,22 +193,23 @@ public:
 	int getZSliceValue()const;
 	int getYSliceValue()const;
 	int getXSliceValue()const;
+
 	void setModel(DataItemModel * model);
 	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
 	void activateItem(const QModelIndex & index);
+
 signals:
 	void ZSliderChanged(int value);
 	void YSliderChanged(int value);
 	void XSliderChanged(int value);
+
 	void zSliceSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
+
+
 public slots:
 	void setEnabled(bool enable);
-
-	void onZSliderValueChanged(int value);
-	void onYSliderValueChanged(int value);
-	void onXSliderValueChanged(int value);
 
 	void onTopSliceTimer(bool enable);
 	void onRightSliceTimer(bool enable);
@@ -196,22 +217,24 @@ public slots:
 	void onColorChanged();
 protected:
 	void timerEvent(QTimerEvent* event) override;
+	
 
 private:
 	QModelIndex getDataIndex(const QModelIndex & itemIndex);
 	void updateModel();
-
+	//
 	void createActions();
 	void updateActions();
 
-
+	void onZSliderValueChanged(int value);
+	void onYSliderValueChanged(int value);
+	void onXSliderValueChanged(int value);
 	void setTopSliceCount(int value);
 	void setRightSliceCount(int value);
 	void setFrontSliceCount(int value);
 	void setTopImage(const QImage &image);
 	void setRightImage(const QImage &image);
 	void setFrontImage(const QImage & image);
-
 
 
 	enum class Direction {

@@ -1,10 +1,11 @@
 #include "ItemContext.h"
-#include <QPainter>
-#include <qdebug.h>
-#include <memory>
+//#include "imageviewer.h"
+#include <QPicture>
 #include <QModelIndex>
-
+#include <qdebug.h>
 #include <cassert>
+#include <memory>
+
 
 ItemContext::ItemContext() :
 	m_mrcContext{}
@@ -21,7 +22,9 @@ ItemContext::ItemContext(const ItemContext & model)
 {
 	m_mrcFile = model.m_mrcFile;
 	m_mrcContext = model.m_mrcContext;
+
 	m_topSliceMarks = model.m_topSliceMarks;
+	
 	m_modifiedTopSlice = model.m_modifiedTopSlice;
 	m_modifiedTopSliceFlags = model.m_modifiedTopSliceFlags;
 }
@@ -110,12 +113,16 @@ bool ItemContext::open(const QString & fileName)
 	m_topSliceMarks.resize(topSliceCount);
 	m_rightSliceMarks.resize(rightSliceCount);
 	m_frontSliceMarks.resize(frontSliceCount);
+
+
 	m_modifiedTopSlice.resize(topSliceCount);
 	m_modifiedTopSliceFlags = QVector<bool>(topSliceCount, false);
 	m_modifiedRightSlice.resize(rightSliceCount);
 	m_modifiedRightSliceFlags = QVector<bool>(rightSliceCount, false);
 	m_modifiedFrontSlice.resize(frontSliceCount);
 	m_modifiedFrontSliceFlags = QVector<bool>(frontSliceCount, false);
+
+	//createScene();
 
 	return true;
 }
@@ -364,55 +371,94 @@ void ItemContext::setFrontSlice(const QImage & image, int index)
 //	return imgVec;
 //}
 
-void ItemContext::setTopSliceMark(const QGraphicsPolygonItem& mark, int index)
+void ItemContext::setTopSliceMark(QGraphicsItem* mark, int index)
 {
 	Q_UNUSED(mark);
 	Q_UNUSED(index);
 }
 
-void ItemContext::addTopSliceMark(int slice, const QGraphicsPolygonItem& mark)
+void ItemContext::addTopSliceMark(int slice, QGraphicsItem* mark)
 {
    m_topSliceMarks[slice].push_back(mark);
 }
 
 
-QVector<QGraphicsPolygonItem> ItemContext::getTopSliceMarks(int slice) const
+QList<QGraphicsItem*>  ItemContext::getTopSliceMarks(int slice) const
 {
     return m_topSliceMarks[slice];
 }
 
-void ItemContext::setRightSliceMark(const QGraphicsPolygonItem & mark, int index)
+bool ItemContext::topSliceMarkVisble(QGraphicsItem * item) const
+{
+	return m_topSliceMarkVisble[item];
+}
+
+void ItemContext::setRightSliceMark(QGraphicsItem* mark, int index)
 {
 	Q_UNUSED(mark);
 	Q_UNUSED(index);
 }
 
-void ItemContext::addRightSliceMark(int slice, const QGraphicsPolygonItem & mark)
+void ItemContext::addRightSliceMark(int slice, QGraphicsItem* mark)
 {
 	m_rightSliceMarks[slice].push_back(mark);
 }
 
-QVector<QGraphicsPolygonItem> ItemContext::getRightSliceMarks(int slice) const
+QList<QGraphicsItem*>  ItemContext::getRightSliceMarks(int slice) const
 {
 	return m_rightSliceMarks[slice];
 }
 
-void ItemContext::setFrontSliceMark(const QGraphicsPolygonItem & mark, int index)
+bool ItemContext::rightSliceMarkVisble(QGraphicsItem * item) const
+{
+	return m_rightSliceMarkVisble[item];
+}
+
+void ItemContext::setFrontSliceMark(QGraphicsItem* mark, int index)
 {
 	Q_UNUSED(mark);
 	Q_UNUSED(index);
 }
 
-void ItemContext::addFrontSliceMark(int slice, const QGraphicsPolygonItem & mark)
+void ItemContext::addFrontSliceMark(int slice, QGraphicsItem*mark)
 {
 	m_frontSliceMarks[slice].push_back(mark);
 }
 
-QVector<QGraphicsPolygonItem> ItemContext::getFribtSliceMarks(int slice) const
+QList<QGraphicsItem*>  ItemContext::getFribtSliceMarks(int slice) const
 {
 	return m_frontSliceMarks[slice];
+	
 }
 
+bool ItemContext::frontSliceMarkVisble(QGraphicsItem * item) const
+{
+	return m_frontSliceMarkVisble[item];
+}
+
+void ItemContext::createScene()
+{
+	m_scene.reset(new GraphicsScene(nullptr));
+
+	for(int i=0;i<getTopSliceCount();i++)
+	{
+		QPixmap pix = QPixmap::fromImage(getTopSlice(i),Qt::MonoOnly);
+		
+		qDebug() << pix.depth() << " " << getTopSlice(i).depth();
+		m_scene->addPixmap(QPixmap::fromImage(getTopSlice(i),Qt::MonoOnly));
+		//qDebug() << "Top Slice:"<<i;
+	}
+	for (int i = 0; i < getRightSliceCount(); i++)
+	{
+		m_scene->addPixmap(QPixmap::fromImage(getRightSlice(i),Qt::MonoOnly));
+		//qDebug() << "Right Slice:" << i;
+	}
+	for (int i = 0; i < getFrontSliceCount(); i++)
+	{
+		//qDebug() << "Front Slice:" << i;
+		m_scene->addPixmap(QPixmap::fromImage(getFrontSlice(i),Qt::MonoOnly));
+	}
+}
 
 
 /*

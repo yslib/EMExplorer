@@ -1,17 +1,11 @@
 #pragma once
 #ifndef MRCMODEL_H_
 #define MRCMODEL_H_
-#include <QObject>
 #include <QString>
-#include <QPicture>
-//#include <qDebug>
 #include <qdebug.h>
-#include <QImage>
-#include <QRectF>
-#include <QAbstractItemModel>
-#include <QGraphicsPolygonItem>
 
 #include "mrc.h"
+#include "imageviewer.h"
 
 //class MRCDataBaseModel
 //{
@@ -33,6 +27,9 @@
 //	MRC m_mrcFile;
 //
 //};
+
+
+class GraphicsScene;
 
 class ItemContext //:public QObject
 {
@@ -83,10 +80,8 @@ public:
 
 	void setCurrentRightSliceIndex(int index) { m_mrcContext.currentRightSliceIndex = index; }
 	int getCurrentRightSliceIndex()const { return m_mrcContext.currentRightSliceIndex; }
-
 	void setCurrentFrontSliceIndex(int index) { m_mrcContext.currentFrontSliceIndex = index; }
 	int getCurrentFrontSliceIndex()const { return m_mrcContext.currentFrontSliceIndex; }
-
 	int getTopSliceCount()const { return m_mrcFile.getSliceCount(); }
 
     bool save(const QString & fileName, ItemContext::DataFormat formate = ItemContext::DataFormat::mrc);
@@ -102,6 +97,9 @@ public:
 	void setTopSlice(const QImage & image, int index);
 
 
+
+
+
     int getRightSliceCount()const{return m_mrcFile.getWidth();}
 	QImage getOriginalRightSlice(int index) const;
 	QImage getRightSlice(int index)const;
@@ -115,17 +113,20 @@ public:
 
 	//QVector<QImage> getSlices()const;
 
-    void setTopSliceMark(const QGraphicsPolygonItem& mark, int index);
-    void addTopSliceMark(int slice, const QGraphicsPolygonItem& mark);
-	QVector<QGraphicsPolygonItem> getTopSliceMarks(int slice)const;
+    void setTopSliceMark(QGraphicsItem* mark, int index);
+    void addTopSliceMark(int slice, QGraphicsItem*mark);
+	QList<QGraphicsItem*> getTopSliceMarks(int slice)const;
+	bool topSliceMarkVisble(QGraphicsItem * item)const;
 
-    void setRightSliceMark(const QGraphicsPolygonItem& mark, int index);
-    void addRightSliceMark(int slice, const QGraphicsPolygonItem& mark);
-	QVector<QGraphicsPolygonItem> getRightSliceMarks(int slice)const;
+    void setRightSliceMark(QGraphicsItem* mark, int index);
+    void addRightSliceMark(int slice, QGraphicsItem* mark);
+	QList<QGraphicsItem*> getRightSliceMarks(int slice)const;
+	bool rightSliceMarkVisble(QGraphicsItem * item)const;
 
-    void setFrontSliceMark(const QGraphicsPolygonItem& mark, int index);
-    void addFrontSliceMark(int slice, const QGraphicsPolygonItem& mark);
-	QVector<QGraphicsPolygonItem> getFribtSliceMarks(int slice)const;
+    void setFrontSliceMark(QGraphicsItem*mark, int index);
+    void addFrontSliceMark(int slice, QGraphicsItem*mark);
+	QList<QGraphicsItem*> getFribtSliceMarks(int slice)const;
+	bool frontSliceMarkVisble(QGraphicsItem * item)const;
 
 	const MRC & getMRCFile()const { return m_mrcFile; }
 
@@ -157,7 +158,10 @@ private:
         QRect zoomRegion;
 		bool valid;
 	};
-private:
+
+	void createScene();
+
+
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
 
@@ -170,9 +174,15 @@ private:
 	QVector<QImage> m_modifiedFrontSlice;
 	QVector<bool> m_modifiedFrontSliceFlags;
 
-	QVector<QVector<QGraphicsPolygonItem>> m_topSliceMarks;
-	QVector<QVector<QGraphicsPolygonItem>> m_rightSliceMarks;
-	QVector<QVector<QGraphicsPolygonItem>> m_frontSliceMarks;
+	QVector<QList<QGraphicsItem*>> m_topSliceMarks;
+	QVector<QList<QGraphicsItem*>> m_rightSliceMarks;
+	QVector<QList<QGraphicsItem*>> m_frontSliceMarks;
+
+	QHash<QGraphicsItem*, bool> m_topSliceMarkVisble;
+	QHash<QGraphicsItem*, bool> m_rightSliceMarkVisble;
+	QHash<QGraphicsItem*, bool> m_frontSliceMarkVisble;
+
+	QSharedPointer<GraphicsScene> m_scene;
 };
 
 
