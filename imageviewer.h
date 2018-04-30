@@ -236,6 +236,10 @@ private:
 	void setRightImage(const QImage &image);
 	void setFrontImage(const QImage & image);
 
+	void setFrontSliceVisibleMarks();
+	void setTopSliceVisibleMarks();
+	void setRightSliceVisibleMarks();
+
 
 	enum class Direction {
 		Forward,

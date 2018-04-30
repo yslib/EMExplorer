@@ -390,7 +390,10 @@ QList<QGraphicsItem*>  ItemContext::getTopSliceMarks(int slice) const
 
 bool ItemContext::topSliceMarkVisble(QGraphicsItem * item) const
 {
-	return m_topSliceMarkVisble[item];
+	auto itr = m_topSliceMarkVisble.find(item);
+	if (itr == m_topSliceMarkVisble.end())
+		return false;
+	return *itr;
 }
 
 void ItemContext::setRightSliceMark(QGraphicsItem* mark, int index)
@@ -411,7 +414,10 @@ QList<QGraphicsItem*>  ItemContext::getRightSliceMarks(int slice) const
 
 bool ItemContext::rightSliceMarkVisble(QGraphicsItem * item) const
 {
-	return m_rightSliceMarkVisble[item];
+	auto itr = m_rightSliceMarkVisble.find(item);
+	if (itr == m_rightSliceMarkVisble.end())
+		return false;
+	return *itr;
 }
 
 void ItemContext::setFrontSliceMark(QGraphicsItem* mark, int index)
@@ -425,7 +431,7 @@ void ItemContext::addFrontSliceMark(int slice, QGraphicsItem*mark)
 	m_frontSliceMarks[slice].push_back(mark);
 }
 
-QList<QGraphicsItem*>  ItemContext::getFribtSliceMarks(int slice) const
+QList<QGraphicsItem*>  ItemContext::getFrontSliceMarks(int slice) const
 {
 	return m_frontSliceMarks[slice];
 	
@@ -433,7 +439,10 @@ QList<QGraphicsItem*>  ItemContext::getFribtSliceMarks(int slice) const
 
 bool ItemContext::frontSliceMarkVisble(QGraphicsItem * item) const
 {
-	return m_frontSliceMarkVisble[item];
+	auto itr = m_frontSliceMarkVisble.find(item);
+	if (itr == m_frontSliceMarkVisble.end())
+		return false;
+	return *itr;
 }
 
 void ItemContext::createScene()

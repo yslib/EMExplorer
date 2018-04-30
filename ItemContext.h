@@ -118,6 +118,7 @@ public:
 	QList<QGraphicsItem*> getTopSliceMarks(int slice)const;
 	bool topSliceMarkVisble(QGraphicsItem * item)const;
 
+
     void setRightSliceMark(QGraphicsItem* mark, int index);
     void addRightSliceMark(int slice, QGraphicsItem* mark);
 	QList<QGraphicsItem*> getRightSliceMarks(int slice)const;
@@ -125,7 +126,7 @@ public:
 
     void setFrontSliceMark(QGraphicsItem*mark, int index);
     void addFrontSliceMark(int slice, QGraphicsItem*mark);
-	QList<QGraphicsItem*> getFribtSliceMarks(int slice)const;
+	QList<QGraphicsItem*> getFrontSliceMarks(int slice)const;
 	bool frontSliceMarkVisble(QGraphicsItem * item)const;
 
 	const MRC & getMRCFile()const { return m_mrcFile; }

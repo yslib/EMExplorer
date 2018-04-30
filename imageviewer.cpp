@@ -321,6 +321,7 @@ ImageView::ImageView(QWidget *parent) :
 		Q_ASSERT(m_ptr.isNull() == false);
 		m_ptr->addTopSliceMark(m_topSlider->value(), item);
 		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
+		qDebug() << "zSliceMarkAdded in slice:" << m_topSlider->value();
 	});
 	connect(m_view, &GraphicsView::ySliceMarkAdded, [=](QGraphicsItem * item)
 	{
@@ -333,6 +334,7 @@ ImageView::ImageView(QWidget *parent) :
 		Q_ASSERT(m_ptr.isNull() == false);
 		m_ptr->addRightSliceMark(m_rightSlider->value(), item);
 		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
+		qDebug() << "ySliceMarkAdded in slice:" << m_rightSlider->value();
 	});
 	connect(m_view, &GraphicsView::xSliceMarkAdded, [=](QGraphicsItem * item)
 	{
@@ -345,7 +347,7 @@ ImageView::ImageView(QWidget *parent) :
 		Q_ASSERT(m_ptr.isNull() == false);
 		m_ptr->addFrontSliceMark(m_frontSlider->value(), item);
 		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
-
+		qDebug() << "xSliceMarkAdded in slice:" << m_frontSlider->value();
 	});
 	//action
 	createActions();
@@ -354,15 +356,15 @@ ImageView::ImageView(QWidget *parent) :
 
 void ImageView::setTopSliceCount(int value)
 {
-	m_topSlider->setMaximum(value-1);
+	m_topSlider->setMaximum(value - 1);
 }
 void ImageView::setRightSliceCount(int value)
 {
-	m_rightSlider->setMaximum(value-1);
+	m_rightSlider->setMaximum(value - 1);
 }
 void ImageView::setFrontSliceCount(int value)
 {
-	m_frontSlider->setMaximum(value-1);
+	m_frontSlider->setMaximum(value - 1);
 }
 void ImageView::setTopImage(const QImage &image)
 {
@@ -377,6 +379,69 @@ void ImageView::setRightImage(const QImage &image)
 void ImageView::setFrontImage(const QImage &image)
 {
 	m_view->setFrontImage(image);
+}
+
+void ImageView::setFrontSliceVisibleMarks()
+{
+	if (m_ptr.isNull() == true)
+	{
+		qWarning("Model is empty");
+		return;
+	}
+	//clear previous items
+	m_view->clearFrontSliceMarks();
+
+	int index = m_topSlider->value();
+	auto items = m_ptr->getFrontSliceMarks(index);
+	QList<QGraphicsItem *> visibleItems;
+	foreach(QGraphicsItem * item, items) {
+		bool visible = m_ptr->frontSliceMarkVisble(item);
+		if (visible)
+			visibleItems.push_back(item);
+	}
+	m_view->setFrontSliceMarks(visibleItems);
+}
+
+void ImageView::setTopSliceVisibleMarks()
+{
+	if (m_ptr.isNull() == true)
+	{
+		qWarning("Model is empty");
+		return;
+	}
+	//clear previous items
+	m_view->clearTopSliceMarks();
+
+	int index = m_topSlider->value();
+	auto items = m_ptr->getTopSliceMarks(index);
+	QList<QGraphicsItem *> visibleItems;
+	foreach(QGraphicsItem * item, items) {
+		bool visible = m_ptr->topSliceMarkVisble(item);
+		if (visible)
+			visibleItems.push_back(item);
+	}
+	m_view->setTopSliceMarks(visibleItems);
+}
+
+void ImageView::setRightSliceVisibleMarks()
+{
+	if (m_ptr.isNull() == true)
+	{
+		qWarning("Model is empty");
+		return;
+	}
+	//clear previous items
+	m_view->clearRightSliceMarks();
+
+	int index = m_topSlider->value();
+	auto items = m_ptr->getRightSliceMarks(index);
+	QList<QGraphicsItem *> visibleItems;
+	foreach(QGraphicsItem * item, items) {
+		bool visible = m_ptr->rightSliceMarkVisble(item);
+		if (visible)
+			visibleItems.push_back(item);
+	}
+	m_view->setRightSliceMarks(visibleItems);
 }
 
 int ImageView::getZSliceValue() const
@@ -417,9 +482,9 @@ void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bot
 	 * the modification invoked by dataChanged should not yield any data model change again.
 	 */
 
-	///TODO:: This function needs parameters to determine whether the update is trival for this view
+	 ///TODO:: This function needs parameters to determine whether the update is trival for this view
 
-	
+
 
 	qDebug() << "In ImageView:Model has been updated.";
 
@@ -466,7 +531,7 @@ void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bot
 
 	m_view->setTopSliceMarks(m_ptr->getTopSliceMarks(currentTopSliceIndex));
 	m_view->setRightSliceMarks(m_ptr->getRightSliceMarks(currentRightSliceIndex));
-	m_view->setFrontSliceMarks(m_ptr->getFribtSliceMarks(currentFrontSliceIndex));
+	m_view->setFrontSliceMarks(m_ptr->getFrontSliceMarks(currentFrontSliceIndex));
 
 
 	updateActions();
@@ -515,10 +580,10 @@ void ImageView::activateItem(const QModelIndex & index)
 		m_view->clearTopSliceMarks();
 		m_view->clearRightSliceMarks();
 		m_view->clearFrontSliceMarks();
-	
+
 		m_view->setTopSliceMarks(m_ptr->getTopSliceMarks(currentTopSliceIndex));
 		m_view->setRightSliceMarks(m_ptr->getRightSliceMarks(currentRightSliceIndex));
-		m_view->setFrontSliceMarks(m_ptr->getFribtSliceMarks(currentFrontSliceIndex));
+		m_view->setFrontSliceMarks(m_ptr->getFrontSliceMarks(currentFrontSliceIndex));
 
 
 	}
@@ -749,7 +814,7 @@ m_frontSlice(nullptr)
 
 void GraphicsView::setTopSliceMarks(const QList<QGraphicsItem*>& items)
 {
-	foreach(QGraphicsItem * item,items)
+	foreach(QGraphicsItem * item, items)
 	{
 		item->setParentItem(m_topSlice);
 	}
@@ -757,7 +822,7 @@ void GraphicsView::setTopSliceMarks(const QList<QGraphicsItem*>& items)
 
 void GraphicsView::setRightSliceMarks(const QList<QGraphicsItem*>& items)
 {
-	foreach(QGraphicsItem * item,items)
+	foreach(QGraphicsItem * item, items)
 	{
 		item->setParentItem(m_rightSlice);
 	}
@@ -765,7 +830,7 @@ void GraphicsView::setRightSliceMarks(const QList<QGraphicsItem*>& items)
 
 void GraphicsView::setFrontSliceMarks(const QList<QGraphicsItem*>& items)
 {
-	foreach(QGraphicsItem * item,items)
+	foreach(QGraphicsItem * item, items)
 	{
 		item->setParentItem(m_frontSlice);
 	}
@@ -873,13 +938,15 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 				polyItem->setZValue(100);
 
 				//emit
-				if(m_currentPaintItem == m_topSlice)
+				if (m_currentPaintItem == m_topSlice)
 				{
 					emit zSliceMarkAdded(polyItem);
-				}else if(m_currentPaintItem == m_rightSlice)
+				}
+				else if (m_currentPaintItem == m_rightSlice)
 				{
 					emit ySliceMarkAdded(polyItem);
-				}else if(m_currentPaintItem == m_frontSlice)
+				}
+				else if (m_currentPaintItem == m_frontSlice)
 				{
 					emit zSliceMarkAdded(polyItem);
 				}
@@ -1046,13 +1113,13 @@ void GraphicsView::setFrontImage(const QImage & image)
 
 void GraphicsView::clearTopSliceMarks()
 {
-	if(m_topSlice == nullptr)
+	if (m_topSlice == nullptr)
 	{
 		qWarning("Top slice is empty.");
 		return;
 	}
 	auto children = m_topSlice->childItems();
-	foreach(QGraphicsItem * item,children)
+	foreach(QGraphicsItem * item, children)
 	{
 		item->setParentItem(nullptr);
 	}
@@ -1060,13 +1127,13 @@ void GraphicsView::clearTopSliceMarks()
 
 void GraphicsView::clearRightSliceMarks()
 {
-	if(m_rightSlice == nullptr)
+	if (m_rightSlice == nullptr)
 	{
 		qWarning("Right slice is empty.");
 		return;
 	}
 	auto children = m_rightSlice->childItems();
-	foreach(QGraphicsItem * item,children)
+	foreach(QGraphicsItem * item, children)
 	{
 		item->setParentItem(nullptr);
 	}
@@ -1074,13 +1141,13 @@ void GraphicsView::clearRightSliceMarks()
 
 void GraphicsView::clearFrontSliceMarks()
 {
-	if(m_frontSlice == nullptr)
+	if (m_frontSlice == nullptr)
 	{
 		qWarning("Front slice is empty.");
 		return;
 	}
 	auto children = m_frontSlice->childItems();
-	foreach(QGraphicsItem * item,children)
+	foreach(QGraphicsItem * item, children)
 	{
 		item->setParentItem(nullptr);
 	}
