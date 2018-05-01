@@ -84,16 +84,12 @@ bool TitledSliderWithSpinBox::blockSignals(bool block)
 
 void TitledSliderWithSpinBox::createConnections() const
 {
-	connect(m_slider, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
-	connect(m_spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
-
 	connect(m_slider, &QSlider::valueChanged,[=](int value)
 	{
 		bool old = m_spinBox->blockSignals(true);
 		m_spinBox->setValue(value);
 		m_spinBox->blockSignals(old);
 	});
-
 
 	//QSpinBox::valueChanged need to be casted first because there are overloaded valueChanged signals in QSpinBox
 	connect(m_spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [=](int value)
@@ -102,7 +98,8 @@ void TitledSliderWithSpinBox::createConnections() const
 		m_slider->setValue(value);
 		m_slider->blockSignals(old);
 	});
-
+	connect(m_slider, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
+	connect(m_spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
 
 }
 

@@ -31,31 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	//View menu
 	QMenu * viewMenu = menuBar()->addMenu(tr("View"));
 
-	//Dock Widget [2]
-
-	//zoomViewer dock widget
-
-	//m_zoomViewer = new ZoomViwer(this);
-
-	//QDockWidget * dock = new QDockWidget(tr("ZoomViewer"),this);
-
-	//dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	//dock->setWidget(m_zoomViewer);
-	//addDockWidget(Qt::RightDockWidgetArea,dock);
-	//viewMenu->addAction(dock->toggleViewAction());
-	//connect(m_zoomViewer, SIGNAL(zoomRegionChanged(const QRectF &)), this, SLOT(onZoomRegionChanged(const QRectF &)));
-
-	//Tree View Model
-
-	//histogram dock widget
-//    m_histogram = new Histogram(this);
-//    dock = new QDockWidget(tr("Histogram"),this);
-//    dock->setAllowedAreas(Qt::RightDockWidgetArea);
-//    dock->setWidget(m_histogram);
-//    addDockWidget(Qt::RightDockWidgetArea,dock);
-//    viewMenu->addAction(dock->toggleViewAction());
-//    connect(m_histogram,SIGNAL(minCursorValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
-//    connect(m_histogram,SIGNAL(maxCursorValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
+	
 
 	m_treeView = new QTreeView(this);
 	QDockWidget *dock = new QDockWidget(tr("File Information View"), this);
@@ -83,35 +59,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	//connect(m_histogramView,SIGNAL(minValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
 	//connect(m_histogramView,SIGNAL(maxValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
 
-	//Image Viewer
-   // m_imageViewer = new ImageViewer(this);
-   // dock = new QDockWidget(tr("Image Viewer"),this);
-   // dock->setAllowedAreas(Qt::RightDockWidgetArea);
-   // dock->setWidget(m_imageViewer);
-   // addDockWidget(Qt::RightDockWidgetArea,dock);
-   // viewMenu->addAction(dock->toggleViewAction());
+
 
 
 	//Test ImageView
 	m_imageView = new ImageView(this);
-	//dock = new QDockWidget(tr("Image Viewer"),this);
-	//dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	//dock->setWidget(m_imageView);
-	//addDockWidget(Qt::LeftDockWidgetArea,dock);
-	//viewMenu->addAction(dock->toggleViewAction());
+
 	m_imageView->setModel(m_treeViewModel);
 	setCentralWidget(m_imageView);
 
-
-
-	//file infomation viwer widget
-	//m_fileInfoViewer = new MRCFileInfoViewer(this);
-	//dock = new QDockWidget(tr("Files"),this);
-	//dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	//dock->setWidget(m_fileInfoViewer);
-	//addDockWidget(Qt::LeftDockWidgetArea,dock);
-	//connect(m_fileInfoViewer,SIGNAL(currentIndexChanged(int)),this,SLOT(onMRCFilesComboBoxIndexActivated(int)));
-	//viewMenu->addAction(dock->toggleViewAction());
 
 
 	//pixel viewer dock widget
@@ -122,20 +78,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());
 	m_pixelViewer->setModel(m_treeViewModel);
-
-	//slice viewer
-
-	//m_nestedSliceViewer = new NestedSliceViewer(QSize(),QSize(),QSize(),this);
-	//connect(m_nestedSliceViewer, SIGNAL(ZSliderChanged(int)), this, SLOT(onZSliderValueChanged(int)));
-	//connect(m_nestedSliceViewer, SIGNAL(YSliderChanged(int)), this, SLOT(onYSliderValueChanged(int)));
-	//connect(m_nestedSliceViewer, SIGNAL(XSliderChanged(int)), this, SLOT(onXSliderValueChanged(int)));
-
-	//connect(m_imageView, SIGNAL(ZSliderChanged(int)), this, SLOT(onZSliderValueChanged(int)));
-	//connect(m_imageView, SIGNAL(YSliderChanged(int)), this, SLOT(onYSliderValueChanged(int)));
-	//connect(m_imageView, SIGNAL(XSliderChanged(int)), this, SLOT(onXSliderValueChanged(int)));
-
-	//connect(m_nestedSliceViewer, SIGNAL(drawingFinished(const QPicture &)), this, SLOT(onSliceViewerDrawingFinished(const QPicture &)));
-	//connect(m_nestedSliceViewer,SIGNAL(onMouseMoving(const QPoint &)),m_pixelViewer,SLOT(setPosition(const QPoint &)));
 
 	//ToolBar and Actions [3]
 	//open action
@@ -153,14 +95,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	toolBar->addAction(m_actionColor);
 	connect(m_actionColor, SIGNAL(triggered(bool)), this, SLOT(onColorActionTriggered()));
 
-	//mark action
-	//QAction * actionMark = new QAction(this);
-	//actionMark->setText(QStringLiteral("Mark"));
-	//actionMark->setCheckable(true);
-	//toolBar->addAction(actionMark);
-
-	//connect(actionMark, SIGNAL(triggered(bool)), m_nestedSliceViewer, SLOT(paintEnable(bool)));
-
 	//save mark action
 	QAction * actionSaveMark = new QAction(this);
 	actionSaveMark->setText(QStringLiteral("Save Mark"));
@@ -174,7 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(actionSaveDataAs, SIGNAL(triggered()), this, SLOT(onSaveDataAsActionTriggered()));
 
 	//Status bar
-
 
 	m_currentContext = -1;
 	allControlWidgetsEnable(false);
@@ -211,27 +144,7 @@ void MainWindow::onActionOpenTriggered()
 	QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
 	m_treeViewModel->addItem(sharedItem);
 
-	//QSharedPointer<MRC> sharedMRC(new MRC(fileName.toStdString()));
-	//m_treeViewModel->addItem(sharedMRC);
-	//
-	//m_fileInfoViewer->setText(headerInfo);
-	//addMRCDataModel(std::move(mrcModel));
-	//int newCurrentContext = m_mrcDataModels.size() - 1;
-	//m_fileInfoViewer->addItem(name,newCurrentContext);
 
-
-//      if (m_fileInfoViewer->count() != 1) {
-	  //	//If there have already been items we need to select the 
-	  //	//newest item manually
-//          m_fileInfoViewer->setCurrentIndex(m_fileInfoViewer->count()-1);
-	  //	saveMRCDataModel();
-	  //	setMRCDataModel(newCurrentContext);
-	  //}
-	  //else {
-	  //	///Do nothing
-	  //	//If there was not item before, it will emit activated() signal
-	  //	//after addItem()
-	  //}
 
 }
 

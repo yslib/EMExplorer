@@ -98,8 +98,6 @@ public:
 
 
 
-
-
     int getRightSliceCount()const{return m_mrcFile.getWidth();}
 	QImage getOriginalRightSlice(int index) const;
 	QImage getRightSlice(int index)const;
@@ -111,13 +109,19 @@ public:
 	QImage getFrontSlice(int index)const;
 	void setFrontSlice(const QImage & image, int index);
 
+
+	int sliceCount(SliceType type);
+	QImage orignalSlice(int index, SliceType type);
+	QImage slice(int index,SliceType type)const;
+	void setSlice(const QImage & image, int index, SliceType type);
+
+
 	//QVector<QImage> getSlices()const;
 
     void setTopSliceMark(QGraphicsItem* mark, int index);
     void addTopSliceMark(int slice, QGraphicsItem*mark);
 	QList<QGraphicsItem*> getTopSliceMarks(int slice)const;
 	bool topSliceMarkVisble(QGraphicsItem * item)const;
-
 
     void setRightSliceMark(QGraphicsItem* mark, int index);
     void addRightSliceMark(int slice, QGraphicsItem* mark);
@@ -128,6 +132,14 @@ public:
     void addFrontSliceMark(int slice, QGraphicsItem*mark);
 	QList<QGraphicsItem*> getFrontSliceMarks(int slice)const;
 	bool frontSliceMarkVisble(QGraphicsItem * item)const;
+
+	void addSliceMark(QGraphicsItem * mark, int index, SliceType type);
+	QList<QGraphicsItem*> sliceMarks(int index, SliceType type);
+	QList<QGraphicsItem*> visibleSliceMarks(int index, SliceType type);
+	bool sliceMarkVisible(QGraphicsItem * item, SliceType type);
+	void setSliceMarkVisible(QGraphicsItem * item,bool visible, SliceType type);
+
+
 
 	const MRC & getMRCFile()const { return m_mrcFile; }
 
@@ -162,6 +174,10 @@ private:
 
 	void createScene();
 
+	void setTopSliceMarkVisible(QGraphicsItem * mark,bool visible);
+	void setRightSliceMarkVisible(QGraphicsItem * mark,bool visible);
+	void setFrontSLiceMarkVisible(QGraphicsItem * mark,bool visible);
+
 
 	MRC m_mrcFile;
 	MRCContext m_mrcContext;
@@ -183,6 +199,8 @@ private:
 	QHash<QGraphicsItem*, bool> m_rightSliceMarkVisble;
 	QHash<QGraphicsItem*, bool> m_frontSliceMarkVisble;
 
+	QModelIndex m_itemParentIndex;
+	QModelIndex m_markParentIndex;
 	QSharedPointer<GraphicsScene> m_scene;
 };
 
@@ -339,9 +357,8 @@ public:
 
 	//test file
 	//Custom functions for accessing and setting data
+	//void addItem(const QSharedPointer<MRC> & item);
 
-
-	void addItem(const QSharedPointer<MRC> & item);
 	void addItem(const QSharedPointer<ItemContext> & item);
 	//void addData(data);
 	//void addMarks(data,marks);
