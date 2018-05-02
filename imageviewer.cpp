@@ -12,6 +12,8 @@
 #include <QGraphicsPixmapItem>
 #include <QPolygon>
 #include <cassert>
+#include <algorithm>
+#include <complex>
 
 
 bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
@@ -71,7 +73,7 @@ bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
 			return true;
 		}
 		else if (event->type() == QEvent::MouseButtonRelease) {
-			m_frontImageLabel = false;
+            m_frontImageLabel = nullptr;
 			return true;
 		}
 
