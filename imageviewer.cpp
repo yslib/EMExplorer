@@ -248,6 +248,9 @@ void ImageView::createActions()
 	m_markAction->setCheckable(true);
 	m_colorAction = new QAction(tr("Color"), this);
 
+	m_zoomInAction = new QAction(tr("ZoomIn"), this);
+	m_zoomOutAction = new QAction(tr("ZoomOut"), this);
+
 	//tool bar
 	m_toolBar = new QToolBar(this);
 	m_layout->addWidget(m_toolBar, 0, 0);
@@ -259,14 +262,24 @@ void ImageView::createActions()
 	m_toolBar->addAction(m_frontSlicePlayAction);
 	m_toolBar->addAction(m_colorAction);
 	m_toolBar->addAction(m_markAction);
+	m_toolBar->addAction(m_zoomInAction);
+	m_toolBar->addAction(m_zoomOutAction);
 
 	connect(m_markAction, SIGNAL(triggered(bool)), m_view, SLOT(paintEnable(bool)));
 	connect(m_topSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onTopSliceTimer(bool)));
 	connect(m_rightSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onRightSliceTimer(bool)));
 	connect(m_frontSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onFrontSliceTimer(bool)));
 	connect(m_colorAction, &QAction::triggered, this, &ImageView::onColorChanged);
-
-
+	connect(m_zoomInAction, &QAction::triggered, [=]()
+	{
+		double factor = std::pow(1.125, 1);
+		m_view->scale(factor, factor);
+	});
+	connect(m_zoomOutAction, &QAction::triggered, [=]()
+	{
+		double factor = std::pow(1.125, -1);
+		m_view->scale(factor, factor);
+	});
 	updateActions();
 }
 
@@ -352,6 +365,7 @@ ImageView::ImageView(QWidget *parent) :
 	});
 	//action
 	createActions();
+
 	setLayout(m_layout);
 }
 
@@ -573,6 +587,8 @@ void ImageView::setEnabled(bool enable)
 
 	m_colorAction->setEnabled(enable);
 	m_markAction->setEnabled(enable);
+	m_zoomInAction->setEnabled(enable);
+	m_zoomOutAction->setEnabled(enable);
 
 	m_frontSlicePlayAction->setEnabled(enable);
 	m_topSlicePlayAction->setEnabled(enable);

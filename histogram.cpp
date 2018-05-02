@@ -221,20 +221,25 @@ HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent),m_mode
     m_layout = new QGridLayout(this);
     m_hist = new Histogram(this);
     m_hist->setDragEnable(false);
-    m_minSlider = new TitledSliderWithSpinBox(this,QString("MinValue:"));
-    m_maxSlider = new TitledSliderWithSpinBox(this,QString("MaxValue:"));
+    m_minSlider = new TitledSliderWithSpinBox(this,QStringLiteral("Min:"));
+    m_maxSlider = new TitledSliderWithSpinBox(this,QStringLiteral("Max:"));
 
     m_layout->addWidget(m_hist,0,0);
     m_layout->addWidget(m_minSlider,1,0);
     m_layout->addWidget(m_maxSlider,2,0);
 
+	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) { update(); });
+	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) { update(); });
+
     connect(m_minSlider,SIGNAL(valueChanged(int)),this,SIGNAL(minValueChanged(int)));
     connect(m_maxSlider,SIGNAL(valueChanged(int)),this,SIGNAL(maxValueChanged(int)));
+
     connect(m_minSlider,SIGNAL(valueChanged(int)),m_hist,SLOT(setLeftCursorValue(int)));
     connect(m_maxSlider,SIGNAL(valueChanged(int)),m_hist,SLOT(setRightCursorValue(int)));
 
-	connect(m_minSlider, SIGNAL(valueChanged(int)), this, SLOT(onMinValueChanged(int)));
-	connect(m_maxSlider, SIGNAL(valueChanged(int)), this, SLOT(onMaxValueChanged(int)));
+	//connect(m_minSlider, SIGNAL(valueChanged(int)), this, SLOT(onMinValueChanged(int)));
+	//connect(m_maxSlider, SIGNAL(valueChanged(int)), this, SLOT(onMaxValueChanged(int)));
+
 	
 
     int maxValue = m_hist->getBinCount()-1;
@@ -273,7 +278,30 @@ void HistogramViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex&
 {
 	qDebug() << "HistogramViewer:model has been updated";
 	///TODO::update data
-	//This widget does not need to fetch any updated data
+	if(m_internalUpdate == true)
+	{
+		m_internalUpdate == false;
+		return;
+	}
+
+	if(m_ptr.isNull() == true)
+	{
+		qWarning("Model is empty.");
+		return;
+	}
+	int currentSlice = m_ptr->getCurrentSliceIndex();
+
+	//different slice should have different bounds.
+
+	int low = m_ptr->getGrayscaleStrechingLowerBound();
+	int high = m_ptr->getGrayscaleStrechingUpperBound();
+
+	m_minSlider->setValue(low);
+	m_maxSlider->setValue(high);
+	m_hist->setLeftCursorValue(low);
+	m_hist->setRightCursorValue(high);
+	setImage(m_ptr -> getTopSlice(currentSlice));
+
 }
 
 void HistogramViewer::activateItem(const QModelIndex & index)
@@ -284,18 +312,16 @@ void HistogramViewer::activateItem(const QModelIndex & index)
 		return;
 	}
 	
-	QVariant var = m_model->data(getDataIndex(index));
-
+	//QVariant var = m_model->data(getDataIndex(index));
+	QVariant var = m_model->data(index.sibling(index.row(),index.column()+1));
 	if(var.canConvert<QSharedPointer<ItemContext>>() == true)
 	{
 		m_modelIndex = index;
 		auto p = var.value<QSharedPointer<ItemContext>>();
 		m_ptr = p;
-
 		int currentSlice = p->getCurrentSliceIndex();
 		int low = p->getGrayscaleStrechingLowerBound();
 		int high = p->getGrayscaleStrechingUpperBound();
-
 		m_minSlider->setValue(low);
 		m_maxSlider->setValue(high);
 		m_hist->setLeftCursorValue(low);
@@ -362,11 +388,10 @@ void HistogramViewer::update()
 			}
 		}
 	}
-
 	m_ptr->setTopSlice(strechingImage, currentSlice);
 	//
+	m_internalUpdate = true;
 	m_model->setData(m_modelIndex,QVariant::fromValue(m_ptr));
-
 }
 
 QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)
@@ -376,6 +401,12 @@ QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)
 		qWarning("Model pointer is nullptr");
 	}
 	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
+}
+
+void HistogramViewer::updateActions()
+{
+	m_maxSlider->setEnabled(true);
+	m_maxSlider->setEnabled(true);
 }
 
 

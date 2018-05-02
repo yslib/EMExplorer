@@ -290,6 +290,9 @@ private:
 	QAction *m_markAction;
 	QAction *m_colorAction;
 
+	QAction *m_zoomInAction;
+	QAction *m_zoomOutAction;
+
 	QAction *m_topSlicePlayAction;
 	Direction m_topSlicePlayDirection;
 	int m_topTimerId;
