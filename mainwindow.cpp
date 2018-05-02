@@ -39,10 +39,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	dock->setWidget(m_treeView);
 	addDockWidget(Qt::LeftDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());
+	m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
 
 	m_treeViewModel = new DataItemModel(QString(), this);
 	connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
 	m_treeView->setModel(m_treeViewModel);
+	
 
 	
 	m_histogramView = new HistogramViewer(this);

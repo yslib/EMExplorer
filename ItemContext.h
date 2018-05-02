@@ -3,6 +3,7 @@
 #define MRCMODEL_H_
 #include <QString>
 #include <qdebug.h>
+#include <QStyledItemDelegate>
 
 #include "mrc.h"
 #include "imageviewer.h"
@@ -35,11 +36,11 @@ class ItemContext //:public QObject
 {
 	//Q_OBJECT
 public:
-    enum class MarkFormat {MRC,RAW,mks};
-    enum class DataFormat{mrc,raw};
+	enum class MarkFormat { MRC, RAW, mks };
+	enum class DataFormat { mrc, raw };
 public:
 	ItemContext();
-    explicit ItemContext(const QString & fileName);
+	explicit ItemContext(const QString & fileName);
 	explicit ItemContext(const ItemContext & model);
 	explicit ItemContext(ItemContext && model)noexcept;
 	ItemContext & operator=(const ItemContext & model);
@@ -70,12 +71,12 @@ public:
 	/*zoom factor*/
 	void setZoomFactor(qreal factor) { m_mrcContext.zoomFactor = factor; }
 	qreal getZoomFactor()const { return m_mrcContext.zoomFactor; }
-	void setZoomRegion(QRect region) { m_mrcContext.zoomRegion = region;}
-	QRect getZoomRegion()const { return m_mrcContext.zoomRegion;  }
+	void setZoomRegion(QRect region) { m_mrcContext.zoomRegion = region; }
+	QRect getZoomRegion()const { return m_mrcContext.zoomRegion; }
 
-	bool isValid()const { return m_mrcContext.valid;}
+	bool isValid()const { return m_mrcContext.valid; }
 
-	void setCurrentSliceIndex(int slice) { m_mrcContext.currentTopSliceIndex=slice; }
+	void setCurrentSliceIndex(int slice) { m_mrcContext.currentTopSliceIndex = slice; }
 	int getCurrentSliceIndex()const { return m_mrcContext.currentTopSliceIndex; }
 
 	void setCurrentRightSliceIndex(int index) { m_mrcContext.currentRightSliceIndex = index; }
@@ -84,12 +85,12 @@ public:
 	int getCurrentFrontSliceIndex()const { return m_mrcContext.currentFrontSliceIndex; }
 	int getTopSliceCount()const { return m_mrcFile.getSliceCount(); }
 
-    bool save(const QString & fileName, ItemContext::DataFormat formate = ItemContext::DataFormat::mrc);
+	bool save(const QString & fileName, ItemContext::DataFormat formate = ItemContext::DataFormat::mrc);
 	bool open(const QString & fileName);
 	bool isOpened()const { return isValid(); }
 
 	bool openMarks(const QString & fileName);
-	bool saveMarks(const QString & fileName,MarkFormat format = MarkFormat::MRC);
+	bool saveMarks(const QString & fileName, MarkFormat format = MarkFormat::MRC);
 	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.getMRCInfo().c_str())); }
 
 	QImage getOriginalTopSlice(int index)const;
@@ -98,13 +99,13 @@ public:
 
 
 
-    int getRightSliceCount()const{return m_mrcFile.getWidth();}
+	int getRightSliceCount()const { return m_mrcFile.getWidth(); }
 	QImage getOriginalRightSlice(int index) const;
 	QImage getRightSlice(int index)const;
 	void setRightSlice(const QImage & image, int index);
 
 
-    int getFrontSliceCount()const{return m_mrcFile.getHeight();}
+	int getFrontSliceCount()const { return m_mrcFile.getHeight(); }
 	QImage getOriginalFrontSlice(int index) const;
 	QImage getFrontSlice(int index)const;
 	void setFrontSlice(const QImage & image, int index);
@@ -112,24 +113,24 @@ public:
 
 	int sliceCount(SliceType type);
 	QImage orignalSlice(int index, SliceType type);
-	QImage slice(int index,SliceType type)const;
+	QImage slice(int index, SliceType type)const;
 	void setSlice(const QImage & image, int index, SliceType type);
 
 
 	//QVector<QImage> getSlices()const;
 
-    void setTopSliceMark(QGraphicsItem* mark, int index);
-    void addTopSliceMark(int slice, QGraphicsItem*mark);
+	void setTopSliceMark(QGraphicsItem* mark, int index);
+	void addTopSliceMark(int slice, QGraphicsItem*mark);
 	QList<QGraphicsItem*> getTopSliceMarks(int slice)const;
 	bool topSliceMarkVisble(QGraphicsItem * item)const;
 
-    void setRightSliceMark(QGraphicsItem* mark, int index);
-    void addRightSliceMark(int slice, QGraphicsItem* mark);
+	void setRightSliceMark(QGraphicsItem* mark, int index);
+	void addRightSliceMark(int slice, QGraphicsItem* mark);
 	QList<QGraphicsItem*> getRightSliceMarks(int slice)const;
 	bool rightSliceMarkVisble(QGraphicsItem * item)const;
 
-    void setFrontSliceMark(QGraphicsItem*mark, int index);
-    void addFrontSliceMark(int slice, QGraphicsItem*mark);
+	void setFrontSliceMark(QGraphicsItem*mark, int index);
+	void addFrontSliceMark(int slice, QGraphicsItem*mark);
 	QList<QGraphicsItem*> getFrontSliceMarks(int slice)const;
 	bool frontSliceMarkVisble(QGraphicsItem * item)const;
 
@@ -137,7 +138,7 @@ public:
 	QList<QGraphicsItem*> sliceMarks(int index, SliceType type);
 	QList<QGraphicsItem*> visibleSliceMarks(int index, SliceType type);
 	bool sliceMarkVisible(QGraphicsItem * item, SliceType type);
-	void setSliceMarkVisible(QGraphicsItem * item,bool visible, SliceType type);
+	void setSliceMarkVisible(QGraphicsItem * item, bool visible, SliceType type);
 
 
 
@@ -154,8 +155,8 @@ private:
 			currentTopSliceIndex{ -1 },
 			currentRightSliceIndex(-1),
 			currentFrontSliceIndex(-1),
-            zoomFactor{1.0},
-            zoomRegion{},
+			zoomFactor{ 1.0 },
+			zoomRegion{},
 			valid{ false } {}
 
 		int grayscaleLowerBound;
@@ -168,15 +169,15 @@ private:
 		int currentRightSliceIndex;
 		int currentFrontSliceIndex;
 		qreal zoomFactor;
-        QRect zoomRegion;
+		QRect zoomRegion;
 		bool valid;
 	};
 
 	void createScene();
 
-	void setTopSliceMarkVisible(QGraphicsItem * mark,bool visible);
-	void setRightSliceMarkVisible(QGraphicsItem * mark,bool visible);
-	void setFrontSLiceMarkVisible(QGraphicsItem * mark,bool visible);
+	void setTopSliceMarkVisible(QGraphicsItem * mark, bool visible);
+	void setRightSliceMarkVisible(QGraphicsItem * mark, bool visible);
+	void setFrontSLiceMarkVisible(QGraphicsItem * mark, bool visible);
 
 
 	MRC m_mrcFile;
@@ -245,7 +246,7 @@ public:
 	{
 		///TODO:: Is this check necessary? 
 		if (position < 0 || position > m_children.size())return false;
-		for (int row = 0; row<count; row++)
+		for (int row = 0; row < count; row++)
 		{
 			QVector<QVariant> data(columns);
 			TreeItem * item = new TreeItem(data, this);
@@ -269,7 +270,7 @@ public:
 	{
 		if (position < 0 || position >= m_children.size())
 			return false;
-		for (int i = 0; i<count; i++)
+		for (int i = 0; i < count; i++)
 			delete m_children.takeAt(position);
 		return true;
 	}
@@ -298,6 +299,25 @@ public:
 		return true;
 	}
 
+
+};
+
+class DataItemModelDelegate :public QStyledItemDelegate
+{
+	Q_OBJECT
+public:
+	DataItemModelDelegate(QObject * parent = nullptr) :QStyledItemDelegate(parent) {}
+	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+			const QModelIndex &index) const override;
+	void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+	void setModelData(QWidget *editor, QAbstractItemModel *model,
+		const QModelIndex &index) const override;
+	void updateEditorGeometry(QWidget *editor,
+		const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+private:
+
+	int level(const QModelIndex & index);
+	bool isMark(const QModelIndex & index);
 
 };
 

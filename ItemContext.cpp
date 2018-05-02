@@ -2,6 +2,7 @@
 //#include "imageviewer.h"
 #include <QPicture>
 #include <QModelIndex>
+#include <QCheckBox>
 #include <qdebug.h>
 #include <cassert>
 #include <memory>
@@ -927,3 +928,78 @@ void DataItemModel::addItem(const QSharedPointer<ItemContext>& item)
 	//qDebug() << var.canConvert<QSharedPointer<ItemContext>>();
 }
 
+QWidget * DataItemModelDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+	qDebug() << "Delegate.";
+	auto m = index.model();
+	auto var = m->data(index);
+	if (var.canConvert<QString>() == true) {
+		QString text =  var.value<QString>();
+		if (text[0] == '#') {
+			//Mark Item
+			QWidget* checkBox = new QCheckBox(text, parent);
+			return checkBox;
+		}
+	}
+	return nullptr;
+}
+
+void DataItemModelDelegate::setEditorData(QWidget * editor, const QModelIndex & index) const
+{
+	auto m = index.model();
+	auto var = m->data(index);
+	if (var.canConvert<QString>() == true) {
+		QString text = var.value<QString>();
+		if (text[0] == '#') {
+			//Mark Item
+			QModelIndex visibleField = index.sibling(index.row(), index.column() + 1);
+			QVariant v = m->data(visibleField);
+			Q_ASSERT_X(v.canConvert<bool>(), "DataItemModelDelegate::setEditorData", "Visible field can not be converted to boolean.");
+			bool visible = v.value<bool>();
+			auto w = static_cast<QCheckBox *>(editor);
+			Q_ASSERT_X(w, "DataItemModelDelegate::setEditorData", "Widget * can not be converted to QCheckBox");
+			w->setChecked(visible);
+		}
+	}
+}
+
+void DataItemModelDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index) const
+{
+	auto var = model->data(index);
+	if (var.canConvert<QString>() == true) {
+		QString text = var.value<QString>();
+		if (text[0] == '#') {
+			//Mark Item
+			QModelIndex visibleField = index.sibling(index.row(), index.column() + 1);
+			QVariant v = model->data(visibleField);
+			Q_ASSERT_X(v.canConvert<bool>(), "DataItemModelDelegate::setEditorData", "Visible field can not be converted to boolean.");
+			auto w = static_cast<QCheckBox *>(editor);
+			Q_ASSERT_X(w, "DataItemModelDelegate::setEditorData", "Widget * can not be converted to QCheckBox");
+			bool visible = w->isChecked();
+			model->setData(visibleField, QVariant::fromValue(visible));
+		}
+	}
+}
+
+void DataItemModelDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+	editor->setGeometry(option.rect);
+}
+
+int DataItemModelDelegate::level(const QModelIndex & index)
+{
+	auto m = index.model();
+	int level = 0;
+	QModelIndex parentIndex;
+	QModelIndex currentIndex = index;
+	while ((parentIndex = m->parent(currentIndex)).isValid() == true) {
+		currentIndex = parentIndex;
+		level++;
+	}
+	return level;
+}
+
+bool DataItemModelDelegate::isMark(const QModelIndex & index)
+{
+	return true;
+}

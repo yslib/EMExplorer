@@ -340,7 +340,12 @@ ImageView::ImageView(QWidget *parent) :
 		if(newMark.isValid() == true)
 		{
 			m_internalUpdate = true;
+			//set text
 			m_model->setData(newMark, QString("#%1").arg(count));
+			//set bool
+			m_internalUpdate = true;
+			m_model->setData(newMark.sibling(newMark.row(), newMark.column() + 1), QVariant::fromValue(true));
+
 			m_internalUpdate = true;
 			m_model->setData(countField, QVariant::fromValue(++count));
 		}
