@@ -22,14 +22,16 @@ public:
     int minimum()const;
     int maximum()const;
     int value()const;
-    void setEnabled(bool enabled);
+	void setEnabled(bool enabled);
     void setOrientation(Qt::Orientation orientation);
+	bool blockSignals(bool block);
+
 public slots:
     void setValue(int value);
 signals:
     void valueChanged(int value);
 private:
-    void createConnections();
+    void createConnections()const;
     void createLayout(Qt::Orientation orientation = Qt::Horizontal);
 private:
     QSpinBox * m_spinBox;

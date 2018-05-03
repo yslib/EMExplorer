@@ -2,16 +2,19 @@
 #define HISTOGRAM_H
 
 #include <QObject>
-#include <QWidget>
-#include <QImage>
-#include <QColor>
-#include <QVector>
-#include <QMessageBox>
 #include <QPainter>
-#include <cmath>
 #include <QLayout>
-#include <titledsliderwithspinbox.h>
+#include <QAbstractItemView>
 
+#include "titledsliderwithspinbox.h"
+#include "ItemContext.h"
+
+
+class QMouseEvent;
+class QComboBox;
+class QPushButton;
+class QLabel;
+class QGroupBox;
 class Histogram:public QWidget
 {
     Q_OBJECT
@@ -65,22 +68,74 @@ class HistogramViewer:public QWidget
 public:
     explicit HistogramViewer(QWidget * parent = nullptr)noexcept;
     explicit HistogramViewer(QWidget * parent, const QImage & image)noexcept;
-    void setImage(const QImage & image);
+
+
     QVector<int> getHist()const;
     void setEnabled(bool enable);
+
     int getLeftCursorValue()const;
     int getRightCursorValue()const;
+
+	//model interface
+	void setModel(DataItemModel * model);
+	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+	void activateItem(const QModelIndex & index);
 public slots:
-    void setLeftCursorValue(int value);
-    void setRightCursorValue(int value);
+    //void setLeftCursorValue(int value);
+    //void setRightCursorValue(int value);
+	void onMinValueChanged(int value);
+	void onMaxValueChanged(int value);
+    void onResetButton();
+    void onFilterButton();
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
 private:
-    QGridLayout * m_layout;
+
+    void setImage(const QImage & image);
+    void updateImage();
+	QModelIndex getDataIndex(const QModelIndex & itemIndex);
+
+	void updateActions();
+    void createWidgets();
+
+    void updateParameterLayout(const QString & text);
+
+	bool m_internalUpdate;
+
+    QGridLayout * m_mainLayout;
+    QGroupBox * m_histogramGroupBox;
+    QGridLayout * m_histogramLayout;
     Histogram * m_hist;
+    QLabel * m_histNumLabel;
+    QSpinBox * m_histNumSpinBox;
     TitledSliderWithSpinBox * m_minSlider;
     TitledSliderWithSpinBox * m_maxSlider;
+
+    QGroupBox * m_filterGroupBox;
+    QGridLayout * m_filterLayout;
+
+    QLabel* m_filterLabel;
+    QComboBox * m_filterComboBox;
+    QPushButton * m_filterButton;
+
+    QGridLayout * m_medianFilterParameterLayout;
+    QLabel * m_medianKernelSizeLabel;
+    QSpinBox * m_medianKernelSizeSpinBox;
+
+    QGridLayout * m_gaussianFilterParameterLayout;
+    QLabel * m_sigmaXLabel;
+    QDoubleSpinBox * m_sigmaXSpinBox;
+    QLabel * m_sigmaYLabel;
+    QDoubleSpinBox * m_sigmaYSpinBox;
+
+
+
+    QPushButton* m_reset;
+	//
+	QAbstractItemModel * m_model;
+	QModelIndex m_modelIndex;
+	QSharedPointer<ItemContext> m_ptr;
 };
 
 #endif // HISTOGRAM_H

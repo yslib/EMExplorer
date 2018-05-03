@@ -376,6 +376,9 @@ public:
 	int getHeight()const;          //second dimension
 	int getSliceCount()const;          //third dimension
 
+
+	std::string getFileName()const { return m_fileName; }
+
 	const unsigned char * data()const;
 	unsigned char * data();
 	std::string getMRCInfo()const;
