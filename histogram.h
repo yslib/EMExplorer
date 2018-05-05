@@ -118,12 +118,11 @@ private:
     QLabel* m_filterLabel;
     QComboBox * m_filterComboBox;
     QPushButton * m_filterButton;
+    QGridLayout * m_parameterLayout;
 
-    QGridLayout * m_medianFilterParameterLayout;
     QLabel * m_medianKernelSizeLabel;
     QSpinBox * m_medianKernelSizeSpinBox;
 
-    QGridLayout * m_gaussianFilterParameterLayout;
     QLabel * m_sigmaXLabel;
     QDoubleSpinBox * m_sigmaXSpinBox;
     QLabel * m_sigmaYLabel;

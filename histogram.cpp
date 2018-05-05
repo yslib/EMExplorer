@@ -245,10 +245,12 @@ HistogramViewer::HistogramViewer(QWidget *parent)noexcept:QWidget(parent),m_mode
     connect(m_filterButton,&QPushButton::clicked,this,&HistogramViewer::onFilterButton);
 
     connect(m_filterComboBox,QOverload<const QString &>::of(&QComboBox::activated),[=](const QString & text){
-        updateParameterLayout(text);
+    //    qDebug()<<"Signal:QComboxBox::activated";
+    //    updateParameterLayout(text);
     });
     connect(m_filterComboBox,&QComboBox::currentTextChanged,[=](const QString & text){
-
+        qDebug()<<"Signal::currentTextChanged";
+        updateParameterLayout(text);
     });
 
     connect(m_reset,&QPushButton::clicked,this,&HistogramViewer::onResetButton);
@@ -385,13 +387,14 @@ void HistogramViewer::onFilterButton()
     cimg_library::CImg<unsigned char> image(slice.bits(),width,height,1,1,true);
 
     //filter parameters
-    int kernelSize = 3;
 
     if(text == "Median Filter"){
-
+        int kernelSize = m_medianKernelSizeSpinBox->value();
         image.blur_median(kernelSize);
     }else if(text == "Gaussian Filter"){
-
+        double sigX = m_sigmaXSpinBox->value();
+        double sigY = m_sigmaYSpinBox->value();
+        image.blur(sigX,sigY,0,true,true);
     }
     m_internalUpdate = true;
     m_ptr->setSlice(slice,currentIndex,SliceType::SliceZ);
@@ -486,9 +489,12 @@ void HistogramViewer::createWidgets()
 
     m_filterLabel = new QLabel(QStringLiteral("Filters:"),this);
     m_filterComboBox = new QComboBox(this);
+    m_filterComboBox->addItem(QStringLiteral("..."));
     m_filterComboBox->addItem(QStringLiteral("Median Filter"));
     m_filterComboBox->addItem(QStringLiteral("Gaussian Filter"));
+    m_filterComboBox->setEditable(false);
     m_filterButton = new QPushButton(QStringLiteral("Filter"),this);
+    m_parameterLayout = new QGridLayout(this);
 
     m_filterLayout =new QGridLayout(this);
     m_filterGroupBox = new QGroupBox(QStringLiteral("Filter"),this);
@@ -496,6 +502,7 @@ void HistogramViewer::createWidgets()
     m_filterLayout->addWidget(m_filterLabel,0,1);
     m_filterLayout->addWidget(m_filterComboBox,0,2);
     m_filterLayout->addWidget(m_filterButton,0,3);
+    m_filterLayout->addLayout(m_parameterLayout,1,0,1,3);
     m_reset = new QPushButton(QStringLiteral("Reset"),this);
 
     m_mainLayout->addWidget(m_histogramGroupBox,0,0);
@@ -503,31 +510,23 @@ void HistogramViewer::createWidgets()
     m_mainLayout->addWidget(m_reset,2,0);
 
 
-    // Parameter layout: Add these layouts at row 1 of filter layout
-    //![1]median parameter layout
-    m_medianKernelSizeLabel = new QLabel(QStringLiteral("Kernel Size:"),this);
-    m_medianKernelSizeSpinBox = new  QSpinBox(this);
+    //![1]median parameter widgets
+    m_medianKernelSizeLabel = new QLabel(QStringLiteral("Kernel Size:"));
+    m_medianKernelSizeSpinBox = new  QSpinBox;
     m_medianKernelSizeSpinBox->setMinimum(1);
     m_medianKernelSizeSpinBox->setMaximum(10);
-    m_medianFilterParameterLayout = new QGridLayout(this);
-    m_medianFilterParameterLayout->addWidget(m_medianKernelSizeLabel,0,0);
-    m_medianFilterParameterLayout->addWidget(m_medianKernelSizeLabel,0,1);
-    //![2]gaussian parameter layout
 
-    m_sigmaXLabel = new QLabel(QStringLiteral("X sigma:"),this);
-    m_sigmaYLabel = new QLabel(QStringLiteral("Y sigma:"),this);
-    m_sigmaXSpinBox = new QDoubleSpinBox(this);
+    //![2]gaussian parameter widgets
+    m_sigmaXLabel = new QLabel(QStringLiteral("X sigma:"));
+    m_sigmaYLabel = new QLabel(QStringLiteral("Y sigma:"));
+    m_sigmaXSpinBox = new QDoubleSpinBox;
     m_sigmaXSpinBox->setMinimum(0);
     m_sigmaXSpinBox->setMaximum(10.0);
-    m_sigmaYSpinBox = new QDoubleSpinBox(this);
+    m_sigmaXSpinBox->setSingleStep(0.05);
+    m_sigmaYSpinBox = new QDoubleSpinBox;
     m_sigmaYSpinBox->setMinimum(0.0);
     m_sigmaYSpinBox->setMaximum(10.0);
-
-    m_gaussianFilterParameterLayout = new QGridLayout(this);
-    m_gaussianFilterParameterLayout->addWidget(m_sigmaXLabel,0,0);
-    m_gaussianFilterParameterLayout->addWidget(m_sigmaXSpinBox,0,1);
-    m_gaussianFilterParameterLayout->addWidget(m_sigmaYLabel,1,0);
-    m_gaussianFilterParameterLayout->addWidget(m_sigmaYSpinBox,1,1);
+    m_sigmaYSpinBox->setSingleStep(0.05);
 
     int maxValue = m_hist->getBinCount()-1;
     m_maxSlider->setMaximum(maxValue);
@@ -539,17 +538,44 @@ void HistogramViewer::createWidgets()
 
 void HistogramViewer::updateParameterLayout(const QString &text)
 {
-    QLayout * removed;
-    QLayout * added;
     if(text == "Median Filter"){
-        removed = m_gaussianFilterParameterLayout;
-        added= m_medianFilterParameterLayout;
+        m_parameterLayout->removeWidget(m_sigmaXLabel);
+        m_sigmaXLabel->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_sigmaXSpinBox);
+        m_sigmaXSpinBox->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_sigmaYLabel);
+        m_sigmaYLabel->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_sigmaYSpinBox);
+        m_sigmaYSpinBox->setParent(nullptr);
+
+        m_parameterLayout->addWidget(m_medianKernelSizeLabel,0,0);
+        m_parameterLayout->addWidget(m_medianKernelSizeSpinBox,0,1);
+
     }else if(text == "Gaussian Filter"){
-        removed = m_medianFilterParameterLayout;
-        added = m_gaussianFilterParameterLayout;
+        m_parameterLayout->removeWidget(m_medianKernelSizeLabel);
+        m_medianKernelSizeLabel->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_medianKernelSizeSpinBox);
+        m_medianKernelSizeSpinBox->setParent(nullptr);
+
+        m_parameterLayout->addWidget(m_sigmaXLabel,0,0);
+        m_parameterLayout->addWidget(m_sigmaXSpinBox,0,1);
+        m_parameterLayout->addWidget(m_sigmaYLabel,1,0);
+        m_parameterLayout->addWidget(m_sigmaYSpinBox,1,1);
+    }else{
+        m_parameterLayout->removeWidget(m_sigmaXLabel);
+        m_sigmaXLabel->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_sigmaXSpinBox);
+        m_sigmaXSpinBox->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_sigmaYLabel);
+        m_sigmaYLabel->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_sigmaYSpinBox);
+        m_sigmaYSpinBox->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_medianKernelSizeLabel);
+        m_medianKernelSizeLabel->setParent(nullptr);
+        m_parameterLayout->removeWidget(m_medianKernelSizeSpinBox);
+        m_medianKernelSizeSpinBox->setParent(nullptr);
+
     }
-    m_filterLayout->removeItem(removed);
-    m_filterLayout->addLayout(added,1,1,1,3);
 }
 
 
@@ -562,6 +588,9 @@ void HistogramViewer::setEnabled(bool enable)
     m_filterComboBox->setEditable(enable);
     m_filterButton->setEnabled(enable);
     m_reset->setEnabled(enable);
+    m_medianKernelSizeSpinBox->setEnabled(enable);
+    m_sigmaXSpinBox->setEnabled(enable);
+    m_sigmaYSpinBox->setEnabled(enable);
 }
 
 int HistogramViewer::getLeftCursorValue() const
