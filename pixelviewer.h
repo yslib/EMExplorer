@@ -17,8 +17,6 @@ public:
     int getHeight()const;
     void setWidth(int width);
     void setHeight(int height);
-
-
     void setImage(const QImage & image);
 
 	//model interface
@@ -27,12 +25,19 @@ public:
 
 public slots:
 	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-
     void setPosition(const QPoint & p);
+protected:
+	void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
 private:
-    void changeLayout(int width,int height);
+    void changeLayout(QSize areaSize);
     void changeValue(const QImage & image,const QPoint & pos);
+	void calcCount(QSize areaSize);
+	void setWidget(QWidget * widget,int xpos, int ypos);
 private:
+	static const int s_width = 50;
+	static const int s_height = 20;
+
+
 	QModelIndex getDataIndex(const QModelIndex & itemIndex);
 	QAbstractItemModel * m_model;
 	QSharedPointer<ItemContext> m_ptr;
@@ -44,12 +49,13 @@ private:
     QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;
     QVector<QSharedPointer<QLabel>> m_rowHeadersLabels;
     QSharedPointer<QLabel> m_cornerLabel;
+
     QPoint m_pos;
     int m_width;
     int m_height;
     int m_minValueIndex;
     int m_maxValueIndex;
-    QGridLayout * layout;
+    //QGridLayout * layout;
 };
 
 #endif // PIXELVIWER_H

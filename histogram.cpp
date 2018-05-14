@@ -12,7 +12,7 @@
 
 
 #define cimg_display 0 //
-#define cimg_OS 1
+#define cimg_OS 0
 #include "CImg.h"
 
 

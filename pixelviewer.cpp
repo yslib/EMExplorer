@@ -6,28 +6,28 @@ PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & im
     m_width(width),m_height(height),m_image(image),m_model(nullptr),
     QWidget(parent)
 {
-
     //create a gridlayout
-    layout = new QGridLayout(this);
-    setLayout(layout);
-
+    //layout = new QGridLayout(this);
+    //setLayout(layout);
     //init layout
-    changeLayout(m_width,m_height);
+	//resize(500, 500);
+    changeLayout(size());
 }
 
 void PixelViewer::setWidth(int width)
 {
     if(m_width != width){
         m_width = width;
-        changeLayout(m_width,m_height);
+        //changeLayout(m_width,m_height,QSize(s_width,s_height));
     }
 }
 
 void PixelViewer::setHeight(int height)
 {
+	
     if(m_height != height){
         m_height = height;
-        changeLayout(m_width,m_height);
+        //changeLayout(m_width,m_height,QSize(s_width,s_height));
     }
 }
 
@@ -78,7 +78,6 @@ void PixelViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bot
 	///TODO::fecth updated currentSlice
 	qDebug("PixelViewer:data model has been updated");
 
-
 }
 
 void PixelViewer::setPosition(const QPoint &p)
@@ -87,52 +86,67 @@ void PixelViewer::setPosition(const QPoint &p)
     changeValue(m_image,m_pos);
 }
 
-
-void PixelViewer::changeLayout(int width, int height)
+void PixelViewer::resizeEvent(QResizeEvent* event)
 {
+	qDebug() << "PixelViwer reisze event"<<event->size();
+	changeLayout(size());
+}
+void PixelViewer::changeLayout(QSize areaSize)
+{
+	calcCount(areaSize);
+
+	int horizontalCount = m_width,verticalCount = m_height;
+	qDebug() << m_width << " " << m_height;
     //set old index invalid
     m_minValueIndex = -1;
     m_maxValueIndex = -1;
-
-    //clear previous labels
+    //clear previous labels and layout
     m_pixelLabels.clear();
-    for(int i=0;i<height;i++){
-        for(int j=0;j<width;j++){
-            QSharedPointer<QPushButton> sharedPtr(new QPushButton(this));
+    for(int i=0;i<verticalCount;i++){
+        for(int j=0;j<horizontalCount;j++){
+            QSharedPointer<QPushButton> sharedPtr(new QPushButton(this),&QObject::deleteLater);
             sharedPtr->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
             m_pixelLabels.push_back(sharedPtr);
-            layout->addWidget(m_pixelLabels.back().data(),1+i,1+j);
+
+            //layout->addWidget(m_pixelLabels.back().data(),1+i,1+j);
+			setWidget(m_pixelLabels.back().data(), 1 + i, 1 + j);
         }
     }
-
     //cornel label
-    m_cornerLabel.reset(new QLabel(this));
+    m_cornerLabel.reset(new QLabel(this),&QObject::deleteLater);
     m_cornerLabel->setText(QString("..."));
     m_cornerLabel->setAlignment(Qt::AlignCenter);
     m_cornerLabel->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-    layout->addWidget(m_cornerLabel.data(),0,0);
+
+    //layout->addWidget(m_cornerLabel.data(),0,0);
+	setWidget(m_cornerLabel.data(), 0, 0);
 
     //column and row header labels
 
     m_columnHeadersLabels.clear();
-    for(int i=0;i<m_width;i++){
-        QSharedPointer<QLabel> ptr(new QLabel(this));
+    for(int i=0;i<horizontalCount;i++){
+        QSharedPointer<QLabel> ptr(new QLabel(this),&QObject::deleteLater);
         ptr->setText(QString("..."));
         ptr->setAlignment(Qt::AlignCenter);
         ptr->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        layout->addWidget(ptr.data(),0,i+1);
+
+        //layout->addWidget(ptr.data(),0,i+1);
+		setWidget(ptr.data(), 0, i + 1);
+
         m_columnHeadersLabels.push_back(ptr);
     }
     m_rowHeadersLabels.clear();
-    for(int i = 0;i<m_height;i++){
-        QSharedPointer<QLabel> ptr(new QLabel(this));
+    for(int i = 0;i<verticalCount;i++){
+        QSharedPointer<QLabel> ptr(new QLabel(this),&QObject::deleteLater);
         ptr->setText(QString("..."));
         ptr->setAlignment(Qt::AlignCenter);
         ptr->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        layout->addWidget(ptr.data(),i+1,0);
+
+        //layout->addWidget(ptr.data(),i+1,0);
+		setWidget(ptr.data(), i + 1, 0);
+
         m_rowHeadersLabels.push_back(ptr);
     }
-
     changeValue(m_image,m_pos);
 }
 
@@ -195,6 +209,30 @@ void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
         }
     }
 }
+
+ void PixelViewer::calcCount(QSize areaSize)
+{
+	QSize size = areaSize;
+	QSize pixelHolderSize = QSize(s_width, s_height);
+	m_width = qRound(static_cast<double>(size.width()) / pixelHolderSize.width())-1;
+	m_height = qRound(static_cast<double>(size.height()) / pixelHolderSize.height())-1;
+	if (m_width < 0)m_width = 0;
+	if (m_height < 0)m_height = 0;
+}
+
+ void PixelViewer::setWidget(QWidget * widget, int ypos, int xpos)
+ {
+	 int top = 0, bottom=0, left=0, right=0;
+	 int width = widget->size().width();
+	 int height = widget->size().height();
+
+	 QPoint topLeft((left+width+right)*xpos+top,(top+height+bottom)*ypos+left);
+	 QRect rect(topLeft,QSize(s_width,s_height));
+	 widget->setParent(this);
+	 widget->setGeometry(rect);
+	 widget->show();
+
+ }
 
 QModelIndex PixelViewer::getDataIndex(const QModelIndex & itemIndex)
 {
