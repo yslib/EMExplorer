@@ -18,7 +18,7 @@ MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType Dimen
 {
 
 	//DataType
-	if (dataType != DataType::Byte8) {
+	if (dataType != DataType::Integer8) {
 		//NOTICE: Only support byte type
 		exit(-1);
 	}
@@ -77,7 +77,6 @@ MRC::MRC(const MRC & otherMRC, void * data)
 
 MRC::MRC(const MRC &rhs)
 {
-    m_fileName = rhs.m_fileName;
     m_header = rhs.m_header;
 	m_d = rhs.m_d;
 	++m_d->ref;		//reference count increasement
@@ -87,7 +86,6 @@ MRC::MRC(const MRC &rhs)
 MRC & MRC::operator=(const MRC &rhs)
 {
     if(this == &rhs)return *this;
-    m_fileName=rhs.m_fileName;
     m_header = rhs.m_header;
 	m_d = rhs.m_d;
 	++m_d->ref;
@@ -123,7 +121,6 @@ bool MRC::open(const std::string &fileName)
         m_opened = noError;
         fclose(fp);
     }
-	m_fileName = fileName;
     return m_opened;
 }
 
@@ -195,7 +192,7 @@ MRC::DataType MRC::type() const
 	switch (m_header.mode)
 	{
 	case MRC_MODE_BYTE:
-		return MRC::DataType::Byte8;
+		return MRC::DataType::Integer8;
 	case MRC_MODE_FLOAT:
 		return DataType::Real32;
 	case MRC_MODE_COMPLEX_SHORT:
@@ -215,7 +212,7 @@ size_t MRC::typeSize(MRC::DataType type) const
 {
 	switch (type)
 	{
-	case DataType::Byte8:
+	case DataType::Integer8:
 		return sizeof(MRCInt8);
 	case DataType::Integer16:
 		return sizeof(MRCInt16);
@@ -397,7 +394,7 @@ bool MRC::_readDataFromFile(FILE *fp)
 		const size_t elemSize = typeSize(type());
 
 		//transform into byte8 type
-		MRCDataPrivate * d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Byte8));
+		MRCDataPrivate * d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
 
         if(MRC_MODE_BYTE == m_header.mode){
             const int readCount = fread(m_d->data,elemSize,dataCount,fp);

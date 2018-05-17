@@ -5,6 +5,7 @@
 #include <memory>
 #include <functional>
 #include <atomic>
+#include <qlist.h>
 
 
 /*
@@ -331,7 +332,7 @@ public:     //Type Definition
 
 	enum class ImageDimensionType { SingleImage, ImageStack };
 	enum class VolumeDimensionType { SingleVolume, VolumeStack };
-	enum class DataType { Byte8, Integer16, Integer32, Real32, Complex16, Complex32 };
+	enum class DataType { Integer8, Integer16, Integer32, Real32, Complex16, Complex32 };
 
 	struct MRCDataPrivate
 	{
@@ -357,7 +358,7 @@ public:     //Type Definition
 			d->data = data;
 			return d;
 		}
-		static MRCDataPrivate * create(int width,int height,int slice,size_t elemSize)
+		static MRCDataPrivate * create(int width, int height, int slice, size_t elemSize)
 		{
 			MRCDataPrivate * d = nullptr;
 			d = new MRCDataPrivate;
@@ -380,7 +381,7 @@ public:
 	MRC(void * data,
 		int width,
 		int height,
-		int slice, ImageDimensionType DimensionType, DataType dataType = MRC::DataType::Byte8);
+		int slice, ImageDimensionType DimensionType, DataType dataType = MRC::DataType::Integer8);
 	//volume and volume stack
 
 	MRC(void * data,
@@ -389,58 +390,39 @@ public:
 		int volumeZ,
 		int volumeCount,
 		VolumeDimensionType DimensionType,
-		DataType dataType = MRC::DataType::Byte8);
-
-	//header from other MRC
+		DataType dataType = MRC::DataType::Integer8);
 
 	MRC(const MRC & otherMRC, void * data);
-
-
 	MRC(const MRC & rhs);
-	MRC(MRC && rhs)noexcept;
+	//MRC(MRC && rhs)noexcept;
 	MRC& operator=(const MRC & rhs);
-	MRC& operator=(MRC && rhs)noexcept;
+	//MRC& operator=(MRC && rhs)noexcept;
 public:
-	static MRC fromData(std::shared_ptr<unsigned char> data, int width, int height, int slice, DataType type = MRC::DataType::Byte8);
-	static MRC fromData(void * data, int width, int height, int slice, DataType type = MRC::DataType::Byte8);
-
+	static MRC fromData(void * data, int width, int height, int slice, DataType type = MRC::DataType::Integer8);
 	static MRC fromMRC(const MRC & otherMRC, unsigned char *data);
-	static MRC fromMRC(const MRC & other, std::shared_ptr<unsigned char> data);
 
 	bool open(const std::string & fileName);
 	bool save(const std::string & fileName, MRC::Format format = Format::MRC);
+	std::string getFileName()const { return std::string(); }
 	bool isOpened()const;
-
 	int getWidth()const;           //first dimension
 	int getHeight()const;          //second dimension
 	int getSliceCount()const;          //third dimension  z-axis
-
-
-	std::string getFileName()const { return m_fileName; }
 
 	//const unsigned char * data()const;
 	//unsigned char * data();
 
 	template<typename T>
 	T * data()const;
-	
 	DataType type()const;
-	
-	
 	std::string getMRCInfo()const;
-	//some mrc header settings
 	virtual ~MRC()noexcept;
 private:
-	std::string m_fileName;
 	MRCHeader m_header;
-	//unsigned char* m_mrcData;
-
 	MRCDataPrivate* m_d;
-
-	//size_t m_mrcDataSize;
 	bool m_opened;
 private:
-	MRC(const std::string & fileName, bool opened) :m_fileName(fileName), m_d(), m_opened{ opened } {}
+	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } {}
 	void _nversion_Field(int year, int version = 0);
 	void _dmin_dmax_dmean_rms_Field();
 	bool _mrcHeaderRead(FILE *fp, MRCHeader * header);
@@ -462,7 +444,35 @@ private:
 template <typename T>
 T* MRC::data() const
 {
-	return static_cast<T*>(m_d->data);
+	bool canConvert;
+	switch (type())
+	{
+	case DataType::Integer8:
+		canConvert = std::is_same<T, MRCInt8>::value;
+		break;
+	case DataType::Integer16:
+		canConvert = std::is_same<T, MRCInt16>::value;
+		break;
+	case DataType::Integer32:
+		canConvert = std::is_same<T, MRCInt32>::value;
+		break;
+	case DataType::Real32:
+		canConvert = std::is_same<T, MRCFloat>::value;
+		break;
+	case DataType::Complex16:
+		canConvert = std::is_same<T, MRCComplexShort>::value;
+		break;
+	case DataType::Complex32:
+		canConvert = std::is_same<T, MRCComplexFloat>::value;
+		break;
+	default:
+		canConvert = false;
+		break;
+	}
+	if (canConvert)
+		return static_cast<T*>(m_d->data);
+	else
+		return nullptr;
 }
 
 #endif // MRC_H

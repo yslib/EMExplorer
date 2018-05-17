@@ -33,7 +33,7 @@ ItemContext::ItemContext(const ItemContext & model)
 
 ItemContext::ItemContext(ItemContext && model)noexcept
 {
-	//m_mrcFile = std::move(model.m_mrcFile);
+	m_mrcFile = std::move(model.m_mrcFile);
 	m_mrcContext = model.m_mrcContext;
 	m_topSliceMarks = std::move(model.m_topSliceMarks);
 	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
@@ -56,12 +56,12 @@ ItemContext & ItemContext::operator=(ItemContext && model)noexcept
 {
 	if (this == &model)
 		return *this;
-	//m_mrcFile = std::move(model.m_mrcFile);
+	m_mrcFile = std::move(model.m_mrcFile);
 	m_mrcContext = model.m_mrcContext;
 	m_topSliceMarks = std::move(model.m_topSliceMarks);
 	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
 	m_modifiedTopSliceFlags = std::move(model.m_modifiedTopSliceFlags);
-	// TODO: insert return statement here
+	//TODO: insert return statement here
 }
 
 ItemContext::~ItemContext()
@@ -193,7 +193,7 @@ bool ItemContext::saveMarks(const QString & fileName, MarkFormat format)
 
 		//MRC mrcMarks(data,getWidth(),getHeight(),getSliceCount(),
 		//	MRC::ImageDimensionType::ImageStack,
-		//	MRC::DataType::Byte8);
+		//	MRC::DataType::Integer8);
 
 
 
