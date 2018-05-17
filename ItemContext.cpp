@@ -6,6 +6,7 @@
 #include <qdebug.h>
 #include <cassert>
 #include <memory>
+#include <iostream>
 
 
 ItemContext::ItemContext() :
@@ -32,7 +33,7 @@ ItemContext::ItemContext(const ItemContext & model)
 
 ItemContext::ItemContext(ItemContext && model)noexcept
 {
-	m_mrcFile = std::move(model.m_mrcFile);
+	//m_mrcFile = std::move(model.m_mrcFile);
 	m_mrcContext = model.m_mrcContext;
 	m_topSliceMarks = std::move(model.m_topSliceMarks);
 	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
@@ -55,7 +56,7 @@ ItemContext & ItemContext::operator=(ItemContext && model)noexcept
 {
 	if (this == &model)
 		return *this;
-	m_mrcFile = std::move(model.m_mrcFile);
+	//m_mrcFile = std::move(model.m_mrcFile);
 	m_mrcContext = model.m_mrcContext;
 	m_topSliceMarks = std::move(model.m_topSliceMarks);
 	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
@@ -72,7 +73,7 @@ QImage ItemContext::getOriginalTopSlice(int index) const
 {
 	int width = m_mrcFile.getWidth();
 	int height = m_mrcFile.getHeight();
-	return QImage(m_mrcFile.data() + index * width*height, width, height, QImage::Format_Grayscale8);
+	return QImage(m_mrcFile.data<unsigned char>() + index * width*height, width, height, QImage::Format_Grayscale8);
 }
 
 bool ItemContext::save(const QString & fileName, ItemContext::DataFormat formate)
@@ -276,7 +277,7 @@ QImage ItemContext::getOriginalRightSlice(int index) const
 	int slice = m_mrcFile.getSliceCount();
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
-	auto data = m_mrcFile.data();
+	auto data = m_mrcFile.data<unsigned char>();
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < slice; j++)
@@ -322,7 +323,7 @@ QImage ItemContext::getOriginalFrontSlice(int index) const
 	int slice = m_mrcFile.getSliceCount();
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
-	auto data = m_mrcFile.data();
+	auto data = m_mrcFile.data<unsigned char>();
 	for (int i = 0; i < slice; i++)
 	{
 		for (int j = 0; j < width; j++)

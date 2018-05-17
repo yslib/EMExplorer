@@ -1,31 +1,28 @@
 #ifndef MRC_H
 #define MRC_H
 #include <cstdio>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <string>
-#include <vector>
 #include <memory>
 #include <functional>
+#include <atomic>
 
 
 /*
 * http://www.sciencedirect.com/science/article/pii/S104784771500074X
 * The pdf above shows the details of the MRC 2014 format, and
-* explains what every field actually is in the MRC Header.It also 
+* explains what every field actually is in the MRC Header.It also
 * talks about the concrete implements of MRC format in different popular softwares
 *
 */
 
 /*
 *			NOTE:
-*			For the sake of simplicity,so far, 
+*			For the sake of simplicity,so far,
 *			this MRC class only support :
 *			float data type reading,char data type reading
 *			and the creating of char data type with single image,
 *			image stack,single volume and volume stack dimension type.
-*			For creating MRC fils, only few of fields in the header are 
+*			For creating MRC fils, only few of fields in the header are
 *			considered.
 */
 
@@ -34,7 +31,7 @@
 * ny
 * nz
 * mode
-* 
+*
 */
 
 /*
@@ -113,8 +110,8 @@
 
 
 /*  Data Field Offset in MRC Header according to MRC2014
-    For more infomation, Please read
-    http://www.ccpem.ac.uk/mrc_format/mrc_format.php
+	For more infomation, Please read
+	http://www.ccpem.ac.uk/mrc_format/mrc_format.php
 */
 #define NX_OFFSET               0
 #define NY_OFFSET               4
@@ -173,8 +170,8 @@ private:
 	using MRCUInt32 = unsigned int;
 	using MRCUint16 = unsigned short;
 	using MRCDouble = double;
-	using MRCByte = char;
-	using MRCUByte = unsigned char;
+	using MRCInt8 = char;
+	using MRCUInt8 = unsigned char;
 	using MRCSizeType = size_t;
 
 	struct MRCHeader
@@ -225,14 +222,14 @@ private:
 							   * */
 		MRCInt16   creatid;  /* Used to be creator id, hvem = 1000, now 0 */
 
-		MRCByte    blank[6];      //Blank data. First two bytes should be 0.
+		MRCInt8    blank[6];      //Blank data. First two bytes should be 0.
 
 								  /**/
-		MRCByte    extType[4]; /* Extended type. */
+		MRCInt8    extType[4]; /* Extended type. */
 		MRCInt32   nversion;  /* Version number in MRC 2014 standard */
 							  /**/
 
-		MRCByte    blank2[16]; /*Blank*/
+		MRCInt8    blank2[16]; /*Blank*/
 		MRCInt16   nint;
 		MRCInt16   nreal;
 
@@ -285,13 +282,13 @@ private:
 		MRCFloat   xorg;
 		MRCFloat   yorg;
 		MRCFloat   zorg;
-		MRCByte    cmap[4];
-		MRCByte    stamp[4];
+		MRCInt8    cmap[4];
+		MRCInt8    stamp[4];
 		MRCFloat   rms;
 #endif
 
 		MRCInt32 nlabl;
-		MRCByte  labels[MRC_NLABELS][MRC_LABEL_SIZE + 1];
+		MRCInt8  labels[MRC_NLABELS][MRC_LABEL_SIZE + 1];
 
 		/* Internal data not stored in file header */
 		//      b3dUByte *symops;
@@ -312,47 +309,83 @@ private:
 	};
 
 
-    typedef struct  /*complex floating number*/
-    {
-      MRCFloat a;
-      MRCFloat b;
+	typedef struct  /*complex floating number*/
+	{
+		MRCFloat a;
+		MRCFloat b;
 
-    } MRCComplexFloat;
+	} MRCComplexFloat;
 
-    typedef struct  /*complex short number*/
-    {
-      MRCInt16 a;
-      MRCInt16 b;
+	typedef struct  /*complex short number*/
+	{
+		MRCInt16 a;
+		MRCInt16 b;
 
-    } MRCComplexShort;
+	} MRCComplexShort;
 
 
-    /*The MRC Header is MRC2014 Version. Reading
-    http://www.ccpem.ac.uk/mrc_format/mrc2014.php for more details*/
-
-  
-
+	/*The MRC Header is MRC2014 Version. Reading
+	http://www.ccpem.ac.uk/mrc_format/mrc2014.php for more details*/
 public:     //Type Definition
-		enum class Format { MRC, RAW };
+	enum class Format { MRC, RAW };
 
-		enum class ImageDimensionType {SingleImage,ImageStack};
-		enum class VolumeDimensionType {SingleVolume,VolumeStack};
-		enum class DataType {Byte8,Integer16,Integer32,Real32,Complex16,Complex32};
+	enum class ImageDimensionType { SingleImage, ImageStack };
+	enum class VolumeDimensionType { SingleVolume, VolumeStack };
+	enum class DataType { Byte8, Integer16, Integer32, Real32, Complex16, Complex32 };
+
+	struct MRCDataPrivate
+	{
+		std::atomic<int> ref;
+		void * data;
+		bool own;
+		MRCDataPrivate() = default;
+
+		~MRCDataPrivate() {
+			if (data && own)
+				free(data);
+			data = nullptr;
+		}
+		MRCDataPrivate & operator=(const MRCDataPrivate & other) = delete;
+		MRCDataPrivate & operator=(MRCDataPrivate && other) = delete;
+
+		static MRCDataPrivate * create(void * data)
+		{
+			MRCDataPrivate * d = nullptr;
+			d = new MRCDataPrivate;
+			d->own = false;			//shared data;
+			++d->ref;
+			d->data = data;
+			return d;
+		}
+		static MRCDataPrivate * create(int width,int height,int slice,size_t elemSize)
+		{
+			MRCDataPrivate * d = nullptr;
+			d = new MRCDataPrivate;
+			d->own = true;			//own the data
+			++d->ref;
+			d->data = malloc(width*height*slice*elemSize);
+			return d;
+		}
+
+	};
+
+
+
 
 public:
 	MRC();
 	explicit MRC(const std::string & fileName);
 
 	//image and image stack
-	MRC(void * data, 
+	MRC(void * data,
 		int width,
 		int height,
-		int slice,ImageDimensionType DimensionType,DataType dataType = MRC::DataType::Byte8);
+		int slice, ImageDimensionType DimensionType, DataType dataType = MRC::DataType::Byte8);
 	//volume and volume stack
 
-	MRC(void * data, 
-		int width, 
-		int height, 
+	MRC(void * data,
+		int width,
+		int height,
 		int volumeZ,
 		int volumeCount,
 		VolumeDimensionType DimensionType,
@@ -369,9 +402,9 @@ public:
 	MRC& operator=(MRC && rhs)noexcept;
 public:
 	static MRC fromData(std::shared_ptr<unsigned char> data, int width, int height, int slice, DataType type = MRC::DataType::Byte8);
-	static MRC fromData(void * data, int width, int height, int slice,DataType type = MRC::DataType::Byte8);
+	static MRC fromData(void * data, int width, int height, int slice, DataType type = MRC::DataType::Byte8);
 
-    static MRC fromMRC(const MRC & otherMRC, unsigned char *data);
+	static MRC fromMRC(const MRC & otherMRC, unsigned char *data);
 	static MRC fromMRC(const MRC & other, std::shared_ptr<unsigned char> data);
 
 	bool open(const std::string & fileName);
@@ -380,39 +413,56 @@ public:
 
 	int getWidth()const;           //first dimension
 	int getHeight()const;          //second dimension
-    int getSliceCount()const;          //third dimension  z-axis
+	int getSliceCount()const;          //third dimension  z-axis
 
 
 	std::string getFileName()const { return m_fileName; }
 
-	const unsigned char * data()const;
-	unsigned char * data();
+	//const unsigned char * data()const;
+	//unsigned char * data();
+
+	template<typename T>
+	T * data()const;
+	
+	DataType type()const;
+	
+	
 	std::string getMRCInfo()const;
 	//some mrc header settings
 	virtual ~MRC()noexcept;
-private:            
-    std::string m_fileName;
-    MRCHeader m_header;
-    unsigned char* m_mrcData;
-
-	std::shared_ptr<void> m_d;
-
-    size_t m_mrcDataSize;
-    bool m_opened;
 private:
-    MRC(const std::string & fileName,bool opened):m_fileName(fileName),m_mrcData{nullptr},m_opened{opened},m_mrcDataSize{0}{}
-	void _nversion_Field(int year, int version = 0);	
+	std::string m_fileName;
+	MRCHeader m_header;
+	//unsigned char* m_mrcData;
+
+	MRCDataPrivate* m_d;
+
+	//size_t m_mrcDataSize;
+	bool m_opened;
+private:
+	MRC(const std::string & fileName, bool opened) :m_fileName(fileName), m_d(), m_opened{ opened } {}
+	void _nversion_Field(int year, int version = 0);
 	void _dmin_dmax_dmean_rms_Field();
-    bool _mrcHeaderRead(FILE *fp,MRCHeader * header);
+	bool _mrcHeaderRead(FILE *fp, MRCHeader * header);
 	bool _mrcHeaderWrite(FILE * fp, MRCHeader * header);
 	void _createMRCHeader();
 	void _updateMRCHeader();
-    std::string _getMRCHeaderInfo(const MRCHeader *header)const;
-    bool _readDataFromFile(FILE * fp);
-    void _reset();
-    bool _init();
-    bool _allocate();
-    void _destroy();
+	size_t typeSize(MRC::DataType type) const;
+	std::string _getMRCHeaderInfo(const MRCHeader *header)const;
+	bool _readDataFromFile(FILE * fp);
+
+	void detach();
+
+	//void _reset();
+	//bool _init();
+	//bool _allocate();
+	//void _destroy();
 };
+
+template <typename T>
+T* MRC::data() const
+{
+	return static_cast<T*>(m_d->data);
+}
 
 #endif // MRC_H
