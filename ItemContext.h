@@ -4,6 +4,7 @@
 #include <QString>
 #include <qdebug.h>
 #include <QStyledItemDelegate>
+#include <QAbstractTableModel>
 
 #include "mrc.h"
 #include "imageviewer.h"
@@ -385,6 +386,9 @@ public:
 	//bool saveData(data);
 	//bool saveMarks(data);
 };
+
+
+
 
 
 #endif

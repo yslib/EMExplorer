@@ -928,6 +928,8 @@ void DataItemModel::addItem(const QSharedPointer<ItemContext>& item)
 	//qDebug() << var.canConvert<QSharedPointer<ItemContext>>();
 }
 
+
+
 QWidget * DataItemModelDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
 	qDebug() << "Delegate.";

@@ -6,6 +6,7 @@
 #include <QTreeView>
 #include <qglobal.h>
 #include <QMessageBox>
+#include <QTableView>
 
 #include "imageviewer.h"
 #include "ui_mainwindow.h"
@@ -48,12 +49,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	
 	m_histogramView = new HistogramViewer(this);
-
 	m_histogramView->setModel(m_treeViewModel);
-
 	dock = new QDockWidget(tr("Histgoram"), this);
 	dock->setAllowedAreas(Qt::RightDockWidgetArea);
 	dock->setWidget(m_histogramView);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+	viewMenu->addAction(dock->toggleViewAction());
+
+	m_filesComboBox = new QComboBox(this);
+	dock = new QDockWidget(QStringLiteral("Files:"), this);
+	dock->setAllowedAreas(Qt::RightDockWidgetArea);
+	dock->setWidget(m_filesComboBox);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+	viewMenu->addAction(dock->toggleViewAction());
+	connect(m_filesComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index)
+	{
+		m_infoView->setModel(m_infoModels.value(index));
+	});
+
+	m_infoView = new QTableView(this);
+	dock = new QDockWidget(QStringLiteral("Profile:"), this);
+	dock->setAllowedAreas(Qt::RightDockWidgetArea);
+	dock->setWidget(m_infoView);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());
 
@@ -63,10 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-
 	//Test ImageView
 	m_imageView = new ImageView(this);
-
 	m_imageView->setModel(m_treeViewModel);
 	setCentralWidget(m_imageView);
 
@@ -121,45 +136,17 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
-void MainWindow::onActionOpenTriggered()
+void MainWindow::open()
 {
-	//if(m_currentContext != -1){
-	//    QMessageBox::critical(this,"Error",
-	//                          tr("Multi files aren't supported now\n"),
-	//                          QMessageBox::Yes,QMessageBox::Yes);
-	//    return;
-	//}
 	QString fileName = QFileDialog::getOpenFileName(this, tr("OpenFile"), tr("/Users/Ysl/Downloads/ETdataSegmentation"), tr("mrc Files(*.mrc *mrcs)"));
 	if (fileName == "") {
 		return;
 	}
-	//m_mrcs.push_back(MRC(fileName));
-	//ItemContext mrcModel(fileName);
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
-
-	//QString headerInfo = mrcModel.getMRCInfo();
-
-
-	///TODO:: TEST,insert row into TreeView 
-	//m_treeViewModel->addItemHelper(fileName, headerInfo);
-
 	QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
 	m_treeViewModel->addItem(sharedItem);
-
-
-
 }
 
-void MainWindow::onMRCFilesComboBoxIndexActivated(int index)
-{
-	//Find first item to change
-	//QVariant userData =m_fileInfoViewer->itemData(index);
-	//if(userData.canConvert(QVariant::Int) == false)
-	//    return;
-	//int context = userData.toInt();
-	//saveMRCDataModel();
-	//setMRCDataModel(context);
-}
 
 void MainWindow::addMRCDataModel(const ItemContext & model)
 {
@@ -188,7 +175,6 @@ void MainWindow::setMRCDataModel(int index)
 	int maxRightSliceIndex = model.getRightSliceCount() - 1;
 	int maxFrontSliceIndex = model.getFrontSliceCount() - 1;
 
-	//m_nestedSliceViewer->setMaximumImageCount(maxSliceIndex,maxRightSliceIndex,maxFrontSliceIndex);
 
 	/*Max Gray Slider and SpinBox*/
 	///TODO::maybe the tow values are useless
@@ -206,46 +192,15 @@ void MainWindow::setMRCDataModel(int index)
 
 	const QImage & image = model.getTopSlice(currentSliceIndex);
 
-	//ImageView
-	//m_imageView->setTopImage(image);
-	//m_imageView->setRightImage(model.getOriginalRightSlice(0));
-	//m_imageView->setFrontImage(model.getOriginalFrontSlice(0));
-
 	int topSliceCount = model.getTopSliceCount();
 	int rightSliceCount = model.getRightSliceCount();
 	int frontSliceCount = model.getFrontSliceCount();
-
-	//m_imageView->setTopSliceCount(topSliceCount-1);
-	//m_imageView->setRightSliceCount(rightSliceCount-1);
-	//m_imageView->setFrontSliceCount(frontSliceCount-1);
-
 
 	/*Histogram*/
 
 
 	QRect region = model.getZoomRegion();
-	//m_histogram->setImage(image);
 
-	///TODO::m_histgoramView
-	//m_histogramView->setImage(image);
-
-
-	/*ZoomViwer*/
-	//m_zoomViewer->setImage(image,region);
-	/*There should be a image scale region context to be restored*/
-	//m_sliceViewer->setImage(image,region);
-
-	//m_nestedSliceViewer->setImage(image,region);
-	//m_nestedSliceViewer->setRightImage(model.getOriginalRightSlice(0));
-	//m_nestedSliceViewer->setFrontImage(model.getOriginalFrontSlice(0));
-
-
-	//m_nestedSliceViewer->setMarks(model.getTopSliceMarks(currentSliceIndex));
-
-	/*PixelViewer*/
-	//m_pixelViewer->setImage(image);
-
-	/*Set all widgets enable*/
 	allControlWidgetsEnable(true);
 
 
@@ -259,17 +214,8 @@ void MainWindow::saveMRCDataModel()
 	//Save previous context
 	ItemContext & model = m_mrcDataModels[m_currentContext];
 
-	//int sliceIndex = m_nestedSliceViewer->getZSliceValue();
-	//int sliceIndex = m_imageView->getZSliceValue();
 
 
-	//model.setCurrentSliceIndex(sliceIndex);
-
-	//TODO::m_histogramView
-	//model.setGrayscaleStrechingLowerBound(m_histogramView->getLeftCursorValue());
-	//model.setGrayScaleStrechingUpperBound(m_histogramView->getRightCursorValue());
-
-	//model.setZoomRegion(m_zoomViewer->zoomRegion().toRect());
 }
 
 void MainWindow::deleteMRCDataModel(int index)
@@ -284,170 +230,22 @@ void MainWindow::allControlWidgetsEnable(bool enable)
 }
 
 
-
-void MainWindow::updateGrayThreshold(int lower, int upper)
-{
-	//   size_t width = m_mrcDataModels[m_currentContext].getWidth();
-	//   size_t height = m_mrcDataModels[m_currentContext].getHeight();
-
-	//   //QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalTopSlice(m_nestedSliceViewer->getZSliceValue());
-	//   QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalTopSlice(m_imageView->getZSliceValue());
-
-	   //unsigned char *image = originalImage.bits();
-
-	   //qreal k = 256.0 / static_cast<qreal>(upper - lower);
-	   //QImage strechingImage(width, height, QImage::Format_Grayscale8);
-	   //unsigned char * data = strechingImage.bits();
-	//   for(int j=0;j<height;j++){
-	//       for(int i=0;i<width;i++){
-	//           int index = i+j*width;
-	   //		unsigned char pixelGrayValue = image[index];
-	   //		unsigned char clower = static_cast<unsigned char>(lower);
-	   //		unsigned char cupper = static_cast<unsigned char>(upper);
-	   //		if (pixelGrayValue < clower) {
-	   //			data[index] = 0;
-	   //		}
-	   //		else if (pixelGrayValue>cupper) {
-	   //			data[index] = 255;
-	   //		}
-	   //		else {
-	   //			data[index] = static_cast<unsigned char>(pixelGrayValue* k+0.5);
-	   //		}
-	//       }
-	//   }
-	   //m_sliceViewer->setImage(strechingImage);
-	   //m_mrcDataModels[m_currentContext].setTopSlice(strechingImage,m_nestedSliceViewer->getZSliceValue());
-	   //m_mrcDataModels[m_currentContext].setTopSlice(strechingImage,m_imageView->getZSliceValue());
-}
-/*
- * This function only sets the initial ui layout,
- * and it doesn't set their properties.
-*/
-void MainWindow::_initUI()
-{
-
-}
-/*
- * This function sets all the connections
- * between signal and slot except for the actions'
-*/
-void MainWindow::_connection()
-{
-
-}
-
 void MainWindow::_destroy()
 {
 	//Nothing need to be destroyed
 }
 
-void MainWindow::onMaxGrayValueChanged(int position)
-{
-	//int minv = m_histogram->getMinimumCursorValue();
-	//int maxv = m_histogram->getMaximumCursorValue();
-	int minv = m_histogramView->getLeftCursorValue();
-	int maxv = m_histogramView->getRightCursorValue();
 
-
-	//qDebug()<<minv<<" "<<maxv;
-	updateGrayThreshold(minv, maxv);
-
-	//QRect rect = m_zoomViewer->zoomRegion().toRect();
-
-	/*int slice = m_nestedSliceViewer->getZSliceValue();
-	m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(slice),rect);
-	m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(slice),rect);*/
-
-	//int slice = m_imageView->getZSliceValue();
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
-}
-
-void MainWindow::onMinGrayValueChanged(int position)
-{
-	//int minv = m_histogram->getMinimumCursorValue();
-	//int maxv = m_histogram->getMaximumCursorValue();
-	int minv = m_histogramView->getLeftCursorValue();
-	int maxv = m_histogramView->getRightCursorValue();
-	//qDebug()<<minv<<" "<<maxv;
-	updateGrayThreshold(minv, maxv);
-	//QRect rect = m_zoomViewer->zoomRegion().toRect();
-
-	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()),rect);
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()));
-	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()),rect);
-
-	//int slice = m_imageView->getZSliceValue();
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
-
-}
-
-void MainWindow::onSliceValueChanged(int value)
-{
-}
-
-void MainWindow::onZSliderValueChanged(int value)
-{
-	//QRectF regionf = m_zoomViewer->zoomRegion();
-	//QRect region = QRect(regionf.left(),regionf.top(),regionf.width(),regionf.height());
-	//qDebug() << "onSliceValueChanged(int):" << region;
-	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value),region);
-	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getTopSliceMarks(value));
-	//
-	//m_histogram->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
-
-	//TODO::m_histogramView
-   // m_histogramView->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
-
-
-	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value),region);
-	//m_imageView->setTopImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
-}
-
-void MainWindow::onYSliderValueChanged(int value)
-{
-	//m_nestedSliceViewer->setFrontImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
-}
-
-void MainWindow::onXSliderValueChanged(int value)
-{
-	//m_nestedSliceViewer->setRightImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
-	//m_imageView->setRightImage(m_mrcDataModels[m_currentContext].getOriginalRightSlice(value));
-}
-
-
-void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
-{
-
-}
 
 /*
  *
 */
-void MainWindow::onZoomRegionChanged(const QRectF &region)
-{
-	//int slice = m_nestedSliceViewer->getZSliceValue();
-	//QImage image = m_mrcDataModels[m_currentContext].getTopSlice(slice);
-	//m_nestedSliceViewer->setImage(image,region.toRect());
-}
 
-void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)
-{
-	//int slice = m_nestedSliceViewer->getZSliceValue();
-	//m_mrcDataModels[m_currentContext].addMark(slice,p);
-	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getTopSliceMarks(slice));
-}
 
-void MainWindow::onColorActionTriggered()
-{
-	//qDebug() << "ColorActionTriggered";
-	QColor color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color Selection"));
-	//m_nestedSliceViewer->setMarkColor(color);
-	//m_imageView->setColor(color);
-}
 
-void MainWindow::onSaveActionTriggered()
+
+
+void MainWindow::save()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, QString("Mark Save"),
 		"", QString("Raw Files(*.raw);;MRC Files(*.mrc)"));
@@ -473,7 +271,7 @@ void MainWindow::onSaveActionTriggered()
 	}
 }
 
-void MainWindow::onSaveDataAsActionTriggered()
+void MainWindow::saveAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
 		QStringLiteral("Save Data As"),
@@ -500,6 +298,11 @@ void MainWindow::onTreeViewDoubleClicked(const QModelIndex & index)
 	m_pixelViewer->activateItem(rootItem);
 }
 void MainWindow::createDockWindows()
+{
+
+}
+
+void MainWindow::setupInfo(const QString& text)
 {
 
 }

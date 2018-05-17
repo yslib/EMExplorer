@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     titledsliderwithspinbox.cpp \
     mrcfileinfoviewer.cpp \
     imageviewer.cpp \
-    tinyviewinterface.cpp
+    tinyviewinterface.cpp \
+    profileview.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -49,7 +50,8 @@ HEADERS  += mainwindow.h \
     mrcfileinfoviewer.h \
     imageviewer.h \
     tinyviewinterface.h \
-    CImg.h
+    CImg.h \
+    profileview.h
 
 FORMS    += mainwindow.ui
 

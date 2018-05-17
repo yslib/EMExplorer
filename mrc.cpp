@@ -70,7 +70,7 @@ MRC::MRC(const MRC & otherMRC, void * data)
 	m_header = otherMRC.m_header;
 	_init();
 	_allocate();
-	memcpy(m_mrcData, data, m_mrcDataSize * sizeof(unsigned char));
+    memcpy(m_mrcData, data, m_mrcDataSize * sizeof(unsigned char));
 
 	m_header.mode = MRC_MODE_BYTE;
 
@@ -125,11 +125,14 @@ MRC & MRC::operator=(MRC &&rhs)noexcept
     return *this;
 }
 
-MRC MRC::fromData(unsigned char * data, int width, int height, int slice)
+
+MRC MRC::fromData(void* data, int width, int height, int slice, DataType type)
 {
-    assert(false);
+	assert(false);
 	return MRC();
 }
+
+
 
 MRC MRC::fromMRC(const MRC & otherMRC,unsigned char * data)
 {
@@ -386,17 +389,16 @@ bool MRC::_readDataFromFile(FILE *fp)
         if(MRC_MODE_BYTE == m_header.mode){
             int readCount = fread(m_mrcData,sizeof(unsigned char),m_mrcDataSize,fp);
             if(readCount != m_mrcDataSize){
-                //QMessageBox::critical(nullptr,tr("Reading Error"),tr("Can not read file.\n"),
-                                      //QMessageBox::Ok,QMessageBox::Ok);
+                std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
                 noError =false;
             }
 
         }else if(MRC_MODE_FLOAT == m_header.mode){
-            float * buffer = new float[m_mrcDataSize*sizeof(float)];
-            int readCount = fread(buffer,sizeof(float),m_mrcDataSize,fp);
+            //float * buffer = new float[m_mrcDataSize*sizeof(float)];
+            std::unique_ptr<float[]> buffer(new float[m_mrcDataSize*sizeof(float)]);
+            int readCount = fread(buffer.get(),sizeof(float),m_mrcDataSize,fp);
             if(readCount != m_mrcDataSize){
-                //QMessageBox::critical(nullptr,tr("Reading Error"),tr("Can not read file.\n"),
-                //                      QMessageBox::Ok,QMessageBox::Ok);
+                std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
                 noError = false;
             }
             if(true == noError){
@@ -408,9 +410,9 @@ bool MRC::_readDataFromFile(FILE *fp)
                     m_mrcData[i] = static_cast<unsigned char>(k*buffer[i]);
                 }
             }
-            delete[] buffer;
+            //delete[] buffer;
         }else{
-            //QMessageBox::critical(nullptr,tr("Format Error"),tr("Unsupported Format"),QMessageBox::Ok,QMessageBox::Ok);
+            std::cerr<<"Only float and byte type are supported now.";
             return false;
         }
     }
@@ -421,7 +423,7 @@ bool MRC::_readDataFromFile(FILE *fp)
 void MRC::_reset()
 {
 	m_fileName = "";
-    _destroy();
+    //_destroy();
     bool m_opened = false;
     m_mrcDataSize = 0;
 }

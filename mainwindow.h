@@ -32,7 +32,8 @@ struct MRCContext{
 
 };
 
-
+class QTableView;
+class QStandardItemModel;
 class Histogram;
 class HistogramViewer;
 class SliceViewer;
@@ -52,64 +53,37 @@ public:
     ~MainWindow();
 
 private slots:
-
-
-    void onActionOpenTriggered();
-    void onMRCFilesComboBoxIndexActivated(int index);
-
-    void onMaxGrayValueChanged(int position);
-    void onMinGrayValueChanged(int position);
-    void onSliceValueChanged(int value);
-
-	void onZSliderValueChanged(int value);
-	void onYSliderValueChanged(int value);
-	void onXSliderValueChanged(int value);
-
-    //void onZoomValueChanged(int value);
-    void onZoomDoubleSpinBoxValueChanged(double d);
-
-    void onZoomRegionChanged(const QRectF &region);
-	void onSliceViewerDrawingFinished(const QPicture & p);
-	void onColorActionTriggered();
-	void onSaveActionTriggered();
-    void onSaveDataAsActionTriggered();
-
+    void open();
+	void save();
+    void saveAs();
 
 	void onTreeViewDoubleClicked(const QModelIndex & index);
-
 private:
     Ui::MainWindow *ui;
     int m_currentContext;
     QVector<MRCContext> m_mrcs;
 	QVector<ItemContext> m_mrcDataModels;
-private:
-    static constexpr int ZOOM_SLIDER_MAX_VALUE=100;
-private:		//ui
 
-	QLabel * m_mrcFileLabel;
-	QComboBox * m_mrcFileCBox;
-    MRCFileInfoViewer * m_fileInfoViewer;
+	QComboBox * m_filesComboBox;
+	QTableView * m_infoView;
+	QVector<QAbstractItemModel *> m_infoModels;
 
 	QTreeView * m_treeView;
 	DataItemModel * m_treeViewModel;
-
-	//NestedSliceViewer *m_nestedSliceViewer;
-
-    //Histogram * m_histogram;
     HistogramViewer * m_histogramView;
-	//ZoomViwer * m_zoomViewer;
     PixelViewer * m_pixelViewer;
-	//actions
-
     QAction * m_actionColor;
     QAction * m_actionOpen;
     //test
-    //ImageViewer * m_imageViewer;
     ImageView * m_imageView;
 private:
     void createActions();
+
     void createStatusBar();
+
     void createDockWindows();
+
+	void setupInfo(const QString & text);
 
 	void addMRCDataModel(const ItemContext & model);
 	void addMRCDataModel(ItemContext && model);
@@ -117,9 +91,6 @@ private:
 	void saveMRCDataModel();
     void deleteMRCDataModel(int index);
     void allControlWidgetsEnable(bool enable);
-    void updateGrayThreshold(int minGray,int maxGray);
-    void _initUI();
-	void _connection();
     void _destroy();
 };
 

@@ -6,6 +6,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <memory>
+#include <functional>
 
 
 /*
@@ -366,15 +368,19 @@ public:
 	MRC& operator=(const MRC & rhs);
 	MRC& operator=(MRC && rhs)noexcept;
 public:
-	static MRC fromData(unsigned char * data, int width, int height, int slice);
+	static MRC fromData(std::shared_ptr<unsigned char> data, int width, int height, int slice, DataType type = MRC::DataType::Byte8);
+	static MRC fromData(void * data, int width, int height, int slice,DataType type = MRC::DataType::Byte8);
+
     static MRC fromMRC(const MRC & otherMRC, unsigned char *data);
+	static MRC fromMRC(const MRC & other, std::shared_ptr<unsigned char> data);
+
 	bool open(const std::string & fileName);
 	bool save(const std::string & fileName, MRC::Format format = Format::MRC);
 	bool isOpened()const;
 
 	int getWidth()const;           //first dimension
 	int getHeight()const;          //second dimension
-	int getSliceCount()const;          //third dimension
+    int getSliceCount()const;          //third dimension  z-axis
 
 
 	std::string getFileName()const { return m_fileName; }
@@ -387,24 +393,22 @@ public:
 private:            
     std::string m_fileName;
     MRCHeader m_header;
-    unsigned char *m_mrcData;
+    unsigned char* m_mrcData;
+
+	std::shared_ptr<void> m_d;
+
     size_t m_mrcDataSize;
     bool m_opened;
 private:
     MRC(const std::string & fileName,bool opened):m_fileName(fileName),m_mrcData{nullptr},m_opened{opened},m_mrcDataSize{0}{}
-
-
 	void _nversion_Field(int year, int version = 0);	
 	void _dmin_dmax_dmean_rms_Field();
-
     bool _mrcHeaderRead(FILE *fp,MRCHeader * header);
 	bool _mrcHeaderWrite(FILE * fp, MRCHeader * header);
 	void _createMRCHeader();
 	void _updateMRCHeader();
-
     std::string _getMRCHeaderInfo(const MRCHeader *header)const;
     bool _readDataFromFile(FILE * fp);
-
     void _reset();
     bool _init();
     bool _allocate();
