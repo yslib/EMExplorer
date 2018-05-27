@@ -24,10 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	//File menu
 	QMenu *m_fileMenu = menuBar()->addMenu(tr("File"));
 	QAction *m_openFileAction = m_fileMenu->addAction("Open..");
-	connect(m_openFileAction, SIGNAL(triggered()), this, SLOT(onActionOpenTriggered()));
+	connect(m_openFileAction, &QAction::triggered, this, &MainWindow::open);
 
 	QAction *m_saveDataAsAction = m_fileMenu->addAction("Save As..");
-	connect(m_saveDataAsAction, SIGNAL(triggered()), this, SLOT(onSaveDataAsActionTriggered()));
+	connect(m_saveDataAsAction, &QAction::triggered, this, &MainWindow::save);
 
 	//View menu
 	QMenu * viewMenu = menuBar()->addMenu(tr("View"));
@@ -78,8 +78,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	//connect(m_histogramView,SIGNAL(minValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
 	//connect(m_histogramView,SIGNAL(maxValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
 
-
-
 	//Test ImageView
 	m_imageView = new ImageView(this);
 	m_imageView->setModel(m_treeViewModel);
@@ -102,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_actionOpen->setText(tr("Open"));
 	QToolBar * toolBar = addToolBar(tr("Tools"));
 	toolBar->addAction(m_actionOpen);
-	connect(m_actionOpen, SIGNAL(triggered()), this, SLOT(onActionOpenTriggered()));
+	connect(m_actionOpen, &QAction::triggered, this, &MainWindow::open);
 	connect(m_imageView, SIGNAL(zSliceSelected(const QPoint &)), m_pixelViewer, SLOT(setPosition(const QPoint &)));
 
 	//color action
@@ -116,13 +114,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	QAction * actionSaveMark = new QAction(this);
 	actionSaveMark->setText(QStringLiteral("Save Mark"));
 	toolBar->addAction(actionSaveMark);
-	connect(actionSaveMark, SIGNAL(triggered()), this, SLOT(onSaveActionTriggered()));
+	connect(actionSaveMark, SIGNAL(triggered()), this, SLOT(save()));
 
 	//save data as action
 	QAction * actionSaveDataAs = new QAction(this);
 	actionSaveDataAs->setText(QStringLiteral("Save Data As"));
 	toolBar->addAction(actionSaveDataAs);
-	connect(actionSaveDataAs, SIGNAL(triggered()), this, SLOT(onSaveDataAsActionTriggered()));
+	connect(actionSaveDataAs, SIGNAL(triggered()), this, SLOT(saveAs()));
 
 	//Status bar
 

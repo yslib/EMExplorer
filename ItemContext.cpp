@@ -278,6 +278,11 @@ QImage ItemContext::getOriginalRightSlice(int index) const
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
 	auto data = m_mrcFile.data<unsigned char>();
+	if(data == nullptr)
+	{
+		qCritical() << "Format error\n";
+		return QImage();
+	}
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < slice; j++)

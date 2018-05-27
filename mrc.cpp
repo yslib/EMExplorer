@@ -394,7 +394,8 @@ bool MRC::_readDataFromFile(FILE *fp)
 		const size_t elemSize = typeSize(type());
 
 		//transform into byte8 type
-		MRCDataPrivate * d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
+		this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
+
 
         if(MRC_MODE_BYTE == m_header.mode){
             const int readCount = fread(m_d->data,elemSize,dataCount,fp);

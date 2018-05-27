@@ -348,6 +348,7 @@ public:     //Type Definition
 		}
 		MRCDataPrivate & operator=(const MRCDataPrivate & other) = delete;
 		MRCDataPrivate & operator=(MRCDataPrivate && other) = delete;
+		
 
 		static MRCDataPrivate * create(void * data)
 		{
@@ -360,8 +361,8 @@ public:     //Type Definition
 		}
 		static MRCDataPrivate * create(int width, int height, int slice, size_t elemSize)
 		{
-			MRCDataPrivate * d = nullptr;
-			d = new MRCDataPrivate;
+			MRCDataPrivate *d = nullptr;
+			d= new MRCDataPrivate ;
 			d->own = true;			//own the data
 			++d->ref;
 			d->data = malloc(width*height*slice*elemSize);
