@@ -36,6 +36,10 @@ private:
 private:
 	static const int s_width = 50;
 	static const int s_height = 20;
+	static const int s_top = 0;
+	static const int s_bottom = 0;
+	static const int s_left = 0;
+	static const int s_right = 0;
 
 
 	QModelIndex getDataIndex(const QModelIndex & itemIndex);
@@ -45,7 +49,7 @@ private:
 
 
     QImage m_image;
-    QVector<QSharedPointer<QPushButton>> m_pixelLabels;
+    QVector<QSharedPointer<QLineEdit>> m_pixelLabels;
     QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;
     QVector<QSharedPointer<QLabel>> m_rowHeadersLabels;
     QSharedPointer<QLabel> m_cornerLabel;

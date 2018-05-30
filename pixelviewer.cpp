@@ -1,6 +1,7 @@
 #include "pixelviewer.h"
 #include <QVector>
 #include <QVariant>
+#include <QLineEdit>
 
 PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & image ):
     m_width(width),m_height(height),m_image(image),m_model(nullptr),
@@ -11,6 +12,17 @@ PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & im
     //setLayout(layout);
     //init layout
 	//resize(500, 500);
+	//cornel label
+
+	//setStyleSheet(QString("border:1px solid red"));
+
+	m_cornerLabel.reset(new QLabel(this), &QObject::deleteLater);
+	m_cornerLabel->setText(QString("..."));
+	m_cornerLabel->setAlignment(Qt::AlignCenter);
+	m_cornerLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	m_cornerLabel->resize(s_width,s_height);
+	//m_cornerLabel->setStyleSheet(QString("border:1px solid red"));
+	m_cornerLabel->setContentsMargins(0, 0, 0, 0);
     changeLayout(size());
 }
 
@@ -88,7 +100,6 @@ void PixelViewer::setPosition(const QPoint &p)
 
 void PixelViewer::resizeEvent(QResizeEvent* event)
 {
-	qDebug() << "PixelViwer reisze event"<<event->size();
 	changeLayout(size());
 }
 void PixelViewer::changeLayout(QSize areaSize)
@@ -96,7 +107,7 @@ void PixelViewer::changeLayout(QSize areaSize)
 	calcCount(areaSize);
 
 	int horizontalCount = m_width,verticalCount = m_height;
-	qDebug() << m_width << " " << m_height;
+	//qDebug() << m_width << " " << m_height;
     //set old index invalid
     m_minValueIndex = -1;
     m_maxValueIndex = -1;
@@ -104,19 +115,17 @@ void PixelViewer::changeLayout(QSize areaSize)
     m_pixelLabels.clear();
     for(int i=0;i<verticalCount;i++){
         for(int j=0;j<horizontalCount;j++){
-            QSharedPointer<QPushButton> sharedPtr(new QPushButton(this),&QObject::deleteLater);
+            QSharedPointer<QLineEdit> sharedPtr(new QLineEdit(this),&QObject::deleteLater);
             sharedPtr->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+			sharedPtr->setReadOnly(true);
+			sharedPtr->setAlignment(Qt::AlignCenter);
             m_pixelLabels.push_back(sharedPtr);
 
             //layout->addWidget(m_pixelLabels.back().data(),1+i,1+j);
 			setWidget(m_pixelLabels.back().data(), 1 + i, 1 + j);
         }
     }
-    //cornel label
-    m_cornerLabel.reset(new QLabel(this),&QObject::deleteLater);
-    m_cornerLabel->setText(QString("..."));
-    m_cornerLabel->setAlignment(Qt::AlignCenter);
-    m_cornerLabel->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+
 
     //layout->addWidget(m_cornerLabel.data(),0,0);
 	setWidget(m_cornerLabel.data(), 0, 0);
@@ -132,7 +141,6 @@ void PixelViewer::changeLayout(QSize areaSize)
 
         //layout->addWidget(ptr.data(),0,i+1);
 		setWidget(ptr.data(), 0, i + 1);
-
         m_columnHeadersLabels.push_back(ptr);
     }
     m_rowHeadersLabels.clear();
@@ -144,9 +152,9 @@ void PixelViewer::changeLayout(QSize areaSize)
 
         //layout->addWidget(ptr.data(),i+1,0);
 		setWidget(ptr.data(), i + 1, 0);
-
         m_rowHeadersLabels.push_back(ptr);
     }
+	//qDebug() << m_cornerLabel->size();
     changeValue(m_image,m_pos);
 }
 
@@ -201,10 +209,10 @@ void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
         m_maxValueIndex = maxValueIndex;
 
         //update headers
-        for(int i = startColumn;i<startColumn+m_height;i++){
+        for(int i = startColumn;i<startColumn+m_width;i++){
             m_columnHeadersLabels[i-startColumn]->setText(QString::number(i));
         }
-        for(int i=startRow;i<startRow+m_width;i++){
+        for(int i=startRow;i<startRow+m_height;i++){
             m_rowHeadersLabels[i-startRow]->setText(QString::number(i));
         }
     }
@@ -213,25 +221,29 @@ void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
  void PixelViewer::calcCount(QSize areaSize)
 {
 	QSize size = areaSize;
-	QSize pixelHolderSize = QSize(s_width, s_height);
-	m_width = qRound(static_cast<double>(size.width()) / pixelHolderSize.width())-1;
-	m_height = qRound(static_cast<double>(size.height()) / pixelHolderSize.height())-1;
+	QSize pixelHolderSize = QSize(s_width+s_left+s_right, s_height+s_top+s_bottom);
+	//Q_ASSERT_X(m_cornerLabel.data() != nullptr, "PixelViewer::calcCount", "nullptr");
+
+
+	m_width = (static_cast<double>(size.width()) / pixelHolderSize.width())-1;
+	m_height = (static_cast<double>(size.height()) / pixelHolderSize.height())-1;
 	if (m_width < 0)m_width = 0;
 	if (m_height < 0)m_height = 0;
+	qDebug() << m_width << " " << m_height << " " << areaSize;
 }
 
  void PixelViewer::setWidget(QWidget * widget, int ypos, int xpos)
  {
-	 int top = 0, bottom=0, left=0, right=0;
 	 int width = widget->size().width();
 	 int height = widget->size().height();
 
-	 QPoint topLeft((left+width+right)*xpos+top,(top+height+bottom)*ypos+left);
+	 QPoint topLeft((s_left+s_width+s_right)*xpos+s_left,(s_top+s_height+s_bottom)*ypos+s_top);
 	 QRect rect(topLeft,QSize(s_width,s_height));
+	 qDebug() << xpos << " " << ypos << " " << rect;
+	 widget->setContentsMargins(s_left,s_top,s_right,s_bottom);
 	 widget->setParent(this);
 	 widget->setGeometry(rect);
 	 widget->show();
-
  }
 
 QModelIndex PixelViewer::getDataIndex(const QModelIndex & itemIndex)

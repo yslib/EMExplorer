@@ -73,7 +73,10 @@ QImage ItemContext::getOriginalTopSlice(int index) const
 {
 	int width = m_mrcFile.getWidth();
 	int height = m_mrcFile.getHeight();
-	return QImage(m_mrcFile.data<unsigned char>() + index * width*height, width, height, QImage::Format_Grayscale8);
+	unsigned char * d = m_mrcFile.data<unsigned char>();
+	Q_ASSERT_X(d != nullptr, "ItemContext::getOriginalTopSlice", "type convertion error");
+	return QImage(d+index * width*height, width, height, QImage::Format_Grayscale8);
+
 }
 
 bool ItemContext::save(const QString & fileName, ItemContext::DataFormat formate)

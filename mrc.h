@@ -355,7 +355,7 @@ public:     //Type Definition
 			MRCDataPrivate * d = nullptr;
 			d = new MRCDataPrivate;
 			d->own = false;			//shared data;
-			++d->ref;
+			d->ref = 1;
 			d->data = data;
 			return d;
 		}
@@ -364,7 +364,7 @@ public:     //Type Definition
 			MRCDataPrivate *d = nullptr;
 			d= new MRCDataPrivate ;
 			d->own = true;			//own the data
-			++d->ref;
+			d->ref = 1;
 			d->data = malloc(width*height*slice*elemSize);
 			return d;
 		}
@@ -449,7 +449,7 @@ T* MRC::data() const
 	switch (type())
 	{
 	case DataType::Integer8:
-		canConvert = std::is_same<T, MRCInt8>::value;
+		canConvert = std::is_same<T, MRCInt8>::value || std::is_same<T,MRCUInt8>::value;
 		break;
 	case DataType::Integer16:
 		canConvert = std::is_same<T, MRCInt16>::value;
