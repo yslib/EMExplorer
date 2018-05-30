@@ -280,6 +280,7 @@ private:
 	//------
 
 	QGridLayout *m_layout;
+
 	GraphicsView * m_view;
 	//GraphicsScene * m_scene;
 

@@ -1,9 +1,5 @@
 #include <QRect>
 #include <QDockWidget>
-#include <QColorDialog>
-#include <QMenu>
-#include <QAction>
-#include <QTreeView>
 #include <qglobal.h>
 #include <QMessageBox>
 #include <QTableView>
@@ -11,6 +7,7 @@
 #include "imageviewer.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "profileview.h"
 
 QSize imageSize(500, 500);
 
@@ -56,21 +53,22 @@ MainWindow::MainWindow(QWidget *parent) :
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());
 
-	m_filesComboBox = new QComboBox(this);
-	dock = new QDockWidget(QStringLiteral("Files:"), this);
-	dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	dock->setWidget(m_filesComboBox);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-	connect(m_filesComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index)
-	{
-		m_infoView->setModel(m_infoModels.value(index));
-	});
 
-	m_infoView = new QTableView(this);
+	//m_filesComboBox = new QComboBox(this);
+	//dock = new QDockWidget(QStringLiteral("Files:"), this);
+	//dock->setAllowedAreas(Qt::RightDockWidgetArea);
+	//dock->setWidget(m_filesComboBox);
+	//addDockWidget(Qt::RightDockWidgetArea, dock);
+	//viewMenu->addAction(dock->toggleViewAction());
+	//connect(m_filesComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index)
+	//{
+	//	m_infoView->setModel(m_infoModels.value(index));
+	//});
+
+	m_profileView = new ProfileView(this);
 	dock = new QDockWidget(QStringLiteral("Profile:"), this);
 	dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	dock->setWidget(m_infoView);
+	dock->setWidget(m_profileView);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());
 
@@ -303,4 +301,29 @@ void MainWindow::createDockWindows()
 void MainWindow::setupInfo(const QString& text)
 {
 
+}
+
+QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
+{
+	QAbstractTableModel * model = nullptr;
+	model = new MRCInfoTableModel(mrc.propertyCount(), 2, this);
+	for(int i=0;i<mrc.propertyCount();i++)
+	{
+		model->setData(model->index(i,0),QVariant::fromValue(QString::fromStdString(mrc.propertyName(i))));
+		MRC::DataType type = mrc.propertyType(i);
+		QVariant value;
+		if(type == MRC::DataType::Integer32)
+		{
+			value.setValue(mrc.property<MRC::MRCInt32>(i));
+		}else if(type == MRC::DataType::Real32)
+		{
+			value.setValue(mrc.property<MRC::MRCFloat>(i));
+		}else if(type == MRC::DataType::Integer8)
+		{
+			value.setValue(mrc.property<MRC::MRCInt8>(i));
+		}
+		model->setData(model->index(i, 1), value);
+	}
+
+	return model;
 }

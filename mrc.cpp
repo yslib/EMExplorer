@@ -131,7 +131,7 @@ bool MRC::save(const std::string & fileName, MRC::Format format)
 		std::cerr << "Cannot create file\n";
 		return false;
 	}
-	size_t elemSize = typeSize(type());
+	size_t elemSize = typeSize(dataType());
 	size_t dataCount = m_header.nx*m_header.ny*m_header.nz;
 	if (format == Format::MRC) {
 		_mrcHeaderWrite(fp, &m_header);
@@ -175,6 +175,91 @@ int MRC::getSliceCount() const
 {
     return m_header.nz;
 }
+
+int MRC::propertyCount() const
+{
+	return 32;
+}
+
+std::string MRC::propertyName(int index)const
+{
+	static const char *name[] = 
+	{
+		"NX:",
+		"NY:",
+		"NZ:",
+		"MODE:", 
+		"NX START:" ,
+		"NY START:" ,
+		"NZ START:" ,
+		"MX:" ,
+		"MY:" ,
+		"MZ:",
+		"XLEN:" ,
+		"YLEN:",
+		"ZLEN:",
+		"Alpha:",
+		"Beta:",
+		"Gamma:",
+		"mapc:",
+		"mapr:",
+		"mapr:",
+		"dmin:",
+		"dmax:",
+		"dmean:",
+		"ispg:",
+		"nysmbt:",
+		"ExtTyp0:",
+		"ExtTyp1:",
+		"ExtTyp2:",
+		"ExtTyp3:",
+		"nVersion:",
+		"xorg:",
+		"yorg:",
+		"zorg:" 
+	};
+	return std::string(name[index]);
+}
+MRC::DataType MRC::propertyType(int index)const
+{
+	static const DataType types[] = {
+		DataType::Integer32,		//x
+		DataType::Integer32,		//y
+		DataType::Integer32,		//z
+		DataType::Integer32,		//mode
+		DataType::Integer32,		//x start
+		DataType::Integer32,		//y start
+		DataType::Integer32,		//z start
+		DataType::Integer32,		//mx
+		DataType::Integer32,		//my
+		DataType::Integer32,		//mz
+		DataType::Integer32,		//xlen
+		DataType::Integer32,		//ylen
+		DataType::Integer32,		//zlen
+		DataType::Real32,			//alpha
+		DataType::Real32,			//beta
+		DataType::Real32,			//gamma
+		DataType::Integer32,		//mapc
+		DataType::Integer32,		//mapr
+		DataType::Integer32,		//maps
+		DataType::Real32,			//dmin
+		DataType::Real32,			//dmax
+		DataType::Real32,			//dmean
+		DataType::Integer32,		//ispg
+		DataType::Integer32,		//nysmbt
+		DataType::Integer8,			//exttyp0
+		DataType::Integer8,			//1
+		DataType::Integer8,			//2
+		DataType::Integer8,			//3
+		DataType::Integer32,		//nversion
+		DataType::Real32,			//xorg
+		DataType::Real32,			//yorg
+		DataType::Real32,			//zorg
+	};		
+
+	return types[index];
+}
+
 //const unsigned char *MRC::data() const
 //{
 //	return m_d->data;
@@ -187,7 +272,7 @@ int MRC::getSliceCount() const
 //                );
 //}
 
-MRC::DataType MRC::type() const
+MRC::DataType MRC::dataType() const
 {
 	switch (m_header.mode)
 	{
@@ -260,7 +345,7 @@ bool MRC::_mrcHeaderRead(FILE * fp, MRCHeader *hd)
     if(fp == nullptr)return false;
     rewind(fp);
 
-    unsigned char hdBuffer[MRC_HEADER_SIZE];
+    //unsigned char hdBuffer[MRC_HEADER_SIZE];
     int elemSize = 0;
     elemSize = fread(hdBuffer,sizeof(unsigned char),MRC_HEADER_SIZE,fp);
     if(elemSize != MRC_HEADER_SIZE){
@@ -391,7 +476,7 @@ bool MRC::_readDataFromFile(FILE *fp)
         fseek(fp,MRC_HEADER_SIZE,SEEK_SET);
 
 		const size_t dataCount = m_header.nx*m_header.ny*m_header.nz;
-		const size_t elemSize = typeSize(type());
+		const size_t elemSize = typeSize(dataType());
 
 		//transform into byte8 type
 		this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));

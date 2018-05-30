@@ -43,6 +43,7 @@ class MRCFileInfoViewer;
 class ImageView;
 
 class QTreeView;
+class ProfileView;
 
 class MainWindow : public QMainWindow
 {
@@ -64,26 +65,29 @@ private:
     QVector<MRCContext> m_mrcs;
 	QVector<ItemContext> m_mrcDataModels;
 
-	QComboBox * m_filesComboBox;
-	QTableView * m_infoView;
-	QVector<QAbstractItemModel *> m_infoModels;
+	//QComboBox * m_filesComboBox;
+	//QTableView * m_infoView;
+	//QVector<QAbstractItemModel *> m_infoModels;
 
 	QTreeView * m_treeView;
 	DataItemModel * m_treeViewModel;
+
     HistogramViewer * m_histogramView;
     PixelViewer * m_pixelViewer;
+
     QAction * m_actionColor;
     QAction * m_actionOpen;
     //test
     ImageView * m_imageView;
+	
+	ProfileView * m_profileView;
 private:
     void createActions();
-
     void createStatusBar();
-
     void createDockWindows();
-
 	void setupInfo(const QString & text);
+
+	QAbstractTableModel * setupProfileModel(const MRC & mrc);
 
 	void addMRCDataModel(const ItemContext & model);
 	void addMRCDataModel(ItemContext && model);

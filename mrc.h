@@ -6,6 +6,7 @@
 #include <functional>
 #include <atomic>
 #include <qlist.h>
+#include <tuple>
 
 
 /*
@@ -164,7 +165,7 @@
 class MRC
 {
 
-private:
+public:
 	using MRCInt32 = int;
 	using MRCFloat = float;
 	using MRCInt16 = short;
@@ -175,6 +176,28 @@ private:
 	using MRCUInt8 = unsigned char;
 	using MRCSizeType = size_t;
 
+	typedef struct  /*complex floating number*/
+	{
+		MRCFloat a;
+		MRCFloat b;
+
+	} MRCComplexFloat;
+
+	typedef struct  /*complex short number*/
+	{
+		MRCInt16 a;
+		MRCInt16 b;
+
+	} MRCComplexShort;
+
+
+	enum class Format { MRC, RAW };
+
+	enum class ImageDimensionType { SingleImage, ImageStack };
+	enum class VolumeDimensionType { SingleVolume, VolumeStack };
+	enum class DataType { Integer8, Integer16, Integer32, Real32, Complex16, Complex32 };
+
+private:
 	struct MRCHeader
 	{
 		MRCInt32   nx;         /*  # of Columns                  */
@@ -309,30 +332,18 @@ private:
 		//      char *userData;
 	};
 
-
-	typedef struct  /*complex floating number*/
-	{
-		MRCFloat a;
-		MRCFloat b;
-
-	} MRCComplexFloat;
-
-	typedef struct  /*complex short number*/
-	{
-		MRCInt16 a;
-		MRCInt16 b;
-
-	} MRCComplexShort;
-
-
 	/*The MRC Header is MRC2014 Version. Reading
 	http://www.ccpem.ac.uk/mrc_format/mrc2014.php for more details*/
-public:     //Type Definition
-	enum class Format { MRC, RAW };
 
-	enum class ImageDimensionType { SingleImage, ImageStack };
-	enum class VolumeDimensionType { SingleVolume, VolumeStack };
-	enum class DataType { Integer8, Integer16, Integer32, Real32, Complex16, Complex32 };
+	
+
+
+    //Type Definition
+
+
+	//static constexpr  std::tuple<std::string, DataType,int> tables[] = {{"asdf",DataType::Integer32,32},{}};
+
+
 
 	struct MRCDataPrivate
 	{
@@ -348,7 +359,6 @@ public:     //Type Definition
 		}
 		MRCDataPrivate & operator=(const MRCDataPrivate & other) = delete;
 		MRCDataPrivate & operator=(MRCDataPrivate && other) = delete;
-		
 
 		static MRCDataPrivate * create(void * data)
 		{
@@ -362,7 +372,7 @@ public:     //Type Definition
 		static MRCDataPrivate * create(int width, int height, int slice, size_t elemSize)
 		{
 			MRCDataPrivate *d = nullptr;
-			d= new MRCDataPrivate ;
+			d = new MRCDataPrivate;
 			d->own = true;			//own the data
 			d->ref = 1;
 			d->data = malloc(width*height*slice*elemSize);
@@ -410,16 +420,25 @@ public:
 	int getHeight()const;          //second dimension
 	int getSliceCount()const;          //third dimension  z-axis
 
+	int propertyCount()const;
+	std::string propertyName(int index)const;
+	DataType propertyType(int index)const;
+	template<typename T> T property(int index)const;
+
+
+
 	//const unsigned char * data()const;
 	//unsigned char * data();
 
 	template<typename T>
 	T * data()const;
-	DataType type()const;
+	DataType dataType()const;
 	std::string getMRCInfo()const;
 	virtual ~MRC()noexcept;
 private:
 	MRCHeader m_header;
+	unsigned char hdBuffer[MRC_HEADER_SIZE];
+
 	MRCDataPrivate* m_d;
 	bool m_opened;
 private:
@@ -442,14 +461,55 @@ private:
 	//void _destroy();
 };
 
+template<typename T>
+inline T MRC::property(int index)const
+{
+	static const int offset[] = {
+	 NX_OFFSET,
+	 NY_OFFSET,
+	 NZ_OFFSET,
+	 MODE_OFFSET,
+	 NXSTART_OFFSET,
+	 NYSTART_OFFSET,
+	 NZSTART_OFFSET,
+	 MX_OFFSET,
+	 MY_OFFSET,
+	 MZ_OFFSET,
+	 XLEN_OFFSET,
+	 YLEN_OFFSET,
+	 ZLEN_OFFSET,
+	 ALPHA_OFFSET,
+	 BETA_OFFSET,
+	 GAMMA_OFFSET,
+	 MAPC_OFFSET,
+	 MAPR_OFFSET,
+	 MAPS_OFFSET,
+	 DMIN_OFFSET,
+	 DMAX_OFFSET,
+	 DMEAN_OFFSET,
+	 ISPG_OFFSET,
+	 NSYMBT_OFFSET,
+	 EXTTYP_OFFSET,
+	 EXTTYP_OFFSET + 1,
+	 EXTTYP_OFFSET + 2,
+	 EXTTYP_OFFSET + 3,
+	 NVERSION_OFFSET,
+	 XORIGIN_OFFSET,
+	 YORIGIN_OFFSET,
+	 ZORIGIN_OFFSET
+	};
+	T * d = ((T*)(hdBuffer + offset[index]));
+	return *d;
+}
+
 template <typename T>
 T* MRC::data() const
 {
 	bool canConvert;
-	switch (type())
+	switch (dataType())
 	{
 	case DataType::Integer8:
-		canConvert = std::is_same<T, MRCInt8>::value || std::is_same<T,MRCUInt8>::value;
+		canConvert = std::is_same<T, MRCInt8>::value || std::is_same<T, MRCUInt8>::value;
 		break;
 	case DataType::Integer16:
 		canConvert = std::is_same<T, MRCInt16>::value;

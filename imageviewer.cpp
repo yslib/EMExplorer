@@ -140,7 +140,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QScrollArea(parent), m_factor(1.0), 
 	m_layout->addWidget(m_rightImageLabel, 0, 1);
 	m_layout->addWidget(m_frontImageLabel, 1, 0);
 
-	//m_layout->setSizeConstraint(QLayout::SetFixedSize);
+	//layout->setSizeConstraint(QLayout::SetFixedSize);
 	setVisible(false);
 	setBackgroundRole(QPalette::Dark);
 	setFocusPolicy(Qt::ClickFocus);
