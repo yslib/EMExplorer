@@ -24,6 +24,9 @@ class QGraphicsSceneWheelEvent;
 class QAbstractItemModel;
 class QGraphicsItem;
 class QToolBar;
+class QMenu;
+class QGroupBox;
+class QToolButton;
 QT_END_NAMESPACE
 
 class TitledSliderWithSpinBox;
@@ -197,7 +200,7 @@ private:
 	void setFrontImage(const QImage & image);
 
 	Q_OBJECT
-		GraphicsScene *m_scene;
+	GraphicsScene *m_scene;
 	qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
@@ -249,7 +252,7 @@ private:
 	QModelIndex getDataIndex(const QModelIndex & itemIndex);
 	void updateModel();
 	//
-	void createActions();
+	void createToolBar();
 	void updateActions();
 
 	void sliceChanged(int value, SliceType type);
@@ -281,27 +284,36 @@ private:
 	//GraphicsScene * m_scene;
 
 	QToolBar * m_toolBar;
+	
 	SliceItem * m_topSlice;
+
 	TitledSliderWithSpinBox * m_topSlider;
+	QAction *m_topSlicePlayAction;
 	SliceItem * m_rightSlice;
 	TitledSliderWithSpinBox * m_rightSlider;
+	QAction *m_rightSlicePlayAction;
 	SliceItem * m_frontSlice;
 	TitledSliderWithSpinBox * m_frontSlider;
+	QAction *m_frontSlicePlayAction;
 
 	//actions
 	QAction *m_markAction;
 	QAction *m_colorAction;
-
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
+	QToolButton * m_menuButton;
 
-	QAction *m_topSlicePlayAction;
+	//menu
+	QMenu * m_menu;
+	QAction * m_histDlg;
+
+	
 	Direction m_topSlicePlayDirection;
 	int m_topTimerId;
-	QAction *m_rightSlicePlayAction;
+	
 	Direction m_rightSlicePlayDirection;
 	int m_rightTimerId;
-	QAction *m_frontSlicePlayAction;
+	
 	Direction m_frontSlicePlayDirection;
 	int m_frontTimerId;
 

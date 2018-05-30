@@ -17,7 +17,9 @@
 #include <cassert>
 #include <algorithm>
 #include <complex>
-
+#include <QButtonGroup>
+#include <QMenu>
+#include <QToolButton>
 
 bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
 {
@@ -236,9 +238,9 @@ void ImageViewer::paintLine(const QPoint &begin, const QPoint &end, QPaintDevice
 //     return QObject::event(event);
 //}
 
-void ImageView::createActions()
+void ImageView::createToolBar()
 {
-	//createActions()
+	//createToolBar()
 	m_topSlicePlayAction = new QAction(tr("Play"), this);
 	m_topSlicePlayAction->setCheckable(true);
 	m_rightSlicePlayAction = new QAction(tr("Play"), this);
@@ -257,14 +259,28 @@ void ImageView::createActions()
 	m_layout->addWidget(m_toolBar, 0, 0);
 	m_toolBar->addWidget(m_topSlider);
 	m_toolBar->addAction(m_topSlicePlayAction);
+	m_toolBar->addSeparator();
 	m_toolBar->addWidget(m_rightSlider);
 	m_toolBar->addAction(m_rightSlicePlayAction);
+	m_toolBar->addSeparator();
 	m_toolBar->addWidget(m_frontSlider);
 	m_toolBar->addAction(m_frontSlicePlayAction);
+	m_toolBar->addSeparator();
 	m_toolBar->addAction(m_colorAction);
 	m_toolBar->addAction(m_markAction);
 	m_toolBar->addAction(m_zoomInAction);
 	m_toolBar->addAction(m_zoomOutAction);
+
+	m_menu = new QMenu(this);
+	m_menuButton = new QToolButton(this);
+	m_menuButton->setText(QStringLiteral("Options"));
+	m_menuButton->setPopupMode(QToolButton::MenuButtonPopup);
+	m_menuButton->setMenu(m_menu);
+	m_toolBar->addSeparator();
+	m_toolBar->addWidget(m_menuButton);
+
+	m_histDlg = m_menu->addAction(QStringLiteral("Histogram..."));
+
 
 	connect(m_markAction, SIGNAL(triggered(bool)), m_view, SLOT(paintEnable(bool)));
 	connect(m_topSlicePlayAction, SIGNAL(triggered(bool)), this, SLOT(onTopSliceTimer(bool)));
@@ -281,6 +297,15 @@ void ImageView::createActions()
 		double factor = std::pow(1.125, -1);
 		m_view->scale(factor, factor);
 	});
+
+	connect(m_histDlg, &QAction::triggered, []()
+	{
+		///TODO::open histogram dialog
+
+
+	});
+
+
 	updateActions();
 }
 
@@ -365,7 +390,14 @@ ImageView::ImageView(QWidget *parent) :
 		}
 	});
 	//action
-	createActions();
+	createToolBar();
+
+
+	//m_topGroup = new QGroupBox(QStringLiteral("Top"), this);
+	
+	//m_rightGroup = new QGroupBox(QStringLiteral("Right"), this);
+	//m_frontGroup = new QGroupBox(QStringLiteral("Front"), this);
+
 
 	setLayout(m_layout);
 }
@@ -594,6 +626,7 @@ void ImageView::setEnabled(bool enable)
 	m_frontSlicePlayAction->setEnabled(enable);
 	m_topSlicePlayAction->setEnabled(enable);
 	m_rightSlicePlayAction->setEnabled(enable);
+	m_menuButton->setEnabled(enable);
 }
 
 //
