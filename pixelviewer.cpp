@@ -3,7 +3,7 @@
 #include <QVariant>
 #include <QLineEdit>
 
-PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & image ):
+PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & image):
     m_width(width),m_height(height),m_image(image),m_model(nullptr),
     QWidget(parent)
 {
@@ -23,7 +23,7 @@ PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & im
 	m_cornerLabel->resize(s_width,s_height);
 	//m_cornerLabel->setStyleSheet(QString("border:1px solid red"));
 	m_cornerLabel->setContentsMargins(0, 0, 0, 0);
-    changeLayout(size());
+	resize(360, 150);
 }
 
 void PixelViewer::setWidth(int width)

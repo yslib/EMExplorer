@@ -33,6 +33,9 @@ QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class ItemContext;
 class DataItemModel;
+class HistogramViewer;
+class PixelViewer;
+
 
 
 enum class SliceType
@@ -156,20 +159,13 @@ class GraphicsView :public QGraphicsView
 
 public:
 	GraphicsView(QWidget * parent = nullptr);
-
-
-
 	void setMarks(const QList<QGraphicsItem *> & items, SliceType type);
 	public slots:
 	void paintEnable(bool enable) { m_paint = enable; }
 	void moveEnable(bool enable) { m_moveble = enable; }
 	void setImage(const QImage & image, SliceType type);
-
 	void setColor(const QColor & color) { m_color = color; }
-
 	void clearSliceMarks(SliceType tpye);
-
-
 protected:
 	void mousePressEvent(QMouseEvent * event)override;
 	void mouseMoveEvent(QMouseEvent * event)override;
@@ -186,6 +182,7 @@ signals:
 	//void ySliceMarkAdded(QGraphicsItem * item);
 	//void xSliceMarkAdded(QGraphicsItem * item);
 	void markAdded(QGraphicsItem * item, SliceType type);
+
 private:
 
 	void clearTopSliceMarks();
@@ -201,6 +198,9 @@ private:
 	void setRightImage(const QImage &image);
 	void setFrontImage(const QImage & image);
 
+	void createContextMenu();
+	void createDialog();
+
 	Q_OBJECT
 	GraphicsScene *m_scene;
 	qreal m_scaleFactor;
@@ -214,6 +214,19 @@ private:
 	SliceItem * m_topSlice;
 	SliceItem * m_rightSlice;
 	SliceItem * m_frontSlice;
+
+
+	//ContextMenu
+	QMenu *m_contextMenu;
+	QAction * m_zoomIn;
+	QAction * m_zoomOut;
+	QAction * m_histDlgAction;
+	QAction * m_pixelViewDlgAction;
+	QAction * m_marksManagerDlgAction;
+
+	//Dialog
+	HistogramViewer * m_histDlg;
+	PixelViewer * m_pixelViewDlg;
 
 };
 class ImageView :public QWidget
@@ -287,7 +300,6 @@ private:
 	QAbstractItemModel * m_model;
 	QModelIndex m_modelIndex;
 	QSharedPointer<ItemContext> m_ptr;
-
 	bool m_internalUpdate;
 	//------
 
@@ -297,12 +309,9 @@ private:
     GraphicsView * m_rightView;
     GraphicsView * m_frontView;
 
-	//GraphicsScene * m_scene;
 
+	//Tool Bar
 	QToolBar * m_toolBar;
-	
-    //SliceItem * m_topSlice;
-
     //widgets on toolbar
 	TitledSliderWithSpinBox * m_topSlider;
     QAction *m_topSlicePlayAction;

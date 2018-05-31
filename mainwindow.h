@@ -69,11 +69,11 @@ private:
 	//QTableView * m_infoView;
 	//QVector<QAbstractItemModel *> m_infoModels;
 
-	QTreeView * m_treeView;
+	//QTreeView * m_treeView;
 	DataItemModel * m_treeViewModel;
 
-    HistogramViewer * m_histogramView;
-    PixelViewer * m_pixelViewer;
+    //HistogramViewer * m_histogramView;
+    //PixelViewer * m_pixelViewer;
 
     QAction * m_actionColor;
     QAction * m_actionOpen;

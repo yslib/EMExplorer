@@ -2,6 +2,7 @@
 #include "titledsliderwithspinbox.h"
 #include "histogram.h"
 #include "ItemContext.h"
+#include "pixelviewer.h"
 /*Qt Headers*/
 #include <QToolBar>
 #include <QLabel>
@@ -13,11 +14,9 @@
 #include <QGraphicsPixmapItem>
 #include <QPolygon>
 #include <QColorDialog>
-#include <QPicture>
 #include <cassert>
 #include <algorithm>
 #include <complex>
-#include <QButtonGroup>
 #include <QMenu>
 #include <QToolButton>
 #include <QCheckBox>
@@ -311,9 +310,21 @@ void ImageView::createToolBar()
 
     });
 
-    //connect(m_topSliceCheckBox,&QCheckBox::toggled,[this](bool toggle){m_topSlider->setEnabled(toggle);});
-    //connect(m_rightSliceCheckBox,&QCheckBox::toggled,[this](bool toggle){m_rightSlider->setEnabled(toggle);});
-    //connect(m_frontSliceCheckBox,&QCheckBox::toggled,[this](bool toggle){m_frontSlider->setEnabled(toggle);});
+    connect(m_topSliceCheckBox,&QCheckBox::toggled,[this](bool toggle)
+    {
+	    m_topSlider->setEnabled(toggle);
+		m_view->setHidden(!toggle);
+    });
+    connect(m_rightSliceCheckBox,&QCheckBox::toggled,[this](bool toggle)
+    {
+	    m_rightSlider->setEnabled(toggle);
+		m_rightView->setHidden(!toggle);
+    });
+    connect(m_frontSliceCheckBox,&QCheckBox::toggled,[this](bool toggle)
+    {
+	    m_frontSlider->setEnabled(toggle);
+		m_frontView->setHidden(!toggle);
+    });
 
     connect(pixelViewDlgAction,&QAction::triggered,[](){
         ///TODO::open pixel view dialog
@@ -342,9 +353,15 @@ ImageView::ImageView(QWidget *parent) :
 	//layout
 	m_layout = new QGridLayout(this);
 	//QGraphicsView
-	m_view = new GraphicsView(this);
+	m_view = new GraphicsView;
     m_rightView = new GraphicsView;
     m_frontView = new GraphicsView;
+	//m_view->resize(500, 500);
+	//m_rightView->resize(50, 500);
+	//m_frontView->resize(500, 50);
+	m_layout->setSizeConstraint(QLayout::SetFixedSize);
+	//m_layout->setColumnStretch(0, 5);
+	//m_layout->setColumnStretch(1,1);
     m_layout->addWidget(m_view, 1, 0,1,1,Qt::AlignCenter);
     m_layout->addWidget(m_rightView,1,1,1,1,Qt::AlignCenter);
     m_layout->addWidget(m_frontView,2,0,1,1,Qt::AlignCenter);
@@ -467,11 +484,25 @@ void ImageView::resetSliceAndVisibleMarks(SliceType type)
 {
 	if (m_ptr.isNull() == true)
 		return;
+	GraphicsView * view = nullptr;
+	switch (type)
+	{
+	case SliceType::SliceZ:
+		view = m_view;
+		break;
+	case SliceType::SliceY:
+		view = m_rightView;
+		break;
+	case SliceType::SliceX:
+		view = m_frontView;
+		break;
+	default:
+		Q_ASSERT_X(false, "ImageView::resetSliceAndVisibleMarks", "SliceType error.");
+	}
 	int index = currentIndex(type);
-	m_view->setImage(m_ptr->slice(index,type), type);
-	m_view->clearSliceMarks(type);
-
-	m_view->setMarks(m_ptr->visibleSliceMarks(index, type), type);
+	view->setImage(m_ptr->slice(index,type), SliceType::SliceZ);
+	view->clearSliceMarks(SliceType::SliceZ);
+	view->setMarks(m_ptr->visibleSliceMarks(index, type), SliceType::SliceZ);
 }
 
 //void ImageView::setFrontSliceVisibleMarks()
@@ -643,11 +674,11 @@ void ImageView::setEnabled(bool enable)
     m_frontView->setEnabled(enable);
 
     m_topSliceCheckBox->setEnabled(enable);
-	m_topSlider->setEnabled(enable);
+	m_topSlider->setEnabled(m_topSliceCheckBox->checkState()&&enable);
     m_rightSliceCheckBox->setEnabled(enable);
-    m_frontSlider->setEnabled(enable);
+    m_frontSlider->setEnabled(m_frontSliceCheckBox->checkState()&&enable);
     m_frontSliceCheckBox->setEnabled(enable);
-	m_rightSlider->setEnabled(enable);
+	m_rightSlider->setEnabled(m_rightSliceCheckBox->checkState()&&enable);
 
 	m_colorAction->setEnabled(enable);
 	m_markAction->setEnabled(enable);
@@ -860,6 +891,11 @@ m_frontSlice(nullptr)
 	m_scene = new GraphicsScene(this);
 	setScene(m_scene);
 	scale(m_scaleFactor, m_scaleFactor);
+
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	createContextMenu();
+	createDialog();
+	connect(this, &GraphicsView::customContextMenuRequested, [this](const QPoint&pos) {m_contextMenu->exec(this->mapToGlobal(pos)); });
 }
 
 void GraphicsView::setMarks(const QList<QGraphicsItem*>& items, SliceType type)
@@ -1179,6 +1215,44 @@ void GraphicsView::setFrontImage(const QImage & image)
 	QSize size = m_topSlice->pixmap().size();
 	m_frontSlice->setPos(m_topSlice->pos() + QPointF(0, size.height() + 40));
 }
+
+void GraphicsView::createContextMenu()
+{
+	m_contextMenu = new QMenu(this);
+	m_zoomIn = new QAction(QStringLiteral("Zoom In"), this);
+	m_zoomOut = new QAction(QStringLiteral("Zoom Out"), this);
+
+	m_histDlgAction = new QAction(QStringLiteral("Histgoram..."), this);
+
+	m_pixelViewDlgAction = new QAction(QStringLiteral("Pixel View..."), this);
+	m_marksManagerDlgAction = new QAction(QStringLiteral("Marks..."), this);
+
+	connect(m_histDlgAction, &QAction::triggered, [this]()
+	{
+		if(m_histDlg->isVisible() == false)
+		{
+			m_histDlg->show();
+		}
+	});
+	connect(m_pixelViewDlgAction, &QAction::triggered, [this](){if(m_pixelViewDlg->isVisible() == false)m_pixelViewDlg->show();});
+
+	m_contextMenu->addAction(m_zoomIn);
+	m_contextMenu->addAction(m_zoomOut);
+	m_contextMenu->addSeparator();
+	m_contextMenu->addAction(m_histDlgAction);
+	m_contextMenu->addAction(m_pixelViewDlgAction);
+	m_contextMenu->addAction(m_marksManagerDlgAction);
+}
+
+void GraphicsView::createDialog()
+{
+	m_histDlg = new HistogramViewer(this);
+	//m_histDlg->setAttribute(Qt::WA_ShowModal, true);
+	m_histDlg->setWindowFlag(Qt::Window);
+	m_pixelViewDlg = new PixelViewer(this);
+	m_pixelViewDlg->setWindowFlag(Qt::Window);
+}
+
 
 void GraphicsView::clearTopSliceMarks()
 {

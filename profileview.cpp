@@ -13,13 +13,13 @@ ProfileView::ProfileView(QWidget* parent): QWidget(parent)
 	m_tableView = new QTableView;
 
 	QGroupBox * listGroup = new QGroupBox;
-	listGroup->setTitle(QStringLiteral("Files:"));
+	listGroup->setTitle(QStringLiteral("Explorer"));
 	QGridLayout * listLayout = new QGridLayout;
 	listLayout->addWidget(m_listWidget, 0, 0);
 	listGroup->setLayout(listLayout);
 
 	QGroupBox * tableGroup = new QGroupBox;
-	tableGroup->setTitle(QStringLiteral("Information:"));
+	tableGroup->setTitle(QStringLiteral("Details"));
 	QGridLayout * tableLayout = new QGridLayout;
 	tableLayout->addWidget(m_tableView, 0, 0);
 	tableGroup->setLayout(tableLayout);

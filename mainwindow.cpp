@@ -30,28 +30,29 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMenu * viewMenu = menuBar()->addMenu(tr("View"));
 
 	
-
-	m_treeView = new QTreeView(this);
-	QDockWidget *dock = new QDockWidget(tr("File Information View"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	dock->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-	m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
+	QDockWidget *dock;
+	//m_treeView = new QTreeView(this);
+	//dock = new QDockWidget(tr("File Information View"), this);
+	//dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	//dock->setWidget(m_treeView);
+	//addDockWidget(Qt::LeftDockWidgetArea, dock);
+	//viewMenu->addAction(dock->toggleViewAction());
+	//m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
 
 	m_treeViewModel = new DataItemModel(QString(), this);
-	connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
-	m_treeView->setModel(m_treeViewModel);
+	///TODO::
+	//connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
+	//m_treeView->setModel(m_treeViewModel);
 	
 
 	
-	m_histogramView = new HistogramViewer(this);
-	m_histogramView->setModel(m_treeViewModel);
-	dock = new QDockWidget(tr("Histgoram"), this);
-	dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	dock->setWidget(m_histogramView);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
+	//m_histogramView = new HistogramViewer(this);
+	//m_histogramView->setModel(m_treeViewModel);
+	//dock = new QDockWidget(tr("Histgoram"), this);
+	//dock->setAllowedAreas(Qt::RightDockWidgetArea);
+	//dock->setWidget(m_histogramView);
+	//addDockWidget(Qt::RightDockWidgetArea, dock);
+	//viewMenu->addAction(dock->toggleViewAction());
 
 
 	//m_filesComboBox = new QComboBox(this);
@@ -84,13 +85,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 	//pixel viewer dock widget
-	m_pixelViewer = new PixelViewer(this);
-	dock = new QDockWidget(tr("PixelViewer"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	dock->setWidget(m_pixelViewer);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-	m_pixelViewer->setModel(m_treeViewModel);
+	//m_pixelViewer = new PixelViewer(this);
+	//dock = new QDockWidget(tr("PixelViewer"), this);
+	//dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+	//dock->setWidget(m_pixelViewer);
+	//addDockWidget(Qt::LeftDockWidgetArea, dock);
+	//viewMenu->addAction(dock->toggleViewAction());
+	//m_pixelViewer->setModel(m_treeViewModel);
 
 	//ToolBar and Actions [3]
 	//open action
@@ -99,7 +100,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QToolBar * toolBar = addToolBar(tr("Tools"));
 	toolBar->addAction(m_actionOpen);
 	connect(m_actionOpen, &QAction::triggered, this, &MainWindow::open);
-	connect(m_imageView, SIGNAL(zSliceSelected(const QPoint &)), m_pixelViewer, SLOT(setPosition(const QPoint &)));
+
+	///TODO::
+	//connect(m_imageView, SIGNAL(zSliceSelected(const QPoint &)), m_pixelViewer, SLOT(setPosition(const QPoint &)));
 
 	//color action
 	m_actionColor = new QAction(this);
@@ -293,9 +296,9 @@ void MainWindow::onTreeViewDoubleClicked(const QModelIndex & index)
 	QModelIndex rootItem = index;
 	while ((parent = m_treeViewModel->parent(rootItem)).isValid())
 		rootItem = parent;
-	m_histogramView->activateItem(rootItem);
+	//m_histogramView->activateItem(rootItem);
 	m_imageView->activateItem(rootItem);
-	m_pixelViewer->activateItem(rootItem);
+	//m_pixelViewer->activateItem(rootItem);
 }
 void MainWindow::createDockWindows()
 {
