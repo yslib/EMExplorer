@@ -141,6 +141,10 @@ void MainWindow::open()
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
 	QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
 	m_treeViewModel->addItem(sharedItem);
+
+    auto model = setupProfileModel(sharedItem->getMRCFile());
+    m_profileView->addModel(fileName,model);
+
 }
 
 
@@ -309,7 +313,8 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 	model = new MRCInfoTableModel(mrc.propertyCount(), 2, this);
 	for(int i=0;i<mrc.propertyCount();i++)
 	{
-		model->setData(model->index(i,0),QVariant::fromValue(QString::fromStdString(mrc.propertyName(i))));
+        model->setData(model->index(i,0),QVariant::fromValue(QString::fromStdString(mrc.propertyName(i))),Qt::DisplayRole);
+        qDebug()<<QString::fromStdString(mrc.propertyName(i));
 		MRC::DataType type = mrc.propertyType(i);
 		QVariant value;
 		if(type == MRC::DataType::Integer32)
@@ -322,7 +327,8 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 		{
 			value.setValue(mrc.property<MRC::MRCInt8>(i));
 		}
-		model->setData(model->index(i, 1), value);
+        qDebug()<<value;
+        model->setData(model->index(i, 1), value,Qt::DisplayRole);
 	}
 
 	return model;

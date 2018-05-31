@@ -28,19 +28,19 @@ PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & im
 
 void PixelViewer::setWidth(int width)
 {
-    if(m_width != width){
-        m_width = width;
+    //if(m_width != width){
+    //    m_width = width;
         //changeLayout(m_width,m_height,QSize(s_width,s_height));
-    }
+    //}
 }
 
 void PixelViewer::setHeight(int height)
 {
 	
-    if(m_height != height){
-        m_height = height;
+    //if(m_height != height){
+    //    m_height = height;
         //changeLayout(m_width,m_height,QSize(s_width,s_height));
-    }
+    //}
 }
 
 void PixelViewer::setImage(const QImage &image)

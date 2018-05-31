@@ -27,6 +27,7 @@ class QToolBar;
 class QMenu;
 class QGroupBox;
 class QToolButton;
+class QCheckBox;
 QT_END_NAMESPACE
 
 class TitledSliderWithSpinBox;
@@ -192,6 +193,7 @@ private:
 	void clearFrontSliceMarks();
 
 	void setTopSliceMarks(const QList<QGraphicsItem*> & items);
+
 	void setRightSliceMarks(const QList<QGraphicsItem*> & items);
 	void setFrontSliceMarks(const QList<QGraphicsItem*> & items);
 
@@ -208,6 +210,7 @@ private:
 	bool m_moveble;
 	QPointF m_prevScenePoint;
 	QColor m_color;
+
 	SliceItem * m_topSlice;
 	SliceItem * m_rightSlice;
 	SliceItem * m_frontSlice;
@@ -223,8 +226,18 @@ public:
 	int getYSliceValue()const;
 	int getXSliceValue()const;
 
+    int setZXliceViewEnable(bool enable);
+    int setYXliceViewEnable(bool enable);
+    int setXXliceViewEnable(bool enable);
+
+    void setSliceModel();
+    void setMarkModel(QAbstractItemModel * model);
+    QAbstractItemModel * getMarkModel();
+
+
 	void setModel(DataItemModel * model);
 	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+
 	void activateItem(const QModelIndex & index);
 
 
@@ -263,7 +276,6 @@ private:
 
 	int currentIndex(SliceType type);
 	void resetSliceAndVisibleMarks(SliceType type);
-
 	void addMarkToModel(QGraphicsItem * mark, SliceType type);
 
 	enum class Direction {
@@ -282,36 +294,42 @@ private:
 	QGridLayout *m_layout;
 
 	GraphicsView * m_view;
+    GraphicsView * m_rightView;
+    GraphicsView * m_frontView;
+
 	//GraphicsScene * m_scene;
 
 	QToolBar * m_toolBar;
 	
-	SliceItem * m_topSlice;
+    //SliceItem * m_topSlice;
 
+    //widgets on toolbar
 	TitledSliderWithSpinBox * m_topSlider;
-	QAction *m_topSlicePlayAction;
-	SliceItem * m_rightSlice;
+    QAction *m_topSlicePlayAction;
+    QCheckBox * m_topSliceCheckBox;
+    SliceItem * m_rightSlice;
+    QCheckBox * m_rightSliceCheckBox;
 	TitledSliderWithSpinBox * m_rightSlider;
 	QAction *m_rightSlicePlayAction;
-	SliceItem * m_frontSlice;
+    SliceItem * m_frontSlice;
+    QCheckBox * m_frontSliceCheckBox;
 	TitledSliderWithSpinBox * m_frontSlider;
 	QAction *m_frontSlicePlayAction;
 
-	//actions
+    //actions on toolbar
 	QAction *m_markAction;
 	QAction *m_colorAction;
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
 	QToolButton * m_menuButton;
 
-	//menu
+    //menu on toolbar
 	QMenu * m_menu;
 	QAction * m_histDlg;
 
-	
 	Direction m_topSlicePlayDirection;
-	int m_topTimerId;
-	
+    int m_topTimerId;
+
 	Direction m_rightSlicePlayDirection;
 	int m_rightTimerId;
 	

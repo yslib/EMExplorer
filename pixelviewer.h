@@ -19,6 +19,7 @@ public:
     void setHeight(int height);
     void setImage(const QImage & image);
 
+
 	//model interface
 	void setModel(DataItemModel * model);
 	void activateItem(const QModelIndex & index);

@@ -28,6 +28,7 @@ public:
     int getMaximumCursorValue()const;
     int getBinCount()const;
     void setDragEnable(bool enable);
+
 public slots:
     void setLeftCursorValue(int value);
     void setRightCursorValue(int value);

@@ -20,6 +20,7 @@
 #include <QButtonGroup>
 #include <QMenu>
 #include <QToolButton>
+#include <QCheckBox>
 
 bool ImageViewer::eventFilter(QObject *obj, QEvent *event)
 {
@@ -256,13 +257,16 @@ void ImageView::createToolBar()
 
 	//tool bar
 	m_toolBar = new QToolBar(this);
-	m_layout->addWidget(m_toolBar, 0, 0);
+    m_layout->addWidget(m_toolBar, 0, 0,1,2);
+    m_toolBar->addWidget(m_topSliceCheckBox);
 	m_toolBar->addWidget(m_topSlider);
 	m_toolBar->addAction(m_topSlicePlayAction);
-	m_toolBar->addSeparator();
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(m_rightSliceCheckBox);
 	m_toolBar->addWidget(m_rightSlider);
 	m_toolBar->addAction(m_rightSlicePlayAction);
-	m_toolBar->addSeparator();
+    m_toolBar->addSeparator();
+    m_toolBar->addWidget(m_frontSliceCheckBox);
 	m_toolBar->addWidget(m_frontSlider);
 	m_toolBar->addAction(m_frontSlicePlayAction);
 	m_toolBar->addSeparator();
@@ -279,7 +283,10 @@ void ImageView::createToolBar()
 	m_toolBar->addSeparator();
 	m_toolBar->addWidget(m_menuButton);
 
-	m_histDlg = m_menu->addAction(QStringLiteral("Histogram..."));
+    m_histDlg = m_menu->addAction(QStringLiteral("Histogram..."));
+
+    QAction * pixelViewDlgAction = m_menu->addAction(QStringLiteral("PixelView ..."));
+
 
 
 	connect(m_markAction, SIGNAL(triggered(bool)), m_view, SLOT(paintEnable(bool)));
@@ -300,11 +307,21 @@ void ImageView::createToolBar()
 
 	connect(m_histDlg, &QAction::triggered, []()
 	{
-		///TODO::open histogram dialog
+        ///TODO::open histogram dialog
 
+    });
 
-	});
+    //connect(m_topSliceCheckBox,&QCheckBox::toggled,[this](bool toggle){m_topSlider->setEnabled(toggle);});
+    //connect(m_rightSliceCheckBox,&QCheckBox::toggled,[this](bool toggle){m_rightSlider->setEnabled(toggle);});
+    //connect(m_frontSliceCheckBox,&QCheckBox::toggled,[this](bool toggle){m_frontSlider->setEnabled(toggle);});
 
+    connect(pixelViewDlgAction,&QAction::triggered,[](){
+        ///TODO::open pixel view dialog
+
+    });
+    connect(pixelViewDlgAction,&QAction::triggered,[](){
+        ///TODO:: marks manager
+    });
 
 	updateActions();
 }
@@ -317,7 +334,7 @@ void ImageView::updateActions()
 
 ImageView::ImageView(QWidget *parent) :
 	QWidget(parent),
-	m_topSlice(nullptr),
+    //m_topSlice(nullptr),
 	m_rightSlice(nullptr),
 	m_frontSlice(nullptr),
 	m_model(nullptr)
@@ -326,12 +343,20 @@ ImageView::ImageView(QWidget *parent) :
 	m_layout = new QGridLayout(this);
 	//QGraphicsView
 	m_view = new GraphicsView(this);
-	m_layout->addWidget(m_view, 1, 0);
+    m_rightView = new GraphicsView;
+    m_frontView = new GraphicsView;
+    m_layout->addWidget(m_view, 1, 0,1,1,Qt::AlignCenter);
+    m_layout->addWidget(m_rightView,1,1,1,1,Qt::AlignCenter);
+    m_layout->addWidget(m_frontView,2,0,1,1,Qt::AlignCenter);
 	//m_view->setScene(m_scene);
 
 	//sliders
+
+    m_topSliceCheckBox = new QCheckBox;
 	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
+    m_rightSliceCheckBox = new QCheckBox;
 	m_rightSlider = new TitledSliderWithSpinBox(this, tr("X:"));
+    m_frontSliceCheckBox = new QCheckBox;
 	m_frontSlider = new TitledSliderWithSpinBox(this, tr("Y:"));
 
 	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged,[=](int value){emit sliderChanged(value, SliceType::SliceZ);});
@@ -614,8 +639,14 @@ void ImageView::activateItem(const QModelIndex & index)
 void ImageView::setEnabled(bool enable)
 {
 	m_view->setEnabled(enable);
+    m_rightView->setEnabled(enable);
+    m_frontView->setEnabled(enable);
+
+    m_topSliceCheckBox->setEnabled(enable);
 	m_topSlider->setEnabled(enable);
-	m_frontSlider->setEnabled(enable);
+    m_rightSliceCheckBox->setEnabled(enable);
+    m_frontSlider->setEnabled(enable);
+    m_frontSliceCheckBox->setEnabled(enable);
 	m_rightSlider->setEnabled(enable);
 
 	m_colorAction->setEnabled(enable);

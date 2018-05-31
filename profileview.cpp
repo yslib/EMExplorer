@@ -37,8 +37,7 @@ ProfileView::ProfileView(QWidget* parent): QWidget(parent)
 
 	connect(m_listWidget, &QListWidget::itemDoubleClicked, [](QListWidgetItem * item)
 	{
-		auto d = item->data(Qt::DisplayRole);
-		qDebug() << d;
+
 	});
 	setLayout(layout);
 }
@@ -47,6 +46,7 @@ void ProfileView::addModel(const QString & text, QAbstractTableModel * model)
 {
 	m_hash[text] = model;
 	m_listWidget->addItem(text);
+    m_tableView->setModel(model);
 }
 
 MRCInfoTableModel::MRCInfoTableModel(int row,int column,QObject* parent):
@@ -90,5 +90,21 @@ bool MRCInfoTableModel::setData(const QModelIndex& index, const QVariant& value,
 	if (row < 0 || row >= m_rowCount || column < 0 || column >= m_columnCount)
 		return false;
 	m_data[row][column] = value;
-	return true;
+    return true;
+}
+
+QVariant MRCInfoTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(role != Qt::DisplayRole)
+        return QVariant();
+    if(orientation == Qt::Horizontal){
+        if(section == 0){
+            return QVariant::fromValue(QString("Property"));
+        }else if(section == 1){
+            return QVariant::fromValue(QString("Value"));
+        }
+
+    }else if(orientation == Qt::Vertical){
+        return QVariant::fromValue(QString::number(section));
+    }
 }
