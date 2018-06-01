@@ -102,6 +102,14 @@ void PixelViewer::resizeEvent(QResizeEvent* event)
 {
 	changeLayout(size());
 }
+
+void PixelViewer::closeEvent(QCloseEvent* event)
+{
+	//qDebug()<<disconnect();
+	//TODO:: disconnect all signals with setPosition(const QPoint & pos)
+	event->accept();
+}
+
 void PixelViewer::changeLayout(QSize areaSize)
 {
 	calcCount(areaSize);

@@ -31,18 +31,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	
 	QDockWidget *dock;
-	//m_treeView = new QTreeView(this);
-	//dock = new QDockWidget(tr("File Information View"), this);
-	//dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	//dock->setWidget(m_treeView);
-	//addDockWidget(Qt::LeftDockWidgetArea, dock);
-	//viewMenu->addAction(dock->toggleViewAction());
-	//m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
+	m_treeView = new QTreeView(this);
+	dock = new QDockWidget(tr("File Information View"), this);
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	dock->setWidget(m_treeView);
+	addDockWidget(Qt::LeftDockWidgetArea, dock);
+	viewMenu->addAction(dock->toggleViewAction());
+	m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
 
 	m_treeViewModel = new DataItemModel(QString(), this);
 	///TODO::
-	//connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
-	//m_treeView->setModel(m_treeViewModel);
+	connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
+	m_treeView->setModel(m_treeViewModel);
 	
 
 	

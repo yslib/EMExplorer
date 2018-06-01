@@ -9,8 +9,6 @@
 #include <QGraphicsItem>
 #include <QSharedPointer>
 #include <QModelIndex>
-//#include "ItemContext.h"
-
 
 QT_BEGIN_NAMESPACE
 class QGridLayout;
@@ -35,6 +33,7 @@ class ItemContext;
 class DataItemModel;
 class HistogramViewer;
 class PixelViewer;
+class MRC;
 
 
 
@@ -155,54 +154,62 @@ protected:
 };
 class GraphicsView :public QGraphicsView
 {
-
-
 public:
 	GraphicsView(QWidget * parent = nullptr);
-	void setMarks(const QList<QGraphicsItem *> & items, SliceType type);
+	void setMarks(const QList<QGraphicsItem *> & items, SliceType type = SliceType::SliceZ);
 	public slots:
 	void paintEnable(bool enable) { m_paint = enable; }
 	void moveEnable(bool enable) { m_moveble = enable; }
-	void setImage(const QImage & image, SliceType type);
+	void setImage(const QImage & image, SliceType type = SliceType::SliceZ);
 	void setColor(const QColor & color) { m_color = color; }
-	void clearSliceMarks(SliceType tpye);
+	void clearSliceMarks(SliceType tpye = SliceType::SliceZ);
 protected:
-	void mousePressEvent(QMouseEvent * event)override;
-	void mouseMoveEvent(QMouseEvent * event)override;
-	void mouseReleaseEvent(QMouseEvent * event)override;
-	void wheelEvent(QWheelEvent * event)override;
+	void mousePressEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
+	void mouseMoveEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
+	void mouseReleaseEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
+	void wheelEvent(QWheelEvent * event)Q_DECL_OVERRIDE;
 
 signals:
 	void zSliceSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
-
-	void slicedSelected(const QPoint & point, SliceType type);
+	void slicedSelected(const QPoint & point, SliceType type = SliceType::SliceZ);
 	//void zSliceMarkAdded(QGraphicsItem * item);
 	//void ySliceMarkAdded(QGraphicsItem * item);
 	//void xSliceMarkAdded(QGraphicsItem * item);
-	void markAdded(QGraphicsItem * item, SliceType type);
+	void markAdded(QGraphicsItem * item, SliceType type = SliceType::SliceZ);
 
 private:
-
 	void clearTopSliceMarks();
+
+	//TODO::
 	void clearRightSliceMarks();
 	void clearFrontSliceMarks();
+	//===========
 
 	void setTopSliceMarks(const QList<QGraphicsItem*> & items);
 
+	//TODO::
 	void setRightSliceMarks(const QList<QGraphicsItem*> & items);
 	void setFrontSliceMarks(const QList<QGraphicsItem*> & items);
+	//============
 
 	void setTopImage(const QImage &image);
+
+	//TODO::
 	void setRightImage(const QImage &image);
 	void setFrontImage(const QImage & image);
+	//============
+
+	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
+	void clearSliceMarksHelper(SliceItem * sliceItem);
+	void setMarksHelper(SliceItem * sliceItem,const QList<QGraphicsItem*>& items);
 
 	void createContextMenu();
 	void createDialog();
 
 	Q_OBJECT
-	GraphicsScene *m_scene;
+	//GraphicsScene *m_scene;
 	qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
@@ -214,7 +221,7 @@ private:
 	SliceItem * m_topSlice;
 	SliceItem * m_rightSlice;
 	SliceItem * m_frontSlice;
-
+	QImage  m_topImage;
 
 	//ContextMenu
 	QMenu *m_contextMenu;
@@ -229,6 +236,39 @@ private:
 	PixelViewer * m_pixelViewDlg;
 
 };
+
+class AbstractSliceDataModel
+{
+public:
+	AbstractSliceDataModel();
+	virtual int topSliceCount()const = 0;
+	virtual int rightSliceCount()const = 0;
+	virtual int frontSliceCount()const = 0;
+	virtual QImage originalTopSlice(int index) const =0;
+	virtual QImage originalRightSlice(int index) const =0;
+	virtual QImage originalFrontSlice(int index) const =0;
+
+    virtual void setTopSlice(const QImage& image, int index);
+    virtual void setRightSlice(const QImage& image, int index);
+    virtual void setFrontSlice(const QImage& image, int index);
+
+	virtual QImage topSlice(int index)const;
+	virtual QImage rightSlice(int index)const;
+	virtual QImage frontSlice(int index)const;
+private:
+
+	//inline void setSliceHelper(const QImage & image,int index,QVector<QImage> * imgVec,QVector<bool> * flgVec);
+	//inline QImage sliceHelper(int index, QVector<QImage> * imgVec, QVector<bool> * flgVec);
+
+    QVector<QImage> m_modifiedTopSlice;
+    QVector<bool> m_modifiedTopSliceFlags;
+    QVector<QImage> m_modifiedRightSlice;
+    QVector<bool> m_modifiedRightSliceFlags;
+    QVector<QImage> m_modifiedFrontSlice;
+    QVector<bool> m_modifiedFrontSliceFlags;
+};
+
+
 class ImageView :public QWidget
 {
 	Q_OBJECT
@@ -239,18 +279,14 @@ public:
 	int getYSliceValue()const;
 	int getXSliceValue()const;
 
-    int setZXliceViewEnable(bool enable);
-    int setYXliceViewEnable(bool enable);
-    int setXXliceViewEnable(bool enable);
-
-    void setSliceModel();
+	///TODO::
+    void setSliceModel(AbstractSliceDataModel * model);
     void setMarkModel(QAbstractItemModel * model);
     QAbstractItemModel * getMarkModel();
 
-
+	//TODO:: the three functions will be removed in the future
 	void setModel(DataItemModel * model);
 	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-
 	void activateItem(const QModelIndex & index);
 
 
@@ -259,13 +295,10 @@ signals:
 	//void YSliderChanged(int value);
 	//void XSliderChanged(int value);
 	void sliderChanged(int value, SliceType type);
-	void zSliceSelected(const QPoint & point);
+	void slicePositionSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
-
-	void sliceSeletecd(const QPoint & point,SliceType type);
-
-
+	//void sliceSeletecd(const QPoint & point,SliceType type);
 public slots:
 	void setEnabled(bool enable);
 	void onTopSliceTimer(bool enable);
@@ -277,10 +310,13 @@ protected:
 private:
 	QModelIndex getDataIndex(const QModelIndex & itemIndex);
 	void updateModel();
-	//
+
+
+	//----
+	void updateSliceModel();
+
 	void createToolBar();
 	void updateActions();
-
 	void sliceChanged(int value, SliceType type);
 
 	void setTopSliceCount(int value);
@@ -289,27 +325,26 @@ private:
 
 	int currentIndex(SliceType type);
 	void resetSliceAndVisibleMarks(SliceType type);
-	void addMarkToModel(QGraphicsItem * mark, SliceType type);
+
 
 	enum class Direction {
 		Forward,
 		Backward
 	};
-
-	//Model
+	//Data Model
+	AbstractSliceDataModel * m_sliceModel;
+	QAbstractItemModel * m_markModel;
 	QAbstractItemModel * m_model;
+
+	//-----
 	QModelIndex m_modelIndex;
 	QSharedPointer<ItemContext> m_ptr;
 	bool m_internalUpdate;
 	//------
-
 	QGridLayout *m_layout;
-
-	GraphicsView * m_view;
+	GraphicsView * m_topView;
     GraphicsView * m_rightView;
     GraphicsView * m_frontView;
-
-
 	//Tool Bar
 	QToolBar * m_toolBar;
     //widgets on toolbar

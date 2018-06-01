@@ -13,10 +13,12 @@ class PixelViewer:public QWidget
     Q_OBJECT
 public:
     PixelViewer(QWidget*parent = 0, int width=5, int height=5, const QImage & image = QImage());
+
     int getWidth()const;
     int getHeight()const;
     void setWidth(int width);
     void setHeight(int height);
+
     void setImage(const QImage & image);
 
 
@@ -29,6 +31,7 @@ public slots:
     void setPosition(const QPoint & p);
 protected:
 	void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
+	void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
 private:
     void changeLayout(QSize areaSize);
     void changeValue(const QImage & image,const QPoint & pos);

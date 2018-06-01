@@ -69,7 +69,7 @@ private:
 	//QTableView * m_infoView;
 	//QVector<QAbstractItemModel *> m_infoModels;
 
-	//QTreeView * m_treeView;
+	QTreeView * m_treeView;
 	DataItemModel * m_treeViewModel;
 
     //HistogramViewer * m_histogramView;

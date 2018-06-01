@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     mrcfileinfoviewer.cpp \
     imageviewer.cpp \
     tinyviewinterface.cpp \
-    profileview.cpp
+    profileview.cpp \
+    mrcdatamodel.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -51,7 +52,8 @@ HEADERS  += mainwindow.h \
     imageviewer.h \
     tinyviewinterface.h \
     CImg.h \
-    profileview.h
+    profileview.h \
+    mrcdatamodel.h
 
 FORMS    += mainwindow.ui
 
