@@ -275,9 +275,9 @@ class ImageView :public QWidget
 public:
 	ImageView(QWidget * parent = nullptr);
 	//MVC pattern will be employed later and these function will be removed
-	int getZSliceValue()const;
-	int getYSliceValue()const;
-	int getXSliceValue()const;
+	inline int getZSliceValue()const;
+	inline int getYSliceValue()const;
+	inline int getXSliceValue()const;
 
 	///TODO::
     void setSliceModel(AbstractSliceDataModel * model);
@@ -285,9 +285,9 @@ public:
     QAbstractItemModel * getMarkModel();
 
 	//TODO:: the three functions will be removed in the future
-	void setModel(DataItemModel * model);
-	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-	void activateItem(const QModelIndex & index);
+	//void setModel(DataItemModel * model);
+	//void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+	//void activateItem(const QModelIndex & index);
 
 
 signals:
@@ -295,10 +295,10 @@ signals:
 	//void YSliderChanged(int value);
 	//void XSliderChanged(int value);
 	void sliderChanged(int value, SliceType type);
-	void slicePositionSelected(const QPoint & point);
+	void zSliceSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
-	//void sliceSeletecd(const QPoint & point,SliceType type);
+	void sliceSeletecd(const QPoint & point,SliceType type);
 public slots:
 	void setEnabled(bool enable);
 	void onTopSliceTimer(bool enable);
@@ -308,23 +308,26 @@ public slots:
 protected:
 	void timerEvent(QTimerEvent* event) override;
 private:
-	QModelIndex getDataIndex(const QModelIndex & itemIndex);
-	void updateModel();
+	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
+	//void updateModel();
 
 
 	//----
-	void updateSliceModel();
+	void updateSliceCount(SliceType type);
+	void updateSlice(SliceType type);
+
+	void updateMarks(SliceType type);
 
 	void createToolBar();
 	void updateActions();
 	void sliceChanged(int value, SliceType type);
 
-	void setTopSliceCount(int value);
-	void setRightSliceCount(int value);
-	void setFrontSliceCount(int value);
+	inline void setTopSliceCount(int value);
+	inline void setRightSliceCount(int value);
+	inline void setFrontSliceCount(int value);
 
 	int currentIndex(SliceType type);
-	void resetSliceAndVisibleMarks(SliceType type);
+	//void resetSliceAndVisibleMarks(SliceType type);
 
 
 	enum class Direction {
@@ -334,12 +337,13 @@ private:
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	QAbstractItemModel * m_markModel;
-	QAbstractItemModel * m_model;
+
+	//QAbstractItemModel * m_model;
 
 	//-----
-	QModelIndex m_modelIndex;
-	QSharedPointer<ItemContext> m_ptr;
-	bool m_internalUpdate;
+	//QModelIndex m_modelIndex;
+	//QSharedPointer<ItemContext> m_ptr;
+	//bool m_internalUpdate;
 	//------
 	QGridLayout *m_layout;
 	GraphicsView * m_topView;

@@ -58,7 +58,7 @@ private slots:
 	void save();
     void saveAs();
 
-	void onTreeViewDoubleClicked(const QModelIndex & index);
+	void exploererDoubleClicked(const QModelIndex & index);
 private:
     Ui::MainWindow *ui;
     int m_currentContext;

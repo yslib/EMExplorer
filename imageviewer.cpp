@@ -339,8 +339,7 @@ void ImageView::createToolBar()
 
 void ImageView::updateActions()
 {
-	bool enable = (m_model != nullptr && m_modelIndex.isValid() == true && m_ptr.isNull() == false);
-	setEnabled(enable);
+	setEnabled(m_sliceModel != nullptr);
 }
 
 ImageView::ImageView(QWidget *parent) :
@@ -349,8 +348,7 @@ ImageView::ImageView(QWidget *parent) :
 	m_rightSlice(nullptr),
 	m_frontSlice(nullptr),
 	m_markModel(nullptr),
-	m_sliceModel(nullptr),
-	m_model(nullptr)
+	m_sliceModel(nullptr)
 {
 	//layout
 	m_layout = new QGridLayout(this);
@@ -382,58 +380,58 @@ ImageView::ImageView(QWidget *parent) :
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {emit sliderChanged(value, SliceType::SliceY); });
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {emit sliderChanged(value, SliceType::SliceX); });
 
-	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {sliceChanged(value, SliceType::SliceZ); });
-	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {sliceChanged(value, SliceType::SliceY); });
-	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {sliceChanged(value, SliceType::SliceX); });
+	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice( SliceType::SliceZ); });
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice( SliceType::SliceY); });
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice( SliceType::SliceX); });
 
-	connect(m_topView, SIGNAL(zSliceSelected(const QPoint &)), this, SIGNAL(zSliceSelected(const QPoint &)));
-	connect(m_topView, SIGNAL(ySliceSelected(const QPoint &)), this, SIGNAL(ySliceSelected(const QPoint &)));
-	connect(m_topView, SIGNAL(xSliceSelected(const QPoint &)), this, SIGNAL(xSliceSelected(const QPoint &)));
+	connect(m_topView, &GraphicsView::zSliceSelected, this, &ImageView::zSliceSelected);
+	connect(m_rightView, &GraphicsView::zSliceSelected, this, &ImageView::ySliceSelected);
+	connect(m_frontView, &GraphicsView::zSliceSelected, this, &ImageView::xSliceSelected);
 
 
 	//This routine should be a part of updateModel
-	connect(m_topView, &GraphicsView::markAdded, [=](QGraphicsItem * item, SliceType type)
-	{
-		if (m_model == nullptr)
-		{
-			qWarning("Model is empty.");
-			return;
-		}
-		int index = currentIndex(type);
-		m_ptr->addSliceMark(item, index, type);
-		m_internalUpdate = true;
-		m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
+	//connect(m_topView, &GraphicsView::markAdded, [=](QGraphicsItem * item, SliceType type)
+	//{
+	//	if (m_model == nullptr)
+	//	{
+	//		qWarning("Model is empty.");
+	//		return;
+	//	}
+	//	int index = currentIndex(type);
+	//	m_ptr->addSliceMark(item, index, type);
+	//	m_internalUpdate = true;
+	//	m_model->setData(getDataIndex(m_modelIndex), QVariant::fromValue(m_ptr));
 
-		//find its mark index
-		constexpr int MarkRowNumber = 1;
-		QModelIndex markIndex = m_model->index(MarkRowNumber, 0, m_modelIndex);
-		QModelIndex countField = m_model->index(MarkRowNumber, 1, m_modelIndex);
+	//	//find its mark index
+	//	constexpr int MarkRowNumber = 1;
+	//	QModelIndex markIndex = m_model->index(MarkRowNumber, 0, m_modelIndex);
+	//	QModelIndex countField = m_model->index(MarkRowNumber, 1, m_modelIndex);
 
-		int count;
-		QVariant var = m_model->data(countField);
-		if (var.canConvert<int>() == true)
-			count = (var.value<int>());
+	//	int count;
+	//	QVariant var = m_model->data(countField);
+	//	if (var.canConvert<int>() == true)
+	//		count = (var.value<int>());
 
-		bool success = m_model->insertRow(m_model->rowCount(markIndex), markIndex);
-		if (success == false)
-		{
-			qCritical("Inserting row into model for mark failed\n");
-			return;
-		}
-		QModelIndex newMark = m_model->index(m_model->rowCount(markIndex) - 1, 0, markIndex);
-		if (newMark.isValid() == true)
-		{
-			m_internalUpdate = true;
-			//set text
-			m_model->setData(newMark, QString("#%1").arg(count));
-			//set bool
-			m_internalUpdate = true;
-			m_model->setData(newMark.sibling(newMark.row(), newMark.column() + 1), QVariant::fromValue(true));
+	//	bool success = m_model->insertRow(m_model->rowCount(markIndex), markIndex);
+	//	if (success == false)
+	//	{
+	//		qCritical("Inserting row into model for mark failed\n");
+	//		return;
+	//	}
+	//	QModelIndex newMark = m_model->index(m_model->rowCount(markIndex) - 1, 0, markIndex);
+	//	if (newMark.isValid() == true)
+	//	{
+	//		m_internalUpdate = true;
+	//		//set text
+	//		m_model->setData(newMark, QString("#%1").arg(count));
+	//		//set bool
+	//		m_internalUpdate = true;
+	//		m_model->setData(newMark.sibling(newMark.row(), newMark.column() + 1), QVariant::fromValue(true));
 
-			m_internalUpdate = true;
-			m_model->setData(countField, QVariant::fromValue(++count));
-		}
-	});
+	//		m_internalUpdate = true;
+	//		m_model->setData(countField, QVariant::fromValue(++count));
+	//	}
+	//});
 	//action
 	createToolBar();
 
@@ -449,64 +447,74 @@ ImageView::ImageView(QWidget *parent) :
 
 void ImageView::sliceChanged(int value, SliceType type)
 {
-	qDebug() << "asdfsadfas";
-	Q_ASSERT(m_ptr.isNull() == false);
-	resetSliceAndVisibleMarks(type);
-	m_internalUpdate = true;
-	updateModel();
+	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null model pointer");
+	GraphicsView * view = nullptr;
+	std::function<QImage(int)> sliceGetter;
+	//TODO:: 
+	switch (type)
+	{
+	case SliceType::SliceZ:
+		view = m_topView;
+		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+		break;
+	case SliceType::SliceY:
+		view = m_rightView;
+		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice, m_sliceModel, std::placeholders::_1);
+		break;
+	case SliceType::SliceX:
+		view = m_frontView;
+		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+		break;
+	default:
+		Q_ASSERT_X(false, "ImageView::updateSlice", "SliceType error.");
+	}
+	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true, "ImageView::updateSlice", "null function");
+	view->setImage(sliceGetter(value));
+	view->clearSliceMarks();
 }
 
-void ImageView::setTopSliceCount(int value)
-{
-	m_topSlider->setMaximum(value - 1);
-}
-void ImageView::setRightSliceCount(int value)
-{
-	m_rightSlider->setMaximum(value - 1);
-}
-void ImageView::setFrontSliceCount(int value)
-{
-	m_frontSlider->setMaximum(value - 1);
-}
+inline void ImageView::setTopSliceCount(int value){m_topSlider->setMaximum(value - 1);}
+inline void ImageView::setRightSliceCount(int value){m_rightSlider->setMaximum(value - 1);}
+inline void ImageView::setFrontSliceCount(int value){m_frontSlider->setMaximum(value - 1);}
 int ImageView::currentIndex(SliceType type)
 {
 	switch (type)
 	{
 	case SliceType::SliceZ:
-		return m_topSlider->value();
+		return getZSliceValue();
 	case SliceType::SliceY:
-		return m_rightSlider->value();
+		return getYSliceValue();
 	case SliceType::SliceX:
-		return m_frontSlider->value();
+		return getXSliceValue();
 	default:
 		return -1;
 	}
 }
 
-void ImageView::resetSliceAndVisibleMarks(SliceType type)
-{
-	if (m_ptr.isNull() == true)
-		return;
-	GraphicsView * view = nullptr;
-	switch (type)
-	{
-	case SliceType::SliceZ:
-		view = m_topView;
-		break;
-	case SliceType::SliceY:
-		view = m_rightView;
-		break;
-	case SliceType::SliceX:
-		view = m_frontView;
-		break;
-	default:
-		Q_ASSERT_X(false, "ImageView::resetSliceAndVisibleMarks", "SliceType error.");
-	}
-	int index = currentIndex(type);
-	view->setImage(m_ptr->slice(index, type));
-	view->clearSliceMarks(SliceType::SliceZ);
-	view->setMarks(m_ptr->visibleSliceMarks(index, type));
-}
+//void ImageView::resetSliceAndVisibleMarks(SliceType type)
+//{
+//	if (m_sliceModel == nullptr)
+//		return;
+//	GraphicsView * view = nullptr;
+//	switch (type)
+//	{
+//	case SliceType::SliceZ:
+//		view = m_topView;
+//		break;
+//	case SliceType::SliceY:
+//		view = m_rightView;
+//		break;
+//	case SliceType::SliceX:
+//		view = m_frontView;
+//		break;
+//	default:
+//		Q_ASSERT_X(false, "ImageView::resetSliceAndVisibleMarks", "SliceType error.");
+//	}
+//	int index = currentIndex(type);
+//	view->setImage(m_ptr->slice(index, type));
+//	view->clearSliceMarks(SliceType::SliceZ);
+//	view->setMarks(m_ptr->visibleSliceMarks(index, type));
+//}
 
 //void ImageView::setFrontSliceVisibleMarks()
 //{
@@ -571,110 +579,108 @@ void ImageView::resetSliceAndVisibleMarks(SliceType type)
 //	m_view->setRightSliceMarks(visibleItems);
 //}
 
-int ImageView::getZSliceValue() const
-{
-	return m_topSlider->value();
-}
+inline int ImageView::getZSliceValue() const{return m_topSlider->value();}
 
-int ImageView::getYSliceValue() const
-{
-	return m_rightSlider->value();
-}
+inline int ImageView::getYSliceValue() const{return m_rightSlider->value();}
 
-int ImageView::getXSliceValue() const
-{
-	return m_frontSlider->value();
-}
+inline int ImageView::getXSliceValue() const{return m_frontSlider->value();}
 
 void ImageView::setSliceModel(AbstractSliceDataModel * model)
 {
 	m_sliceModel = model;
-	updateSliceModel();
+	updateSliceCount(SliceType::SliceZ);
+	updateSliceCount(SliceType::SliceY);
+	updateSliceCount(SliceType::SliceX);
+	updateSlice(SliceType::SliceX);
+	updateSlice(SliceType::SliceY);
+	updateSlice(SliceType::SliceZ);
+	//TODO::update marks
+
 }
 
-void ImageView::setModel(DataItemModel * model)
-{
-	if (m_model != model)
-	{
-		m_model = model;
-		disconnect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
-
-		connect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
-		///TODO::get corresponding data i.e. current slice (top)
-	}
-}
-
-void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int>& roles)
-{
-	qDebug() << "In ImageView:Model has been updated.";
-	if (m_internalUpdate == true)
-	{
-		qDebug() << "Internal Update.";
-		m_internalUpdate = false;
-		return;
-	}
-	QModelIndex dataIndex = getDataIndex(m_modelIndex);
-	//if ((topLeft != bottomRight)||(topLeft != dataIndex))
-	//{
-	//	qDebug() << "Trival update in ImageView.";
-	//	return;
-	//}
-	/**
-	 * the modification invoked by dataChanged should not yield any data model change again.
-	 */
-	 ///TODO:: This function needs parameters to determine whether the update is trival for this view
-	//if (m_ptr.isNull() == true)
-	//	return;
-
-	//const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
-	//const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
-	//const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
-
-	//update slice and corresponding marks (e.g. grayscale streching and change of visibility of marks)
-	resetSliceAndVisibleMarks(SliceType::SliceZ);
-	resetSliceAndVisibleMarks(SliceType::SliceY);
-	resetSliceAndVisibleMarks(SliceType::SliceX);
-	updateActions();
-}
-
-void ImageView::activateItem(const QModelIndex & index)
-{
-	if (m_model == nullptr)
-	{
-		qWarning("Model is empty.");
-		return;
-	}
-
-	QVariant var = m_model->data(getDataIndex(index));
-
-	if (var.canConvert<QSharedPointer<ItemContext>>() == true)
-	{
-		m_modelIndex = index;
-		m_ptr = var.value<QSharedPointer<ItemContext>>();
-
-		const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
-		const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
-		const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
-
-		qDebug() << currentTopSliceIndex << " " << currentRightSliceIndex << " " << currentFrontSliceIndex;
-
-		setTopSliceCount(m_ptr->getTopSliceCount());
-		setRightSliceCount(m_ptr->getRightSliceCount());
-		setFrontSliceCount(m_ptr->getFrontSliceCount());
-
-		//set current slice and corresponding marks(remove previous marks)
-		sliceChanged(currentTopSliceIndex, SliceType::SliceZ);
-		sliceChanged(currentRightSliceIndex, SliceType::SliceY);
-		sliceChanged(currentTopSliceIndex, SliceType::SliceX);
-	}
-	else
-	{
-		//invalid
-		m_ptr.reset();
-		m_modelIndex = QModelIndex();
-	}
-	updateActions();
-}
+//void ImageView::setModel(DataItemModel * model)
+//{
+//	if (m_model != model)
+//	{
+//		m_model = model;
+//		disconnect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
+//
+//		connect(m_model, &DataItemModel::dataChanged, this, &ImageView::dataChanged);
+//		///TODO::get corresponding data i.e. current slice (top)
+//	}
+//}
+//
+//void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int>& roles)
+//{
+//	qDebug() << "In ImageView:Model has been updated.";
+//	if (m_internalUpdate == true)
+//	{
+//		qDebug() << "Internal Update.";
+//		m_internalUpdate = false;
+//		return;
+//	}
+//	QModelIndex dataIndex = getDataIndex(m_modelIndex);
+//	//if ((topLeft != bottomRight)||(topLeft != dataIndex))
+//	//{
+//	//	qDebug() << "Trival update in ImageView.";
+//	//	return;
+//	//}
+//	/**
+//	 * the modification invoked by dataChanged should not yield any data model change again.
+//	 */
+//	 ///TODO:: This function needs parameters to determine whether the update is trival for this view
+//	//if (m_ptr.isNull() == true)
+//	//	return;
+//
+//	//const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
+//	//const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
+//	//const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
+//
+//	//update slice and corresponding marks (e.g. grayscale streching and change of visibility of marks)
+//	resetSliceAndVisibleMarks(SliceType::SliceZ);
+//	resetSliceAndVisibleMarks(SliceType::SliceY);
+//	resetSliceAndVisibleMarks(SliceType::SliceX);
+//	updateActions();
+//}
+//
+//void ImageView::activateItem(const QModelIndex & index)
+//{
+//	if (m_model == nullptr)
+//	{
+//		qWarning("Model is empty.");
+//		return;
+//	}
+//
+//	QVariant var = m_model->data(getDataIndex(index));
+//
+//	if (var.canConvert<QSharedPointer<ItemContext>>() == true)
+//	{
+//		m_modelIndex = index;
+//		m_ptr = var.value<QSharedPointer<ItemContext>>();
+//
+//		const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
+//		const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
+//		const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
+//
+//		qDebug() << currentTopSliceIndex << " " << currentRightSliceIndex << " " << currentFrontSliceIndex;
+//
+//		setTopSliceCount(m_ptr->getTopSliceCount());
+//		setRightSliceCount(m_ptr->getRightSliceCount());
+//		setFrontSliceCount(m_ptr->getFrontSliceCount());
+//
+//		//set current slice and corresponding marks(remove previous marks)
+//		sliceChanged(currentTopSliceIndex, SliceType::SliceZ);
+//		sliceChanged(currentRightSliceIndex, SliceType::SliceY);
+//		sliceChanged(currentTopSliceIndex, SliceType::SliceX);
+//	}
+//	else
+//	{
+//		//invalid
+//		m_ptr.reset();
+//		m_modelIndex = QModelIndex();
+//	}
+//	updateActions();
+//}
 
 void ImageView::setEnabled(bool enable)
 {
@@ -826,46 +832,88 @@ void ImageView::timerEvent(QTimerEvent* event)
 	}
 }
 
-QModelIndex ImageView::getDataIndex(const QModelIndex & itemIndex)
-{
+//QModelIndex ImageView::getDataIndex(const QModelIndex & itemIndex)
+//{
+//
+//	if (m_model == nullptr)
+//	{
+//		qWarning("Model pointer is nullptr");
+//		return QModelIndex();
+//	}
+//	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
+//}
 
-	if (m_model == nullptr)
+//void ImageView::updateModel()
+//{
+//	if (m_model == nullptr)
+//	{
+//		qWarning("Model is empty.");
+//		return;
+//	}
+//	Q_ASSERT(m_model != nullptr);
+//	Q_ASSERT(m_ptr.isNull() == false);
+//
+//	//TODO::update marks added
+//
+//	//TODO::update current slice
+//	const int newCurrentTopSliceIndex = m_topSlider->value();
+//	const int newCurrentRightSliceIndex = m_rightSlider->value();
+//	const int newCurrentFrontSliceIndex = m_frontSlider->value();
+//	QModelIndex dataIndex = getDataIndex(m_modelIndex);
+//	Q_ASSERT(dataIndex.isValid());
+//	m_ptr->setCurrentSliceIndex(newCurrentTopSliceIndex);
+//	m_ptr->setCurrentRightSliceIndex(newCurrentRightSliceIndex);
+//	m_ptr->setCurrentFrontSliceIndex(newCurrentFrontSliceIndex);
+//
+//
+//	m_model->setData(dataIndex, QVariant::fromValue(m_ptr));
+//}
+
+void ImageView::updateSliceCount(SliceType type)
+{
+	switch (type)
 	{
-		qWarning("Model pointer is nullptr");
-		return QModelIndex();
+	case SliceType::SliceZ:
+		m_topSlider->setValue(m_sliceModel->topSliceCount()-1);
+		break;
+	case SliceType::SliceY:
+		m_rightSlider->setValue(m_sliceModel->rightSliceCount()-1);
+		break;
+	case SliceType::SliceX:
+		m_frontSlider->setValue(m_sliceModel->frontSliceCount()-1);
+		break;
+	default:
+		break;
 	}
-	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
 }
 
-void ImageView::updateModel()
+void ImageView::updateSlice(SliceType type)
 {
-	if (m_model == nullptr)
+	//
+	GraphicsView * view = nullptr;
+	std::function<QImage(int)> sliceGetter;
+	switch (type)
 	{
-		qWarning("Model is empty.");
-		return;
+	case SliceType::SliceZ:
+		view = m_topView;
+		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice, m_sliceModel, std::placeholders::_1);
+		break;
+	case SliceType::SliceY:
+		view = m_rightView;
+		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice, m_sliceModel, std::placeholders::_1);
+		break;
+	case SliceType::SliceX:
+		view = m_frontView;
+		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+		break;
+	default:
+		Q_ASSERT_X(false, "ImageView::updateSlice", "SliceType error.");
 	}
-	Q_ASSERT(m_model != nullptr);
-	Q_ASSERT(m_ptr.isNull() == false);
-
-	///TODO:: update marks added
-
-	///TODO:: update current slice
-	const int newCurrentTopSliceIndex = m_topSlider->value();
-	const int newCurrentRightSliceIndex = m_rightSlider->value();
-	const int newCurrentFrontSliceIndex = m_frontSlider->value();
-	QModelIndex dataIndex = getDataIndex(m_modelIndex);
-	Q_ASSERT(dataIndex.isValid());
-	m_ptr->setCurrentSliceIndex(newCurrentTopSliceIndex);
-	m_ptr->setCurrentRightSliceIndex(newCurrentRightSliceIndex);
-	m_ptr->setCurrentFrontSliceIndex(newCurrentFrontSliceIndex);
-
-
-	m_model->setData(dataIndex, QVariant::fromValue(m_ptr));
-}
-
-void ImageView::updateSliceModel()
-{
-
+	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true,"ImageView::updateSlice","null function");
+	int index = currentIndex(type);
+	view->setImage(sliceGetter(index));
+	view->clearSliceMarks(SliceType::SliceZ);
+	//view->setMarks();
 }
 
 GraphicsView::GraphicsView(QWidget *parent) :QGraphicsView(parent),

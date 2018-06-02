@@ -31,19 +31,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	
 	QDockWidget *dock;
-	m_treeView = new QTreeView(this);
-	dock = new QDockWidget(tr("File Information View"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	dock->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-	m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
+	//m_treeView = new QTreeView(this);
+	//dock = new QDockWidget(tr("File Information View"), this);
+	//dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	//dock->setWidget(m_treeView);
+	//addDockWidget(Qt::LeftDockWidgetArea, dock);
+	//viewMenu->addAction(dock->toggleViewAction());
+	//m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
 
-	m_treeViewModel = new DataItemModel(QString(), this);
-	///TODO::
-	connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
-	m_treeView->setModel(m_treeViewModel);
-	
+	//m_treeViewModel = new DataItemModel(QString(), this);
+	/////TODO::
+	//connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
+	//m_treeView->setModel(m_treeViewModel);
+	//
 
 	
 	//m_histogramView = new HistogramViewer(this);
@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	//Test ImageView
 	m_imageView = new ImageView(this);
-	m_imageView->setModel(m_treeViewModel);
+	//m_imageView->setModel(m_treeViewModel);
 	setCentralWidget(m_imageView);
 
 
@@ -142,11 +142,14 @@ void MainWindow::open()
 		return;
 	}
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
-	QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
-	m_treeViewModel->addItem(sharedItem);
+	//QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
+	//m_treeViewModel->addItem(sharedItem);
+	QSharedPointer<MRC>  ptr(new MRC(name.toStdString()));
 
-    auto model = setupProfileModel(sharedItem->getMRCFile());
+    auto model = setupProfileModel(*ptr);
     m_profileView->addModel(fileName,model);
+
+	MRCDataModel * sliceModel = new MRCDataModel(ptr);
 
 }
 
@@ -289,16 +292,19 @@ void MainWindow::saveAs()
 	}
 }
 
-void MainWindow::onTreeViewDoubleClicked(const QModelIndex & index)
+void MainWindow::exploererDoubleClicked(const QModelIndex & index)
 {
 	///TODO::
-	QModelIndex parent;
-	QModelIndex rootItem = index;
-	while ((parent = m_treeViewModel->parent(rootItem)).isValid())
-		rootItem = parent;
+	//QModelIndex parent;
+	//QModelIndex rootItem = index;
+	//while ((parent = m_treeViewModel->parent(rootItem)).isValid())
+	//	rootItem = parent;
+
 	//m_histogramView->activateItem(rootItem);
-	m_imageView->activateItem(rootItem);
+	//m_imageView->activateItem(rootItem);
 	//m_pixelViewer->activateItem(rootItem);
+
+
 }
 void MainWindow::createDockWindows()
 {
