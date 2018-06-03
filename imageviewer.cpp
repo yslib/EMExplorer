@@ -596,6 +596,7 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	updateSlice(SliceType::SliceZ);
 	//TODO::update marks
 
+	updateActions();
 }
 
 //void ImageView::setModel(DataItemModel * model)
@@ -874,13 +875,14 @@ void ImageView::updateSliceCount(SliceType type)
 	switch (type)
 	{
 	case SliceType::SliceZ:
-		m_topSlider->setValue(m_sliceModel->topSliceCount()-1);
+		//m_topSlider->setValue(m_sliceModel->topSliceCount()-1);
+		setTopSliceCount(m_sliceModel->topSliceCount() - 1);
 		break;
 	case SliceType::SliceY:
-		m_rightSlider->setValue(m_sliceModel->rightSliceCount()-1);
+		setRightSliceCount(m_sliceModel->rightSliceCount()-1);
 		break;
 	case SliceType::SliceX:
-		m_frontSlider->setValue(m_sliceModel->frontSliceCount()-1);
+		setFrontSliceCount(m_sliceModel->frontSliceCount()-1);
 		break;
 	default:
 		break;
@@ -1449,8 +1451,12 @@ QImage AbstractSliceDataModel::frontSlice(int index) const
 	return m_modifiedFrontSlice[index];
 
 }
-
-AbstractSliceDataModel::AbstractSliceDataModel()
+AbstractSliceDataModel::AbstractSliceDataModel(int nTop, int nRight, int nFront)
 {
-
+	m_modifiedFrontSlice.resize(nFront);
+	m_modifiedFrontSliceFlags.resize(nFront);
+	m_modifiedRightSlice.resize(nRight);
+	m_modifiedRightSliceFlags.resize(nRight);
+	m_modifiedTopSlice.resize(nTop);
+	m_modifiedTopSliceFlags.resize(nTop);
 }

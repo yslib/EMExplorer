@@ -240,7 +240,7 @@ private:
 class AbstractSliceDataModel
 {
 public:
-	AbstractSliceDataModel();
+	AbstractSliceDataModel(int nTop,int nRight,int nFront);
 	virtual int topSliceCount()const = 0;
 	virtual int rightSliceCount()const = 0;
 	virtual int frontSliceCount()const = 0;
@@ -256,10 +256,8 @@ public:
 	virtual QImage rightSlice(int index)const;
 	virtual QImage frontSlice(int index)const;
 private:
-
 	//inline void setSliceHelper(const QImage & image,int index,QVector<QImage> * imgVec,QVector<bool> * flgVec);
 	//inline QImage sliceHelper(int index, QVector<QImage> * imgVec, QVector<bool> * flgVec);
-
     QVector<QImage> m_modifiedTopSlice;
     QVector<bool> m_modifiedTopSliceFlags;
     QVector<QImage> m_modifiedRightSlice;

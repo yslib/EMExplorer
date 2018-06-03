@@ -41,6 +41,7 @@ class PixelViewer;
 class ImageViewer;
 class MRCFileInfoViewer;
 class ImageView;
+class MRCDataModel;
 
 class QTreeView;
 class ProfileView;
@@ -79,8 +80,9 @@ private:
     QAction * m_actionOpen;
     //test
     ImageView * m_imageView;
-	
 	ProfileView * m_profileView;
+
+
 private:
     void createActions();
     void createStatusBar();

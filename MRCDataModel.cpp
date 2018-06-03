@@ -2,7 +2,9 @@
 #include "mrc.h"
 #include <QDebug>
 
-MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):m_d(data)
+MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):
+	AbstractSliceDataModel(data->getSliceCount(),data->getWidth(),data->getHeight()),
+	m_d(data)
 {
 
 }

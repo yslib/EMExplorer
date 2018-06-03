@@ -8,6 +8,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 #include "profileview.h"
+#include "mrcdatamodel.h"
 
 QSize imageSize(500, 500);
 
@@ -144,13 +145,16 @@ void MainWindow::open()
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
 	//QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
 	//m_treeViewModel->addItem(sharedItem);
-	QSharedPointer<MRC>  ptr(new MRC(name.toStdString()));
+	QSharedPointer<MRC>  ptr(new MRC(fileName.toStdString()));
+	if (ptr->isOpened() == false) {
+		qDebug() << "file open failed\n";
+		return;
+	}
 
     auto model = setupProfileModel(*ptr);
     m_profileView->addModel(fileName,model);
-
 	MRCDataModel * sliceModel = new MRCDataModel(ptr);
-
+	m_imageView->setSliceModel(sliceModel);
 }
 
 
