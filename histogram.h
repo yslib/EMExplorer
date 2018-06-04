@@ -8,6 +8,7 @@
 
 #include "titledsliderwithspinbox.h"
 #include "ItemContext.h"
+#include "abstractplugin.h"
 
 
 class QMouseEvent;
@@ -22,6 +23,7 @@ public:
     explicit Histogram(QWidget *parent = nullptr);
     explicit Histogram(QWidget *parent, const QImage & image);
     void setImage(const QImage & image);
+	void setPixmap(QPixmap * pixmap);
     QVector<int> getHist()const;
     QSize sizeHint()const override;
     int getMinimumCursorValue()const;
@@ -63,46 +65,45 @@ private:
 };
 
 
-class HistogramViewer:public QWidget
+class HistogramViewer:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    explicit HistogramViewer(QWidget * parent = nullptr)noexcept;
-    explicit HistogramViewer(QWidget * parent, const QImage & image)noexcept;
-
-
+    explicit HistogramViewer(SliceType type, GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr)noexcept;
     QVector<int> getHist()const;
     void setEnabled(bool enable);
-
-    int getLeftCursorValue()const;
-    int getRightCursorValue()const;
-
 	//model interface
-	void setModel(DataItemModel * model);
-	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-	void activateItem(const QModelIndex & index);
+	//void setModel(DataItemModel * model);
+	//void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
+	//void activateItem(const QModelIndex & index);
 public slots:
     //void setLeftCursorValue(int value);
     //void setRightCursorValue(int value);
 	void onMinValueChanged(int value);
 	void onMaxValueChanged(int value);
-    void onResetButton();
-    void onFilterButton();
+    void reset();
+    void filterImage();
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
+protected:
+	void sliceOpenEvent(int index) override;
 private:
 
+	int getLeftCursorValue()const;
+	int getRightCursorValue()const;
     void setImage(const QImage & image);
+
     void updateImage();
-	QModelIndex getDataIndex(const QModelIndex & itemIndex);
+	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
 
 	void updateActions();
     void createWidgets();
+	void createConnections();
 
     void updateParameterLayout(const QString & text);
 
-	bool m_internalUpdate;
+	//bool m_internalUpdate;
 
     QGridLayout * m_mainLayout;
     QGroupBox * m_histogramGroupBox;
@@ -115,27 +116,22 @@ private:
 
     QGroupBox * m_filterGroupBox;
     QGridLayout * m_filterLayout;
-
     QLabel* m_filterLabel;
     QComboBox * m_filterComboBox;
     QPushButton * m_filterButton;
-    QGridLayout * m_parameterLayout;
 
+    QGridLayout * m_parameterLayout;
     QLabel * m_medianKernelSizeLabel;
     QSpinBox * m_medianKernelSizeSpinBox;
-
     QLabel * m_sigmaXLabel;
     QDoubleSpinBox * m_sigmaXSpinBox;
     QLabel * m_sigmaYLabel;
     QDoubleSpinBox * m_sigmaYSpinBox;
 
-
-
     QPushButton* m_reset;
 	//
-	QAbstractItemModel * m_model;
-	QModelIndex m_modelIndex;
-	QSharedPointer<ItemContext> m_ptr;
+
+	int m_currentIndex;
 };
 
 #endif // HISTOGRAM_H

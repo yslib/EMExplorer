@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     imageviewer.cpp \
     tinyviewinterface.cpp \
     profileview.cpp \
-    mrcdatamodel.cpp
+    mrcdatamodel.cpp \
+    abstractplugin.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     tinyviewinterface.h \
     CImg.h \
     profileview.h \
-    mrcdatamodel.h
+    mrcdatamodel.h \
+    abstractplugin.h
 
 FORMS    += mainwindow.ui
 

@@ -205,8 +205,6 @@ private:
 	void clearSliceMarksHelper(SliceItem * sliceItem);
 	void setMarksHelper(SliceItem * sliceItem,const QList<QGraphicsItem*>& items);
 
-	void createContextMenu();
-	void createDialog();
 
 	Q_OBJECT
 	//GraphicsScene *m_scene;
@@ -217,24 +215,10 @@ private:
 	bool m_moveble;
 	QPointF m_prevScenePoint;
 	QColor m_color;
-
 	SliceItem * m_topSlice;
 	SliceItem * m_rightSlice;
 	SliceItem * m_frontSlice;
 	QImage  m_topImage;
-
-	//ContextMenu
-	QMenu *m_contextMenu;
-	QAction * m_zoomIn;
-	QAction * m_zoomOut;
-	QAction * m_histDlgAction;
-	QAction * m_pixelViewDlgAction;
-	QAction * m_marksManagerDlgAction;
-
-	//Dialog
-	HistogramViewer * m_histDlg;
-	PixelViewer * m_pixelViewDlg;
-
 };
 
 class AbstractSliceDataModel
@@ -271,23 +255,24 @@ class ImageView :public QWidget
 {
 	Q_OBJECT
 public:
-	ImageView(QWidget * parent = nullptr);
+	ImageView(QWidget * parent = nullptr,bool topSliceVisible= true,bool rightSliceVisible = true,bool frontSliceVisible = true,AbstractSliceDataModel * model = nullptr);
 	//MVC pattern will be employed later and these function will be removed
 	inline int getZSliceValue()const;
 	inline int getYSliceValue()const;
 	inline int getXSliceValue()const;
+
+	inline void setZXliceEnable(bool enable);
+	inline void setYXliceEnable(bool enable);
+	inline void setXXliceEnable(bool enable);
 
 	///TODO::
     void setSliceModel(AbstractSliceDataModel * model);
     void setMarkModel(QAbstractItemModel * model);
     QAbstractItemModel * getMarkModel();
 
-	//TODO:: the three functions will be removed in the future
-	//void setModel(DataItemModel * model);
-	//void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-	//void activateItem(const QModelIndex & index);
 
 
+	
 signals:
 	//void ZSliderChanged(int value);
 	//void YSliderChanged(int value);
@@ -308,22 +293,26 @@ protected:
 private:
 	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
 	//void updateModel();
-
-
 	//----
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
-
 	void updateMarks(SliceType type);
 
-	void createToolBar();
 	void updateActions();
-	void sliceChanged(int value, SliceType type);
 
+	void updateTopSliceActions();
+	void updateFrontSliceActions();
+	void updateRightSliceActions();
+
+	void createToolBar();
+	void createConnections();
+	void createContextMenu();
+
+
+	void sliceChanged(int value, SliceType type);
 	inline void setTopSliceCount(int value);
 	inline void setRightSliceCount(int value);
 	inline void setFrontSliceCount(int value);
-
 	int currentIndex(SliceType type);
 	//void resetSliceAndVisibleMarks(SliceType type);
 
@@ -381,6 +370,15 @@ private:
 	
 	Direction m_frontSlicePlayDirection;
 	int m_frontTimerId;
+
+
+	//ContextMenu
+	QMenu *m_contextMenu;
+	QAction * m_zoomIn;
+	QAction * m_zoomOut;
+	QAction * m_histDlgAction;
+	QAction * m_pixelViewDlgAction;
+	QAction * m_marksManagerDlgAction;
 
 };
 
