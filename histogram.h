@@ -83,11 +83,12 @@ public slots:
 	void onMaxValueChanged(int value);
     void reset();
     void filterImage();
+
+	void sliceOpened(int index) override;
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
 protected:
-	void sliceOpenEvent(int index) override;
 private:
 
 	int getLeftCursorValue()const;

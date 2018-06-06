@@ -34,7 +34,7 @@ class DataItemModel;
 class HistogramViewer;
 class PixelViewer;
 class MRC;
-
+class AbstractPlugin;
 
 
 enum class SliceType
@@ -278,10 +278,17 @@ signals:
 	//void YSliderChanged(int value);
 	//void XSliderChanged(int value);
 	void sliderChanged(int value, SliceType type);
+
+	void sliceOpened(int index);
+	void sliceChanged(int index);
+	void slicePlayStoped(int index);
+
 	void zSliceSelected(const QPoint & point);
 	void ySliceSelected(const QPoint & point);
 	void xSliceSelected(const QPoint & point);
-	void sliceSeletecd(const QPoint & point,SliceType type);
+
+	//void sliceSeletecd(const QPoint & point,SliceType type);
+
 public slots:
 	void setEnabled(bool enable);
 	void onTopSliceTimer(bool enable);
@@ -290,6 +297,8 @@ public slots:
 	void onColorChanged();
 protected:
 	void timerEvent(QTimerEvent* event) override;
+	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
+	//void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 private:
 	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
 	//void updateModel();
@@ -297,7 +306,6 @@ private:
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
 	void updateMarks(SliceType type);
-
 	void updateActions();
 
 	void updateTopSliceActions();
@@ -306,6 +314,7 @@ private:
 
 	void createToolBar();
 	void createConnections();
+
 	void createContextMenu();
 
 
@@ -314,6 +323,9 @@ private:
 	inline void setRightSliceCount(int value);
 	inline void setFrontSliceCount(int value);
 	int currentIndex(SliceType type);
+
+	inline bool contains(const QWidget* widget, const QPoint& pos);
+
 	//void resetSliceAndVisibleMarks(SliceType type);
 
 
@@ -379,6 +391,7 @@ private:
 	QAction * m_histDlgAction;
 	QAction * m_pixelViewDlgAction;
 	QAction * m_marksManagerDlgAction;
+	QWidget * m_menuWidget;
 
 };
 

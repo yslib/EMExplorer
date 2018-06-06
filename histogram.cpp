@@ -336,13 +336,18 @@ void HistogramViewer::onMaxValueChanged(int value)
 
 void HistogramViewer::reset()
 {
-	bool old = m_minSlider->blockSignals(true);
+	qDebug() << "HistogramViewer::reset|"<<m_currentIndex;
+	//bool old = m_minSlider->blockSignals(true);
 	m_minSlider->setValue(0);
-	m_minSlider->blockSignals(old);
-	old = m_maxSlider->blockSignals(true);
+	//m_minSlider->blockSignals(old);
+	//old = m_maxSlider->blockSignals(true);
 	m_maxSlider->setValue(255);
-	m_maxSlider->blockSignals(old);
-	getSliceItem()->setPixmap(QPixmap::fromImage(getOriginalImage(m_currentIndex)));
+	//m_maxSlider->blockSignals(old);
+	SliceItem * item = getSliceItem();
+	Q_ASSERT_X(item, "HistogramViewer::reset", "null pointer");
+	QImage origin = getOriginalImage(m_currentIndex);
+	item->setPixmap(QPixmap::fromImage(origin));
+	setImage(origin);
 }
 
 void HistogramViewer::filterImage()
@@ -353,7 +358,7 @@ void HistogramViewer::filterImage()
     //int currentIndex = m_ptr->getCurrentSliceIndex();
     //QImage slice = m_ptr->getOriginalTopSlice(currentIndex);
 
-	QImage slice = getOriginalImage(m_currentIndex);
+	QImage slice = getOriginalImage(m_currentIndex).copy();
 
     int width = slice.width();
     int height = slice.height();
@@ -377,12 +382,19 @@ void HistogramViewer::filterImage()
 	item->setPixmap(QPixmap::fromImage(slice));
 }
 
+void HistogramViewer::sliceOpened(int index)
+{
+	m_currentIndex = index;
+	setImage(getOriginalImage(index));
+}
+
 void HistogramViewer::updateImage()
 {
 	int minValue = m_minSlider->value();
 	int maxValue = m_maxSlider->value();
+	qDebug() << minValue << " " << maxValue;
 	//update min and max value
-	QImage originalImage = getOriginalImage(m_currentIndex);
+	QImage originalImage = getOriginalImage(m_currentIndex).copy();
 	Q_ASSERT_X(originalImage.isNull() == false, "HistogramViewer::updateImage", "null image");
 	unsigned char *image = originalImage.bits();
 	int width = originalImage.width();
@@ -579,10 +591,6 @@ void HistogramViewer::setEnabled(bool enable)
 
 
 
-void HistogramViewer::sliceOpenEvent(int index)
-{
-	AbstractPlugin::sliceOpenEvent(m_currentIndex = index);
-}
 
 int HistogramViewer::getLeftCursorValue() const
 {

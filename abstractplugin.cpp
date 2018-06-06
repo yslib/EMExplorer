@@ -10,28 +10,31 @@ m_type(type)
 
 }
 
+void AbstractPlugin::sliceChanged(int index)
+{
+
+}
+
+void AbstractPlugin::sliceSelected(const QPoint& pos)
+{
+
+}
+
+void AbstractPlugin::sliceOpened(int index)
+{
+}
+
+void AbstractPlugin::slicePlayStoped(int index)
+{
+}
+
 SliceItem * AbstractPlugin::getSliceItem()
 {
-	return dynamic_cast<SliceItem*>(m_view->items().value(0));
+	return static_cast<SliceItem*>(m_view->items().value(0));
 }
-
-void AbstractPlugin::sliceChangeEvent(int index)
-{
-	//
-}
-
-void AbstractPlugin::sliceStopEvent(int index)
-{
-	//
-}
-
-void AbstractPlugin::sliceOpenEvent(int index)
-{
-
-}
-
 QImage AbstractPlugin::getOriginalImage(int index)
 {
+	Q_ASSERT_X(m_model, "asdfasf", "adsfsadfsadfsdaf");
 	if (m_model == nullptr)
 		return QImage();
 	switch(m_type)

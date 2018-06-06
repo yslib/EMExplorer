@@ -2,10 +2,12 @@
 #include <QVector>
 #include <QVariant>
 #include <QLineEdit>
+#include <QDebug>
 
-PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & image):
-    m_width(width),m_height(height),m_image(image),m_model(nullptr),
-    QWidget(parent)
+
+
+PixelViewer::PixelViewer(SliceType type, GraphicsView * view, AbstractSliceDataModel * model, QWidget * parent):
+    AbstractPlugin(type, view ,  model,  parent)
 {
     //create a gridlayout
     //layout = new QGridLayout(this);
@@ -13,7 +15,6 @@ PixelViewer::PixelViewer(QWidget *parent,int width, int height,const QImage & im
     //init layout
 	//resize(500, 500);
 	//cornel label
-
 	//setStyleSheet(QString("border:1px solid red"));
 
 	m_cornerLabel.reset(new QLabel(this), &QObject::deleteLater);
@@ -49,48 +50,48 @@ void PixelViewer::setImage(const QImage &image)
     changeValue(m_image,m_pos);
 }
 
-void PixelViewer::setModel(DataItemModel * model)
-{
-	if(m_model != model)
-	{
-		m_model = model;
-		disconnect(m_model, &DataItemModel::dataChanged, this, &PixelViewer::dataChanged);
-		connect(m_model, &DataItemModel::dataChanged, this, &PixelViewer::dataChanged);
+//void PixelViewer::setModel(DataItemModel * model)
+//{
+//	if(m_model != model)
+//	{
+//		m_model = model;
+//		disconnect(m_model, &DataItemModel::dataChanged, this, &PixelViewer::dataChanged);
+//		connect(m_model, &DataItemModel::dataChanged, this, &PixelViewer::dataChanged);
+//
+//		///TODO::get corresponding data
+//		/*
+//		 * We don't need to get coreesponding data here for now,because this is not a strict MVC framework
+//		 * So far,we only need activateItem(...) method to activate pull data
+//		 */
+//	}
+//}
+//
+//void PixelViewer::activateItem(const QModelIndex & index)
+//{
+//	if(m_model == nullptr)
+//	{
+//		qWarning("Model is empty.");
+//		return;
+//	}
+//
+//	QVariant var = m_model->data(getDataIndex(index));
+//	if(var .canConvert<QSharedPointer<ItemContext>>() == true)
+//	{
+//		m_activedIndex = index;
+//		auto p = var.value<QSharedPointer<ItemContext>>();
+//		m_ptr = p;
+//		int currentSlice = p->getCurrentSliceIndex();
+//		setImage(p->getOriginalTopSlice(currentSlice));
+//	}
+//
+//}
 
-		///TODO::get corresponding data
-		/*
-		 * We don't need to get coreesponding data here for now,because this is not a strict MVC framework
-		 * So far,we only need activateItem(...) method to activate pull data
-		 */
-	}
-}
-
-void PixelViewer::activateItem(const QModelIndex & index)
-{
-	if(m_model == nullptr)
-	{
-		qWarning("Model is empty.");
-		return;
-	}
-
-	QVariant var = m_model->data(getDataIndex(index));
-	if(var .canConvert<QSharedPointer<ItemContext>>() == true)
-	{
-		m_activedIndex = index;
-		auto p = var.value<QSharedPointer<ItemContext>>();
-		m_ptr = p;
-		int currentSlice = p->getCurrentSliceIndex();
-		setImage(p->getOriginalTopSlice(currentSlice));
-	}
-
-}
-
-void PixelViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
-{
-	///TODO::fecth updated currentSlice
-	qDebug("PixelViewer:data model has been updated");
-
-}
+//void PixelViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+//{
+//	///TODO::fecth updated currentSlice
+//	qDebug("PixelViewer:data model has been updated");
+//
+//}
 
 void PixelViewer::setPosition(const QPoint &p)
 {
@@ -98,6 +99,11 @@ void PixelViewer::setPosition(const QPoint &p)
     changeValue(m_image,m_pos);
 }
 
+void PixelViewer::sliceSelected(const QPoint& pos)
+{
+	qDebug() << "sliceSelected slot is called.";
+	setPosition(pos);
+}
 void PixelViewer::resizeEvent(QResizeEvent* event)
 {
 	changeLayout(size());
@@ -109,6 +115,7 @@ void PixelViewer::closeEvent(QCloseEvent* event)
 	//TODO:: disconnect all signals with setPosition(const QPoint & pos)
 	event->accept();
 }
+
 
 void PixelViewer::changeLayout(QSize areaSize)
 {
@@ -247,18 +254,17 @@ void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
 
 	 QPoint topLeft((s_left+s_width+s_right)*xpos+s_left,(s_top+s_height+s_bottom)*ypos+s_top);
 	 QRect rect(topLeft,QSize(s_width,s_height));
-	 qDebug() << xpos << " " << ypos << " " << rect;
 	 widget->setContentsMargins(s_left,s_top,s_right,s_bottom);
 	 widget->setParent(this);
 	 widget->setGeometry(rect);
 	 widget->show();
  }
 
-QModelIndex PixelViewer::getDataIndex(const QModelIndex & itemIndex)
-{
-	if (m_model == nullptr)
-	{
-		qWarning("Model is empty.");
-	}
-	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
-}
+//QModelIndex PixelViewer::getDataIndex(const QModelIndex & itemIndex)
+//{
+//	if (m_model == nullptr)
+//	{
+//		qWarning("Model is empty.");
+//	}
+//	return m_model->index(itemIndex.row(), 1, m_model->parent(itemIndex));
+//}

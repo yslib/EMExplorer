@@ -319,26 +319,7 @@ void ImageView::createConnections()
 	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {updateTopSliceActions(); });
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {updateRightSliceActions(); });
 	connect(m_frontSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {updateFrontSliceActions(); });
-	connect(this, &ImageView::customContextMenuRequested, [this](const QPoint&pos)
-	{
-		QRect rect = this->rect();
 
-		if (rect.contains(m_topView->mapFrom(this, pos)) == true)
-		{
-			qDebug() << "top view";
-			m_contextMenu->exec(this->mapToGlobal(pos));
-		}
-		else if (rect.contains(m_rightView->mapFrom(this, pos)) == true)
-		{
-			qDebug() << "right view";
-			m_contextMenu->exec(this->mapToGlobal(pos));
-		}
-		else if (rect.contains(m_frontView->mapFrom(this, pos)) == true)
-		{
-			qDebug() << "front view";
-			m_contextMenu->exec(this->mapToGlobal(pos));
-		}
-	});
 }
 
 void ImageView::updateActions()
@@ -375,33 +356,89 @@ void ImageView::updateRightSliceActions()
 void ImageView::createContextMenu()
 {
 	m_contextMenu = new QMenu(this);
-
 	///TODO:: add icons here
 	m_zoomIn = new QAction(QStringLiteral("Zoom In"), this);
 	m_zoomOut = new QAction(QStringLiteral("Zoom Out"), this);
+
 	m_histDlgAction = new QAction(QStringLiteral("Histgoram..."), this);
 	m_pixelViewDlgAction = new QAction(QStringLiteral("Pixel View..."), this);
 	m_marksManagerDlgAction = new QAction(QStringLiteral("Marks..."), this);
 
 	connect(m_histDlgAction, &QAction::triggered, [this]()
 	{
-		if (m_histDlg->isVisible() == false)
+		AbstractPlugin * histViewDlg;
+		if (m_menuWidget == m_topView)
 		{
-		}
-		else
-		{
+			histViewDlg = new HistogramViewer(SliceType::SliceZ, m_topView, m_sliceModel, this);
+			histViewDlg->setWindowFlag(Qt::Window);
+			histViewDlg->show();
+			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+			//histViewDlg->sliceOpenEvent(m_topSlider->value());
+			connect(this, &ImageView::sliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageView::slicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
 
+			emit sliceOpened(m_topSlider->value());
 		}
+		else if (m_menuWidget == m_rightView)
+		{
+			histViewDlg = new HistogramViewer(SliceType::SliceY, m_rightView, m_sliceModel, this);
+			histViewDlg->setWindowFlag(Qt::Window);
+			histViewDlg->show();
+			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+			//histViewDlg->sliceOpenEvent(m_rightSlider->value());
+			connect(this, &ImageView::sliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageView::slicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			emit sliceOpened(m_rightSlider->value());
+		}
+		else if (m_menuWidget == m_frontView)
+		{
+			histViewDlg = new HistogramViewer(SliceType::SliceX, m_frontView, m_sliceModel, this);
+			histViewDlg->setWindowFlag(Qt::Window);
+			histViewDlg->show();
+			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+			//histViewDlg->sliceOpenEvent(m_frontSlider->value());
+			connect(this, &ImageView::sliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageView::slicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			emit sliceOpened(m_frontSlider->value());
+		}
+		//connect(this, &ImageView::sliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+		connect(this, &ImageView::slicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
 	});
 	connect(m_pixelViewDlgAction, &QAction::triggered, [this]()
 	{
-		//if (m_pixelViewDlg->isVisible() == false)
-		//{
-		//	//TODO::connect signals and slots
-		//	connect(this, &GraphicsView::zSliceSelected, m_pixelViewDlg, &PixelViewer::setPosition);
-		//}
+		PixelViewer * pixelViewDlg;
+		if(m_menuWidget == m_topView)
+		{
+			pixelViewDlg = new PixelViewer(SliceType::SliceX, m_frontView, m_sliceModel, this);
+			pixelViewDlg->setWindowFlag(Qt::Window);
+			pixelViewDlg->show();
+			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+			pixelViewDlg->setImage(m_sliceModel->topSlice(m_topSlider->value()));
+			connect(m_topView, &GraphicsView::zSliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+
+		}else if(m_menuWidget == m_rightView)
+		{
+			pixelViewDlg = new PixelViewer(SliceType::SliceX, m_frontView, m_sliceModel, this);
+			pixelViewDlg->setWindowFlag(Qt::Window);
+			pixelViewDlg->show();
+			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+			pixelViewDlg->setImage(m_sliceModel->rightSlice(m_rightSlider->value()));
+			connect(m_rightView, &GraphicsView::zSliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+		}else if(m_menuWidget == m_frontView)
+		{
+			pixelViewDlg = new PixelViewer(SliceType::SliceX, m_frontView, m_sliceModel, this);
+			pixelViewDlg->setWindowFlag(Qt::Window);
+			pixelViewDlg->show();
+			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+			pixelViewDlg->setImage(m_sliceModel->frontSlice(m_frontSlider->value()));
+			connect(m_frontView, &GraphicsView::zSliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+		}
+	});
+	connect(m_marksManagerDlgAction,&QAction::triggered,[this]()
+	{	
 
 	});
+
 	m_contextMenu->addAction(m_zoomIn);
 	m_contextMenu->addAction(m_zoomOut);
 	m_contextMenu->addSeparator();
@@ -501,7 +538,7 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 
 	//m_rightGroup = new QGroupBox(QStringLiteral("Right"), this);
 	//m_frontGroup = new QGroupBox(QStringLiteral("Front"), this);
-	setContextMenuPolicy(Qt::CustomContextMenu);
+	//setContextMenuPolicy(Qt::ActionsContextMenu);
 	createContextMenu();
 
 
@@ -533,7 +570,7 @@ void ImageView::sliceChanged(int value, SliceType type)
 	default:
 		Q_ASSERT_X(false, "ImageView::updateSlice", "SliceType error.");
 	}
-	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true, "ImageView::updateSlice", "null function");
+	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true, "ImageView::updateSlice", "invalid bind");
 	view->setImage(sliceGetter(value));
 	view->clearSliceMarks();
 }
@@ -555,6 +592,8 @@ int ImageView::currentIndex(SliceType type)
 		return -1;
 	}
 }
+
+inline bool ImageView::contains(const QWidget* widget, const QPoint& pos) { return (widget->rect()).contains(pos); }
 
 //void ImageView::resetSliceAndVisibleMarks(SliceType type)
 //{
@@ -919,6 +958,29 @@ void ImageView::timerEvent(QTimerEvent* event)
 		m_frontSlider->setValue(cur);
 	}
 }
+
+void ImageView::contextMenuEvent(QContextMenuEvent* event)
+{
+	const QPoint pos = event->pos();
+	if (true == contains(m_topView, m_topView->mapFrom(this, pos)))
+	{
+		m_menuWidget = m_topView;
+		m_contextMenu->exec(this->mapToGlobal(pos));
+	}
+	else if (true == contains(m_rightView, m_rightView->mapFrom(this, pos)))
+	{
+		m_menuWidget = m_rightView;
+		m_contextMenu->exec(this->mapToGlobal(pos));
+	}
+	else if (true == contains(m_frontView, m_frontView->mapFrom(this, pos)))
+	{
+		m_menuWidget = m_frontView;
+		m_contextMenu->exec(this->mapToGlobal(pos));
+	}
+	event->accept();
+}
+
+
 
 //QModelIndex ImageView::getDataIndex(const QModelIndex & itemIndex)
 //{
@@ -1287,6 +1349,7 @@ void GraphicsView::setTopImage(const QImage & image)
 	QSize size = image.size();
 	QPoint pos = QPoint(-size.width() / 2, -size.height() / 2);
 	setImageHelper(pos, image, m_topSlice, &m_topImage);
+
 }
 
 void GraphicsView::setRightImage(const QImage & image)
@@ -1329,11 +1392,14 @@ void GraphicsView::setFrontImage(const QImage & image)
 
 void GraphicsView::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
+
 	if (sliceItem == nullptr)
 	{
 		sliceItem = new SliceItem(QPixmap::fromImage(inImage));
 		(sliceItem)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
+		sliceItem->setPos(pos);
 		scene()->addItem(sliceItem);
+
 	}
 	else
 	{
@@ -1341,7 +1407,7 @@ void GraphicsView::setImageHelper(const QPoint& pos, const QImage& inImage, Slic
 	}
 	QSize size = inImage.size();
 	*outImage = inImage;
-	(sliceItem)->setPos(pos);
+	//(sliceItem)->setPos(pos);
 }
 
 void GraphicsView::clearSliceMarksHelper(SliceItem* sliceItem)

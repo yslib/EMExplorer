@@ -71,5 +71,3 @@ inline int MRCDataModel::frontSliceCount() const
 {
 	return m_d->getHeight();
 }
-
-#include "mrc.h"
