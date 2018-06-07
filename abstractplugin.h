@@ -9,20 +9,25 @@ class GraphicsView;
 class AbstractPlugin:public QWidget
 {
 public:
-    AbstractPlugin(SliceType type,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
-public slots:
+    AbstractPlugin(SliceType type,const QString & name,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+protected slots:
 	virtual void sliceChanged(int index);
 	virtual void sliceSelected(const QPoint & pos);
 	virtual void sliceOpened(int index);
 	virtual void slicePlayStoped(int index);
+	virtual void slicePlaying(int index);
 protected:
-	SliceItem * getSliceItem();
-	QImage getOriginalImage(int index);
+	SliceItem * sliceItem();
+	QImage originalImage(int index);
+	GraphicsView * view();
+	QString sliceName()const;
 private:
 	Q_OBJECT
 	AbstractSliceDataModel * m_model;
 	GraphicsView *m_view;
 	SliceType m_type;
+	QString m_sliceName;
+
 	friend class ImageView;
 };
 

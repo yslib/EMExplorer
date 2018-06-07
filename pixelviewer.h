@@ -15,30 +15,24 @@ class PixelViewer:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    PixelViewer(SliceType type, GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+    PixelViewer(SliceType type, const QString & name,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
     int getWidth()const;
     int getHeight()const;
-    void setWidth(int width);
-    void setHeight(int height);
-    void setImage(const QImage & image);
-	//model interface
-	//void setModel(DataItemModel * model);
-	//void activateItem(const QModelIndex & index);
-
 public slots:
-	//void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
     void setPosition(const QPoint & p);
 	void sliceSelected(const QPoint& pos) Q_DECL_OVERRIDE;
-
 protected:
 	void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
-	void closeEvent(QCloseEvent* event) Q_DECL_OVERRIDE;
-	//void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+	protected slots:
+	void sliceOpened(int index) override;
 private:
     void changeLayout(QSize areaSize);
     void changeValue(const QImage & image,const QPoint & pos);
 	void calcCount(QSize areaSize);
 	void setWidget(QWidget * widget,int xpos, int ypos);
+	void setWidth(int width);
+	void setHeight(int height);
+	void setImage(const QImage & image);
 private:
 	static const int s_width = 50;
 	static const int s_height = 20;
@@ -52,6 +46,7 @@ private:
 	//QModelIndex m_activedIndex;
     QImage m_image;
     QVector<QSharedPointer<QLineEdit>> m_pixelLabels;
+	QVector<bool> m_flags;
     QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;
     QVector<QSharedPointer<QLabel>> m_rowHeadersLabels;
     QSharedPointer<QLabel> m_cornerLabel;
@@ -60,6 +55,7 @@ private:
     int m_height;
     int m_minValueIndex;
     int m_maxValueIndex;
+	int m_centroidIndex;
     //QGridLayout * layout;
 };
 

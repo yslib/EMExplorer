@@ -148,18 +148,24 @@ void Histogram::paintEvent(QPaintEvent *event)
        imagePainter.setPen(QColor(0,0,0));
        imagePainter.setBrush(QBrush(QColor(0,0,0)));
 
+	   QVarLengthArray<qreal, 256> f(256);
        for(int i=0;i<BIN_COUNT;i++){
-           qreal c = (static_cast<double>(m_hist[i])/static_cast<double>(m_count));
-		   int binHeight = c*height*10;
-           imagePainter.drawRect(QRectF
-                                 (QPointF(i*binWidth,height-binHeight),QSize(binWidth,binHeight))
-                   );
+           f[i] = ((static_cast<double>(m_hist[i])/static_cast<double>(m_count)));
        }
+	   qreal *fmax = std::max_element(f.begin(), f.end());
+	   qreal mag = 0.7 / *fmax;		//the height of the max bin is set as 0.7 of height of the widget/  
+	   for(int i=0;i<BIN_COUNT;i++)
+	   {
+		   int binHeight = f[i] * height*mag;
+		   imagePainter.drawRect(QRectF
+		   (QPointF(i*binWidth, height - binHeight), QSize(binWidth, binHeight))
+		   );
+	   }
    }
 
    //Drawing lower bound and upper bound lines
-   imagePainter.setPen(QColor(255,100,0));
-   imagePainter.setBrush(QBrush(QColor(255,100,0)));
+   imagePainter.setPen(QColor(255,0,0));
+   imagePainter.setBrush(QBrush(QColor(255,0,0)));
 
    qreal lowerBoundLineX = m_minValue*binWidth+binWidth/2;
    qreal upperBoundLineX = m_maxValue*binWidth+binWidth/2;
@@ -228,102 +234,20 @@ qreal Histogram::getXofRightCursor()
 /*
  * HistogramViewer Definitions
 */
-HistogramViewer::HistogramViewer(SliceType type, GraphicsView * view, AbstractSliceDataModel * model, QWidget * parent)noexcept:AbstractPlugin(type,view,model,parent)
+HistogramViewer::HistogramViewer(SliceType type,const QString & name, GraphicsView * view, AbstractSliceDataModel * model, QWidget * parent)noexcept:AbstractPlugin(type,name,view,model,parent)
 {
-
     createWidgets();
-
-    //connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) { updateImage(); });
-    //connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) { updateImage(); });
-
-    //connect(m_minSlider,SIGNAL(valueChanged(int)),this,SIGNAL(minValueChanged(int)));
-    //connect(m_maxSlider,SIGNAL(valueChanged(int)),this,SIGNAL(maxValueChanged(int)));
 	createConnections();
- 
     updateActions();
 }
-
-
 void HistogramViewer::setImage(const QImage &image)
 {
     m_hist->setImage(image);
 }
-
 QVector<int> HistogramViewer::getHist() const
 {
     return m_hist->getHist();
 }
-//void HistogramViewer::setModel(DataItemModel * model)
-//{
-//	if(m_model != model)
-//	{
-//		m_model = model;
-//		disconnect(m_model, &DataItemModel::dataChanged, this, &HistogramViewer::dataChanged);
-//		connect(m_model, &DataItemModel::dataChanged, this, &HistogramViewer::dataChanged);
-//		///TODO::get corresponding data i.e. current slice, and draw the histgoram 
-//	}
-//}
-
-//void HistogramViewer::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
-//{
-//	qDebug() << "HistogramViewer:model has been updated";
-//	TODO::update data
-//	if(m_internalUpdate == true)
-//	{
-//		m_internalUpdate == false;
-//		return;
-//	}
-//
-//	if(m_ptr.isNull() == true)
-//	{
-//		qWarning("Model is empty.");
-//		return;
-//	}
-//	int currentSlice = m_ptr->getCurrentSliceIndex();
-//    qDebug()<<"In HistogramViewer:Slice:"<<currentSlice;
-//
-//	different slice should have different bounds.
-//
-//	int low = m_ptr->getGrayscaleStrechingLowerBound();
-//	int high = m_ptr->getGrayscaleStrechingUpperBound();
-//
-//	m_minSlider->setValue(low);
-//	m_maxSlider->setValue(high);
-//	m_hist->setLeftCursorValue(low);
-//	m_hist->setRightCursorValue(high);
-//	setImage(m_ptr -> getTopSlice(currentSlice));
-//
-//}
-
-//void HistogramViewer::activateItem(const QModelIndex & index)
-//{
-//	if (m_model == nullptr)
-//	{
-//		qWarning("Model is empty.",__LINE__);
-//		return;
-//	}
-//	
-//	//QVariant var = m_model->data(getDataIndex(index));
-//	QVariant var = m_model->data(index.sibling(index.row(),index.column()+1));
-//	if(var.canConvert<QSharedPointer<ItemContext>>() == true)
-//	{
-//		m_modelIndex = index;
-//		auto p = var.value<QSharedPointer<ItemContext>>();
-//		m_ptr = p;
-//		int currentSlice = p->getCurrentSliceIndex();
-//		int low = p->getGrayscaleStrechingLowerBound();
-//		int high = p->getGrayscaleStrechingUpperBound();
-//		m_minSlider->setValue(low);
-//		m_maxSlider->setValue(high);
-//		m_hist->setLeftCursorValue(low);
-//		m_hist->setRightCursorValue(high);
-//		setImage(p->getTopSlice(currentSlice));
-//	}
-//    updateActions();
-//}
-//
-
-
 void HistogramViewer::onMinValueChanged(int value)
 {
     updateImage();
@@ -333,7 +257,6 @@ void HistogramViewer::onMaxValueChanged(int value)
 {
     updateImage();
 }
-
 void HistogramViewer::reset()
 {
 	qDebug() << "HistogramViewer::reset|"<<m_currentIndex;
@@ -343,9 +266,9 @@ void HistogramViewer::reset()
 	//old = m_maxSlider->blockSignals(true);
 	m_maxSlider->setValue(255);
 	//m_maxSlider->blockSignals(old);
-	SliceItem * item = getSliceItem();
+	SliceItem * item = sliceItem();
 	Q_ASSERT_X(item, "HistogramViewer::reset", "null pointer");
-	QImage origin = getOriginalImage(m_currentIndex);
+	QImage origin = originalImage(m_currentIndex);
 	item->setPixmap(QPixmap::fromImage(origin));
 	setImage(origin);
 }
@@ -358,7 +281,7 @@ void HistogramViewer::filterImage()
     //int currentIndex = m_ptr->getCurrentSliceIndex();
     //QImage slice = m_ptr->getOriginalTopSlice(currentIndex);
 
-	QImage slice = getOriginalImage(m_currentIndex).copy();
+	QImage slice = originalImage(m_currentIndex).copy();
 
     int width = slice.width();
     int height = slice.height();
@@ -377,7 +300,7 @@ void HistogramViewer::filterImage()
     //m_internalUpdate = true;
     //m_ptr->setSlice(slice,currentIndex,SliceType::SliceZ);
     //m_model->setData(getDataIndex(m_modelIndex),QVariant::fromValue(m_ptr));
-	SliceItem * item = getSliceItem();
+	SliceItem * item = sliceItem();
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
 	item->setPixmap(QPixmap::fromImage(slice));
 }
@@ -385,7 +308,23 @@ void HistogramViewer::filterImage()
 void HistogramViewer::sliceOpened(int index)
 {
 	m_currentIndex = index;
-	setImage(getOriginalImage(index));
+	setImage(originalImage(index));
+	qDebug() << "sliceOpened slots hitted";
+}
+
+void HistogramViewer::sliceChanged(int index)
+{
+	qDebug() << "sliceChanged slots hitted";
+}
+
+void HistogramViewer::slicePlayStoped(int index)
+{
+	qDebug() << "slicePlayStoped slot hitted";
+}
+
+void HistogramViewer::sliceSelected(const QPoint & pos)
+{
+	qDebug() << "sliceSelected slot hitted";
 }
 
 void HistogramViewer::updateImage()
@@ -394,11 +333,11 @@ void HistogramViewer::updateImage()
 	int maxValue = m_maxSlider->value();
 	qDebug() << minValue << " " << maxValue;
 	//update min and max value
-	QImage originalImage = getOriginalImage(m_currentIndex).copy();
-	Q_ASSERT_X(originalImage.isNull() == false, "HistogramViewer::updateImage", "null image");
-	unsigned char *image = originalImage.bits();
-	int width = originalImage.width();
-	int height = originalImage.height();
+	QImage oriImage = originalImage(m_currentIndex).copy();
+	Q_ASSERT_X(oriImage.isNull() == false, "HistogramViewer::updateImage", "null image");
+	unsigned char *image = oriImage.bits();
+	int width = oriImage.width();
+	int height = oriImage.height();
 
     //memory buffer is shared between CImg and QImage
     cimg_library::CImg<unsigned char> equalizedImage(image,width,height,1,1,true);
@@ -425,10 +364,10 @@ void HistogramViewer::updateImage()
 //			}
 //		}
 //	}
-    m_hist->setImage(originalImage);			//Note:: this variable is no longer the original image.
-	SliceItem * item = getSliceItem();
+    m_hist->setImage(oriImage);			//Note:: this variable is no longer the original image.
+	SliceItem * item = sliceItem();
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
-	item->setPixmap(QPixmap::fromImage(originalImage));
+	item->setPixmap(QPixmap::fromImage(oriImage));
 }
 
 //QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)
@@ -438,7 +377,7 @@ void HistogramViewer::updateImage()
 
 void HistogramViewer::updateActions()
 {
-    setEnabled(getSliceItem() != nullptr);
+    setEnabled(sliceItem() != nullptr);
 }
 
 void HistogramViewer::createWidgets()
@@ -543,7 +482,6 @@ void HistogramViewer::updateParameterLayout(const QString &text)
         m_sigmaYLabel->setParent(nullptr);
         m_parameterLayout->removeWidget(m_sigmaYSpinBox);
         m_sigmaYSpinBox->setParent(nullptr);
-
         m_parameterLayout->addWidget(m_medianKernelSizeLabel,0,0);
         m_parameterLayout->addWidget(m_medianKernelSizeSpinBox,0,1);
 
@@ -552,7 +490,6 @@ void HistogramViewer::updateParameterLayout(const QString &text)
         m_medianKernelSizeLabel->setParent(nullptr);
         m_parameterLayout->removeWidget(m_medianKernelSizeSpinBox);
         m_medianKernelSizeSpinBox->setParent(nullptr);
-
         m_parameterLayout->addWidget(m_sigmaXLabel,0,0);
         m_parameterLayout->addWidget(m_sigmaXSpinBox,0,1);
         m_parameterLayout->addWidget(m_sigmaYLabel,1,0);

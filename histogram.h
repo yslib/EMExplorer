@@ -30,7 +30,6 @@ public:
     int getMaximumCursorValue()const;
     int getBinCount()const;
     void setDragEnable(bool enable);
-
 public slots:
     void setLeftCursorValue(int value);
     void setRightCursorValue(int value);
@@ -69,7 +68,7 @@ class HistogramViewer:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    explicit HistogramViewer(SliceType type, GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr)noexcept;
+    explicit HistogramViewer(SliceType type, const QString & name,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr)noexcept;
     QVector<int> getHist()const;
     void setEnabled(bool enable);
 	//model interface
@@ -83,12 +82,14 @@ public slots:
 	void onMaxValueChanged(int value);
     void reset();
     void filterImage();
-
-	void sliceOpened(int index) override;
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
 protected:
+	void sliceOpened(int index) override;
+	void sliceChanged(int index) override;
+	void slicePlayStoped(int index) override;
+	void sliceSelected(const QPoint& pos) override;
 private:
 
 	int getLeftCursorValue()const;

@@ -277,23 +277,28 @@ signals:
 	//void ZSliderChanged(int value);
 	//void YSliderChanged(int value);
 	//void XSliderChanged(int value);
-	void sliderChanged(int value, SliceType type);
+	//void sliderChanged(int value, SliceType type);
+	void topSliceOpened(int index);
+	void topSliceChanged(int index);
+	void topSlicePlayStoped(int index);
+	void rightSliceOpened(int index);
+	void rightSliceChanged(int index);
+	void rightSlicePlayStoped(int index);
+	void frontSliceOpened(int index);
+	void frontSliceChanged(int index);
+	void frontSlicePlayStoped(int index);
 
-	void sliceOpened(int index);
-	void sliceChanged(int index);
-	void slicePlayStoped(int index);
-
-	void zSliceSelected(const QPoint & point);
-	void ySliceSelected(const QPoint & point);
-	void xSliceSelected(const QPoint & point);
+	void topSliceSelected(const QPoint & point);
+	void rightSliceSelected(const QPoint & point);
+	void frontSliceSelected(const QPoint & point);
 
 	//void sliceSeletecd(const QPoint & point,SliceType type);
 
 public slots:
 	void setEnabled(bool enable);
-	void onTopSliceTimer(bool enable);
-	void onRightSliceTimer(bool enable);
-	void onFrontSliceTimer(bool enable);
+	void topSlicePlay(bool enable);
+	void rightSlicePlay(bool enable);
+	void frontSlicePlay(bool enable);
 	void onColorChanged();
 protected:
 	void timerEvent(QTimerEvent* event) override;
@@ -311,18 +316,19 @@ private:
 	void updateTopSliceActions();
 	void updateFrontSliceActions();
 	void updateRightSliceActions();
-
 	void createToolBar();
 	void createConnections();
-
 	void createContextMenu();
 
+	void timerHelper();
 
-	void sliceChanged(int value, SliceType type);
+
+	void changeSlice(int value, SliceType type);
 	inline void setTopSliceCount(int value);
 	inline void setRightSliceCount(int value);
 	inline void setFrontSliceCount(int value);
 	int currentIndex(SliceType type);
+
 
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
