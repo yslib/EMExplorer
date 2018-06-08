@@ -15,7 +15,7 @@ class PixelViewer:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    PixelViewer(SliceType type, const QString & name,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+    PixelViewer(SliceType type, const QString & name,SliceView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
     int getWidth()const;
     int getHeight()const;
 public slots:
@@ -23,7 +23,7 @@ public slots:
 	void sliceSelected(const QPoint& pos) Q_DECL_OVERRIDE;
 protected:
 	void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
-	protected slots:
+protected slots:
 	void sliceOpened(int index) override;
 private:
     void changeLayout(QSize areaSize);
@@ -40,10 +40,7 @@ private:
 	static const int s_bottom = 0;
 	static const int s_left = 0;
 	static const int s_right = 0;
-	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
-	//QAbstractItemModel * m_model;
-	//QSharedPointer<ItemContext> m_ptr;
-	//QModelIndex m_activedIndex;
+
     QImage m_image;
     QVector<QSharedPointer<QLineEdit>> m_pixelLabels;
 	QVector<bool> m_flags;

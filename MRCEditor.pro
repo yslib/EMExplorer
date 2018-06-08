@@ -38,7 +38,9 @@ SOURCES += main.cpp\
     tinyviewinterface.cpp \
     profileview.cpp \
     mrcdatamodel.cpp \
-    abstractplugin.cpp
+    abstractplugin.cpp \
+    markcategray.cpp \
+    markmodel.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -55,8 +57,10 @@ HEADERS  += mainwindow.h \
     CImg.h \
     profileview.h \
     mrcdatamodel.h \
-    abstractplugin.h
+    abstractplugin.h \
+    markcategray.h \
+    markmodel.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 CONFIG += c++11

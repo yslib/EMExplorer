@@ -1,139 +1,41 @@
-#include <QRect>
 #include <QDockWidget>
-#include <qglobal.h>
+#include <QFileDialog>
 #include <QMessageBox>
-#include <QTableView>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QTreeView>
+#include <QDebug>
 
-#include "imageviewer.h"
-#include "ui_mainwindow.h"
+
+//custom headers
 #include "mainwindow.h"
+#include "mrc.h"
+#include "imageviewer.h"
 #include "profileview.h"
 #include "mrcdatamodel.h"
 
-QSize imageSize(500, 500);
-
-MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+//QSize imageSize(500, 500);
+MainWindow::MainWindow(QWidget *parent):
+	QMainWindow(parent)
+	
 {
-	//ui->setupUi(this);
-	setWindowTitle(tr("MRC Editor"));
-	//Menu [1]
-	//File menu
-	QMenu *m_fileMenu = menuBar()->addMenu(tr("File"));
-	QAction *m_openFileAction = m_fileMenu->addAction("Open..");
-	connect(m_openFileAction, &QAction::triggered, this, &MainWindow::open);
 
-	QAction *m_saveDataAsAction = m_fileMenu->addAction("Save As..");
-	connect(m_saveDataAsAction, &QAction::triggered, this, &MainWindow::save);
+	//These functions need to be call in order.
+	createActions();
 
-	//View menu
-	QMenu * viewMenu = menuBar()->addMenu(tr("View"));
+	createMenu();
 
+	createWidget();
+
+	createStatusBar();
+	resize(1650,1080);
+
+	setWindowTitle(QStringLiteral("MRC Editor"));
 	
-	QDockWidget *dock;
-	//m_treeView = new QTreeView(this);
-	//dock = new QDockWidget(tr("File Information View"), this);
-	//dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	//dock->setWidget(m_treeView);
-	//addDockWidget(Qt::LeftDockWidgetArea, dock);
-	//viewMenu->addAction(dock->toggleViewAction());
-	//m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
-
-	//m_treeViewModel = new DataItemModel(QString(), this);
-	/////TODO::
-	//connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
-	//m_treeView->setModel(m_treeViewModel);
-	//
-
-	
-	//m_histogramView = new HistogramViewer(this);
-	//m_histogramView->setModel(m_treeViewModel);
-	//dock = new QDockWidget(tr("Histgoram"), this);
-	//dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	//dock->setWidget(m_histogramView);
-	//addDockWidget(Qt::RightDockWidgetArea, dock);
-	//viewMenu->addAction(dock->toggleViewAction());
-
-
-	//m_filesComboBox = new QComboBox(this);
-	//dock = new QDockWidget(QStringLiteral("Files:"), this);
-	//dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	//dock->setWidget(m_filesComboBox);
-	//addDockWidget(Qt::RightDockWidgetArea, dock);
-	//viewMenu->addAction(dock->toggleViewAction());
-	//connect(m_filesComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index)
-	//{
-	//	m_infoView->setModel(m_infoModels.value(index));
-	//});
-
-	m_profileView = new ProfileView(this);
-	dock = new QDockWidget(QStringLiteral("Profile:"), this);
-	dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	dock->setWidget(m_profileView);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-
-	///TODO:: m_histogramView
-	//connect(m_histogramView,SIGNAL(minValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
-	//connect(m_histogramView,SIGNAL(maxValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
-
-	//Test ImageView
-	m_imageView = new ImageView(this);
-	//m_imageView->setModel(m_treeViewModel);
-	setCentralWidget(m_imageView);
-
-
-
-	//pixel viewer dock widget
-	//m_pixelViewer = new PixelViewer(this);
-	//dock = new QDockWidget(tr("PixelViewer"), this);
-	//dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	//dock->setWidget(m_pixelViewer);
-	//addDockWidget(Qt::LeftDockWidgetArea, dock);
-	//viewMenu->addAction(dock->toggleViewAction());
-	//m_pixelViewer->setModel(m_treeViewModel);
-
-	//ToolBar and Actions [3]
-	//open action
-	m_actionOpen = new QAction(this);
-	m_actionOpen->setText(tr("Open"));
-	QToolBar * toolBar = addToolBar(tr("Tools"));
-	toolBar->addAction(m_actionOpen);
-	connect(m_actionOpen, &QAction::triggered, this, &MainWindow::open);
-
-	///TODO::
-	//connect(m_imageView, SIGNAL(zSliceSelected(const QPoint &)), m_pixelViewer, SLOT(setPosition(const QPoint &)));
-
-	//color action
-	m_actionColor = new QAction(this);
-	m_actionColor->setText(QStringLiteral("Color"));
-	toolBar = addToolBar(tr("Tools"));
-	toolBar->addAction(m_actionColor);
-	connect(m_actionColor, SIGNAL(triggered(bool)), this, SLOT(onColorActionTriggered()));
-
-	//save mark action
-	QAction * actionSaveMark = new QAction(this);
-	actionSaveMark->setText(QStringLiteral("Save Mark"));
-	toolBar->addAction(actionSaveMark);
-	connect(actionSaveMark, SIGNAL(triggered()), this, SLOT(save()));
-
-	//save data as action
-	QAction * actionSaveDataAs = new QAction(this);
-	actionSaveDataAs->setText(QStringLiteral("Save Data As"));
-	toolBar->addAction(actionSaveDataAs);
-	connect(actionSaveDataAs, SIGNAL(triggered()), this, SLOT(saveAs()));
-
-	//Status bar
-
-	m_currentContext = -1;
-	allControlWidgetsEnable(false);
-
 }
 MainWindow::~MainWindow()
 {
-	_destroy();
-	delete ui;
 }
 
 void MainWindow::open()
@@ -143,114 +45,15 @@ void MainWindow::open()
 		return;
 	}
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
-	//QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
-	//m_treeViewModel->addItem(sharedItem);
-	QSharedPointer<MRC>  ptr(new MRC(fileName.toStdString()));
-	if (ptr->isOpened() == false) {
-		qDebug() << "file open failed\n";
-		return;
-	}
-
-    auto model = setupProfileModel(*ptr);
-    m_profileView->addModel(fileName,model);
-	MRCDataModel * sliceModel = new MRCDataModel(ptr);
+	Q_UNUSED(name);
+	QSharedPointer<MRC> mrc(new MRC(fileName.toStdString()));
+	MRCDataModel * sliceModel = new MRCDataModel(mrc);
+	auto infoModel = setupProfileModel(*mrc);
+	m_profileView->addModel(fileName, infoModel);
 	m_imageView->setSliceModel(sliceModel);
+
+	m_models[fileName] = std::make_tuple(infoModel, sliceModel, m_imageView->getMarkModel());
 }
-
-
-void MainWindow::addMRCDataModel(const ItemContext & model)
-{
-	m_mrcDataModels.push_back(model);
-}
-
-void MainWindow::addMRCDataModel(ItemContext && model)
-{
-	m_mrcDataModels.push_back(std::move(model));
-}
-
-/*
- * This function is to set the properties of
- * control widgets according to context
-*/
-void MainWindow::setMRCDataModel(int index)
-{
-	m_currentContext = index;
-
-	const ItemContext & model = m_mrcDataModels[m_currentContext];
-
-	/*sliceSlider's*/
-	int maxSliceIndex = model.getTopSliceCount() - 1;
-	int currentSliceIndex = model.getCurrentSliceIndex();
-
-	int maxRightSliceIndex = model.getRightSliceCount() - 1;
-	int maxFrontSliceIndex = model.getFrontSliceCount() - 1;
-
-
-	/*Max Gray Slider and SpinBox*/
-	///TODO::maybe the tow values are useless
-	int minGrayscaleValue = model.getMinGrayscale();     //Usually 255
-	int maxGrayscaleValue = model.getMaxGrayscale();
-	int grayscaleStrechingLowerBound = model.getGrayscaleStrechingLowerBound();
-
-	///TODO::m_histogramView
-	//m_histogramView->setLeftCursorValue(grayscaleStrechingLowerBound);
-
-	/*Min Gray Slider and SpinBox*/
-	int grayscaleStrechingUpperBound = model.getGrayscaleStrechingUpperBound();
-	//TODO::m_histogramView
-	//m_histogramView->setRightCursorValue(grayscaleStrechingUpperBound);
-
-	const QImage & image = model.getTopSlice(currentSliceIndex);
-
-	int topSliceCount = model.getTopSliceCount();
-	int rightSliceCount = model.getRightSliceCount();
-	int frontSliceCount = model.getFrontSliceCount();
-
-	/*Histogram*/
-
-
-	QRect region = model.getZoomRegion();
-
-	allControlWidgetsEnable(true);
-
-
-}
-
-void MainWindow::saveMRCDataModel()
-{
-	if (m_currentContext == -1)
-		return;
-
-	//Save previous context
-	ItemContext & model = m_mrcDataModels[m_currentContext];
-
-
-
-}
-
-void MainWindow::deleteMRCDataModel(int index)
-{
-
-}
-
-void MainWindow::allControlWidgetsEnable(bool enable)
-{
-	//TODO::m_histogramView
-	//m_histogramView->setEnabled(enable);
-}
-
-
-void MainWindow::_destroy()
-{
-	//Nothing need to be destroyed
-}
-
-
-
-/*
- *
-*/
-
 
 
 
@@ -262,7 +65,8 @@ void MainWindow::save()
 	if (fileName.isEmpty() == true)
 		return;
 	if (fileName.endsWith(QString(".raw")) == true) {
-		bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::RAW);
+		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::RAW);
+		bool ok = false;
 		if (ok == false) {
 			QMessageBox::critical(this,
 				QStringLiteral("Error"),
@@ -271,7 +75,8 @@ void MainWindow::save()
 		}
 	}
 	else if (fileName.endsWith(QString(".mrc")) == true) {
-		bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
+		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
+		bool ok = false;
 		if (ok == false) {
 			QMessageBox::critical(this,
 				QStringLiteral("Error"),
@@ -289,37 +94,82 @@ void MainWindow::saveAs()
 	if (fileName.isEmpty() == true)
 		return;
 	if (fileName.endsWith(".raw") == true) {
-		m_mrcDataModels[m_currentContext].save(fileName);
+		//m_mrcDataModels[m_currentContext].save(fileName);
 	}
 	else if (fileName.endsWith(".mrc") == true) {
-		m_mrcDataModels[m_currentContext].save(fileName);
+		//m_mrcDataModels[m_currentContext].save(fileName);
 	}
 }
 
 void MainWindow::exploererDoubleClicked(const QModelIndex & index)
 {
 	///TODO::
-	//QModelIndex parent;
-	//QModelIndex rootItem = index;
-	//while ((parent = m_treeViewModel->parent(rootItem)).isValid())
-	//	rootItem = parent;
+}
+void MainWindow::createWidget()
+{
+	QDockWidget * dock;
+	m_profileView = new ProfileView(this);
+	dock = new QDockWidget(QStringLiteral("Profile:"));
+	dock->setAllowedAreas(Qt::RightDockWidgetArea);
+	dock->setWidget(m_profileView);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+	m_viewMenu->addAction(dock->toggleViewAction());
 
-	//m_histogramView->activateItem(rootItem);
-	//m_imageView->activateItem(rootItem);
-	//m_pixelViewer->activateItem(rootItem);
+	m_treeView = new QTreeView;
+	dock = new QDockWidget(QStringLiteral("Mark Manager"));
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+	dock->setWidget(m_treeView);
+	addDockWidget(Qt::LeftDockWidgetArea, dock);
+	m_viewMenu->addAction(dock->toggleViewAction());
 
+	m_imageView = new ImageView;
+	setCentralWidget(m_imageView);
+}
+
+void MainWindow::createMenu()
+{
+	//File menu
+	m_fileMenu = menuBar()->addMenu(tr("File"));
+	m_fileMenu->addAction(m_openAction);
+	m_fileMenu->addAction(m_saveAsAction);
+	//View menu
+	m_viewMenu = menuBar()->addMenu(tr("View"));
 
 }
-void MainWindow::createDockWindows()
+
+void MainWindow::createActions()
 {
 
+	m_openAction= new QAction(this);
+	m_openAction->setText(tr("Open"));
+	QToolBar * toolBar = addToolBar(tr("Tools"));
+	toolBar->addAction(m_openAction);
+	connect(m_openAction, &QAction::triggered, this, &MainWindow::open);
+
+	//color action
+	m_colorAction = new QAction(this);
+	m_colorAction->setText(QStringLiteral("Color"));
+	toolBar = addToolBar(tr("Tools"));
+	toolBar->addAction(m_colorAction);
+
+	//save mark action
+	 m_saveAction = new QAction(this);
+	 m_saveAction->setText(QStringLiteral("Save Mark"));
+	toolBar->addAction(m_saveAction);
+	connect(m_saveAction, &QAction::triggered, this, &MainWindow::save);
+
+	//save data as action
+	m_saveAsAction= new QAction(this);
+	m_saveAsAction->setText(QStringLiteral("Save Data As"));
+	toolBar->addAction(m_saveAsAction);
+	connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
 }
 
-void MainWindow::setupInfo(const QString& text)
+void MainWindow::createStatusBar()
 {
-
+	m_statusBar = statusBar();
+	m_statusBar->showMessage(QStringLiteral("Ready"));
 }
-
 QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 {
 	QAbstractTableModel * model = nullptr;
@@ -327,7 +177,7 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 	for(int i=0;i<mrc.propertyCount();i++)
 	{
         model->setData(model->index(i,0),QVariant::fromValue(QString::fromStdString(mrc.propertyName(i))),Qt::DisplayRole);
-        qDebug()<<QString::fromStdString(mrc.propertyName(i));
+        //qDebug()<<QString::fromStdString(mrc.propertyName(i));
 		MRC::DataType type = mrc.propertyType(i);
 		QVariant value;
 		if(type == MRC::DataType::Integer32)
@@ -340,7 +190,7 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 		{
 			value.setValue(mrc.property<MRC::MRCInt8>(i));
 		}
-        qDebug()<<value;
+        //qDebug()<<value;
         model->setData(model->index(i, 1), value,Qt::DisplayRole);
 	}
 

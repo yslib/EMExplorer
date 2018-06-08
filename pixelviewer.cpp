@@ -6,7 +6,7 @@
 
 
 
-PixelViewer::PixelViewer(SliceType type, const QString & name, GraphicsView * view, AbstractSliceDataModel * model, QWidget * parent) :
+PixelViewer::PixelViewer(SliceType type, const QString & name, SliceView * view, AbstractSliceDataModel * model, QWidget * parent) :
 	AbstractPlugin(type, name, view, model, parent)
 {
 	m_cornerLabel.reset(new QLabel(this), &QObject::deleteLater);
@@ -44,7 +44,6 @@ void PixelViewer::setPosition(const QPoint &p)
 
 void PixelViewer::sliceSelected(const QPoint& pos)
 {
-	qDebug() << "sliceSelected slot is called." << pos << " " << m_image;
 	setPosition(pos);
 }
 void PixelViewer::resizeEvent(QResizeEvent* event)
@@ -54,7 +53,6 @@ void PixelViewer::resizeEvent(QResizeEvent* event)
 
 void PixelViewer::sliceOpened(int index)
 {
-	qDebug() << "Slice opened";
 	setImage(originalImage(index));
 }
 
@@ -202,14 +200,10 @@ void PixelViewer::calcCount(QSize areaSize)
 {
 	QSize size = areaSize;
 	QSize pixelHolderSize = QSize(s_width + s_left + s_right, s_height + s_top + s_bottom);
-	//Q_ASSERT_X(m_cornerLabel.data() != nullptr, "PixelViewer::calcCount", "nullptr");
-
-
 	m_width = (static_cast<double>(size.width()) / pixelHolderSize.width()) - 1;
 	m_height = (static_cast<double>(size.height()) / pixelHolderSize.height()) - 1;
 	if (m_width < 0)m_width = 0;
 	if (m_height < 0)m_height = 0;
-	qDebug() << m_width << " " << m_height << " " << areaSize;
 }
 
 void PixelViewer::setWidget(QWidget * widget, int xpos, int ypos)

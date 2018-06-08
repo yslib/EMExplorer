@@ -68,7 +68,7 @@ class HistogramViewer:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    explicit HistogramViewer(SliceType type, const QString & name,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr)noexcept;
+    explicit HistogramViewer(SliceType type, const QString & name,SliceView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr)noexcept;
     QVector<int> getHist()const;
     void setEnabled(bool enable);
 	//model interface

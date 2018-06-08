@@ -9,29 +9,7 @@
 #include "mrc.h"
 #include "imageviewer.h"
 
-//class MRCDataBaseModel
-//{
-//public:
-//
-//	MRCDataBaseModel();
-//    MRCDataBaseModel(const QString & fileName,int width,int height);
-//	virtual ~MRCDataBaseModel();
-//
-//	int getWidth()const { return m_mrcFile.getWidth(); }
-//	int getHeight()const { return m_mrcFile.getHeight(); }
-//	int getSliceCount()const { return m_mrcFile.getSliceCount(); }
-//	bool save(const QString & fileName);
-//	bool open(const QString & fileName);
-//
-//	bool isOpened()const { return m_mrcFile.isOpened(); }
-//	//const QSharedPointer<MRC> & getMRC()const { return QSharedPointer<MRC>(m_mrcFile); }
-//private:
-//	MRC m_mrcFile;
-//
-//};
-
-
-class GraphicsScene;
+class SliceScene;
 
 class ItemContext //:public QObject
 {
@@ -203,7 +181,7 @@ private:
 
 	QModelIndex m_itemParentIndex;
 	QModelIndex m_markParentIndex;
-	QSharedPointer<GraphicsScene> m_scene;
+	QSharedPointer<SliceScene> m_scene;
 };
 
 
@@ -211,6 +189,9 @@ Q_DECLARE_METATYPE(QSharedPointer<MRC>);
 Q_DECLARE_METATYPE(QSharedPointer<ItemContext>);
 
 
+//
+//	This is a general tree model
+//
 class TreeItem
 {
 	TreeItem * m_parent;
@@ -226,7 +207,7 @@ public:
 	TreeItem* child(int row)const { return m_children.value(row); }
 	/**
 	* \brief This is convinence for Model to create QModelIndex in Model::parent() method
-	* \return return the index of the child in its parent's list of children/
+	* \return return the index of this node
 	*/
 	int row() const {
 		if (m_parent != nullptr)
@@ -267,7 +248,7 @@ public:
 			child->insertColumns(position, columns);
 		return true;
 	}
-	bool removeChildren(int position, int count)
+	bool removeChildren(int position, int count)noexcept
 	{
 		if (position < 0 || position >= m_children.size())
 			return false;
@@ -303,11 +284,11 @@ public:
 
 };
 
-class DataItemModelDelegate :public QStyledItemDelegate
+class MarkItemModelDelegate :public QStyledItemDelegate
 {
 	Q_OBJECT
 public:
-	DataItemModelDelegate(QObject * parent = nullptr) :QStyledItemDelegate(parent) {}
+	MarkItemModelDelegate(QObject * parent = nullptr) :QStyledItemDelegate(parent) {}
 	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
 			const QModelIndex &index) const override;
 	void setEditorData(QWidget *editor, const QModelIndex &index) const override;
@@ -324,29 +305,18 @@ private:
 
 
 
-class DataItemModel :public QAbstractItemModel
+class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
-		TreeItem * m_rootItem;
-
+	TreeItem * m_rootItem;
 	QList<QModelIndex> m_itemRootIndex;
+
 	/**
 	* \brief
 	* \param index
 	* \return return a non-null internal pointer of the index or return root pointer
 	*/
-	TreeItem * getItem(const QModelIndex & index)const
-	{
-		if (index.isValid())
-		{
-			TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
-			if (item)return item;
-		}
-		return m_rootItem;
-	}
-
-private:
-
+	TreeItem* getItem(const QModelIndex& index) const;
 	QModelIndex appendChild(const QModelIndex & parent = QModelIndex(), bool * success = nullptr);
 	bool removeChild(const QModelIndex & index, const QModelIndex & parent = QModelIndex());
 	QModelIndex modelIndexOf(int column, const QModelIndex & parent);
@@ -356,8 +326,8 @@ private:
 	QModelIndex addItemHelper(const QString& fileName, const QString& info);
 
 public:
-	explicit DataItemModel(const QString & data, QObject * parent = nullptr);
-	~DataItemModel();
+	explicit MarkModel(const QString & data, QObject * parent = nullptr);
+	~MarkModel();
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex())const Q_DECL_OVERRIDE;
@@ -369,7 +339,6 @@ public:
 	*The following functions provide support for editing and resizing.
 	*/
 	Qt::ItemFlags flags(const QModelIndex & index)const Q_DECL_OVERRIDE;
-
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 	bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
@@ -378,15 +347,20 @@ public:
 
 	//test file
 	//Custom functions for accessing and setting data
-	//void addItem(const QSharedPointer<MRC> & item);
 
-	void addItem(const QSharedPointer<ItemContext> & item);
+	void addMark(const QString & category, QGraphicsItem * mark);
+	void addMarks(const QString & category,const QList<QGraphicsItem*> & marks);
+	QGraphicsItem * mark(const QString & category);
+	QList<QGraphicsItem*> marks(const QString & category);
+	void removeMark(const QString & category);
+	void removeMarks(const QString & category, const QList<QGraphicsItem*> & marks);
+
+	//void addItem(const QSharedPointer<MRC> & item);
 	//void addData(data);
 	//void addMarks(data,marks);
 	//bool saveData(data);
 	//bool saveMarks(data);
 };
-
 
 
 

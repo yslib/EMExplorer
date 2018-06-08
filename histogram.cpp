@@ -234,7 +234,7 @@ qreal Histogram::getXofRightCursor()
 /*
  * HistogramViewer Definitions
 */
-HistogramViewer::HistogramViewer(SliceType type,const QString & name, GraphicsView * view, AbstractSliceDataModel * model, QWidget * parent)noexcept:AbstractPlugin(type,name,view,model,parent)
+HistogramViewer::HistogramViewer(SliceType type,const QString & name, SliceView * view, AbstractSliceDataModel * model, QWidget * parent)noexcept:AbstractPlugin(type,name,view,model,parent)
 {
     createWidgets();
 	createConnections();

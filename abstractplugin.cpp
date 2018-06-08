@@ -1,7 +1,7 @@
 #include "abstractplugin.h"
 #include "imageviewer.h"
 
-AbstractPlugin::AbstractPlugin(SliceType type,const QString & name,GraphicsView * view,AbstractSliceDataModel * model,QWidget * parent):
+AbstractPlugin::AbstractPlugin(SliceType type,const QString & name,SliceView * view,AbstractSliceDataModel * model,QWidget * parent):
 QWidget(parent),
 m_model(model),
 m_view(view),
@@ -45,16 +45,16 @@ QImage AbstractPlugin::originalImage(int index)
 		return QImage();
 	switch(m_type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		return m_model->originalTopSlice(index);
-	case SliceType::SliceY:
+	case SliceType::Right:
 		return m_model->originalRightSlice(index);
-	case SliceType::SliceX:
+	case SliceType::Front:
 		return m_model->originalFrontSlice(index);
 	}
 	return QImage();
 }
-GraphicsView * AbstractPlugin::view()
+SliceView * AbstractPlugin::view()
 {
 	return m_view;
 }

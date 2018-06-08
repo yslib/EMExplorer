@@ -5,11 +5,11 @@
 #include "imageviewer.h"
 class SliceItem;
 class AbstractSliceDataModel;
-class GraphicsView;
+class SliceView;
 class AbstractPlugin:public QWidget
 {
 public:
-    AbstractPlugin(SliceType type,const QString & name,GraphicsView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+    AbstractPlugin(SliceType type,const QString & name,SliceView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
 protected slots:
 	virtual void sliceChanged(int index);
 	virtual void sliceSelected(const QPoint & pos);
@@ -19,12 +19,12 @@ protected slots:
 protected:
 	SliceItem * sliceItem();
 	QImage originalImage(int index);
-	GraphicsView * view();
+	SliceView * view();
 	QString sliceName()const;
 private:
 	Q_OBJECT
 	AbstractSliceDataModel * m_model;
-	GraphicsView *m_view;
+	SliceView *m_view;
 	SliceType m_type;
 	QString m_sliceName;
 
