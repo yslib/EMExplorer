@@ -1019,12 +1019,11 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 				QPolygonF polyF = mapToScene(poly);
 
 				polyF = m_currentPaintItem->mapFromScene(polyF);
-				QGraphicsPolygonItem * polyItem = new QGraphicsPolygonItem(polyF, m_currentPaintItem);
+				PolyMarkItem * polyItem = new PolyMarkItem(polyF, m_currentPaintItem);
 				QBrush aBrush(m_color);
 				QPen aPen(aBrush, 5, Qt::SolidLine);
 				polyItem->setPen(aPen);
 				polyItem->setZValue(100);
-
 				//emit
 				if (m_currentPaintItem == m_slice)
 				{
@@ -1067,7 +1066,7 @@ void SliceScene::wheelEvent(QGraphicsSceneWheelEvent * event)
 	QGraphicsScene::wheelEvent(event);
 }
 
-StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) :QGraphicsItem(parent)
+StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) :QGraphicsItem(parent),AbstractMarkItem(QStringLiteral("Stroke"),0.0,Qt::black)
 {
 
 }
@@ -1271,3 +1270,4 @@ AbstractSliceDataModel::AbstractSliceDataModel(int nTop, int nRight, int nFront)
 	m_modifiedTopSlice.resize(nTop);
 	m_modifiedTopSliceFlags.resize(nTop);
 }
+

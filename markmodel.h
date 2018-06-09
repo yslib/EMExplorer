@@ -8,12 +8,21 @@ QT_BEGIN_NAMESPACE
 class QGraphicsItem;
 QT_END_NAMESPACE
 
+class AbstractMarkItem;
+
 
 class MarksModel :public QAbstractItemModel
 {
 	Q_OBJECT
+	//QHash<QString, QList<AbstractMarkItem*>> m_items;
+	
+	QList<QList<AbstractMarkItem*>> m_marks;
+	QList<QString> m_class;
+	QHash<AbstractMarkItem *, int> m_indexHash;
 
-	QHash<QString, QList<QGraphicsItem*>> m_items;
+	static constexpr quintptr FirstLevel = 1;
+	static constexpr quintptr SecondLevel = 2;
+	static constexpr quintptr ThirdLevel = 3;
 
 	/**
 	* \brief
@@ -21,7 +30,7 @@ class MarksModel :public QAbstractItemModel
 	* \return return a non-null internal pointer of the index or return root pointer
 	*/
 public:
-	explicit  MarksModel(const QString & data, QObject * parent = nullptr);
+	explicit  MarksModel(QObject * parent = nullptr);
 	~MarksModel();
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
@@ -43,11 +52,11 @@ public:
 	//test file
 	//Custom functions for accessing and setting data
 
-	void addMark(const QString & category, QGraphicsItem * mark);
-	void addMarks(const QString & category, const QList<QGraphicsItem*> & marks);
-	QList<QGraphicsItem*> marks(const QString & category);
-	bool removeMark(const QString & category,QGraphicsItem * mark);
-	int removeMarks(const QString & category, const QList<QGraphicsItem*> & marks = QList<QGraphicsItem*>());
+	void addMark(const QString & category, AbstractMarkItem* mark);
+	void addMarks(const QString & category, const QList<AbstractMarkItem*> & marks);
+	QList<AbstractMarkItem*> marks(const QString & category);
+	bool removeMark(const QString & category,AbstractMarkItem * mark);
+	int removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks = QList<QGraphicsItem*>());
 
 };
 

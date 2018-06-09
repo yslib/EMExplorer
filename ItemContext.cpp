@@ -742,6 +742,12 @@ MarkModel::~MarkModel()
 	delete m_rootItem;
 }
 
+void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
+{
+
+
+}
+
 QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (role != Qt::DisplayRole)

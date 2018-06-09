@@ -348,12 +348,12 @@ public:
 	//test file
 	//Custom functions for accessing and setting data
 
-	void addMark(const QString & category, QGraphicsItem * mark);
-	void addMarks(const QString & category,const QList<QGraphicsItem*> & marks);
-	QGraphicsItem * mark(const QString & category);
-	QList<QGraphicsItem*> marks(const QString & category);
+	void addMark(const QString & category, AbstractMarkItem * mark);
+
+	void addMarks(const QString & category,const QList<AbstractMarkItem*> & marks);
+	QList<AbstractMarkItem*> marks(const QString & category);
 	void removeMark(const QString & category);
-	void removeMarks(const QString & category, const QList<QGraphicsItem*> & marks);
+	void removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks);
 
 	//void addItem(const QSharedPointer<MRC> & item);
 	//void addData(data);

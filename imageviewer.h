@@ -10,6 +10,7 @@
 #include <QSharedPointer>
 #include <QModelIndex>
 #include <QPushButton>
+#include <QGraphicsPolygonItem>
 
 QT_BEGIN_NAMESPACE
 class QGridLayout;
@@ -51,7 +52,33 @@ enum ItemTypes
 	Mark
 };
 
-class StrokeMarkItem :public QGraphicsItem {
+/**
+*
+*	\name:AbstractMarkItem
+*/
+
+
+class AbstractMarkItem {
+	QString m_name;
+	qreal m_length;
+	QColor m_color;
+public:
+	inline AbstractMarkItem(const QString & name, qreal len, const QColor & c);
+	inline QString name()const;
+	inline qreal length()const;
+	inline QColor color()const;
+};
+inline AbstractMarkItem::AbstractMarkItem(const QString & name, qreal len, const QColor & c) :m_name(name), m_length(len), m_color(c){}
+inline qreal AbstractMarkItem::length()const { return m_length; }
+inline QColor AbstractMarkItem::color()const { return m_color; }
+
+
+/**
+*
+*	\name:StrokeMarkItem
+*/
+
+class StrokeMarkItem :public QGraphicsItem,public AbstractMarkItem {
 	QRectF m_boundingRect;
 	QPainterPath m_painterPath;
 	QList<QPointF> m_points;
@@ -63,6 +90,7 @@ public:
 	void addPoint(const QPointF & p);
 	void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)override;
 	int type() const override { return Type; }
+
 private:
 	QRectF unionWith(const QRectF & rect, const QPointF & p);
 protected:
@@ -71,6 +99,14 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
+
+class PolyMarkItem :public QGraphicsPolygonItem, public AbstractMarkItem {
+public:
+	PolyMarkItem(QGraphicsItem * parent = nullptr) :QGraphicsPolygonItem(parent), AbstractMarkItem(QStringLiteral("Poly"), 0.0, Qt::black) {}
+	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr) :QGraphicsPolygonItem(poly, parent),AbstractMarkItem(QStringLiteral("Poly"), 0.0, Qt::black) {}
+
+};
+
 
 class SliceItem :public QGraphicsPixmapItem
 {
@@ -98,6 +134,7 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
+
 class SliceView :public QGraphicsView
 {
 public:
@@ -171,6 +208,9 @@ private:
     QVector<QImage> m_modifiedFrontSlice;
     QVector<bool> m_modifiedFrontSliceFlags;
 };
+
+
+
 
 
 class ImageView :public QWidget
