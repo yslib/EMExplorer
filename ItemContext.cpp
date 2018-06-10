@@ -678,9 +678,7 @@ void ItemContext::setFrontSLiceMarkVisible(QGraphicsItem * mark, bool visible)
 /*
  *New data Model
  */
-
-
-TreeItem* MarkModel::getItem(const QModelIndex& index) const
+TreeItem* MarkModel::get_item_helper_(const QModelIndex& index) const
 {
 	if (index.isValid())
 	{
@@ -689,52 +687,12 @@ TreeItem* MarkModel::getItem(const QModelIndex& index) const
 	}
 	return m_rootItem;
 }
-
-QModelIndex MarkModel::appendChild(const QModelIndex & parent, bool * success)
-{
-	bool flag = insertRows(rowCount(parent), 1, parent);
-	if (success)*success = flag;
-	return index(rowCount(parent) - 1, 0, parent);
-}
-
-bool MarkModel::removeChild(const QModelIndex & index, const QModelIndex & parent)
-{
-	Q_UNUSED(index);
-	return removeRows(0, rowCount(parent), parent);
-}
-
-QModelIndex MarkModel::modelIndexOf(int column, const QModelIndex & itemIndex)
-{
-	TreeItem * item = static_cast<TreeItem*>(itemIndex.internalPointer());
-	if (item == nullptr)return QModelIndex();
-	return index(item->row(), column, parent(itemIndex));
-}
-
-void MarkModel::insertRootItemIndex(const QModelIndex & index, int position)
-{
-	if (position == -1)
-		m_itemRootIndex.append(index);
-	else
-		m_itemRootIndex.insert(position, index);
-}
-
-void MarkModel::removeRootItemIndex(int position)
-{
-	m_itemRootIndex.removeAt(position);
-}
-
-QModelIndex MarkModel::rootItemIndex(int position)
-{
-	return m_itemRootIndex.value(position);
-}
-
-MarkModel::MarkModel(const QString & data, QObject * parent) :QAbstractItemModel(parent)
+MarkModel::MarkModel(QObject * parent):QAbstractItemModel(parent)
 {
 	///TODO:: construct a new root
-	Q_UNUSED(data);
 	QVector<QVariant> headers;
 	headers << "Value:" << "Descption:";
-	m_rootItem = new TreeItem(headers);
+	m_rootItem = new TreeItem(headers, TreeItemType::Root);
 }
 
 MarkModel::~MarkModel()
@@ -744,19 +702,31 @@ MarkModel::~MarkModel()
 
 void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
 {
-
-
+	//
 }
 
 QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
-	if (role != Qt::DisplayRole)
-		return QVariant();
 	if (index.isValid() == false)
 		return QVariant();
-	TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
-	//qDebug() << item->data(index.column());
-	return item->data(index.column());
+	if(role == Qt::DisplayRole)
+	{
+		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+		QVariant d = item->data(index.column());
+		switch(item->type())
+		{
+		case TreeItemType::Root:
+			return QVariant();
+		case TreeItemType::Category:
+			return d;
+		case TreeItemType::Mark:
+			bool success = d.canConvert<AbstractMarkItem*>();
+			Q_ASSERT_X(!success, "MarkModel::data", "convert failure");
+			auto mark = d.value<AbstractMarkItem*>();
+			return QVariant::fromValue(mark->name());
+		}
+	}
+	return QVariant();
 }
 
 Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
@@ -770,7 +740,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 {
 	if (role != Qt::EditRole)
 		return false;
-	TreeItem * item = getItem(index);
+	TreeItem * item = get_item_helper_(index);
 	bool ok = item->setData(index.column(), value);
 	if (ok == true)
 		emit dataChanged(index, index);
@@ -781,6 +751,7 @@ bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
 {
 	beginInsertColumns(parent, column, column + count - 1);
 	//insert same columns at same position from the top of the tree to down recursively
+
 	bool success = m_rootItem->insertColumns(column, count);
 	endInsertColumns();
 	return success;
@@ -799,17 +770,31 @@ bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 
 bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 {
-	TreeItem * item = getItem(parent);
+	TreeItem * item = get_item_helper_(parent);
 	beginInsertRows(parent, row, count + row - 1);
 	//the number of inserted column is the same as the root, i.e 2
-	bool success = item->insertChildren(row, count, columnCount());
+	TreeItemType type;
+	switch (item->type())
+	{
+	case TreeItemType::Root:
+		type = TreeItemType::Category;
+		break;
+	case TreeItemType::Category:
+		type = TreeItemType::Mark;
+		break;
+	case TreeItemType::Mark:
+		return false;
+	default:
+		return false;
+	}
+	bool success = item->insertChildren(row, count,columnCount(),type);
 	endInsertRows();
 	return success;
 }
 
 bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
-	TreeItem * item = getItem(parent);
+	TreeItem * item = get_item_helper_(parent);
 	bool success = true;
 
 	beginRemoveRows(parent, row, row + count - 1);
@@ -827,7 +812,6 @@ QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int rol
 
 QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
 {
-
 	//Check if the index is valid
 	//if(hasIndex(row,column,parent) == false)
 	//	return QModelIndex();
@@ -835,7 +819,7 @@ QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) co
 
 	if (parent.isValid() == true && parent.column() != 0)
 		return QModelIndex();
-	TreeItem * parentItem = getItem(parent);
+	TreeItem * parentItem = get_item_helper_(parent);
 	TreeItem * childItem = parentItem->child(row);
 	if (childItem == nullptr)
 		return QModelIndex();
@@ -848,7 +832,7 @@ QModelIndex MarkModel::parent(const QModelIndex & index) const
 	//Index points to a root item
 	if (index.isValid() == false)return QModelIndex();
 
-	TreeItem * item = getItem(index);
+	TreeItem * item = get_item_helper_(index);
 	TreeItem * parentItem = item->parentItem();
 
 	//If index points to a child item of root item
@@ -863,7 +847,7 @@ int MarkModel::rowCount(const QModelIndex & parent) const
 	//Only a item with 0 column number has children
 	if (parent.column() > 0)
 		return 0;
-	TreeItem * item = getItem(parent);
+	TreeItem * item = get_item_helper_(parent);
 	return item->childCount();
 }
 
@@ -873,71 +857,6 @@ int MarkModel::columnCount(const QModelIndex & parent) const
 		return m_rootItem->columnCount();
 	return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
 }
-
-QModelIndex MarkModel::addItemHelper(const QString& fileName, const QString& info)
-{
-	bool success;
-	const QModelIndex & newRootItemIndex = appendChild(QModelIndex(), &success);//add a new file to as the last child of the parent
-	if (success == false)
-		return QModelIndex();
-
-	//get the newest index inserted before
-	//const QModelIndex & newRootItemIndex = index(rowCount() - 1, 0);
-	//add file row
-	insertRootItemIndex(newRootItemIndex);
-	setData(newRootItemIndex, fileName);
-
-	//add properties row
-	const QModelIndex & informationIndex = appendChild(newRootItemIndex, &success);
-	if (success == false)
-		return QModelIndex();
-	setData(informationIndex, QStringLiteral("Properties"));
-	QStringList lines = info.split('\n', QString::SkipEmptyParts);
-	for (auto & it : lines)
-	{
-		auto line = it.split(':', QString::SkipEmptyParts);
-		{
-			//success = insertRows(rowCount(informationIndex), 1, informationIndex);
-			//int lastRow = rowCount(informationIndex) - 1;
-			//QModelIndex valueIndex = index(lastRow, 0, informationIndex);
-			//QModelIndex descIndex = index(lastRow, 1, informationIndex);
-			QModelIndex newInserted = appendChild(informationIndex, &success);
-			QModelIndex valueIndex = modelIndexOf(0, newInserted);
-			QModelIndex descIndex = modelIndexOf(1, newInserted);
-			if (success == true) {
-				setData(valueIndex, line.value(1));
-				setData(descIndex, line.value(0));
-			}
-		}
-	}
-
-	//add marks row
-	const QModelIndex & marksIndex = appendChild(newRootItemIndex, &success);
-	if(success == false)
-	{
-		qCritical("append Child failed\n");
-		return QModelIndex();
-	}
-	setData(marksIndex, QStringLiteral("Marks"));
-
-	setData(modelIndexOf(1, marksIndex), QVariant::fromValue(0));
-
-	return newRootItemIndex;
-}
-
-//void DataItemModel::addItem(const QSharedPointer<MRC>& item)
-//{
-//
-//	const auto fileName = QString::fromStdString(item->getFileName());
-//	const auto info = QString::fromStdString(item->getMRCInfo());
-//	qDebug() << fileName << " " << info;
-//	const QModelIndex & newModelIndex = addItemHelper(fileName, info);
-//	QModelIndex idx = modelIndexOf(1, newModelIndex);
-//
-//	setData(idx, QVariant::fromValue<QSharedPointer<MRC>>(item));
-//
-//	QVariant var = data(idx,Qt::DisplayRole);
-//}
 
 
 

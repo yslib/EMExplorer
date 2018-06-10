@@ -187,18 +187,28 @@ private:
 
 Q_DECLARE_METATYPE(QSharedPointer<MRC>);
 Q_DECLARE_METATYPE(QSharedPointer<ItemContext>);
+Q_DECLARE_METATYPE(AbstractMarkItem*);
 
 
 //
 //	This is a general tree model
 //
+
+enum class TreeItemType
+{
+	Root,
+	Category,
+	Mark
+};
+
 class TreeItem
 {
 	TreeItem * m_parent;
 	QVector<TreeItem*> m_children;
 	QVector<QVariant> m_data;
+	TreeItemType m_type;
 public:
-	explicit TreeItem(const QVector<QVariant> & data, TreeItem * parent = nullptr) :m_data(data), m_parent(parent) {}
+	explicit TreeItem(const QVector<QVariant> & data, TreeItemType type,TreeItem * parent = nullptr) :m_parent(parent), m_data(data),m_type(type) {}
 	~TreeItem() { qDeleteAll(m_children); }
 
 	void appendChild(TreeItem * child) { m_children.append(child); }
@@ -224,14 +234,14 @@ public:
 	*
 	*/
 
-	bool insertChildren(int position, int count, int columns)
+	bool insertChildren(int position, int count, int columns,TreeItemType type)
 	{
 		///TODO:: Is this check necessary? 
 		if (position < 0 || position > m_children.size())return false;
 		for (int row = 0; row < count; row++)
 		{
 			QVector<QVariant> data(columns);
-			TreeItem * item = new TreeItem(data, this);
+			TreeItem * item = new TreeItem(data, type,this);
 			m_children.insert(position, item);
 		}
 		return true;
@@ -281,6 +291,8 @@ public:
 		return true;
 	}
 
+	TreeItemType type()const { return m_type; }
+
 
 };
 
@@ -309,40 +321,42 @@ class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
 	TreeItem * m_rootItem;
-	QList<QModelIndex> m_itemRootIndex;
-
-
-	class Category {
-		QString m_name;
-		bool m_visible;
-	};
-
 	/**
 	* \brief
 	* \param index
 	* \return return a non-null internal pointer of the index or return root pointer
 	*/
-	TreeItem* getItem(const QModelIndex& index) const;
-	QModelIndex appendChild(const QModelIndex & parent = QModelIndex(), bool * success = nullptr);
-	bool removeChild(const QModelIndex & index, const QModelIndex & parent = QModelIndex());
-	QModelIndex modelIndexOf(int column, const QModelIndex & parent);
-	void insertRootItemIndex(const QModelIndex & index, int position = -1);
-	void removeRootItemIndex(int position);
-	QModelIndex rootItemIndex(int position);
-	QModelIndex addItemHelper(const QString& fileName, const QString& info);
-
-	QModelIndex treversal_tree(const QVariant & target,const QList<QVariant> items,int level) {
-
-		//std::function<QModelIndex(const QVariant&,const QList<QVariant>&,int)> func
-		//	= [&func,this](const QVariant & t,const QList<QVariant>& items,int l)->QModelIndex{
-		//	return QModelIndex();
-		//};
-		//auto tre = std::bind(func, target, items, 5);
-		//treversal();
+	TreeItem* get_item_helper_(const QModelIndex& index) const;
+	QModelIndex model_index_helper_(const QModelIndex & root,const QString & display)
+	{
+		int c = rowCount(root);
+		for(int i=0;i<c;i++)
+		{
+			QModelIndex id = index(i, 0,root);
+			auto item = static_cast<TreeItem*>(id.internalPointer());
+			auto d = item->data(0);
+			QString value;
+			switch(item->type())
+			{
+			case TreeItemType::Category:
+				value = d.value<QString>();
+				break;
+			case TreeItemType::Mark:
+				value = d.value<AbstractMarkItem*>()->name();
+				break;
+			case TreeItemType::Root:
+			default:
+				break;
+			}
+			if (value == display)
+				return id;
+			else
+				model_index_helper_(id, display);
+		}
 	}
 
 public:
-	explicit MarkModel(const QString & data, QObject * parent = nullptr);
+	explicit MarkModel(QObject * parent = nullptr);
 	~MarkModel();
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
@@ -363,18 +377,13 @@ public:
 
 	//test file
 	//Custom functions for accessing and setting data
+	
 
 	void addMark(const QString & category, AbstractMarkItem * mark);
 	void addMarks(const QString & category,const QList<AbstractMarkItem*> & marks);
 	QList<AbstractMarkItem*> marks(const QString & category);
 	void removeMark(const QString & category);
 	void removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks);
-
-	//void addItem(const QSharedPointer<MRC> & item);
-	//void addData(data);
-	//void addMarks(data,marks);
-	//bool saveData(data);
-	//bool saveMarks(data);
 };
 
 
