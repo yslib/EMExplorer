@@ -64,7 +64,7 @@ class AbstractMarkItem {
 	QColor m_color;
 public:
 	inline AbstractMarkItem(const QString & name, qreal len, const QColor & c);
-	inline QString name()const;
+	inline QString name()const { return m_name; }
 	inline qreal length()const;
 	inline QColor color()const;
 };

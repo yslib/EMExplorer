@@ -311,6 +311,12 @@ class MarkModel :public QAbstractItemModel
 	TreeItem * m_rootItem;
 	QList<QModelIndex> m_itemRootIndex;
 
+
+	class Category {
+		QString m_name;
+		bool m_visible;
+	};
+
 	/**
 	* \brief
 	* \param index
@@ -324,6 +330,16 @@ class MarkModel :public QAbstractItemModel
 	void removeRootItemIndex(int position);
 	QModelIndex rootItemIndex(int position);
 	QModelIndex addItemHelper(const QString& fileName, const QString& info);
+
+	QModelIndex treversal_tree(const QVariant & target,const QList<QVariant> items,int level) {
+
+		//std::function<QModelIndex(const QVariant&,const QList<QVariant>&,int)> func
+		//	= [&func,this](const QVariant & t,const QList<QVariant>& items,int l)->QModelIndex{
+		//	return QModelIndex();
+		//};
+		//auto tre = std::bind(func, target, items, 5);
+		//treversal();
+	}
 
 public:
 	explicit MarkModel(const QString & data, QObject * parent = nullptr);
@@ -349,7 +365,6 @@ public:
 	//Custom functions for accessing and setting data
 
 	void addMark(const QString & category, AbstractMarkItem * mark);
-
 	void addMarks(const QString & category,const QList<AbstractMarkItem*> & marks);
 	QList<AbstractMarkItem*> marks(const QString & category);
 	void removeMark(const QString & category);

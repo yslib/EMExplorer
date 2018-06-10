@@ -56,7 +56,7 @@ public:
 	void addMarks(const QString & category, const QList<AbstractMarkItem*> & marks);
 	QList<AbstractMarkItem*> marks(const QString & category);
 	bool removeMark(const QString & category,AbstractMarkItem * mark);
-	int removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks = QList<QGraphicsItem*>());
+	int removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks = QList<AbstractMarkItem*>());
 
 };
 
