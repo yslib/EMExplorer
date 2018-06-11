@@ -34,7 +34,7 @@ private:
 	QTreeView * m_treeView;
 
 	//Data Model
-	QHash<QString,std::tuple<QAbstractTableModel*,MRCDataModel* ,QAbstractItemModel*>> m_models;
+	QHash<QString,std::tuple<QAbstractTableModel*,MRCDataModel* ,MarkModel*>> m_models;
 
 	//Menu
 	QMenu * m_fileMenu;

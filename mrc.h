@@ -442,7 +442,7 @@ private:
 	MRCDataPrivate* m_d;
 	bool m_opened;
 private:
-	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } {}
+	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } { Q_UNUSED(fileName); }
 	void _nversion_Field(int year, int version = 0);
 	void _dmin_dmax_dmean_rms_Field();
 	bool _mrcHeaderRead(FILE *fp, MRCHeader * header);

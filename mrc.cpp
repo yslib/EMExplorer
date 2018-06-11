@@ -16,7 +16,7 @@ MRC::MRC(const std::string &fileName):MRC(fileName,false)
 
 MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType DimensionType, DataType dataType)
 {
-
+	Q_UNUSED(DimensionType);
 	//DataType
 	if (dataType != DataType::Integer8) {
 		//NOTICE: Only support byte type
@@ -64,7 +64,13 @@ MRC::MRC(void * data,
 	VolumeDimensionType type, 
 	DataType dataType)
 {
-
+	Q_UNUSED(data);
+	Q_UNUSED(width);
+	Q_UNUSED(height);
+	Q_UNUSED(volumeZ);
+	Q_UNUSED(volumeCount);
+	Q_UNUSED(type);
+	Q_UNUSED(dataType);
 	exit(-1);
 }
 

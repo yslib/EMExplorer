@@ -5,6 +5,7 @@
 #include <qdebug.h>
 #include <QStyledItemDelegate>
 #include <QAbstractTableModel>
+#include <QtAlgorithms>
 
 #include "mrc.h"
 #include "imageviewer.h"
@@ -211,7 +212,7 @@ public:
 	explicit TreeItem(const QVector<QVariant> & data, TreeItemType type,TreeItem * parent = nullptr) :m_parent(parent), m_data(data),m_type(type) {}
 	~TreeItem() { qDeleteAll(m_children); }
 
-	void appendChild(TreeItem * child) { m_children.append(child); }
+	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
 	TreeItem* parentItem()const { return m_parent; };
 	TreeItem* child(int row)const { return m_children.value(row); }
@@ -237,7 +238,8 @@ public:
 	bool insertChildren(int position, int count, int columns,TreeItemType type)
 	{
 		///TODO:: Is this check necessary? 
-		if (position < 0 || position > m_children.size())return false;
+		if (position < 0 || position > m_children.size())
+			return false;
 		for (int row = 0; row < count; row++)
 		{
 			QVector<QVariant> data(columns);
@@ -246,6 +248,20 @@ public:
 		}
 		return true;
 	}
+	bool insertChildren(int position, QList<TreeItem*>& children)
+	{
+		if (position < 0 || position > m_children.size())
+			return false;
+		for(auto item:children)
+			item->setParentItem(this);
+		//std::copy(children.begin(), children.end(), m_children.begin() + position);
+		for(int row = 0;row<children.size();row++)
+		{
+			m_children.insert(position, children[row]);
+		}
+		return true;
+	}
+
 	bool insertColumns(int position, int columns)
 	{
 		if (position<0 || position > m_data.size())return false;
@@ -315,76 +331,6 @@ private:
 
 };
 
-
-
-class MarkModel :public QAbstractItemModel
-{
-	Q_OBJECT
-	TreeItem * m_rootItem;
-	/**
-	* \brief
-	* \param index
-	* \return return a non-null internal pointer of the index or return root pointer
-	*/
-	TreeItem* get_item_helper_(const QModelIndex& index) const;
-	QModelIndex model_index_helper_(const QModelIndex & root,const QString & display)
-	{
-		int c = rowCount(root);
-		for(int i=0;i<c;i++)
-		{
-			QModelIndex id = index(i, 0,root);
-			auto item = static_cast<TreeItem*>(id.internalPointer());
-			auto d = item->data(0);
-			QString value;
-			switch(item->type())
-			{
-			case TreeItemType::Category:
-				value = d.value<QString>();
-				break;
-			case TreeItemType::Mark:
-				value = d.value<AbstractMarkItem*>()->name();
-				break;
-			case TreeItemType::Root:
-			default:
-				break;
-			}
-			if (value == display)
-				return id;
-			else
-				model_index_helper_(id, display);
-		}
-	}
-
-public:
-	explicit MarkModel(QObject * parent = nullptr);
-	~MarkModel();
-	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
-	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex())const Q_DECL_OVERRIDE;
-	QModelIndex parent(const QModelIndex&index)const Q_DECL_OVERRIDE;
-	int rowCount(const QModelIndex & parent = QModelIndex())const Q_DECL_OVERRIDE;
-	int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
-	/*
-	*Read-only tree models only need to provide the above functions.
-	*The following functions provide support for editing and resizing.
-	*/
-	Qt::ItemFlags flags(const QModelIndex & index)const Q_DECL_OVERRIDE;
-	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
-	bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-	bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-	bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-
-	//test file
-	//Custom functions for accessing and setting data
-	
-
-	void addMark(const QString & category, AbstractMarkItem * mark);
-	void addMarks(const QString & category,const QList<AbstractMarkItem*> & marks);
-	QList<AbstractMarkItem*> marks(const QString & category);
-	void removeMark(const QString & category);
-	void removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks);
-};
 
 
 

@@ -27,7 +27,8 @@ MarkCategray::MarkCategray(QWidget *parent) :QDialog(parent)
 	
 	m_createButton = new QPushButton(QStringLiteral("Create"));
 	m_layout->addWidget(m_createButton, 2,0,1,3);
-
+	m_color = Qt::black;
+	m_colorDisplay->setStyleSheet(QString("background-color:rgb(0,0,0)"));
 
 	connect(m_colorButton, &QPushButton::clicked, [this]()
 	{

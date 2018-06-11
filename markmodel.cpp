@@ -2,168 +2,281 @@
 
 #include "imageviewer.h"
 
-MarksModel::MarksModel(QObject* parent):QAbstractItemModel(parent)
+/*
+*New data Model
+*/
+TreeItem* MarkModel::get_item_helper_(const QModelIndex& index) const
 {
-
+	if (index.isValid())
+	{
+		TreeItem* item = static_cast<TreeItem*>(index.internalPointer());
+		if (item)return item;
+	}
+	return m_rootItem;
+}
+MarkModel::MarkModel(QObject * parent) :QAbstractItemModel(parent)
+{
+	///TODO:: construct a new root
+	QVector<QVariant> headers;
+	headers << "Value:" << "Descption:";
+	m_rootItem = new TreeItem(headers, TreeItemType::Root);
 }
 
-MarksModel::~MarksModel()
+MarkModel::~MarkModel()
 {
-
+	delete m_rootItem;
 }
 
-QVariant MarksModel::data(const QModelIndex& index, int role) const
+void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
+{
+	addMarks(category, QList<AbstractMarkItem*>{mark});
+}
+void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*>& marks)
+{
+	auto i = category_index_helper_(category);
+	if(i.isValid() == false)
+	{
+		i = category_add_helper_(category);
+	}
+	int r = rowCount(i);
+	int c = marks.size();
+	beginInsertRows(i, r, r + c - 1);
+	auto item = get_item_helper_(i);
+
+	Q_ASSERT_X(item != m_rootItem, "MarkModel::addMark", "insert error");
+	//qDebug() << item;
+	int n = 0;
+	QList<TreeItem*> list;
+	for (auto m : marks)
+	{
+		QVector<QVariant> d;
+		m->setName(category + QString(" #%1").arg(r + n++));
+		d.append(QVariant::fromValue(m));
+		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
+	}
+	qDebug() << item->insertChildren(r, list);
+
+	//item->insertChildren(r, c, 1, TreeItemType::Mark);
+	endInsertRows();
+}
+
+QList<AbstractMarkItem*> MarkModel::marks(const QString & category)
+{
+	auto id = category_index_helper_(category);
+	int r = rowCount(id);
+	auto item = get_item_helper_(id);
+	Q_ASSERT_X(item != m_rootItem, "MarkModel::addMark", "insert error");
+	Q_ASSERT_X(item->type() == TreeItemType::Mark, "MarkModel::marks", "type error");
+	QList<AbstractMarkItem*> res;
+	for (int i = 0; i<r; i++)
+	{
+		auto d = item->child(i)->data(0).value<AbstractMarkItem*>();
+		Q_ASSERT_X(d, "MarkModel::marks", "null pointer");
+		res.append(d);
+	}
+	return res;
+}
+
+bool MarkModel::removeMark(const QString& category, AbstractMarkItem* mark)
+{
+	auto id = category_index_helper_(category);
+	int r = rowCount(id);
+	auto item = get_item_helper_(id);
+	Q_ASSERT_X(item != m_rootItem, "MarkModel::addMark", "insert error");
+	Q_ASSERT_X(item->type() == TreeItemType::Mark, "MarkModel::marks", "type error");
+	int removedId = -1;
+	for (int i = 0; i<r; i++)
+	{
+		auto d = item->child(r)->data(0).value<AbstractMarkItem*>();
+		Q_ASSERT_X(d, "MarkModel::removeMarks", "null pointer");
+		if (d == mark)
+		{
+			removedId = i;
+			break;
+		}
+	}
+	if (removedId == -1)
+		return false;
+	beginRemoveRows(id, removedId, removedId);
+	item->removeChildren(removedId, 1);
+	endRemoveRows();
+	return true;
+}
+
+int MarkModel::removeMarks(const QString& category, const QList<AbstractMarkItem*>& marks)
+{
+	int success = 0;
+	auto func = std::bind(&MarkModel::removeMark, this, category, std::placeholders::_1);
+	for (auto item : marks)
+		if (func(item))
+			success++;
+	return success;
+}
+
+int MarkModel::markCount(const QString & category)
+{
+	auto i = category_index_helper_(category);
+	return rowCount(i);
+}
+
+QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)
 		return QVariant();
-	if (role == Qt::DisplayRole) {
-		quintptr iid = index.internalId();
-		if (iid == FirstLevel) {
-			//Fist Level
-			return QVariant::fromValue(m_class[index.row()]);
-		}
-		else if (iid == SecondLevel) {
-			//Second Level
-			auto ptr = static_cast<AbstractMarkItem*>(index.internalPointer());
-			if(ptr != nullptr)
-				return QVariant::fromValue(ptr->name());
+
+
+
+	if (role == Qt::DisplayRole)
+	{
+		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+
+		QVariant d = item->data(index.column());
+		switch (item->type())
+		{
+		case TreeItemType::Root:
 			return QVariant();
+		case TreeItemType::Category:
+			if (index.column() == 0)
+				return d;
+			else
+				return QVariant();
+		case TreeItemType::Mark:
+			if (index.column() != 0)
+				return QVariant();
+			bool success = d.canConvert<AbstractMarkItem*>();
+			Q_ASSERT_X(success, "MarkModel::data", "convert failure");
+			auto mark = d.value<AbstractMarkItem*>();
+			return QVariant::fromValue(mark->name());
 		}
-		return QVariant();
-
-	}
-	else if (role == Qt::BackgroundRole) {
-		return QVariant();
 	}
 	return QVariant();
 }
 
-QVariant MarksModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation == Qt::Horizontal) {
-		if (role == Qt::DisplayRole) {
-			return QVariant::fromValue(QStringLiteral("Name"));
-		}
-		return QVariant();
-	}
-	return QVariant();
-}
-
-QModelIndex MarksModel::index(int row, int column, const QModelIndex& parent) const
-{
-	if (parent.isValid() == false) {	//First Level
-		return createIndex(row, column,FirstLevel);
-	}
-	quintptr iid = parent.internalId();
-	if (iid == FirstLevel) {
-		auto index = createIndex(row, column, m_marks[parent.row()][row]);
-		return index;
-	}
-	return QModelIndex();
-}
-
-QModelIndex MarksModel::parent(const QModelIndex& index) const
-{
-	if (index.isValid() == false)
-		return QModelIndex();
-	auto iid = index.internalId();
-	if (iid == FirstLevel)
-		return QModelIndex();
-	//Second Level
-	return createIndex(0,0 , FirstLevel);
-}
-
-int MarksModel::rowCount(const QModelIndex& parent) const
-{
-	if (parent.isValid() == false) {
-		//First level, return the number of category of mark
-		return m_class.size();
-	}
-	auto iid = parent.internalId();
-	if (iid == FirstLevel) {
-		return m_marks[parent.row()].size();
-	}
-	return 0;
-}
-
-int MarksModel::columnCount(const QModelIndex& parent) const
-{
-	return 1;
-}
-
-Qt::ItemFlags MarksModel::flags(const QModelIndex& index) const
+Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 {
 	if (index.isValid() == false)
 		return 0;
 	return QAbstractItemModel::flags(index);
 }
 
-bool MarksModel::setData(const QModelIndex& index, const QVariant& value, int role)
+bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-	return false;
+	if (role != Qt::EditRole)
+		return false;
+	TreeItem * item = get_item_helper_(index);
+	bool ok = item->setData(index.column(), value);
+	if (ok == true)
+		emit dataChanged(index, index);
+	return ok;
 }
 
-bool MarksModel::insertColumns(int column, int count, const QModelIndex& parent)
+bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
 {
-	return false;
+	beginInsertColumns(parent, column, column + count - 1);
+	//insert same columns at same position from the top of the tree to down recursively
+
+	bool success = m_rootItem->insertColumns(column, count);
+	endInsertColumns();
+	return success;
 }
 
-bool MarksModel::removeColumns(int column, int count, const QModelIndex& parent)
+bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 {
-	return false;
+	beginRemoveColumns(parent, column, column + count - 1);
+	bool success = m_rootItem->removeColumns(column, count);
+	endRemoveColumns();
+
+	if (m_rootItem->columnCount() == 0)
+		removeRows(0, rowCount());
+	return success;
 }
 
-bool MarksModel::insertRows(int row, int count, const QModelIndex& parent)
+bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 {
-	return false;
-}
-
-bool MarksModel::removeRows(int row, int count, const QModelIndex& parent)
-{
-	return false;
-}
-
-void MarksModel::addMark(const QString & category, AbstractMarkItem* mark)
-{
-	int index = m_class.indexOf(category);
-	if (index == -1) {
-		m_class.append(category);
-		QList<AbstractMarkItem*> items = { mark };
-		m_marks.append(items);
+	TreeItem * item = get_item_helper_(parent);
+	beginInsertRows(parent, row, count + row - 1);
+	//the number of inserted column is the same as the root, i.e 2
+	TreeItemType type;
+	switch (item->type())
+	{
+	case TreeItemType::Root:
+		type = TreeItemType::Category;
+		break;
+	case TreeItemType::Category:
+		type = TreeItemType::Mark;
+		break;
+	case TreeItemType::Mark:
+		return false;
+	default:
+		return false;
 	}
-	else {
-		m_marks[index].append(mark);
-	}
+	bool success = item->insertChildren(row, count, columnCount(), type);
+	endInsertRows();
+	return success;
 }
 
-void MarksModel::addMarks(const QString & category, const QList<AbstractMarkItem*> & marks)
+bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
-	int index = m_class.indexOf(category);
-	if (index == -1) {
-		m_class.append(category);
-		m_marks.append(marks);
-	}
-	else {
-		m_marks[index].append(marks);
-	}
-}
-QList<AbstractMarkItem*> MarksModel::marks(const QString & category)
-{
-	return m_marks.value(m_class.indexOf(category));
+	TreeItem * item = get_item_helper_(parent);
+	bool success = true;
+
+	beginRemoveRows(parent, row, row + count - 1);
+	success = item->removeChildren(row, count);
+	endRemoveRows();
+	return success;
 }
 
-bool MarksModel::removeMark(const QString & category,AbstractMarkItem * mark)
+QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	return m_marks.value(m_class.indexOf(category)).removeOne(mark);
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+		return m_rootItem->data(section);
+	return QVariant();
 }
 
-int MarksModel::removeMarks(const QString & category, const QList<AbstractMarkItem*> & marks /*= QList<QGraphicsItem*>()*/)
-{	
-	auto list = m_marks.value(m_class.indexOf(category));
-	int count = 0;
-	for (auto it : marks) {
-		if(list.removeOne(it))
-			count++;
-	}
-	return count;
+QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
+{
+	//Check if the index is valid
+	//if(hasIndex(row,column,parent) == false)
+	//	return QModelIndex();
+	//If the index points to a non-root node and its column is not 0
+
+	if (parent.isValid() == true && parent.column() != 0)
+		return QModelIndex();
+	TreeItem * parentItem = get_item_helper_(parent);
+	TreeItem * childItem = parentItem->child(row);
+	if (childItem == nullptr)
+		return QModelIndex();
+	else
+		return createIndex(row, column, childItem);
+}
+
+QModelIndex MarkModel::parent(const QModelIndex & index) const
+{
+	//Index points to a root item
+	if (index.isValid() == false)return QModelIndex();
+
+	TreeItem * item = get_item_helper_(index);
+	TreeItem * parentItem = item->parentItem();
+
+	//If index points to a child item of root item
+	if (parentItem == m_rootItem)
+		return QModelIndex();
+
+	return createIndex(parentItem->row(), 0, parentItem);
+}
+
+int MarkModel::rowCount(const QModelIndex & parent) const
+{
+	//Only a item with 0 column number has children
+	if (parent.column() > 0)
+		return 0;
+	TreeItem * item = get_item_helper_(parent);
+	return item->childCount();
+}
+
+int MarkModel::columnCount(const QModelIndex & parent) const
+{
+	if (parent.isValid() == false)
+		return m_rootItem->columnCount();
+	return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
 }

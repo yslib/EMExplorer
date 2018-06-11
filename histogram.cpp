@@ -133,6 +133,7 @@ void Histogram::setDragEnable(bool enable)
 
 void Histogram::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
    QImage image(size(),QImage::Format_ARGB32_Premultiplied);
    QPainter imagePainter(&image);
    imagePainter.initFrom(this);
@@ -212,6 +213,7 @@ void Histogram::mousePressEvent(QMouseEvent * event)
 
 void Histogram::mouseReleaseEvent(QMouseEvent *event)
 {
+	Q_UNUSED(event);
     if(m_mousePressed == true)
         m_mousePressed = false;
     m_leftCursorSelected = false;
@@ -250,11 +252,13 @@ QVector<int> HistogramViewer::getHist() const
 }
 void HistogramViewer::onMinValueChanged(int value)
 {
+	Q_UNUSED(value);
     updateImage();
 }
 
 void HistogramViewer::onMaxValueChanged(int value)
 {
+	Q_UNUSED(value);
     updateImage();
 }
 void HistogramViewer::reset()
@@ -309,22 +313,21 @@ void HistogramViewer::sliceOpened(int index)
 {
 	m_currentIndex = index;
 	setImage(originalImage(index));
-	qDebug() << "sliceOpened slots hitted";
 }
 
 void HistogramViewer::sliceChanged(int index)
 {
-	qDebug() << "sliceChanged slots hitted";
+	Q_UNUSED(index);
 }
 
 void HistogramViewer::slicePlayStoped(int index)
 {
-	qDebug() << "slicePlayStoped slot hitted";
+	Q_UNUSED(index);
 }
 
 void HistogramViewer::sliceSelected(const QPoint & pos)
 {
-	qDebug() << "sliceSelected slot hitted";
+	Q_UNUSED(pos);
 }
 
 void HistogramViewer::updateImage()

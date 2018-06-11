@@ -4,6 +4,7 @@
 #include "ItemContext.h"
 #include "pixelviewer.h"
 #include "markcategray.h"
+#include "markmodel.h"
 /*Qt Headers*/
 #include <QToolBar>
 #include <QLabel>
@@ -22,6 +23,7 @@
 #include <QToolButton>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QMessageBox>
 
 void ImageView::createWidgets()
 {
@@ -47,7 +49,7 @@ void ImageView::createToolBar()
 	m_zoomOutAction = new QAction(QStringLiteral("ZoomOut"), this);
 
 	m_addCategoryAction = new QAction(QStringLiteral("Add..."), this);
-	m_categoryLabel = new QLabel(QStringLiteral("Categray:"), this);
+	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
 	m_categoryCBBox = new QComboBox(this);
 
 	//tool bar
@@ -94,24 +96,75 @@ void ImageView::createConnections()
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::rightSliceChanged);
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged,  this,&ImageView::frontSliceChanged);
 	//update slice
-	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice(SliceType::Top); });
-	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice(SliceType::Right); });
-	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice(SliceType::Front); });
+	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Top); });
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Right); });
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Front); });
 	//forward selected signals
 	connect(m_topView, &SliceView::sliceSelected, this, &ImageView::topSliceSelected);
 	connect(m_rightView, &SliceView::sliceSelected, this, &ImageView::rightSliceSelected);
 	connect(m_frontView, &SliceView::sliceSelected, this, &ImageView::frontSliceSelected);
+
+	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark)
+	{
+		qDebug() << "top View mark added";
+		int index = m_topSlider->value();
+		QString cate = m_categoryCBBox->currentText();
+		if (cate.isEmpty())
+		{
+			cate = QString("Category #%1").arg(m_categoryCBBox->count());
+			m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
+			m_categoryCBBox->setCurrentText(cate);
+		}
+		auto m = dynamic_cast<AbstractMarkItem*>(mark);
+		Q_ASSERT_X(m, "SliceView::markAdded", "dynamic_cast error");
+		m->setSliceIndex(index);
+		if(m_markModel != nullptr)m_markModel->addMark(cate,m);
+
+	});
+	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark)
+	{
+		qDebug() << "right View mark added";
+		int index = m_rightSlider->value();
+		QString cate = m_categoryCBBox->currentIndex();
+		if (cate.isEmpty())
+		{
+			cate = QString("Category #%1").arg(m_categoryCBBox->count());
+			m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
+			m_categoryCBBox->setCurrentText(cate);
+		}
+		auto m = dynamic_cast<AbstractMarkItem*>(mark);
+		Q_ASSERT_X(m, "SliceView::markAdded", "dynamic_cast error");
+		m->setSliceIndex(index);
+		if (m_markModel != nullptr)m_markModel->addMark(cate, m);
+	});
+	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark)
+	{
+		qDebug() << "front View mark added";
+		int index = m_frontSlider->value();
+		QString cate = m_categoryCBBox->currentIndex();
+		if (cate.isEmpty())
+		{
+			cate = QString("Category #%1").arg(m_categoryCBBox->count());
+			m_categoryCBBox->addItem(cate,QVariant::fromValue(Qt::black));
+			m_categoryCBBox->setCurrentText(cate);
+		}
+		auto m = dynamic_cast<AbstractMarkItem*>(mark);
+		Q_ASSERT_X(m, "SliceView::markAdded", "dynamic_cast error");
+		m->setSliceIndex(index);
+		if (m_markModel != nullptr)m_markModel->addMark(cate, m);
+	});
+
 	connect(m_reset, &QPushButton::clicked, [this](bool click)
 	{
-		//
+		Q_UNUSED(click);
 		m_topView->resetMatrix();
 		m_rightView->resetMatrix();
 		m_frontView->resetMatrix();
 	});
 	connect(m_markAction, &QAction::triggered, m_topView, &SliceView::paintEnable);
-	connect(m_topSlicePlayAction, &QAction::triggered, [this](bool enable) {topSlicePlay(enable); if (!enable)emit topSlicePlayStoped(m_topSlider->value()); });
-	connect(m_rightSlicePlayAction, &QAction::triggered, [this](bool enable) {rightSlicePlay(enable); if (!enable)emit rightSlicePlayStoped(m_rightSlider->value()); });
-	connect(m_frontSlicePlayAction, &QAction::triggered, [this](bool enable) {frontSlicePlay(enable); if (!enable)emit frontSlicePlayStoped(m_frontSlider->value()); });
+	connect(m_topSlicePlayAction, &QAction::triggered, [this](bool enable) {onTopSlicePlay(enable); if (!enable)emit topSlicePlayStoped(m_topSlider->value()); });
+	connect(m_rightSlicePlayAction, &QAction::triggered, [this](bool enable) {onRightSlicePlay(enable); if (!enable)emit rightSlicePlayStoped(m_rightSlider->value()); });
+	connect(m_frontSlicePlayAction, &QAction::triggered, [this](bool enable) {onFrontSlicePlay(enable); if (!enable)emit frontSlicePlayStoped(m_frontSlider->value()); });
 	connect(m_addCategoryAction, &QAction::triggered,[this]()
 	{
 		MarkCategray dlg(this);
@@ -120,20 +173,26 @@ void ImageView::createConnections()
 			m_categoryCBBox->addItem(name);
 			m_categoryCBBox->setCurrentText(name);
 			int index = m_categoryCBBox->currentIndex();
-			m_categoryCBBox->setItemData(index, color, Qt::BackgroundColorRole);
+			m_categoryCBBox->setItemData(index, color);
+			setColor(color);
 		});
 		dlg.exec();
 	});
-	connect(m_colorAction, &QAction::triggered, this, &ImageView::onColorChanged);
+	connect(m_colorAction, &QAction::triggered, [this]()
+	{
+		auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
+		QColor c = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
+		setColor(QColorDialog::getColor(c, this, QStringLiteral("Color")));
+	});
 	connect(m_zoomInAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, 1); m_topView->scale(factor, factor); });
 	connect(m_zoomOutAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, -1); m_topView->scale(factor, factor); });
 	connect(m_histDlg, &QAction::triggered, []()
 	{
 		///TODO::open histogram dialog
 	});
-	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {updateTopSliceActions(); });
-	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {updateRightSliceActions(); });
-	connect(m_frontSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {updateFrontSliceActions(); });
+	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateTopSliceActions(); });
+	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
+	connect(m_frontSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateFrontSliceActions(); });
 }
 
 void ImageView::updateActions()
@@ -279,9 +338,6 @@ void ImageView::createContextMenu()
 
 ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisible, bool frontSliceVisible, AbstractSliceDataModel * model) :
 	QWidget(parent),
-	//m_topSlice(nullptr),
-	m_rightSlice(nullptr),
-	m_frontSlice(nullptr),
 	m_markModel(nullptr),
 	m_sliceModel(model)
 {
@@ -539,6 +595,13 @@ inline void ImageView::setXXliceEnable(bool enable)
 	updateActions();
 }
 
+void ImageView::setColor(const QColor & color)
+{
+	m_topView->setColor(color);
+	m_rightView->setColor(color);
+	m_frontView->setColor(color);
+}
+
 void ImageView::setSliceModel(AbstractSliceDataModel * model)
 {
 	m_sliceModel = model;
@@ -553,10 +616,11 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	updateActions();
 }
 
-QAbstractItemModel * ImageView::getMarkModel()
+void ImageView::setMarkModel(MarkModel * model)
 {
-	return nullptr;
+	m_markModel = model;
 }
+
 
 //void ImageView::setModel(DataItemModel * model)
 //{
@@ -671,13 +735,13 @@ void ImageView::setEnabled(bool enable)
 }
 
 
-void ImageView::topSlicePlay(bool enable)
+void ImageView::onTopSlicePlay(bool enable)
 {
 	if (enable)
 	{
 		m_topTimerId = startTimer(10);
 		//qDebug() << "onTopSliceTimer" << m_topTimerId;
-		m_topSlicePlayDirection = Direction::Forward;
+		m_topSlicePlayDirection = PlayDirection::Forward;
 	}
 	else
 	{
@@ -686,13 +750,13 @@ void ImageView::topSlicePlay(bool enable)
 	}
 }
 
-void ImageView::rightSlicePlay(bool enable)
+void ImageView::onRightSlicePlay(bool enable)
 {
 	if (enable)
 	{
 		m_rightTimerId = startTimer(10);
 		//qDebug() << "onRightSliceTimer" << m_rightTimerId;
-		m_rightSlicePlayDirection = Direction::Forward;
+		m_rightSlicePlayDirection = PlayDirection::Forward;
 	}
 	else
 	{
@@ -701,27 +765,19 @@ void ImageView::rightSlicePlay(bool enable)
 	}
 }
 
-void ImageView::frontSlicePlay(bool enable)
+void ImageView::onFrontSlicePlay(bool enable)
 {
 	if (enable)
 	{
 		m_frontTimerId = startTimer(10);
 		//qDebug() << "onFrontSliceTimer" << m_frontTimerId;
-		m_frontSlicePlayDirection = Direction::Forward;
+		m_frontSlicePlayDirection = PlayDirection::Forward;
 	}
 	else
 	{
 		killTimer(m_frontTimerId);
 		m_frontTimerId = 0;
 	}
-}
-
-void ImageView::onColorChanged()
-{
-	qDebug() << "color";
-	QColor color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color"));
-	///TODO:: update color
-	m_topView->setColor(color);
 }
 
 void ImageView::timerEvent(QTimerEvent* event)
@@ -731,7 +787,7 @@ void ImageView::timerEvent(QTimerEvent* event)
 	{
 		int maxSlice = m_topSlider->maximum();
 		int cur = m_topSlider->value();
-		if (m_topSlicePlayDirection == Direction::Forward)
+		if (m_topSlicePlayDirection == PlayDirection::Forward)
 		{
 			cur++;
 		}
@@ -741,11 +797,11 @@ void ImageView::timerEvent(QTimerEvent* event)
 		}
 		if (cur >= maxSlice)
 		{
-			m_topSlicePlayDirection = Direction::Backward;
+			m_topSlicePlayDirection = PlayDirection::Backward;
 		}
 		else if (cur <= 0)
 		{
-			m_topSlicePlayDirection = Direction::Forward;
+			m_topSlicePlayDirection = PlayDirection::Forward;
 		}
 		m_topSlider->setValue(cur);
 	}
@@ -753,7 +809,7 @@ void ImageView::timerEvent(QTimerEvent* event)
 	{
 		int maxSlice = m_rightSlider->maximum();
 		int cur = m_rightSlider->value();
-		if (m_rightSlicePlayDirection == Direction::Forward)
+		if (m_rightSlicePlayDirection == PlayDirection::Forward)
 		{
 			cur++;
 		}
@@ -763,11 +819,11 @@ void ImageView::timerEvent(QTimerEvent* event)
 		}
 		if (cur >= maxSlice)
 		{
-			m_rightSlicePlayDirection = Direction::Backward;
+			m_rightSlicePlayDirection = PlayDirection::Backward;
 		}
 		else if (cur <= 0)
 		{
-			m_rightSlicePlayDirection = Direction::Forward;
+			m_rightSlicePlayDirection = PlayDirection::Forward;
 		}
 		m_rightSlider->setValue(cur);
 
@@ -776,7 +832,7 @@ void ImageView::timerEvent(QTimerEvent* event)
 	{
 		int maxSlice = m_frontSlider->maximum();
 		int cur = m_frontSlider->value();
-		if (m_frontSlicePlayDirection == Direction::Forward)
+		if (m_frontSlicePlayDirection == PlayDirection::Forward)
 		{
 			cur++;
 		}
@@ -786,11 +842,11 @@ void ImageView::timerEvent(QTimerEvent* event)
 		}
 		if (cur >= maxSlice)
 		{
-			m_frontSlicePlayDirection = Direction::Backward;
+			m_frontSlicePlayDirection = PlayDirection::Backward;
 		}
 		else if (cur <= 0)
 		{
-			m_frontSlicePlayDirection = Direction::Forward;
+			m_frontSlicePlayDirection = PlayDirection::Forward;
 		}
 		m_frontSlider->setValue(cur);
 	}
@@ -943,11 +999,13 @@ void SliceView::wheelEvent(QWheelEvent *event) {
 
 void SliceView::focusInEvent(QFocusEvent* event)
 {
+	Q_UNUSED(event);
 	this->setStyleSheet("border:2px solid red");
 }
 
 void SliceView::focusOutEvent(QFocusEvent* event)
 {
+	Q_UNUSED(event);
 	this->setStyleSheet("");
 }
 
@@ -1029,7 +1087,6 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 				{
 					emit markAdded(polyItem);
 				}
-
 				return;
 			}
 		}
@@ -1066,9 +1123,8 @@ void SliceScene::wheelEvent(QGraphicsSceneWheelEvent * event)
 	QGraphicsScene::wheelEvent(event);
 }
 
-StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) :QGraphicsItem(parent),AbstractMarkItem(QStringLiteral("Stroke"),0.0,Qt::black)
+StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type): QGraphicsItem(parent), AbstractMarkItem(name, 0.0,color,type,index)
 {
-
 }
 void StrokeMarkItem::addPoint(const QPointF& p)
 {
@@ -1080,7 +1136,9 @@ void StrokeMarkItem::addPoint(const QPointF& p)
 
 void StrokeMarkItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
-
+	Q_UNUSED(painter);
+	Q_UNUSED(option);
+	Q_UNUSED(widget);
 }
 
 QRectF StrokeMarkItem::unionWith(const QRectF & rect, const QPointF & p)
@@ -1139,7 +1197,7 @@ void SliceItem::wheelEvent(QGraphicsSceneWheelEvent* event)
 	QGraphicsPixmapItem::wheelEvent(event);
 }
 
-void SliceView::setTopImage(const QImage & image)
+void SliceView::set_image_helper(const QImage & image)
 {
 	QSize size = image.size();
 	QPoint pos = QPoint(-size.width() / 2, -size.height() / 2);
@@ -1169,7 +1227,7 @@ void SliceView::setImageHelper(const QPoint& pos, const QImage& inImage, SliceIt
 	//(sliceItem)->setPos(pos);
 }
 
-void SliceView::clearSliceMarksHelper(SliceItem* sliceItem)
+void SliceView::clear_slice_marks_helper_(SliceItem* sliceItem)
 {
 	if (sliceItem == nullptr)
 	{
@@ -1183,7 +1241,8 @@ void SliceView::clearSliceMarksHelper(SliceItem* sliceItem)
 		item->setVisible(false);
 	}
 }
-void SliceView::setMarksHelper(SliceItem* sliceItem, const QList<QGraphicsItem*>& items)
+
+void SliceView::set_mark_helper_(SliceItem* sliceItem, const QList<QGraphicsItem*>& items)
 {
 	foreach(QGraphicsItem * item, items)
 	{
@@ -1213,15 +1272,13 @@ void SliceView::clearTopSliceMarks()
 
 void SliceView::setImage(const QImage& image)
 {
-		setTopImage(image);
+	set_image_helper(image);
 }
 
 void SliceView::clearSliceMarks()
 {
-	clearSliceMarksHelper(m_slice);
+	clear_slice_marks_helper_(m_slice);
 }
-
-
 void AbstractSliceDataModel::setTopSlice(const QImage& image, int index)
 {
 	m_modifiedTopSliceFlags[index] = true;

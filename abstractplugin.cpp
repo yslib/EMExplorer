@@ -13,25 +13,27 @@ m_sliceName(name)
 
 void AbstractPlugin::sliceChanged(int index)
 {
-
+	Q_UNUSED(index);
 }
 
 void AbstractPlugin::sliceSelected(const QPoint& pos)
 {
-
+	Q_UNUSED(pos);
 }
 
 void AbstractPlugin::sliceOpened(int index)
 {
+	Q_UNUSED(index);
 }
 
 void AbstractPlugin::slicePlayStoped(int index)
 {
+	Q_UNUSED(index);
 }
 
 void AbstractPlugin::slicePlaying(int index)
 {
-
+	Q_UNUSED(index);
 }
 
 SliceItem * AbstractPlugin::sliceItem()

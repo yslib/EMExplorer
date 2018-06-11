@@ -62,15 +62,23 @@ class AbstractMarkItem {
 	QString m_name;
 	qreal m_length;
 	QColor m_color;
+	SliceType m_type;
+	int m_sliceIndex;
 public:
-	inline AbstractMarkItem(const QString & name, qreal len, const QColor & c);
-	inline QString name()const { return m_name; }
-	inline qreal length()const;
-	inline QColor color()const;
+	AbstractMarkItem(const QString & name, qreal len, const QColor & c, SliceType type, int index) :m_name(name), m_length(len), m_color(c), m_type(type), m_sliceIndex(index) {}
+	QString name()const { return m_name; }
+	double length() const { return m_length; }
+	QColor color()const { return m_color; }
+	SliceType sliceType()const { return m_type; }
+	int sliceIndex()const { return m_sliceIndex; }
+	void setSliceIndex(int index) { m_sliceIndex = index; }
+	void setColor(const QColor & color) { m_color = color; }
+	void setName(const QString & name) { m_name = name; }
+protected:
+	inline void updateLength(double length) { m_length = length; }
 };
-inline AbstractMarkItem::AbstractMarkItem(const QString & name, qreal len, const QColor & c) :m_name(name), m_length(len), m_color(c){}
-inline qreal AbstractMarkItem::length()const { return m_length; }
-inline QColor AbstractMarkItem::color()const { return m_color; }
+
+
 
 
 /**
@@ -78,13 +86,13 @@ inline QColor AbstractMarkItem::color()const { return m_color; }
 *	\name:StrokeMarkItem
 */
 
-class StrokeMarkItem :public QGraphicsItem,public AbstractMarkItem {
+class StrokeMarkItem :public QGraphicsItem, public AbstractMarkItem {
 	QRectF m_boundingRect;
 	QPainterPath m_painterPath;
 	QList<QPointF> m_points;
 public:
 	enum { Type = UserType + Mark };
-	StrokeMarkItem(QGraphicsItem * parent = nullptr);
+	StrokeMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top);
 	QRectF boundingRect()const override { return m_boundingRect; }
 	QPainterPath shape()const override { return QPainterPath(); }
 	void addPoint(const QPointF & p);
@@ -102,9 +110,8 @@ protected:
 
 class PolyMarkItem :public QGraphicsPolygonItem, public AbstractMarkItem {
 public:
-	PolyMarkItem(QGraphicsItem * parent = nullptr) :QGraphicsPolygonItem(parent), AbstractMarkItem(QStringLiteral("Poly"), 0.0, Qt::black) {}
-	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr) :QGraphicsPolygonItem(poly, parent),AbstractMarkItem(QStringLiteral("Poly"), 0.0, Qt::black) {}
-
+	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top) :QGraphicsPolygonItem(parent), AbstractMarkItem(name, 0.0, color, type, index) {}
+	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top) :QGraphicsPolygonItem(poly, parent), AbstractMarkItem(name, 0.0, color, type, index) {}
 };
 
 
@@ -140,7 +147,7 @@ class SliceView :public QGraphicsView
 public:
 	SliceView(QWidget * parent = nullptr);
 	void setMarks(const QList<QGraphicsItem *> & items);
-public slots:
+	public slots:
 	void paintEnable(bool enable) { m_paint = enable; }
 	void moveEnable(bool enable) { m_moveble = enable; }
 	void setImage(const QImage & image);
@@ -161,13 +168,13 @@ signals:
 private:
 	void clearTopSliceMarks();
 	void setTopSliceMarks(const QList<QGraphicsItem*> & items);
-	void setTopImage(const QImage &image);
+	void set_image_helper(const QImage &image);
 	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
-	void clearSliceMarksHelper(SliceItem * sliceItem);
-	void setMarksHelper(SliceItem * sliceItem,const QList<QGraphicsItem*>& items);
+	void clear_slice_marks_helper_(SliceItem * sliceItem);
+	void set_mark_helper_(SliceItem * sliceItem, const QList<QGraphicsItem*>& items);
 
 	Q_OBJECT
-	qreal m_scaleFactor;
+		qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
 	bool m_paint;
@@ -183,59 +190,47 @@ private:
 class AbstractSliceDataModel
 {
 public:
-	AbstractSliceDataModel(int nTop,int nRight,int nFront);
+	AbstractSliceDataModel(int nTop, int nRight, int nFront);
 	virtual int topSliceCount()const = 0;
 	virtual int rightSliceCount()const = 0;
 	virtual int frontSliceCount()const = 0;
-	virtual QImage originalTopSlice(int index) const =0;
-	virtual QImage originalRightSlice(int index) const =0;
-	virtual QImage originalFrontSlice(int index) const =0;
+	virtual QImage originalTopSlice(int index) const = 0;
+	virtual QImage originalRightSlice(int index) const = 0;
+	virtual QImage originalFrontSlice(int index) const = 0;
 
-    virtual void setTopSlice(const QImage& image, int index);
-    virtual void setRightSlice(const QImage& image, int index);
-    virtual void setFrontSlice(const QImage& image, int index);
+	virtual void setTopSlice(const QImage& image, int index);
+	virtual void setRightSlice(const QImage& image, int index);
+	virtual void setFrontSlice(const QImage& image, int index);
 
 	virtual QImage topSlice(int index)const;
 	virtual QImage rightSlice(int index)const;
 	virtual QImage frontSlice(int index)const;
 private:
-	//inline void setSliceHelper(const QImage & image,int index,QVector<QImage> * imgVec,QVector<bool> * flgVec);
-	//inline QImage sliceHelper(int index, QVector<QImage> * imgVec, QVector<bool> * flgVec);
-    QVector<QImage> m_modifiedTopSlice;
-    QVector<bool> m_modifiedTopSliceFlags;
-    QVector<QImage> m_modifiedRightSlice;
-    QVector<bool> m_modifiedRightSliceFlags;
-    QVector<QImage> m_modifiedFrontSlice;
-    QVector<bool> m_modifiedFrontSliceFlags;
+	QVector<QImage> m_modifiedTopSlice;
+	QVector<bool> m_modifiedTopSliceFlags;
+	QVector<QImage> m_modifiedRightSlice;
+	QVector<bool> m_modifiedRightSliceFlags;
+	QVector<QImage> m_modifiedFrontSlice;
+	QVector<bool> m_modifiedFrontSliceFlags;
 };
-
-
-
-
-
 class ImageView :public QWidget
 {
 	Q_OBJECT
 public:
-	ImageView(QWidget * parent = nullptr,bool topSliceVisible= true,bool rightSliceVisible = true,bool frontSliceVisible = true,AbstractSliceDataModel * model = nullptr);
-	//MVC pattern will be employed later and these function will be removed
+	ImageView(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
 	inline int getZSliceValue()const;
 	inline int getYSliceValue()const;
 	inline int getXSliceValue()const;
-
 	inline void setZXliceEnable(bool enable);
 	inline void setYXliceEnable(bool enable);
 	inline void setXXliceEnable(bool enable);
+	void setColor(const QColor & color);
+	void setSliceModel(AbstractSliceDataModel * model);
+	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
+	void setMarkModel(MarkModel * model);
+	MarkModel* markModel()const { return m_markModel;}
 
-	///TODO::
-    void setSliceModel(AbstractSliceDataModel * model);
-    void setMarkModel(QAbstractItemModel * model);
-	QAbstractItemModel * getMarkModel();
 signals:
-	//void ZSliderChanged(int value);
-	//void YSliderChanged(int value);
-	//void XSliderChanged(int value);
-	//void sliderChanged(int value, SliceType type);
 	void topSliceOpened(int index);
 	void topSliceChanged(int index);
 	void topSlicePlayStoped(int index);
@@ -252,19 +247,15 @@ signals:
 
 	//void sliceSeletecd(const QPoint & point,SliceType type);
 
-public slots:
+	public slots:
 	void setEnabled(bool enable);
-	void topSlicePlay(bool enable);
-	void rightSlicePlay(bool enable);
-	void frontSlicePlay(bool enable);
-	void onColorChanged();
+	void onTopSlicePlay(bool enable);
+	void onRightSlicePlay(bool enable);
+	void onFrontSlicePlay(bool enable);
 protected:
-	void timerEvent(QTimerEvent* event) override;
+	void timerEvent(QTimerEvent* event) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
-	//void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 private:
-	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
-	//void updateModel();
 	//----
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
@@ -280,8 +271,6 @@ private:
 	void createConnections();
 	void createContextMenu();
 
-
-
 	void changeSlice(int value, SliceType type);
 	inline void setTopSliceCount(int value);
 	inline void setRightSliceCount(int value);
@@ -291,40 +280,33 @@ private:
 
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
-	//void resetSliceAndVisibleMarks(SliceType type);
-	enum class Direction {
+	enum class PlayDirection {
 		Forward,
 		Backward
 	};
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
-	QAbstractItemModel * m_markModel;
+	MarkModel * m_markModel;
 
 	//------
 	QGridLayout *m_layout;
 	SliceView * m_topView;
-    SliceView * m_rightView;
-    SliceView * m_frontView;
+	SliceView * m_rightView;
+	SliceView * m_frontView;
 	QPushButton * m_reset;
 	//Tool Bar
 	QToolBar * m_toolBar;
 
-    //Widgets on toolbar
+	//Widgets on toolbar
 	TitledSliderWithSpinBox * m_topSlider;
-    QCheckBox * m_topSliceCheckBox;
-    QCheckBox * m_rightSliceCheckBox;
+	QCheckBox * m_topSliceCheckBox;
+	QCheckBox * m_rightSliceCheckBox;
 	TitledSliderWithSpinBox * m_rightSlider;
-    QCheckBox * m_frontSliceCheckBox;
+	QCheckBox * m_frontSliceCheckBox;
 	TitledSliderWithSpinBox * m_frontSlider;
 	QLabel * m_categoryLabel;;
 	QComboBox * m_categoryCBBox;
-
-
-	//slice
-	SliceItem * m_rightSlice;
-	SliceItem * m_frontSlice;
-
-    //actions on toolbar
+	//actions on toolbar
 	QAction *m_addCategoryAction;
 	QAction *m_markAction;
 	QAction *m_colorAction;
@@ -336,14 +318,14 @@ private:
 	QAction *m_frontSlicePlayAction;
 	QToolButton * m_menuButton;
 
-    //menu on toolbar
+	//menu on toolbar
 	QMenu * m_menu;
 	QAction * m_histDlg;
-	Direction m_topSlicePlayDirection;
-    int m_topTimerId;
-	Direction m_rightSlicePlayDirection;
+	PlayDirection m_topSlicePlayDirection;
+	int m_topTimerId;
+	PlayDirection m_rightSlicePlayDirection;
 	int m_rightTimerId;
-	Direction m_frontSlicePlayDirection;
+	PlayDirection m_frontSlicePlayDirection;
 	int m_frontTimerId;
 
 	//ContextMenu
@@ -354,7 +336,6 @@ private:
 	QAction * m_pixelViewDlgAction;
 	QAction * m_marksManagerDlgAction;
 	QWidget * m_menuWidget;
-
 };
 
 

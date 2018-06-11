@@ -14,6 +14,7 @@
 #include "imageviewer.h"
 #include "profileview.h"
 #include "mrcdatamodel.h"
+#include "markmodel.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent):
@@ -48,11 +49,13 @@ void MainWindow::open()
 	Q_UNUSED(name);
 	QSharedPointer<MRC> mrc(new MRC(fileName.toStdString()));
 	MRCDataModel * sliceModel = new MRCDataModel(mrc);
+	MarkModel * markModel = new MarkModel(this);
 	auto infoModel = setupProfileModel(*mrc);
 	m_profileView->addModel(fileName, infoModel);
 	m_imageView->setSliceModel(sliceModel);
-
-	m_models[fileName] = std::make_tuple(infoModel, sliceModel, m_imageView->getMarkModel());
+	m_imageView->setMarkModel(markModel);
+	m_treeView->setModel(markModel);
+	m_models[fileName] = std::make_tuple(infoModel, sliceModel, markModel);
 }
 
 
@@ -103,7 +106,7 @@ void MainWindow::saveAs()
 
 void MainWindow::exploererDoubleClicked(const QModelIndex & index)
 {
-	///TODO::
+	Q_UNUSED(index);
 }
 void MainWindow::createWidget()
 {

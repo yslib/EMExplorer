@@ -50,6 +50,7 @@ ItemContext & ItemContext::operator=(const ItemContext & model)
 	m_topSliceMarks = model.m_topSliceMarks;
 	m_modifiedTopSlice = model.m_modifiedTopSlice;
 	m_modifiedTopSliceFlags = model.m_modifiedTopSliceFlags;
+	return *this;
 }
 
 ItemContext & ItemContext::operator=(ItemContext && model)noexcept
@@ -62,6 +63,7 @@ ItemContext & ItemContext::operator=(ItemContext && model)noexcept
 	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
 	m_modifiedTopSliceFlags = std::move(model.m_modifiedTopSliceFlags);
 	//TODO: insert return statement here
+	return *this;
 }
 
 ItemContext::~ItemContext()
@@ -181,7 +183,7 @@ bool ItemContext::saveMarks(const QString & fileName, MarkFormat format)
 		//
 		int width = getWidth();
 		int height = getHeight();
-		int sliceCount = getTopSliceCount();
+		//int sliceCount = getTopSliceCount();
 		unsigned char * data = new unsigned char[m_topSliceMarks.size()*getWidth()*getHeight()];
 		if (data == nullptr) {
 			qDebug() << "allocating faild";
@@ -224,7 +226,7 @@ bool ItemContext::saveMarks(const QString & fileName, MarkFormat format)
 				sizeof(unsigned char),
 				image.width()*image.height(),
 				fp);
-			if (sizeOfWrite < image.width()*image.height()) {
+			if (sizeOfWrite < (int)image.width()*image.height()) {
 				std::cerr << __LINE__;
 				return false;
 			}
@@ -675,193 +677,11 @@ void ItemContext::setFrontSLiceMarkVisible(QGraphicsItem * mark, bool visible)
 }
 
 
-/*
- *New data Model
- */
-TreeItem* MarkModel::get_item_helper_(const QModelIndex& index) const
-{
-	if (index.isValid())
-	{
-		TreeItem* item = static_cast<TreeItem*>(index.internalPointer());
-		if (item)return item;
-	}
-	return m_rootItem;
-}
-MarkModel::MarkModel(QObject * parent):QAbstractItemModel(parent)
-{
-	///TODO:: construct a new root
-	QVector<QVariant> headers;
-	headers << "Value:" << "Descption:";
-	m_rootItem = new TreeItem(headers, TreeItemType::Root);
-}
-
-MarkModel::~MarkModel()
-{
-	delete m_rootItem;
-}
-
-void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
-{
-	//
-}
-
-QVariant MarkModel::data(const QModelIndex & index, int role) const
-{
-	if (index.isValid() == false)
-		return QVariant();
-	if(role == Qt::DisplayRole)
-	{
-		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
-		QVariant d = item->data(index.column());
-		switch(item->type())
-		{
-		case TreeItemType::Root:
-			return QVariant();
-		case TreeItemType::Category:
-			return d;
-		case TreeItemType::Mark:
-			bool success = d.canConvert<AbstractMarkItem*>();
-			Q_ASSERT_X(!success, "MarkModel::data", "convert failure");
-			auto mark = d.value<AbstractMarkItem*>();
-			return QVariant::fromValue(mark->name());
-		}
-	}
-	return QVariant();
-}
-
-Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
-{
-	if (index.isValid() == false)
-		return 0;
-	return QAbstractItemModel::flags(index);
-}
-
-bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
-{
-	if (role != Qt::EditRole)
-		return false;
-	TreeItem * item = get_item_helper_(index);
-	bool ok = item->setData(index.column(), value);
-	if (ok == true)
-		emit dataChanged(index, index);
-	return ok;
-}
-
-bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
-{
-	beginInsertColumns(parent, column, column + count - 1);
-	//insert same columns at same position from the top of the tree to down recursively
-
-	bool success = m_rootItem->insertColumns(column, count);
-	endInsertColumns();
-	return success;
-}
-
-bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
-{
-	beginRemoveColumns(parent, column, column + count - 1);
-	bool success = m_rootItem->removeColumns(column, count);
-	endRemoveColumns();
-
-	if (m_rootItem->columnCount() == 0)
-		removeRows(0, rowCount());
-	return success;
-}
-
-bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
-{
-	TreeItem * item = get_item_helper_(parent);
-	beginInsertRows(parent, row, count + row - 1);
-	//the number of inserted column is the same as the root, i.e 2
-	TreeItemType type;
-	switch (item->type())
-	{
-	case TreeItemType::Root:
-		type = TreeItemType::Category;
-		break;
-	case TreeItemType::Category:
-		type = TreeItemType::Mark;
-		break;
-	case TreeItemType::Mark:
-		return false;
-	default:
-		return false;
-	}
-	bool success = item->insertChildren(row, count,columnCount(),type);
-	endInsertRows();
-	return success;
-}
-
-bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
-{
-	TreeItem * item = get_item_helper_(parent);
-	bool success = true;
-
-	beginRemoveRows(parent, row, row + count - 1);
-	success = item->removeChildren(row, count);
-	endRemoveRows();
-	return success;
-}
-
-QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-		return m_rootItem->data(section);
-	return QVariant();
-}
-
-QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
-{
-	//Check if the index is valid
-	//if(hasIndex(row,column,parent) == false)
-	//	return QModelIndex();
-	//If the index points to a non-root node and its column is not 0
-
-	if (parent.isValid() == true && parent.column() != 0)
-		return QModelIndex();
-	TreeItem * parentItem = get_item_helper_(parent);
-	TreeItem * childItem = parentItem->child(row);
-	if (childItem == nullptr)
-		return QModelIndex();
-	else
-		return createIndex(row, column, childItem);
-}
-
-QModelIndex MarkModel::parent(const QModelIndex & index) const
-{
-	//Index points to a root item
-	if (index.isValid() == false)return QModelIndex();
-
-	TreeItem * item = get_item_helper_(index);
-	TreeItem * parentItem = item->parentItem();
-
-	//If index points to a child item of root item
-	if (parentItem == m_rootItem)
-		return QModelIndex();
-
-	return createIndex(parentItem->row(), 0, parentItem);
-}
-
-int MarkModel::rowCount(const QModelIndex & parent) const
-{
-	//Only a item with 0 column number has children
-	if (parent.column() > 0)
-		return 0;
-	TreeItem * item = get_item_helper_(parent);
-	return item->childCount();
-}
-
-int MarkModel::columnCount(const QModelIndex & parent) const
-{
-	if (parent.isValid() == false)
-		return m_rootItem->columnCount();
-	return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-}
-
 
 
 QWidget * MarkItemModelDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
+	Q_UNUSED(option);
 	auto m = index.model();
 	auto var = m->data(index);
 	if (var.canConvert<QString>() == true) {
@@ -914,6 +734,8 @@ void MarkItemModelDelegate::setModelData(QWidget * editor, QAbstractItemModel * 
 
 void MarkItemModelDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
+	Q_UNUSED(option);
+	Q_UNUSED(index);
 	editor->setGeometry(option.rect);
 }
 
@@ -932,5 +754,6 @@ int MarkItemModelDelegate::level(const QModelIndex & index)
 
 bool MarkItemModelDelegate::isMark(const QModelIndex & index)
 {
+	Q_UNUSED(index);
 	return true;
 }
