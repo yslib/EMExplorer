@@ -18,7 +18,7 @@ MarkModel::MarkModel(QObject * parent) :QAbstractItemModel(parent)
 {
 	///TODO:: construct a new root
 	QVector<QVariant> headers;
-	headers << "Value:" << "Descption:";
+	headers << "Name:";
 	m_rootItem = new TreeItem(headers, TreeItemType::Root);
 }
 
@@ -34,7 +34,7 @@ void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
 void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*>& marks)
 {
 	auto i = category_index_helper_(category);
-	if(i.isValid() == false)
+	if (i.isValid() == false)
 	{
 		i = category_add_helper_(category);
 	}
@@ -43,7 +43,8 @@ void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*
 	beginInsertRows(i, r, r + c - 1);
 	auto item = get_item_helper_(i);
 
-	Q_ASSERT_X(item != m_rootItem, "MarkModel::addMark", "insert error");
+	Q_ASSERT_X(item != m_rootItem,
+		"MarkModel::addMark", "insert error");
 	//qDebug() << item;
 	int n = 0;
 	QList<TreeItem*> list;
@@ -65,13 +66,16 @@ QList<AbstractMarkItem*> MarkModel::marks(const QString & category)
 	auto id = category_index_helper_(category);
 	int r = rowCount(id);
 	auto item = get_item_helper_(id);
-	Q_ASSERT_X(item != m_rootItem, "MarkModel::addMark", "insert error");
-	Q_ASSERT_X(item->type() == TreeItemType::Mark, "MarkModel::marks", "type error");
+	Q_ASSERT_X(item != m_rootItem,
+		"MarkModel::addMark", "insert error");
+	Q_ASSERT_X(item->type() == TreeItemType::Mark,
+		"MarkModel::marks", "type error");
 	QList<AbstractMarkItem*> res;
-	for (int i = 0; i<r; i++)
+	for (int i = 0; i < r; i++)
 	{
 		auto d = item->child(i)->data(0).value<AbstractMarkItem*>();
-		Q_ASSERT_X(d, "MarkModel::marks", "null pointer");
+		Q_ASSERT_X(d,
+			"MarkModel::marks", "null pointer");
 		res.append(d);
 	}
 	return res;
@@ -82,13 +86,18 @@ bool MarkModel::removeMark(const QString& category, AbstractMarkItem* mark)
 	auto id = category_index_helper_(category);
 	int r = rowCount(id);
 	auto item = get_item_helper_(id);
-	Q_ASSERT_X(item != m_rootItem, "MarkModel::addMark", "insert error");
-	Q_ASSERT_X(item->type() == TreeItemType::Mark, "MarkModel::marks", "type error");
+	Q_ASSERT_X(item != m_rootItem,
+		"MarkModel::removeMark", "insert error");
+	Q_ASSERT_X(item->type() == TreeItemType::Mark,
+		"MarkModel::removeMark", "type error");
+	Q_ASSERT_X(item->child(r)->data(0).canConvert<AbstractMarkItem*>(),
+		"MarkModel::removeMark", "convert failure");
 	int removedId = -1;
-	for (int i = 0; i<r; i++)
+	for (int i = 0; i < r; i++)
 	{
 		auto d = item->child(r)->data(0).value<AbstractMarkItem*>();
-		Q_ASSERT_X(d, "MarkModel::removeMarks", "null pointer");
+		Q_ASSERT_X(d,
+			"MarkModel::removeMarks", "null pointer");
 		if (d == mark)
 		{
 			removedId = i;
@@ -123,13 +132,9 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)
 		return QVariant();
-
-
-
 	if (role == Qt::DisplayRole)
 	{
 		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
-
 		QVariant d = item->data(index.column());
 		switch (item->type())
 		{
@@ -137,16 +142,38 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 			return QVariant();
 		case TreeItemType::Category:
 			if (index.column() == 0)
-				return d;
-			else
-				return QVariant();
+			{
+				Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(),
+					"MarkModel::data", "convert failure");
+				return d.value<QSharedPointer<CategoryItem>>()->name();
+			}
+			return QVariant();
 		case TreeItemType::Mark:
 			if (index.column() != 0)
 				return QVariant();
-			bool success = d.canConvert<AbstractMarkItem*>();
-			Q_ASSERT_X(success, "MarkModel::data", "convert failure");
+			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+				"MarkModel::data", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
 			return QVariant::fromValue(mark->name());
+		}
+	}
+	if (role == Qt::CheckStateRole&&index.column() == 0)			//So far, we only consider the first column
+	{
+		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+		QVariant d = item->data(index.column());
+		switch (item->type())
+		{
+		case TreeItemType::Root:
+			return QVariant();
+		case TreeItemType::Category:
+			Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(),
+				"MarkModel::data", "convert failure");
+			return d.value<QSharedPointer<CategoryItem>>()->visible() ? Qt::Checked : Qt::Unchecked;
+		case TreeItemType::Mark:
+			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+				"MarkModel::data", "convert failure");
+			auto mark = d.value<AbstractMarkItem*>();
+			return mark->visible() ? Qt::Checked : Qt::Unchecked;
 		}
 	}
 	return QVariant();
@@ -156,18 +183,44 @@ Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 {
 	if (index.isValid() == false)
 		return 0;
+	if (index.column() == 0)
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
 	return QAbstractItemModel::flags(index);
 }
 
 bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-	if (role != Qt::EditRole)
-		return false;
-	TreeItem * item = get_item_helper_(index);
-	bool ok = item->setData(index.column(), value);
-	if (ok == true)
-		emit dataChanged(index, index);
-	return ok;
+
+	if (role == Qt::CheckStateRole && index.column() == 0)
+	{
+		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+		QVariant d = item->data(index.column());
+		switch (item->type())
+		{
+		case TreeItemType::Root:
+			return false;
+		case TreeItemType::Category:
+		{
+			Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(),
+				"MarkModel::setData", "convert failure");
+			d.value<QSharedPointer<CategoryItem>>()->setVisible(value == Qt::Checked);
+			emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
+			//update child state recursively
+			int c = rowCount(index);
+			for (int i = 0; i < c; i++)
+				setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
+			return true;
+		}
+		case TreeItemType::Mark:
+			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+				"MarkModel::setData", "convert failure");
+			auto mark = d.value<AbstractMarkItem*>();
+			mark->setVisible(value == Qt::Checked);
+			emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
+			return true;
+		}
+	}
+	return false;
 }
 
 bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)

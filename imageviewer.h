@@ -60,22 +60,25 @@ enum ItemTypes
 
 class AbstractMarkItem {
 	QString m_name;
-	qreal m_length;
+	double m_length;
 	QColor m_color;
 	SliceType m_type;
 	int m_sliceIndex;
+	bool m_visible;
 public:
-	AbstractMarkItem(const QString & name, qreal len, const QColor & c, SliceType type, int index) :m_name(name), m_length(len), m_color(c), m_type(type), m_sliceIndex(index) {}
-	QString name()const { return m_name; }
-	double length() const { return m_length; }
-	QColor color()const { return m_color; }
-	SliceType sliceType()const { return m_type; }
-	int sliceIndex()const { return m_sliceIndex; }
-	void setSliceIndex(int index) { m_sliceIndex = index; }
-	void setColor(const QColor & color) { m_color = color; }
-	void setName(const QString & name) { m_name = name; }
+	AbstractMarkItem(const QString & name, double len, const QColor & c, SliceType type, int index,bool visible) :m_name(name), m_length(len), m_color(c), m_type(type), m_sliceIndex(index),m_visible(visible) {}
+	QString name()const noexcept{ return m_name; }
+	double length() const noexcept { return m_length; }
+	QColor color()const noexcept { return m_color; }
+	SliceType sliceType()const noexcept { return m_type; }
+	bool visible()const noexcept { return m_visible; }
+	void setVisible(bool vis) noexcept { m_visible = vis; }
+	int sliceIndex()const noexcept { return m_sliceIndex; }
+	void setSliceIndex(int index) noexcept { m_sliceIndex = index; }
+	void setColor(const QColor & color) noexcept { m_color = color; }
+	void setName(const QString & name) noexcept { m_name = name; }
 protected:
-	inline void updateLength(double length) { m_length = length; }
+	inline void updateLength(double length) noexcept { m_length = length; }
 };
 
 
@@ -92,7 +95,7 @@ class StrokeMarkItem :public QGraphicsItem, public AbstractMarkItem {
 	QList<QPointF> m_points;
 public:
 	enum { Type = UserType + Mark };
-	StrokeMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top);
+	StrokeMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top,bool visible = true);
 	QRectF boundingRect()const override { return m_boundingRect; }
 	QPainterPath shape()const override { return QPainterPath(); }
 	void addPoint(const QPointF & p);
@@ -110,8 +113,8 @@ protected:
 
 class PolyMarkItem :public QGraphicsPolygonItem, public AbstractMarkItem {
 public:
-	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top) :QGraphicsPolygonItem(parent), AbstractMarkItem(name, 0.0, color, type, index) {}
-	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top) :QGraphicsPolygonItem(poly, parent), AbstractMarkItem(name, 0.0, color, type, index) {}
+	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top,bool visible = true) :QGraphicsPolygonItem(parent), AbstractMarkItem(name, 0.0, color, type, index,visible) {}
+	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top,bool visible = true) :QGraphicsPolygonItem(poly, parent), AbstractMarkItem(name, 0.0, color, type, index,visible) {}
 };
 
 

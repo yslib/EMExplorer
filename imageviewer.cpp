@@ -1123,7 +1123,7 @@ void SliceScene::wheelEvent(QGraphicsSceneWheelEvent * event)
 	QGraphicsScene::wheelEvent(event);
 }
 
-StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type): QGraphicsItem(parent), AbstractMarkItem(name, 0.0,color,type,index)
+StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type,bool visible ): QGraphicsItem(parent), AbstractMarkItem(name, 0.0,color,type,index,visible)
 {
 }
 void StrokeMarkItem::addPoint(const QPointF& p)

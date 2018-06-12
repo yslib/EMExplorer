@@ -2,7 +2,8 @@
 #define MARKMODEL_H
 
 #include <QAbstractItemModel>
-#include "ItemContext.h"
+#include <QSharedPointer>
+#include "ItemContext.h"			//TreeItem
 
 
 QT_BEGIN_NAMESPACE
@@ -10,6 +11,31 @@ class QGraphicsItem;
 QT_END_NAMESPACE
 
 class AbstractMarkItem;
+
+class CategoryItem
+{
+	QString m_name;
+	int m_count;
+	bool m_visible;
+	QColor m_color;
+public:
+	CategoryItem(const QString & name,const QColor & color = Qt::black, int count = 0, bool visible = true):
+	m_name(name),m_color(color),m_count(count),m_visible(visible){}
+	QString name()const noexcept{ return m_name; }
+	int count()const noexcept{ return m_count; }
+	bool visible()const noexcept{ return m_visible; }
+	QColor color()const noexcept { return m_color; }
+	void setName(const QString & n)noexcept{ m_name = n; }
+	void setCount(int c)noexcept { m_count = c; }
+	void setVisible(bool visible)noexcept { m_visible = visible; }
+	void setColor(const QColor & c)noexcept { m_color = c; }
+	void increaseCount()noexcept{ m_count++; }
+	void decreaseCount()noexcept{ if (m_count != 0)m_count--; }
+};
+
+Q_DECLARE_METATYPE(QSharedPointer<CategoryItem>);
+
+
 
 
 class MarkModel :public QAbstractItemModel
@@ -37,7 +63,9 @@ class MarkModel :public QAbstractItemModel
 			switch (item->type())
 			{
 			case TreeItemType::Category:
-				value = d.value<QString>();
+				Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(), 
+					"category_index_helper_", "convert failure");
+				value = d.value<QSharedPointer<CategoryItem>>()->name();
 				break;
 			case TreeItemType::Mark:
 				value = d.value<AbstractMarkItem*>()->name();
@@ -60,8 +88,10 @@ class MarkModel :public QAbstractItemModel
 		{
 			auto id = index(i, 0);
 			auto item = static_cast<TreeItem*>(id.internalPointer());
-			auto d = item->data(0).value<QString>();
-			if (d == category)
+			Q_ASSERT_X(item->data(0).canConvert<QSharedPointer<CategoryItem>>(), 
+				"category_index_helper_", "convert failure");
+			auto d = item->data(0).value<QSharedPointer<CategoryItem>>();
+			if (d->name() == category)
 			{
 				return id;
 			}
@@ -72,9 +102,8 @@ class MarkModel :public QAbstractItemModel
 	{
 		int c = rowCount();
 		beginInsertRows(QModelIndex(), c, c);
-		QVector<QVariant> d{ category };
+		QVector<QVariant> d{QVariant::fromValue(QSharedPointer<CategoryItem>{new CategoryItem(category)})};
 		auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
-		//qDebug() << p;
 		m_rootItem->appendChild(p);
 		endInsertRows();
 		return createIndex(c, 0, p);
