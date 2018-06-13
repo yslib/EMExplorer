@@ -21,19 +21,13 @@ MainWindow::MainWindow(QWidget *parent):
 	QMainWindow(parent)
 	
 {
-
 	//These functions need to be call in order.
 	createActions();
-
 	createMenu();
-
 	createWidget();
-
 	createStatusBar();
 	resize(1650,1080);
-
 	setWindowTitle(QStringLiteral("MRC Editor"));
-	
 }
 MainWindow::~MainWindow()
 {
@@ -49,25 +43,22 @@ void MainWindow::open()
 	Q_UNUSED(name);
 	QSharedPointer<MRC> mrc(new MRC(fileName.toStdString()));
 	MRCDataModel * sliceModel = new MRCDataModel(mrc);
-	MarkModel * markModel = new MarkModel(this);
+	//MarkModel * markModel = new MarkModel(this);
 	auto infoModel = setupProfileModel(*mrc);
 	m_profileView->addModel(fileName, infoModel);
 	m_imageView->setSliceModel(sliceModel);
-	m_imageView->setMarkModel(markModel);
-	m_treeView->setModel(markModel);
-	m_models[fileName] = std::make_tuple(infoModel, sliceModel, markModel);
+	//m_imageView->setMarkModel(markModel);
+	m_treeView->setModel(m_imageView->markModel());
+	//m_models[fileName] = std::make_tuple(infoModel, sliceModel, markModel);
 }
-
-
-
 
 void MainWindow::save()
 {
-	QString fileName = QFileDialog::getSaveFileName(this, QString("Mark Save"),
-		"", QString("Raw Files(*.raw);;MRC Files(*.mrc)"));
+	QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("Mark Save"),
+		"", QStringLiteral("Raw Files(*.raw);;MRC Files(*.mrc)"));
 	if (fileName.isEmpty() == true)
 		return;
-	if (fileName.endsWith(QString(".raw")) == true) {
+	if (fileName.endsWith(QStringLiteral(".raw")) == true) {
 		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::RAW);
 		bool ok = false;
 		if (ok == false) {
@@ -77,7 +68,7 @@ void MainWindow::save()
 				QMessageBox::Ok, QMessageBox::Ok);
 		}
 	}
-	else if (fileName.endsWith(QString(".mrc")) == true) {
+	else if (fileName.endsWith(QStringLiteral(".mrc")) == true) {
 		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
 		bool ok = false;
 		if (ok == false) {
@@ -93,13 +84,13 @@ void MainWindow::saveAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
 		QStringLiteral("Save Data As"),
-		".", QString("mrc File(*.mrc);;raw File(*.raw)"));
+		".", QStringLiteral("mrc File(*.mrc);;raw File(*.raw)"));
 	if (fileName.isEmpty() == true)
 		return;
-	if (fileName.endsWith(".raw") == true) {
+	if (fileName.endsWith(QStringLiteral(".raw")) == true) {
 		//m_mrcDataModels[m_currentContext].save(fileName);
 	}
-	else if (fileName.endsWith(".mrc") == true) {
+	else if (fileName.endsWith(QStringLiteral(".mrc")) == true) {
 		//m_mrcDataModels[m_currentContext].save(fileName);
 	}
 }

@@ -5,6 +5,16 @@
 /*
 *New data Model
 */
+template<typename T>
+inline
+void DELETE_AND_SET_NULL(std::remove_reference<std::remove_pointer<T>> *& p)
+{
+	if (p != nullptr)
+	{
+		delete p;
+		p = nullptr;
+	}
+}
 TreeItem* MarkModel::get_item_helper_(const QModelIndex& index) const
 {
 	if (index.isValid())
@@ -14,22 +24,127 @@ TreeItem* MarkModel::get_item_helper_(const QModelIndex& index) const
 	}
 	return m_rootItem;
 }
-MarkModel::MarkModel(QObject * parent) :QAbstractItemModel(parent)
+QModelIndex MarkModel::model_index_helper_(const QModelIndex& root, const QString& display)
 {
-	///TODO:: construct a new root
-	QVector<QVariant> headers;
-	headers << "Name:";
-	m_rootItem = new TreeItem(headers, TreeItemType::Root);
+	int c = rowCount(root);
+	for (int i = 0; i < c; i++)
+	{
+		QModelIndex id = index(i, 0, root);
+		auto item = static_cast<TreeItem*>(id.internalPointer());
+		auto d = item->data(0);
+		QString value;
+		switch (item->type())
+		{
+		case TreeItemType::Category:
+			Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(),
+				"category_index_helper_", "convert failure");
+			value = d.value<QSharedPointer<CategoryItem>>()->name();
+			break;
+		case TreeItemType::Mark:
+			value = d.value<AbstractMarkItem*>()->name();
+			break;
+		case TreeItemType::Root:
+		default:
+			break;
+		}
+		if (value == display)
+			return id;
+		else
+			model_index_helper_(id, display);
+	}
+}
+QModelIndex MarkModel::category_index_helper_(const QString& category)
+{
+	int c = rowCount();
+	for (int i = 0; i < c; i++)
+	{
+		auto id = index(i, 0);
+		auto item = static_cast<TreeItem*>(id.internalPointer());
+		Q_ASSERT_X(item->data(0).canConvert<QSharedPointer<CategoryItem>>(),
+			"category_index_helper_", "convert failure");
+		auto d = item->data(0).value<QSharedPointer<CategoryItem>>();
+		if (d->name() == category)
+		{
+			return id;
+		}
+	}
+	return QModelIndex();
+}
+QModelIndex MarkModel::category_add_helper_(const QString& category)
+{
+	int c = rowCount();
+	beginInsertRows(QModelIndex(), c, c);
+	QVector<QVariant> d{ QVariant::fromValue(QSharedPointer<CategoryItem>{new CategoryItem(category)}) };
+	auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
+	m_rootItem->appendChild(p);
+	endInsertRows();
+	return createIndex(c, 0, p);
 }
 
+bool MarkModel::check_match_helper_(const AbstractSliceDataModel * dataModel)
+{
+	Q_ASSERT_X(m_dataModel, "MarkModel::check_match_helper_", "null pointer");
+	return ((m_dataModel->frontSliceCount() == dataModel->frontSliceCount()) &&
+		(m_dataModel->topSliceCount() == dataModel->topSliceCount()) &&
+		(m_dataModel->rightSliceCount() == dataModel->rightSliceCount()));
+	//Image size need to be considered later
+}
+
+void MarkModel::update_visible_mark_in_slice_helper_(AbstractMarkItem * mark)
+{
+	int index = mark->sliceIndex();
+	bool visible = mark->visible();
+	MarkSliceList * markList;
+	switch (mark->sliceType())
+	{
+	case SliceType::Top:
+		markList = &m_topSliceVisibleMarks;
+		break;
+	case SliceType::Right:
+		markList = &m_rightSliceVisibleMarks;
+		break;
+	case SliceType::Front:
+		markList = &m_frontSliceVisibleMarks;
+		break;
+	}
+	if (visible)
+	{
+		(*markList)[index].append(mark);
+	}
+	else
+	{
+		(*markList)[index].removeOne(mark);
+	}
+	auto d = static_cast<QGraphicsItem*>(static_cast<PolyMarkItem*>(mark));
+	d->setVisible(visible);
+}
+MarkModel::MarkModel(TreeItem* root,
+	AbstractSliceDataModel* dataModel,
+	MarkSliceList top,
+	MarkSliceList right,
+	MarkSliceList front,
+	QObject * parent) :
+	QAbstractItemModel(parent),
+	m_rootItem(root),
+	m_dataModel(dataModel),
+	m_topSliceVisibleMarks(std::move(top)),
+	m_rightSliceVisibleMarks(std::move(right)),
+	m_frontSliceVisibleMarks(std::move(front))
+{
+}
 MarkModel::~MarkModel()
 {
-	delete m_rootItem;
+	if (m_rootItem != nullptr)
+	{
+		delete m_rootItem;
+		m_rootItem = nullptr;
+	}
 }
 
 void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
 {
 	addMarks(category, QList<AbstractMarkItem*>{mark});
+
 }
 void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*>& marks)
 {
@@ -52,11 +167,11 @@ void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*
 	{
 		QVector<QVariant> d;
 		m->setName(category + QString(" #%1").arg(r + n++));
+		update_visible_mark_in_slice_helper_(m);
 		d.append(QVariant::fromValue(m));
 		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
 	}
-	qDebug() << item->insertChildren(r, list);
-
+	item->insertChildren(r, list);
 	//item->insertChildren(r, c, 1, TreeItemType::Mark);
 	endInsertRows();
 }
@@ -115,7 +230,8 @@ bool MarkModel::removeMark(const QString& category, AbstractMarkItem* mark)
 int MarkModel::removeMarks(const QString& category, const QList<AbstractMarkItem*>& marks)
 {
 	int success = 0;
-	auto func = std::bind(&MarkModel::removeMark, this, category, std::placeholders::_1);
+	auto func = std::bind(&MarkModel::removeMark, this,
+		category, std::placeholders::_1);
 	for (auto item : marks)
 		if (func(item))
 			success++;
@@ -216,6 +332,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 				"MarkModel::setData", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
 			mark->setVisible(value == Qt::Checked);
+			update_visible_mark_in_slice_helper_(mark);
 			emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
 			return true;
 		}

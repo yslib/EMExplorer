@@ -30,7 +30,6 @@ class QToolButton;
 class QCheckBox;
 class QComboBox;
 QT_END_NAMESPACE
-
 class TitledSliderWithSpinBox;
 class ItemContext;
 class MarkModel;
@@ -38,26 +37,21 @@ class HistogramViewer;
 class PixelViewer;
 class MRC;
 class AbstractPlugin;
-
 enum class SliceType
 {
 	Top,		//Z
 	Right,		//Y
 	Front		//X
 };
-
 enum ItemTypes
 {
 	Slice = 1,
 	Mark
 };
-
 /**
 *
 *	\name:AbstractMarkItem
 */
-
-
 class AbstractMarkItem {
 	QString m_name;
 	double m_length;
@@ -80,15 +74,10 @@ public:
 protected:
 	inline void updateLength(double length) noexcept { m_length = length; }
 };
-
-
-
-
 /**
 *
 *	\name:StrokeMarkItem
 */
-
 class StrokeMarkItem :public QGraphicsItem, public AbstractMarkItem {
 	QRectF m_boundingRect;
 	QPainterPath m_painterPath;
@@ -101,7 +90,6 @@ public:
 	void addPoint(const QPointF & p);
 	void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)override;
 	int type() const override { return Type; }
-
 private:
 	QRectF unionWith(const QRectF & rect, const QPointF & p);
 protected:
@@ -116,8 +104,6 @@ public:
 	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top,bool visible = true) :QGraphicsPolygonItem(parent), AbstractMarkItem(name, 0.0, color, type, index,visible) {}
 	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top,bool visible = true) :QGraphicsPolygonItem(poly, parent), AbstractMarkItem(name, 0.0, color, type, index,visible) {}
 };
-
-
 class SliceItem :public QGraphicsPixmapItem
 {
 public:
@@ -132,8 +118,6 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
-
-
 class SliceScene :public QGraphicsScene
 {
 public:
@@ -144,7 +128,6 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
-
 class SliceView :public QGraphicsView
 {
 public:
@@ -176,8 +159,9 @@ private:
 	void clear_slice_marks_helper_(SliceItem * sliceItem);
 	void set_mark_helper_(SliceItem * sliceItem, const QList<QGraphicsItem*>& items);
 
+
 	Q_OBJECT
-		qreal m_scaleFactor;
+	qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
 	SliceItem * m_currentPaintItem;
 	bool m_paint;
@@ -187,9 +171,6 @@ private:
 	SliceItem * m_slice;
 	QImage  m_image;
 };
-
-
-
 class AbstractSliceDataModel
 {
 public:
@@ -200,11 +181,9 @@ public:
 	virtual QImage originalTopSlice(int index) const = 0;
 	virtual QImage originalRightSlice(int index) const = 0;
 	virtual QImage originalFrontSlice(int index) const = 0;
-
 	virtual void setTopSlice(const QImage& image, int index);
 	virtual void setRightSlice(const QImage& image, int index);
 	virtual void setFrontSlice(const QImage& image, int index);
-
 	virtual QImage topSlice(int index)const;
 	virtual QImage rightSlice(int index)const;
 	virtual QImage frontSlice(int index)const;
@@ -221,18 +200,19 @@ class ImageView :public QWidget
 	Q_OBJECT
 public:
 	ImageView(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
-	inline int getZSliceValue()const;
-	inline int getYSliceValue()const;
-	inline int getXSliceValue()const;
-	inline void setZXliceEnable(bool enable);
-	inline void setYXliceEnable(bool enable);
-	inline void setXXliceEnable(bool enable);
+	inline int topSliceIndex()const;
+	inline int rightSliceIndex()const;
+	inline int frontSliceIndex()const;
+
+	inline void topSliceEnable(bool enable);
+	inline void rightSliceEnable(bool enable);
+	inline void frontSliceEnable(bool enable);
+
 	void setColor(const QColor & color);
 	void setSliceModel(AbstractSliceDataModel * model);
 	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
-	void setMarkModel(MarkModel * model);
-	MarkModel* markModel()const { return m_markModel;}
-
+	MarkModel* replaceMarkModel(MarkModel* model,bool * success)noexcept;
+	MarkModel* markModel();
 signals:
 	void topSliceOpened(int index);
 	void topSliceChanged(int index);
@@ -243,14 +223,10 @@ signals:
 	void frontSliceOpened(int index);
 	void frontSliceChanged(int index);
 	void frontSlicePlayStoped(int index);
-
 	void topSliceSelected(const QPoint & point);
 	void rightSliceSelected(const QPoint & point);
 	void frontSliceSelected(const QPoint & point);
-
-	//void sliceSeletecd(const QPoint & point,SliceType type);
-
-	public slots:
+public slots:
 	void setEnabled(bool enable);
 	void onTopSlicePlay(bool enable);
 	void onRightSlicePlay(bool enable);
@@ -259,7 +235,10 @@ protected:
 	void timerEvent(QTimerEvent* event) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
 private:
-	//----
+	enum class PlayDirection {
+		Forward,
+		Backward
+	};
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
 	void updateMarks(SliceType type);
@@ -279,14 +258,9 @@ private:
 	inline void setRightSliceCount(int value);
 	inline void setFrontSliceCount(int value);
 	int currentIndex(SliceType type);
-
-
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
-	enum class PlayDirection {
-		Forward,
-		Backward
-	};
+	static MarkModel * createMarkModel(AbstractSliceDataModel * d);
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
