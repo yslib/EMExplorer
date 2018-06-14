@@ -65,8 +65,8 @@ public:
 	double length() const noexcept { return m_length; }
 	QColor color()const noexcept { return m_color; }
 	SliceType sliceType()const noexcept { return m_type; }
-	bool visible()const noexcept { return m_visible; }
-	void setVisible(bool vis) noexcept { m_visible = vis; }
+	bool checkState()const noexcept { return m_visible; }
+	void setCheckState(bool vis) noexcept { m_visible = vis; }
 	int sliceIndex()const noexcept { return m_sliceIndex; }
 	void setSliceIndex(int index) noexcept { m_sliceIndex = index; }
 	void setColor(const QColor & color) noexcept { m_color = color; }
@@ -150,16 +150,10 @@ protected:
 signals:
 	void sliceSelected(const QPoint & point);
 	void markAdded(QGraphicsItem * item);
-
 private:
-	void clearTopSliceMarks();
-	void setTopSliceMarks(const QList<QGraphicsItem*> & items);
-	void set_image_helper(const QImage &image);
-	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
-	void clear_slice_marks_helper_(SliceItem * sliceItem);
-	void set_mark_helper_(SliceItem * sliceItem, const QList<QGraphicsItem*>& items);
-
-
+	inline static void clear_slice_marks_helper_(SliceItem * slice);
+	void set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
+	inline static void set_mark_helper_(SliceItem * sliceItem, const QList<QGraphicsItem*>& items);
 	Q_OBJECT
 	qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
@@ -260,7 +254,7 @@ private:
 	int currentIndex(SliceType type);
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
-	static MarkModel * createMarkModel(AbstractSliceDataModel * d);
+	static MarkModel * createMarkModel(ImageView * view,AbstractSliceDataModel * d);
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;

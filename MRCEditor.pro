@@ -59,7 +59,8 @@ HEADERS  += mainwindow.h \
     mrcdatamodel.h \
     abstractplugin.h \
     markcategray.h \
-    markmodel.h
+    markmodel.h \
+    globals.h
 
 FORMS    +=
 

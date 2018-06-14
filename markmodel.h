@@ -46,6 +46,7 @@ class MarkModel :public QAbstractItemModel
 
 	TreeItem * m_rootItem;
 	const AbstractSliceDataModel * m_dataModel;
+	ImageView * m_view;
 	MarkSliceList m_topSliceVisibleMarks;		//store the visible marks for every slice
 	MarkSliceList m_rightSliceVisibleMarks;
 	MarkSliceList m_frontSliceVisibleMarks;
@@ -55,13 +56,15 @@ class MarkModel :public QAbstractItemModel
 	QModelIndex category_index_helper_(const QString& category);
 	QModelIndex category_add_helper_(const QString& category);
 	bool check_match_helper_(const AbstractSliceDataModel * dataModel);
-	void update_visible_mark_in_slice_helper_(AbstractMarkItem * mark);
+	void add_mark_in_slice_helper_(AbstractMarkItem * mark);
+	void update_mark_visible_helper(AbstractMarkItem * mark);
 
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
 	const MarkSliceList & frontSliceVisibleMarks()const { return m_frontSliceVisibleMarks; }
+
 	//This constructor is for ImageView to create the MarkModel
-	MarkModel(TreeItem * root, AbstractSliceDataModel * dataModel,
+	MarkModel(TreeItem * root, AbstractSliceDataModel * dataModel,ImageView * view,
 		MarkSliceList top = MarkSliceList(),
 		MarkSliceList right = MarkSliceList(),
 		MarkSliceList front = MarkSliceList(),

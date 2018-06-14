@@ -1,20 +1,11 @@
 #include "markmodel.h"
-
 #include "imageviewer.h"
+#include "globals.h"
 
 /*
 *New data Model
 */
-template<typename T>
-inline
-void DELETE_AND_SET_NULL(std::remove_reference<std::remove_pointer<T>> *& p)
-{
-	if (p != nullptr)
-	{
-		delete p;
-		p = nullptr;
-	}
-}
+
 TreeItem* MarkModel::get_item_helper_(const QModelIndex& index) const
 {
 	if (index.isValid())
@@ -52,6 +43,7 @@ QModelIndex MarkModel::model_index_helper_(const QModelIndex& root, const QStrin
 		else
 			model_index_helper_(id, display);
 	}
+	return QModelIndex();
 }
 QModelIndex MarkModel::category_index_helper_(const QString& category)
 {
@@ -90,10 +82,9 @@ bool MarkModel::check_match_helper_(const AbstractSliceDataModel * dataModel)
 	//Image size need to be considered later
 }
 
-void MarkModel::update_visible_mark_in_slice_helper_(AbstractMarkItem * mark)
+void MarkModel::add_mark_in_slice_helper_(AbstractMarkItem * mark)
 {
 	int index = mark->sliceIndex();
-	bool visible = mark->visible();
 	MarkSliceList * markList;
 	switch (mark->sliceType())
 	{
@@ -107,19 +98,32 @@ void MarkModel::update_visible_mark_in_slice_helper_(AbstractMarkItem * mark)
 		markList = &m_frontSliceVisibleMarks;
 		break;
 	}
-	if (visible)
+	(*markList)[index].append(mark);
+}
+void MarkModel::update_mark_visible_helper(AbstractMarkItem * mark)
+{
+	Q_ASSERT_X(m_view,"MarkModel::update_mark_visible_helper_","null pointer");
+	int index = -1;
+	switch (mark->sliceType())
 	{
-		(*markList)[index].append(mark);
+	case SliceType::Top:
+		index = m_view->topSliceIndex();
+			break;
+	case SliceType::Right:
+		index = m_view->rightSliceIndex();
+			break;
+	case SliceType::Front:
+		index = m_view->frontSliceIndex();
+			break;
 	}
-	else
-	{
-		(*markList)[index].removeOne(mark);
-	}
-	auto d = static_cast<QGraphicsItem*>(static_cast<PolyMarkItem*>(mark));
-	d->setVisible(visible);
+	if (index != mark->sliceIndex())
+		return;
+	auto item = QueryMarkItemInterface(mark);
+	item->setVisible(mark->checkState());
 }
 MarkModel::MarkModel(TreeItem* root,
 	AbstractSliceDataModel* dataModel,
+	ImageView * view,
 	MarkSliceList top,
 	MarkSliceList right,
 	MarkSliceList front,
@@ -127,6 +131,7 @@ MarkModel::MarkModel(TreeItem* root,
 	QAbstractItemModel(parent),
 	m_rootItem(root),
 	m_dataModel(dataModel),
+	m_view(view),
 	m_topSliceVisibleMarks(std::move(top)),
 	m_rightSliceVisibleMarks(std::move(right)),
 	m_frontSliceVisibleMarks(std::move(front))
@@ -160,19 +165,17 @@ void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*
 
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::addMark", "insert error");
-	//qDebug() << item;
 	int n = 0;
 	QList<TreeItem*> list;
 	for (auto m : marks)
 	{
 		QVector<QVariant> d;
 		m->setName(category + QString(" #%1").arg(r + n++));
-		update_visible_mark_in_slice_helper_(m);
+		add_mark_in_slice_helper_(m);
 		d.append(QVariant::fromValue(m));
 		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
 	}
-	item->insertChildren(r, list);
-	//item->insertChildren(r, c, 1, TreeItemType::Mark);
+	item->insertChildren(r, list);		//insert marks at the end
 	endInsertRows();
 }
 
@@ -289,7 +292,7 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
 				"MarkModel::data", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
-			return mark->visible() ? Qt::Checked : Qt::Unchecked;
+			return mark->checkState() ? Qt::Checked : Qt::Unchecked;
 		}
 	}
 	return QVariant();
@@ -331,8 +334,13 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
 				"MarkModel::setData", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
-			mark->setVisible(value == Qt::Checked);
-			update_visible_mark_in_slice_helper_(mark);
+			bool vis = value == Qt::Checked;
+			mark->setCheckState(vis);
+			//This is a bull shit
+			
+			//auto m = QueryMarkItemInterface(mark);
+			//m->setVisible(vis);
+			update_mark_visible_helper(mark);
 			emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
 			return true;
 		}
