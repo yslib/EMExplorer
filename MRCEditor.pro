@@ -28,39 +28,43 @@ SOURCES += main.cpp\
     mrc.cpp \
     histogram.cpp \
     zoomviwer.cpp \
-    testinfodialog.cpp \
-    sliceviewer.cpp \
     ItemContext.cpp \
     pixelviewer.cpp \
     titledsliderwithspinbox.cpp \
     mrcfileinfoviewer.cpp \
     imageviewer.cpp \
-    tinyviewinterface.cpp \
     profileview.cpp \
     mrcdatamodel.cpp \
     abstractplugin.cpp \
     markcategray.cpp \
-    markmodel.cpp
+    markmodel.cpp \
+    abstractslicedatamodel.cpp \
+    markitem.cpp \
+    treeitem.cpp \
+    sliceitem.cpp \
+    sliceview.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
     histogram.h \
     zoomviwer.h \
-    testinfodialog.h \
-    sliceviewer.h \
     ItemContext.h \
     pixelviewer.h \
     titledsliderwithspinbox.h \
     mrcfileinfoviewer.h \
     imageviewer.h \
-    tinyviewinterface.h \
     CImg.h \
     profileview.h \
     mrcdatamodel.h \
     abstractplugin.h \
-    markcategray.h \
     markmodel.h \
-    globals.h
+    globals.h \
+    markcategorydialog.h \
+    abstractslicedatamodel.h \
+    markitem.h \
+    treeitem.h \
+    sliceitem.h \
+    sliceview.h
 
 FORMS    +=
 

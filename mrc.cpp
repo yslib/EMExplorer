@@ -527,37 +527,3 @@ void MRC::detach()
 	if (m_d != nullptr && --m_d->ref == 0)
 		delete m_d;
 }
-
-//void MRC::_reset()
-//{
-//	m_fileName = "";
-//    //_destroy();
-//    bool m_opened = false;
-//    m_mrcDataSize = 0;
-//}
-//bool MRC::_init()
-//{
-//    size_t nx = static_cast<size_t>(m_header.nx);
-//    size_t ny = static_cast<size_t>(m_header.ny);
-//    size_t nz = static_cast<size_t>(m_header.nz);
-//    m_mrcDataSize = nx*ny*nz;
-//    return true;
-//}
-//
-//bool MRC::_allocate()
-//{
-//    m_mrcData = new unsigned char[m_mrcDataSize*sizeof(unsigned char)];
-//    if(m_mrcData == nullptr){
-//        return false;
-//    }
-//    return true;
-//}
-//
-//void MRC::_destroy()
-//{
-//    if(m_mrcData != nullptr){
-//        delete[] m_mrcData;
-//        m_mrcData = nullptr;
-//    }
-//}
-

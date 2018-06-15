@@ -1,8 +1,11 @@
 #ifndef MRCDATAMODEL_H
 #define MRCDATAMODEL_H
 #include <QSharedPointer>
-#include <imageviewer.h>
+#include "abstractslicedatamodel.h"
+
+
 class MRC;
+
 class MRCDataModel:public AbstractSliceDataModel
 {
 public:
@@ -14,7 +17,6 @@ public:
     inline int rightSliceCount() const Q_DECL_OVERRIDE;
     inline int frontSliceCount() const Q_DECL_OVERRIDE;
 private:
-
     QSharedPointer<MRC> m_d;
 };
 #endif // MRCDATAMODEL_H

@@ -1,4 +1,4 @@
-#include "markcategray.h"
+#include "markcategorydialog.h"
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -7,7 +7,7 @@
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QDebug>
-MarkCategray::MarkCategray(QWidget *parent) :QDialog(parent)
+MarkCategoryDialog::MarkCategoryDialog(QWidget *parent) :QDialog(parent)
 {
 
 	m_layout = new QGridLayout;
@@ -35,11 +35,11 @@ MarkCategray::MarkCategray(QWidget *parent) :QDialog(parent)
 		m_color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color"));
 		m_colorDisplay->setStyleSheet(QString("background-color:rgb(%1,%2,%3)").arg(m_color.red()).arg(m_color.green()).arg( m_color.blue()));
 	});
-	connect(m_createButton, &QPushButton::clicked, this, &MarkCategray::createButtonClick);
+	connect(m_createButton, &QPushButton::clicked, this, &MarkCategoryDialog::createButtonClick);
 	setLayout(m_layout);
 }
 
-void MarkCategray::createButtonClick()
+void MarkCategoryDialog::createButtonClick()
 {
 	if(m_color.isValid() == false)
 	{

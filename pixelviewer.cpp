@@ -1,10 +1,8 @@
 #include "pixelviewer.h"
-#include <QVector>
-#include <QVariant>
+
 #include <QLineEdit>
 #include <QDebug>
-
-
+#include <QLabel>
 
 PixelViewer::PixelViewer(SliceType type, const QString & name, SliceView * view, AbstractSliceDataModel * model, QWidget * parent) :
 	AbstractPlugin(type, name, view, model, parent)
@@ -48,6 +46,7 @@ void PixelViewer::sliceSelected(const QPoint& pos)
 }
 void PixelViewer::resizeEvent(QResizeEvent* event)
 {
+	Q_UNUSED(event);
 	changeLayout(size());
 }
 
@@ -210,7 +209,8 @@ void PixelViewer::setWidget(QWidget * widget, int xpos, int ypos)
 {
 	int width = widget->size().width();
 	int height = widget->size().height();
-
+	Q_UNUSED(width);
+	Q_UNUSED(height);
 	QPoint topLeft((s_left + s_width + s_right)*xpos + s_left, (s_top + s_height + s_bottom)*ypos + s_top);
 	QRect rect(topLeft, QSize(s_width, s_height));
 	widget->setContentsMargins(s_left, s_top, s_right, s_bottom);

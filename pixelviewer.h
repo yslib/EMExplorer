@@ -1,14 +1,13 @@
 #ifndef PIXELVIWER_H
 #define PIXELVIWER_H
-#include <QLabel>
-#include <QGridLayout>
-#include <QImage>
-#include <QPoint>
-#include <QSharedPointer>
-#include <QLineEdit>
-//#include "ItemContext.h"
+//#include <QLineEdit>
 
 #include "abstractplugin.h"
+
+
+class QLabel;
+class QLineEdit;
+
 
 
 class PixelViewer:public AbstractPlugin

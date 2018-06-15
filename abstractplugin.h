@@ -2,7 +2,8 @@
 #define ABSTRACTPLUGIN_H
 
 #include <QWidget>
-#include "imageviewer.h"
+//#include "imageviewer.h"
+enum class SliceType;
 class SliceItem;
 class AbstractSliceDataModel;
 class SliceView;

@@ -8,6 +8,8 @@
 #include <memory>
 #include <iostream>
 
+#include "globals.h"
+
 
 ItemContext::ItemContext() :
 	m_mrcContext{}
@@ -630,26 +632,7 @@ void ItemContext::setSliceMarkVisible(QGraphicsItem * item,bool visible, SliceTy
 
 void ItemContext::createScene()
 {
-	m_scene.reset(new SliceScene(nullptr));
 
-	for (int i = 0; i < getTopSliceCount(); i++)
-	{
-		QPixmap pix = QPixmap::fromImage(getTopSlice(i), Qt::MonoOnly);
-
-		qDebug() << pix.depth() << " " << getTopSlice(i).depth();
-		m_scene->addPixmap(QPixmap::fromImage(getTopSlice(i), Qt::MonoOnly));
-		//qDebug() << "Top Slice:"<<i;
-	}
-	for (int i = 0; i < getRightSliceCount(); i++)
-	{
-		m_scene->addPixmap(QPixmap::fromImage(getRightSlice(i), Qt::MonoOnly));
-		//qDebug() << "Right Slice:" << i;
-	}
-	for (int i = 0; i < getFrontSliceCount(); i++)
-	{
-		//qDebug() << "Front Slice:" << i;
-		m_scene->addPixmap(QPixmap::fromImage(getFrontSlice(i), Qt::MonoOnly));
-	}
 }
 
 void ItemContext::setTopSliceMarkVisible(QGraphicsItem * mark,bool visible)

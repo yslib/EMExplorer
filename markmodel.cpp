@@ -1,6 +1,9 @@
 #include "markmodel.h"
 #include "imageviewer.h"
 #include "globals.h"
+#include "abstractslicedatamodel.h"
+#include "markitem.h"
+#include "treeitem.h"
 
 /*
 *New data Model
@@ -118,18 +121,17 @@ void MarkModel::update_mark_visible_helper(AbstractMarkItem * mark)
 	}
 	if (index != mark->sliceIndex())
 		return;
-	auto item = QueryMarkItemInterface(mark);
+	auto item = QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(mark);
 	item->setVisible(mark->checkState());
 }
-MarkModel::MarkModel(TreeItem* root,
-	AbstractSliceDataModel* dataModel,
+MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	ImageView * view,
 	MarkSliceList top,
 	MarkSliceList right,
 	MarkSliceList front,
 	QObject * parent) :
 	QAbstractItemModel(parent),
-	m_rootItem(root),
+	m_rootItem(new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root)),
 	m_dataModel(dataModel),
 	m_view(view),
 	m_topSliceVisibleMarks(std::move(top)),
@@ -172,7 +174,8 @@ void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*
 		QVector<QVariant> d;
 		m->setName(category + QString(" #%1").arg(r + n++));
 		add_mark_in_slice_helper_(m);
-		d.append(QVariant::fromValue(m));
+		d.append(QVariant::fromValue(m));	
+		//d.append(QVariant());	//a place holder for 2nd column
 		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
 	}
 	item->insertChildren(r, list);		//insert marks at the end
@@ -251,7 +254,7 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)
 		return QVariant();
-	if (role == Qt::DisplayRole)
+	if (role == Qt::DisplayRole||role == Qt::ToolTipRole)
 	{
 		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
 		QVariant d = item->data(index.column());
@@ -265,15 +268,42 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 				Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(),
 					"MarkModel::data", "convert failure");
 				return d.value<QSharedPointer<CategoryItem>>()->name();
+			}else if(index.column() == 1)
+			{
+				//display total count
+
 			}
 			return QVariant();
 		case TreeItemType::Mark:
-			if (index.column() != 0)
-				return QVariant();
-			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
-				"MarkModel::data", "convert failure");
-			auto mark = d.value<AbstractMarkItem*>();
-			return QVariant::fromValue(mark->name());
+
+			if(index.column() == 0)
+			{
+				Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+					"MarkModel::data", "convert failure");
+				auto mark = d.value<AbstractMarkItem*>();
+				return QVariant::fromValue(mark->name());
+			}
+			else if(index.column() == 1)
+			{
+				//display slice index
+				auto d = item->data(0);
+				auto mark = d.value<AbstractMarkItem*>();
+				QString sliceType;
+				switch(mark->sliceType())
+				{
+				case SliceType::Top:
+					sliceType = QStringLiteral("Top:");
+					break;
+				case SliceType::Right:
+					sliceType = QStringLiteral("Right:");
+					break;
+				case SliceType::Front:
+					sliceType = QStringLiteral("Front:");
+					break;
+				}
+				return sliceType+QString::number(mark->sliceIndex());
+			}
+			return QVariant();
 		}
 	}
 	if (role == Qt::CheckStateRole&&index.column() == 0)			//So far, we only consider the first column
@@ -293,6 +323,25 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 				"MarkModel::data", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
 			return mark->checkState() ? Qt::Checked : Qt::Unchecked;
+		}
+	}
+	if(role == Qt::DecorationRole && index.column() == 0)
+	{
+		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+		QVariant d = item->data(index.column());
+		switch (item->type())
+		{
+		case TreeItemType::Root:
+			return QVariant();
+		case TreeItemType::Category:
+			Q_ASSERT_X(d.canConvert<QSharedPointer<CategoryItem>>(),
+				"MarkModel::data", "convert failure");
+			return d.value<QSharedPointer<CategoryItem>>()->color();
+		case TreeItemType::Mark:
+			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+				"MarkModel::data", "convert failure");
+			auto mark = d.value<AbstractMarkItem*>();
+			return mark->color();
 		}
 	}
 	return QVariant();
@@ -337,7 +386,6 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 			bool vis = value == Qt::Checked;
 			mark->setCheckState(vis);
 			//This is a bull shit
-			
 			//auto m = QueryMarkItemInterface(mark);
 			//m->setVisible(vis);
 			update_mark_visible_helper(mark);
@@ -413,11 +461,6 @@ QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int rol
 
 QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
 {
-	//Check if the index is valid
-	//if(hasIndex(row,column,parent) == false)
-	//	return QModelIndex();
-	//If the index points to a non-root node and its column is not 0
-
 	if (parent.isValid() == true && parent.column() != 0)
 		return QModelIndex();
 	TreeItem * parentItem = get_item_helper_(parent);

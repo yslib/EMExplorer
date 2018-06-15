@@ -3,8 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QSharedPointer>
-#include "ItemContext.h"			//TreeItem
-
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 class QGraphicsItem;
@@ -12,6 +11,7 @@ QT_END_NAMESPACE
 class AbstractMarkItem;
 class ImageView;
 class AbstractSliceDataModel;
+class TreeItem;
 
 class CategoryItem
 {
@@ -36,17 +36,14 @@ public:
 
 Q_DECLARE_METATYPE(QSharedPointer<CategoryItem>);
 
-
-
-
 class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
 	using MarkSliceList = QVector<QList<AbstractMarkItem*>>;
-
 	TreeItem * m_rootItem;
 	const AbstractSliceDataModel * m_dataModel;
 	ImageView * m_view;
+
 	MarkSliceList m_topSliceVisibleMarks;		//store the visible marks for every slice
 	MarkSliceList m_rightSliceVisibleMarks;
 	MarkSliceList m_frontSliceVisibleMarks;
@@ -64,14 +61,14 @@ class MarkModel :public QAbstractItemModel
 	const MarkSliceList & frontSliceVisibleMarks()const { return m_frontSliceVisibleMarks; }
 
 	//This constructor is for ImageView to create the MarkModel
-	MarkModel(TreeItem * root, AbstractSliceDataModel * dataModel,ImageView * view,
+	MarkModel(AbstractSliceDataModel * dataModel,ImageView * view,
 		MarkSliceList top = MarkSliceList(),
 		MarkSliceList right = MarkSliceList(),
 		MarkSliceList front = MarkSliceList(),
 		QObject * parent = nullptr);
+
 	friend class ImageView;
 public:
-	//explicit MarkModel(QObject * parent = nullptr);
 	MarkModel() = delete;
 	~MarkModel();
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
@@ -80,6 +77,7 @@ public:
 	QModelIndex parent(const QModelIndex&index)const Q_DECL_OVERRIDE;
 	int rowCount(const QModelIndex & parent = QModelIndex())const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
 	/*
 	*Read-only tree models only need to provide the above functions.
 	*The following functions provide support for editing and resizing.
@@ -99,7 +97,7 @@ public:
 	int removeMarks(const QString& category, const QList<AbstractMarkItem*>& marks = QList<AbstractMarkItem*>());
 	int markCount(const QString & category);
 
-
+	int save(const QString & fileName);
 };
 
 

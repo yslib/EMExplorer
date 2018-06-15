@@ -1,31 +1,24 @@
-#include "imageviewer.h"
-#include "titledsliderwithspinbox.h"
-#include "histogram.h"
-#include "ItemContext.h"
-#include "pixelviewer.h"
-#include "markcategray.h"
-#include "markmodel.h"
-#include "globals.h"
-/*Qt Headers*/
 #include <QToolBar>
-#include <QLabel>
-#include <QWheelEvent>
-#include <QDebug>
-#include <QPainter>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QPolygon>
 #include <QColorDialog>
-#include <cassert>
-#include <algorithm>
 #include <complex>
 #include <QMenu>
 #include <QToolButton>
+#include <QPushButton>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QMessageBox>
+#include <QLabel>
 
+#include "imageviewer.h"
+#include "globals.h"
+#include "abstractslicedatamodel.h"
+#include "titledsliderwithspinbox.h"
+#include "histogram.h"
+#include "pixelviewer.h"
+#include "markcategorydialog.h"
+#include "markmodel.h"
+#include "markitem.h"
+#include "sliceview.h"
 
 
 inline bool ImageView::contains(const QWidget* widget, const QPoint& pos)
@@ -104,55 +97,9 @@ void ImageView::createConnections()
 	connect(m_rightView, &SliceView::sliceSelected, this, &ImageView::rightSliceSelected);
 	connect(m_frontView, &SliceView::sliceSelected, this, &ImageView::frontSliceSelected);
 
-	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark)
-	{
-		qDebug() << "top View mark added";
-		int index = m_topSlider->value();
-		QString cate = m_categoryCBBox->currentText();
-		if (cate.isEmpty())
-		{
-			cate = QString("Category #%1").arg(m_categoryCBBox->count());
-			m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
-			m_categoryCBBox->setCurrentText(cate);
-		}
-		auto m = dynamic_cast<AbstractMarkItem*>(mark);
-		Q_ASSERT_X(m, "SliceView::markAdded", "dynamic_cast error");
-		m->setSliceIndex(index);
-		if (m_markModel != nullptr)m_markModel->addMark(cate, m);
-
-	});
-	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark)
-	{
-		qDebug() << "right View mark added";
-		int index = m_rightSlider->value();
-		QString cate = m_categoryCBBox->currentIndex();
-		if (cate.isEmpty())
-		{
-			cate = QString("Category #%1").arg(m_categoryCBBox->count());
-			m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
-			m_categoryCBBox->setCurrentText(cate);
-		}
-		auto m = dynamic_cast<AbstractMarkItem*>(mark);
-		Q_ASSERT_X(m, "SliceView::markAdded", "dynamic_cast error");
-		m->setSliceIndex(index);
-		if (m_markModel != nullptr)m_markModel->addMark(cate, m);
-	});
-	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark)
-	{
-		qDebug() << "front View mark added";
-		int index = m_frontSlider->value();
-		QString cate = m_categoryCBBox->currentIndex();
-		if (cate.isEmpty())
-		{
-			cate = QString("Category #%1").arg(m_categoryCBBox->count());
-			m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
-			m_categoryCBBox->setCurrentText(cate);
-		}
-		auto m = dynamic_cast<AbstractMarkItem*>(mark);
-		Q_ASSERT_X(m, "SliceView::markAdded", "dynamic_cast error");
-		m->setSliceIndex(index);
-		if (m_markModel != nullptr)m_markModel->addMark(cate, m);
-	});
+	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark){mark_created_helper_(SliceType::Top, mark);});
+	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark){mark_created_helper_(SliceType::Right, mark);});
+	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark){mark_created_helper_(SliceType::Front, mark);});
 
 	connect(m_reset, &QPushButton::clicked, [this](bool click)
 	{
@@ -161,14 +108,19 @@ void ImageView::createConnections()
 		m_rightView->resetMatrix();
 		m_frontView->resetMatrix();
 	});
-	connect(m_markAction, &QAction::triggered, m_topView, &SliceView::paintEnable);
+	connect(m_markAction, &QAction::triggered, [this](bool enable)
+	{
+		m_topView->paintEnable(enable);
+		m_rightView->paintEnable(enable);
+		m_frontView->paintEnable(enable);
+	});
 	connect(m_topSlicePlayAction, &QAction::triggered, [this](bool enable) {onTopSlicePlay(enable); if (!enable)emit topSlicePlayStoped(m_topSlider->value()); });
 	connect(m_rightSlicePlayAction, &QAction::triggered, [this](bool enable) {onRightSlicePlay(enable); if (!enable)emit rightSlicePlayStoped(m_rightSlider->value()); });
 	connect(m_frontSlicePlayAction, &QAction::triggered, [this](bool enable) {onFrontSlicePlay(enable); if (!enable)emit frontSlicePlayStoped(m_frontSlider->value()); });
 	connect(m_addCategoryAction, &QAction::triggered, [this]()
 	{
-		MarkCategray dlg(this);
-		connect(&dlg, &MarkCategray::resultReceived, [this](const QString & name, const QColor & color)
+		MarkCategoryDialog dlg(this);
+		connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
 		{
 			m_categoryCBBox->addItem(name);
 			m_categoryCBBox->setCurrentText(name);
@@ -436,101 +388,44 @@ int ImageView::currentIndex(SliceType type)
 
 
 
-MarkModel* ImageView::createMarkModel(ImageView *view,AbstractSliceDataModel * d)
+MarkModel* ImageView::createMarkModel(ImageView *view, AbstractSliceDataModel * d)
 {
 	const MarkModel::MarkSliceList top(d->topSliceCount());
 	const MarkModel::MarkSliceList right(d->rightSliceCount());
 	const MarkModel::MarkSliceList front(d->frontSliceCount());
-	return new MarkModel(new TreeItem(QVector<QVariant>{QStringLiteral("Name")}, TreeItemType::Root), d,view, top, right, front, nullptr);
+	return new MarkModel( d, view, top, right, front, nullptr);
 }
 
-//void ImageView::resetSliceAndVisibleMarks(SliceType type)
-//{
-//	if (m_sliceModel == nullptr)
-//		return;
-//	GraphicsView * view = nullptr;
-//	switch (type)
-//	{
-//	case SliceType::SliceZ:
-//		view = m_topView;
-//		break;
-//	case SliceType::SliceY:
-//		view = m_rightView;
-//		break;
-//	case SliceType::SliceX:
-//		view = m_frontView;
-//		break;
-//	default:
-//		Q_ASSERT_X(false, "ImageView::resetSliceAndVisibleMarks", "SliceType error.");
-//	}
-//	int index = currentIndex(type);
-//	view->setImage(m_ptr->slice(index, type));
-//	view->clearSliceMarks(SliceType::SliceZ);
-//	view->setMarks(m_ptr->visibleSliceMarks(index, type));
-//}
+void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
+{
+	QString cate = m_categoryCBBox->currentText();
+	if(cate.isEmpty())
+	{
+		cate = QStringLiteral("Category#%1").arg(m_categoryCBBox->count());
+		m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
+		m_categoryCBBox->setCurrentText(cate);
+	}
+	auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
+	m->setSliceType(type);
+	int index;
+	switch(type)
+	{
+	case SliceType::Top:
+		index = m_topSlider->value();
+		break;
+	case SliceType::Right:
+		index = m_rightSlider->value();
+		break;
+	case SliceType::Front:
+		index = m_frontSlider->value();
+		break;
+	}
+	m->setSliceIndex(index);
+	Q_ASSERT_X(m_markModel != nullptr,
+		"mark_create_helper_", "null pointer");
+	m_markModel->addMark(cate, m);
+}
 
-//void ImageView::setFrontSliceVisibleMarks()
-//{
-//	if (m_ptr.isNull() == true)
-//	{
-//		qWarning("Model is empty");
-//		return;
-//	}
-//	//clear previous items
-//	//m_view->clearFrontSliceMarks();
-//
-//	int index = m_topSlider->value();
-//	auto items = m_ptr->getFrontSliceMarks(index);
-//	QList<QGraphicsItem *> visibleItems;
-//	foreach(QGraphicsItem * item, items) {
-//		bool visible = m_ptr->frontSliceMarkVisble(item);
-//		if (visible)
-//			visibleItems.push_back(item);
-//	}
-//	m_view->setFrontSliceMarks(visibleItems);
-//}
-//
-//void ImageView::setTopSliceVisibleMarks()
-//{
-//	if (m_ptr.isNull() == true)
-//	{
-//		qWarning("Model is empty");
-//		return;
-//	}
-//	//clear previous items
-//	//m_view->clearTopSliceMarks();
-//
-//	int index = m_topSlider->value();
-//	auto items = m_ptr->getTopSliceMarks(index);
-//	QList<QGraphicsItem *> visibleItems;
-//	foreach(QGraphicsItem * item, items) {
-//		bool visible = m_ptr->topSliceMarkVisble(item);
-//		if (visible)
-//			visibleItems.push_back(item);
-//	}
-//	m_view->setTopSliceMarks(visibleItems);
-//}
-//
-//void ImageView::setRightSliceVisibleMarks()
-//{
-//	if (m_ptr.isNull() == true)
-//	{
-//		qWarning("Model is empty");
-//		return;
-//	}
-//	//clear previous items
-//	//m_view->clearRightSliceMarks();
-//
-//	int index = m_topSlider->value();
-//	auto items = m_ptr->getRightSliceMarks(index);
-//	QList<QGraphicsItem *> visibleItems;
-//	foreach(QGraphicsItem * item, items) {
-//		bool visible = m_ptr->rightSliceMarkVisble(item);
-//		if (visible)
-//			visibleItems.push_back(item);
-//	}
-//	m_view->setRightSliceMarks(visibleItems);
-//}
 
 inline int ImageView::topSliceIndex() const { return m_topSlider->value(); }
 
@@ -581,7 +476,7 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	}
 	else
 	{
-		m_markModel = createMarkModel(this,m_sliceModel);
+		m_markModel = createMarkModel(this, m_sliceModel);
 	}//create a new mark model
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
@@ -589,19 +484,19 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	updateActions();
 }
 
-MarkModel* ImageView::replaceMarkModel(MarkModel* model,bool * success)noexcept
+MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 {
 	//check the model
 	if (m_sliceModel == nullptr)
 	{
 		QMessageBox::critical(this, QStringLiteral("Error"),
 			QStringLiteral("Mark model can't be set without slice data."),
-			QMessageBox::StandardButton::Ok,QMessageBox::StandardButton::Ok);
+			QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Ok);
 		if (success != nullptr)
 			*success = false;
 		return nullptr;
 	}
-	if(model == nullptr)
+	if (model == nullptr)
 	{
 		auto temp = m_markModel;
 		m_markModel = nullptr;
@@ -628,41 +523,6 @@ MarkModel * ImageView::markModel()
 {
 	return m_markModel;
 }
-
-//void ImageView::dataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight, const QVector<int>& roles)
-//{
-//	qDebug() << "In ImageView:Model has been updated.";
-//	if (m_internalUpdate == true)
-//	{
-//		qDebug() << "Internal Update.";
-//		m_internalUpdate = false;
-//		return;
-//	}
-//	QModelIndex dataIndex = getDataIndex(m_modelIndex);
-//	//if ((topLeft != bottomRight)||(topLeft != dataIndex))
-//	//{
-//	//	qDebug() << "Trival update in ImageView.";
-//	//	return;
-//	//}
-//	/**
-//	 * the modification invoked by dataChanged should not yield any data model change again.
-//	 */
-//	 ///TODO:: This function needs parameters to determine whether the update is trival for this view
-//	//if (m_ptr.isNull() == true)
-//	//	return;
-//
-//	//const int currentTopSliceIndex = m_ptr->getCurrentSliceIndex();
-//	//const int currentRightSliceIndex = m_ptr->getCurrentRightSliceIndex();
-//	//const int currentFrontSliceIndex = m_ptr->getCurrentFrontSliceIndex();
-//
-//	//update slice and corresponding marks (e.g. grayscale streching and change of visibility of marks)
-//	resetSliceAndVisibleMarks(SliceType::SliceZ);
-//	resetSliceAndVisibleMarks(SliceType::SliceY);
-//	resetSliceAndVisibleMarks(SliceType::SliceX);
-//	updateActions();
-//}
-//
-
 void ImageView::setEnabled(bool enable)
 {
 	m_topSliceCheckBox->setEnabled(enable);
@@ -857,17 +717,20 @@ void ImageView::updateSlice(SliceType type)
 	{
 	case SliceType::Top:
 		view = m_topView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice, m_sliceModel, std::placeholders::_1);
+		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice, 
+			m_sliceModel, std::placeholders::_1);
 		list = &m_markModel->topSliceVisibleMarks();
 		break;
 	case SliceType::Right:
 		view = m_rightView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice, m_sliceModel, std::placeholders::_1);
+		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice,
+			m_sliceModel, std::placeholders::_1);
 		list = &m_markModel->rightSliceVisibleMarks();
 		break;
 	case SliceType::Front:
 		view = m_frontView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice,
+			m_sliceModel, std::placeholders::_1);
 		list = &m_markModel->frontSliceVisibleMarks();
 		break;
 	default:
@@ -883,8 +746,8 @@ void ImageView::updateSlice(SliceType type)
 		return;
 	//Q_ASSERT_X(m_markModel, "ImageView::updateSlice", "null pointer");
 	QList<QGraphicsItem*> items;
-	for(auto item :(*list)[index])
-		items.append(QueryMarkItemInterface(item));
+	for (auto item : (*list)[index])
+		items.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(item));
 	view->setMarks(items);
 }
 
@@ -899,7 +762,7 @@ void ImageView::updateMarks(SliceType type)
 		QList<QGraphicsItem*> res;
 		auto m = m_markModel->topSliceVisibleMarks()[topSliceIndex()];
 		for (int i = 0; i < m.size(); i++)
-			res.append(QueryMarkItemInterface(m[i]));
+			res.append(QueryMarkItemInterface<QGraphicsItem*,PolyMarkItem*>(m[i]));
 		m_topView->setMarks(res);
 	}
 	break;
@@ -908,7 +771,7 @@ void ImageView::updateMarks(SliceType type)
 		QList<QGraphicsItem*> res;
 		auto m = m_markModel->rightSliceVisibleMarks()[rightSliceIndex()];
 		for (int i = 0; i < m.size(); i++)
-			res.append(QueryMarkItemInterface(m[i]));
+			res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
 		m_rightView->setMarks(res);
 	}
 	break;
@@ -917,132 +780,14 @@ void ImageView::updateMarks(SliceType type)
 		QList<QGraphicsItem*> res;
 		auto m = m_markModel->frontSliceVisibleMarks()[frontSliceIndex()];
 		for (int i = 0; i < m.size(); i++)
-			res.append(QueryMarkItemInterface(m[i]));
+			res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
 		m_frontView->setMarks(res);
 	}
 	break;
 	}
 }
 
-SliceView::SliceView(QWidget *parent) :QGraphicsView(parent),
-m_scaleFactor(0.5),
-m_currentPaintItem(nullptr),
-m_paint(false),
-m_moveble(true),
-m_color(Qt::black),
-m_slice(nullptr)
-{
-	setScene(new SliceScene(this));
-	scale(m_scaleFactor, m_scaleFactor);
 
-}
-
-void SliceView::setMarks(const QList<QGraphicsItem*>& items)
-{
-	set_mark_helper_(m_slice, items);
-}
-void SliceView::wheelEvent(QWheelEvent *event) {
-	double numDegrees = -event->delta() / 8.0;
-	double numSteps = numDegrees / 15.0;
-	double factor = std::pow(1.125, numSteps);
-	scale(factor, factor);
-}
-void SliceView::focusInEvent(QFocusEvent* event)
-{
-	Q_UNUSED(event);
-	this->setStyleSheet("border:2px solid red");
-}
-
-void SliceView::focusOutEvent(QFocusEvent* event)
-{
-	Q_UNUSED(event);
-	this->setStyleSheet("");
-}
-
-
-void SliceView::mousePressEvent(QMouseEvent *event)
-{
-	QPoint viewPos = event->pos();
-	QPointF pos = mapToScene(viewPos);
-	m_prevScenePoint = pos;
-	auto items = scene()->items(pos);
-	for (const auto & item : items) {
-		SliceItem * slice = qgraphicsitem_cast<SliceItem*>(item);
-		if (slice == m_slice)
-		{
-			QPoint itemPoint = slice->mapFromScene(pos).toPoint();
-			emit sliceSelected(itemPoint);
-
-			if (m_paint == true)
-				m_currentPaintItem = slice;
-			m_paintViewPointsBuffer.clear();
-			m_paintViewPointsBuffer << viewPos;
-			return;
-		}
-	}
-	m_currentPaintItem = nullptr;
-
-	QGraphicsView::mousePressEvent(event);
-}
-
-void SliceView::mouseMoveEvent(QMouseEvent *event)
-{
-	if (m_paint == true)
-	{
-		if (m_currentPaintItem != nullptr)
-		{
-			QPoint viewPos = event->pos();
-			m_paintViewPointsBuffer << viewPos;
-			return;
-		}
-	}
-	else
-	{
-		QPointF currentScenePoint = mapToScene(event->pos());
-		QPointF delta = currentScenePoint - m_prevScenePoint;
-		m_prevScenePoint = currentScenePoint;
-		auto items = scene()->items();
-		for (const auto & item : items)
-		{
-			SliceItem * sliceItem = qgraphicsitem_cast<SliceItem*>(item);
-			if (sliceItem != nullptr)
-			{
-				sliceItem->setPos(sliceItem->pos() + delta);
-			}
-		}
-	}
-	QGraphicsView::mouseMoveEvent(event);
-}
-
-void SliceView::mouseReleaseEvent(QMouseEvent *event)
-{
-	if (m_paint == true)
-	{
-		if (m_currentPaintItem != nullptr)
-		{
-			if (m_paintViewPointsBuffer.empty() == false)
-			{
-				//draw a polygon and add to scene as the child of current paint item
-				QPolygon poly(m_paintViewPointsBuffer);
-				QPolygonF polyF = mapToScene(poly);
-
-				polyF = m_currentPaintItem->mapFromScene(polyF);
-				PolyMarkItem * polyItem = new PolyMarkItem(polyF, m_currentPaintItem);
-				QBrush aBrush(m_color);
-				QPen aPen(aBrush, 5, Qt::SolidLine);
-				polyItem->setPen(aPen);
-				polyItem->setZValue(100);
-				//emit
-				if (m_currentPaintItem == m_slice)
-				{
-					emit markAdded(polyItem);
-				}
-				return;
-			}
-		}
-	}
-	QGraphicsView::mouseReleaseEvent(event);
-}
 
 SliceScene::SliceScene(QObject *parent) :QGraphicsScene(parent)
 {
@@ -1051,202 +796,24 @@ SliceScene::SliceScene(QObject *parent) :QGraphicsScene(parent)
 
 void SliceScene::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-	qDebug() << "mousePressEvent in scene";
+	//qDebug() << "mousePressEvent in scene";
 	QGraphicsScene::mousePressEvent(event);
 }
 
 void SliceScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-	qDebug() << "mouseMoveEvent in scene";
+	//qDebug() << "mouseMoveEvent in scene";
 	QGraphicsScene::mouseMoveEvent(event);
 }
 
 void SliceScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-	qDebug() << "mouseReleaseEvent in scene";
+	//qDebug() << "mouseReleaseEvent in scene";
 	QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void SliceScene::wheelEvent(QGraphicsSceneWheelEvent * event)
 {
-	qDebug() << "wheelEvent in scene";
+	//qDebug() << "wheelEvent in scene";
 	QGraphicsScene::wheelEvent(event);
 }
-
-StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type, bool visible) : QGraphicsItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible)
-{
-}
-void StrokeMarkItem::addPoint(const QPointF& p)
-{
-	prepareGeometryChange();
-	m_boundingRect = unionWith(m_boundingRect, p);
-	m_points << p;
-	update();
-}
-
-void StrokeMarkItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-{
-	Q_UNUSED(painter);
-	Q_UNUSED(option);
-	Q_UNUSED(widget);
-}
-
-QRectF StrokeMarkItem::unionWith(const QRectF & rect, const QPointF & p)
-{
-	const QPointF &topLeft = rect.topLeft();
-	const QPointF &bottomRight = rect.bottomRight();
-	QPointF newTopLeft = QPointF(std::min(p.x(), topLeft.x()), std::min(p.y(), topLeft.y()));
-	QPointF newBottomRight = QPointF(std::max(p.x(), bottomRight.x()), std::max(p.y(), bottomRight.y()));
-	return QRectF(newTopLeft, newBottomRight);
-}
-
-void StrokeMarkItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
-{
-
-	QGraphicsItem::mousePressEvent(event);
-}
-
-void StrokeMarkItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-
-	QGraphicsItem::mouseMoveEvent(event);
-}
-
-void StrokeMarkItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
-{
-
-	QGraphicsItem::mouseReleaseEvent(event);
-}
-
-void StrokeMarkItem::wheelEvent(QGraphicsSceneWheelEvent * event)
-{
-
-	QGraphicsItem::wheelEvent(event);
-}
-void SliceItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
-{
-
-	QGraphicsPixmapItem::mousePressEvent(event);
-}
-
-void SliceItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-
-	QGraphicsPixmapItem::mouseMoveEvent(event);
-}
-
-void SliceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
-{
-
-	QGraphicsPixmapItem::mouseReleaseEvent(event);
-}
-
-void SliceItem::wheelEvent(QGraphicsSceneWheelEvent* event)
-{
-
-	QGraphicsPixmapItem::wheelEvent(event);
-}
-
-void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
-{
-	if (sliceItem == nullptr)
-	{
-		sliceItem = new SliceItem(QPixmap::fromImage(inImage));
-		(sliceItem)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
-		sliceItem->setPos(pos);
-		scene()->addItem(sliceItem);
-	}
-	else
-	{
-		sliceItem->setPixmap(QPixmap::fromImage(inImage));
-	}
-	QSize size = inImage.size();
-	*outImage = inImage;
-}
-inline 
-void SliceView::set_mark_helper_(SliceItem* sliceItem, 
-	const QList<QGraphicsItem*>& items)
-{
-	foreach(QGraphicsItem * item, items)
-	{
-		item->setParentItem(sliceItem);
-		item->setVisible(true);
-	}
-}
-inline 
-void SliceView::clear_slice_marks_helper_(SliceItem * slice)
-{
-	if (slice == nullptr)
-	{
-		qWarning("Top slice is empty.");
-		return;
-	}
-	auto children = slice->childItems();
-	foreach(QGraphicsItem * item, children)
-	{
-		item->setParentItem(nullptr);
-		//TODO::
-		item->setVisible(false);
-		//item->setVisible(true);
-	}
-}
-void SliceView::setImage(const QImage& image)
-{
-	//set_image_helper(image);
-	QSize size = image.size();
-	QPoint pos = QPoint(-size.width() / 2, -size.height() / 2);
-	set_image_helper_(pos, image, m_slice, &m_image);
-}
-
-void SliceView::clearSliceMarks()
-{
-	clear_slice_marks_helper_(m_slice);
-}
-void AbstractSliceDataModel::setTopSlice(const QImage& image, int index)
-{
-	m_modifiedTopSliceFlags[index] = true;
-	m_modifiedTopSlice[index] = image;
-}
-void AbstractSliceDataModel::setRightSlice(const QImage& image, int index)
-{
-	m_modifiedRightSliceFlags[index] = true;
-	m_modifiedRightSlice[index] = image;
-}
-
-void AbstractSliceDataModel::setFrontSlice(const QImage& image, int index)
-{
-	m_modifiedFrontSliceFlags[index] = true;
-	m_modifiedFrontSlice[index] = image;
-}
-
-QImage AbstractSliceDataModel::topSlice(int index) const
-{
-	if (m_modifiedTopSliceFlags[index] == false)
-		return originalTopSlice(index);
-	return m_modifiedTopSlice[index];
-}
-
-QImage AbstractSliceDataModel::rightSlice(int index) const
-{
-	if (m_modifiedRightSliceFlags[index] == false)
-		return originalRightSlice(index);
-	return m_modifiedRightSlice[index];
-}
-
-QImage AbstractSliceDataModel::frontSlice(int index) const
-{
-	if (m_modifiedFrontSliceFlags[index] == false)
-		return originalFrontSlice(index);
-	return m_modifiedFrontSlice[index];
-
-}
-AbstractSliceDataModel::AbstractSliceDataModel(int nTop, int nRight, int nFront)
-{
-	m_modifiedFrontSlice.resize(nFront);
-	m_modifiedFrontSliceFlags.resize(nFront);
-	m_modifiedRightSlice.resize(nRight);
-	m_modifiedRightSliceFlags.resize(nRight);
-	m_modifiedTopSlice.resize(nTop);
-	m_modifiedTopSliceFlags.resize(nTop);
-}
-

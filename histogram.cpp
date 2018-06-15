@@ -1,14 +1,15 @@
 #include <qdebug.h>
-#include <QMouseEvent>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QComboBox>
 #include <QSpinBox>
 #include <QLabel>
 #include <QGroupBox>
+#include <QPushButton>
 #include <cmath>
+#include <QMouseEvent>
 
 #include "histogram.h"
+#include "sliceitem.h"
 
 
 #define cimg_display 0 //

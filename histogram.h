@@ -1,13 +1,12 @@
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
-#include <QObject>
 #include <QPainter>
 #include <QLayout>
 #include <QAbstractItemView>
 
 #include "titledsliderwithspinbox.h"
-#include "ItemContext.h"
+//#include "ItemContext.h"
 #include "abstractplugin.h"
 
 

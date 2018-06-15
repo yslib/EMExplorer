@@ -1,7 +1,6 @@
 #ifndef MARKCATEGRAY_H
 #define MARKCATEGRAY_H
 
-#include <QWidget>
 #include <QDialog>
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -11,10 +10,10 @@ class QColor;
 class QGridLayout;
 QT_END_NAMESPACE
 
-class MarkCategray : public QDialog
+class MarkCategoryDialog : public QDialog
 {
 public:
-	explicit MarkCategray(QWidget *parent = nullptr);
+    explicit MarkCategoryDialog(QWidget *parent = nullptr);
 signals:
 	void resultReceived(const QString & name, const QColor & color);
 private slots:

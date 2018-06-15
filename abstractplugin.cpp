@@ -1,5 +1,7 @@
 #include "abstractplugin.h"
-#include "imageviewer.h"
+#include "sliceitem.h"
+#include "sliceview.h"
+#include "abstractslicedatamodel.h"
 
 AbstractPlugin::AbstractPlugin(SliceType type,const QString & name,SliceView * view,AbstractSliceDataModel * model,QWidget * parent):
 QWidget(parent),
