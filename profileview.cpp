@@ -107,4 +107,5 @@ QVariant MRCInfoTableModel::headerData(int section, Qt::Orientation orientation,
     }else if(orientation == Qt::Vertical){
         return QVariant::fromValue(QString::number(section));
     }
+	return QVariant();
 }
