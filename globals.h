@@ -2,6 +2,7 @@
 #define GLOBALS_H
 
 //inline helper function
+#include <type_traits>
 
 
 template<typename T,typename U,typename V>
@@ -33,6 +34,22 @@ enum ItemTypes
 	Slice = 1,
 	Mark
 };
+
+namespace MarkProperty
+{
+	enum
+	{
+		Color,
+		CategoryColor,
+		Name,
+		CategoryName,
+		SliceIndex,
+		SliceType,
+		VisibleState,
+		Length,
+	};
+}
+
 
 
 

@@ -1,12 +1,12 @@
 #ifndef ABSTRACTMARKITEM_H
 #define ABSTRACTMARKITEM_H
-
-#include <QString>
-#include <QColor>
 #include "globals.h"
+#include <QString>
 #include <QGraphicsItem>
 
-class AbstractMarkItem {
+enum class SliceType;
+
+class AbstractMarkItem{
 	QString m_name;
 	double m_length;
 	QColor m_color;
@@ -31,9 +31,10 @@ protected:
 };
 
 Q_DECLARE_METATYPE(AbstractMarkItem*);
+//Q_DECLARE_METATYPE(QGraphicsItem*);
 
 
-class StrokeMarkItem :public QGraphicsItem, public AbstractMarkItem {
+class StrokeMarkItem :public  QGraphicsItem, public AbstractMarkItem {
 	QRectF m_boundingRect;
 	QPainterPath m_painterPath;
 	QList<QPointF> m_points;
@@ -55,11 +56,19 @@ protected:
 };
 
 
+
 class PolyMarkItem :public QGraphicsPolygonItem, public AbstractMarkItem {
 public:
 	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible) {}
 	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(poly, parent), AbstractMarkItem(name, 0.0, color, type, index, visible) {}
 };
+
+
+namespace ysl
+{
+
+}
+
 
 
 #endif // ABSTRACTMARKITEM_H

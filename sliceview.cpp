@@ -108,6 +108,7 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 				QPolygonF polyF = mapToScene(poly);
 
 				polyF = m_currentPaintItem->mapFromScene(polyF);
+
 				PolyMarkItem * polyItem = new PolyMarkItem(polyF, m_currentPaintItem, -1, QString(), m_color);
 
 				QBrush aBrush(m_color);

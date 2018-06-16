@@ -173,6 +173,8 @@ void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*
 	{
 		QVector<QVariant> d;
 		m->setName(category + QString(" #%1").arg(r + n++));
+		//set name
+
 		add_mark_in_slice_helper_(m);
 		d.append(QVariant::fromValue(m));	
 		//d.append(QVariant());	//a place holder for 2nd column
@@ -281,6 +283,9 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 				Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
 					"MarkModel::data", "convert failure");
 				auto mark = d.value<AbstractMarkItem*>();
+
+				//get name
+
 				return QVariant::fromValue(mark->name());
 			}
 			else if(index.column() == 1)
@@ -301,6 +306,7 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 					sliceType = QStringLiteral("Front:");
 					break;
 				}
+				//get slicetype and index
 				return sliceType+QString::number(mark->sliceIndex());
 			}
 			return QVariant();
@@ -322,6 +328,7 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
 				"MarkModel::data", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
+			//get visible stats
 			return mark->checkState() ? Qt::Checked : Qt::Unchecked;
 		}
 	}
@@ -341,6 +348,8 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
 				"MarkModel::data", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
+
+			//get color
 			return mark->color();
 		}
 	}
@@ -384,6 +393,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 				"MarkModel::setData", "convert failure");
 			auto mark = d.value<AbstractMarkItem*>();
 			bool vis = value == Qt::Checked;
+			//set display states
 			mark->setCheckState(vis);
 			//This is a bull shit
 			//auto m = QueryMarkItemInterface(mark);

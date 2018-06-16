@@ -407,6 +407,10 @@ void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
 	}
 	auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
 	m->setSliceType(type);
+
+	//slicetype, sliceindex, categoryname, name, color, categorycolor, 
+
+
 	int index;
 	switch(type)
 	{
