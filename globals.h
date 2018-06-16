@@ -5,11 +5,11 @@
 #include <type_traits>
 
 
-template<typename T,typename U,typename V>
-inline T QueryMarkItemInterface(V mark)
-{
-	return static_cast<T>(static_cast<U>(mark));
-}
+//template<typename T,typename U,typename V>
+//inline T QueryMarkItemInterface(V mark)
+//{
+//	return static_cast<T>(static_cast<U>(mark));
+//}
 
 template<typename T>
 inline
@@ -29,6 +29,8 @@ enum class SliceType
 	Right,		//Y
 	Front		//X
 };
+//Q_DECLARE_METATYPE(SliceType);
+
 enum ItemTypes
 {
 	Slice = 1,

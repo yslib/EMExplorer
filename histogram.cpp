@@ -464,6 +464,7 @@ void HistogramViewer::createConnections()
 	connect(m_filterComboBox, QOverload<const QString &>::of(&QComboBox::activated), [=](const QString & text) {
 		//    qDebug()<<"Signal:QComboxBox::activated";
 		//    updateParameterLayout(text);
+		Q_UNUSED(text);
 	});
 	connect(m_filterComboBox, &QComboBox::currentTextChanged, [=](const QString & text) {
 		qDebug() << "Signal::currentTextChanged";

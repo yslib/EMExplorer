@@ -57,10 +57,10 @@ protected:
 
 
 
-class PolyMarkItem :public QGraphicsPolygonItem, public AbstractMarkItem {
+class PolyMarkItem :public QGraphicsPolygonItem {
 public:
-	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible) {}
-	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(poly, parent), AbstractMarkItem(name, 0.0, color, type, index, visible) {}
+	PolyMarkItem(QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(parent){}
+	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(poly, parent){}
 };
 
 

@@ -35,7 +35,7 @@ QModelIndex MarkModel::model_index_helper_(const QModelIndex& root, const QStrin
 			value = d.value<QSharedPointer<CategoryItem>>()->name();
 			break;
 		case TreeItemType::Mark:
-			value = d.value<AbstractMarkItem*>()->name();
+			value = d.value<QGraphicsItem*>()->data(MarkProperty::CategoryName).toString();
 			break;
 		case TreeItemType::Root:
 		default:
@@ -85,11 +85,11 @@ bool MarkModel::check_match_helper_(const AbstractSliceDataModel * dataModel)
 	//Image size need to be considered later
 }
 
-void MarkModel::add_mark_in_slice_helper_(AbstractMarkItem * mark)
+void MarkModel::add_mark_in_slice_helper_(QGraphicsItem * mark)
 {
-	int index = mark->sliceIndex();
+	int index = mark->data(MarkProperty::SliceIndex).toInt();
 	MarkSliceList * markList;
-	switch (mark->sliceType())
+	switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
 	{
 	case SliceType::Top:
 		markList = &m_topSliceVisibleMarks;
@@ -103,11 +103,11 @@ void MarkModel::add_mark_in_slice_helper_(AbstractMarkItem * mark)
 	}
 	(*markList)[index].append(mark);
 }
-void MarkModel::update_mark_visible_helper(AbstractMarkItem * mark)
+void MarkModel::update_mark_visible_helper(QGraphicsItem * mark)
 {
 	Q_ASSERT_X(m_view,"MarkModel::update_mark_visible_helper_","null pointer");
 	int index = -1;
-	switch (mark->sliceType())
+	switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
 	{
 	case SliceType::Top:
 		index = m_view->topSliceIndex();
@@ -119,10 +119,11 @@ void MarkModel::update_mark_visible_helper(AbstractMarkItem * mark)
 		index = m_view->frontSliceIndex();
 			break;
 	}
-	if (index != mark->sliceIndex())
+	if (index != mark->data(MarkProperty::SliceIndex).toInt())
 		return;
-	auto item = QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(mark);
-	item->setVisible(mark->checkState());
+	//auto item = QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(mark);
+	bool visible = mark->data(MarkProperty::VisibleState).toBool();
+	mark->setVisible(visible);
 }
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	ImageView * view,
@@ -148,12 +149,12 @@ MarkModel::~MarkModel()
 	}
 }
 
-void MarkModel::addMark(const QString & category, AbstractMarkItem * mark)
+void MarkModel::addMark(const QString & category, QGraphicsItem * mark)
 {
-	addMarks(category, QList<AbstractMarkItem*>{mark});
+	addMarks(category, QList<QGraphicsItem*>{mark});
 
 }
-void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*>& marks)
+void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& marks)
 {
 	auto i = category_index_helper_(category);
 	if (i.isValid() == false)
@@ -172,19 +173,16 @@ void MarkModel::addMarks(const QString & category, const QList<AbstractMarkItem*
 	for (auto m : marks)
 	{
 		QVector<QVariant> d;
-		m->setName(category + QString(" #%1").arg(r + n++));
-		//set name
-
+		m->setData(MarkProperty::Name,category + QString("#%1").arg(r + n++));
 		add_mark_in_slice_helper_(m);
 		d.append(QVariant::fromValue(m));	
-		//d.append(QVariant());	//a place holder for 2nd column
 		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
 	}
 	item->insertChildren(r, list);		//insert marks at the end
 	endInsertRows();
 }
 
-QList<AbstractMarkItem*> MarkModel::marks(const QString & category)
+QList<QGraphicsItem*> MarkModel::marks(const QString & category)
 {
 	auto id = category_index_helper_(category);
 	int r = rowCount(id);
@@ -193,10 +191,10 @@ QList<AbstractMarkItem*> MarkModel::marks(const QString & category)
 		"MarkModel::addMark", "insert error");
 	Q_ASSERT_X(item->type() == TreeItemType::Mark,
 		"MarkModel::marks", "type error");
-	QList<AbstractMarkItem*> res;
+	QList<QGraphicsItem*> res;
 	for (int i = 0; i < r; i++)
 	{
-		auto d = item->child(i)->data(0).value<AbstractMarkItem*>();
+		auto d = item->child(i)->data(0).value<QGraphicsItem*>();
 		Q_ASSERT_X(d,
 			"MarkModel::marks", "null pointer");
 		res.append(d);
@@ -204,7 +202,7 @@ QList<AbstractMarkItem*> MarkModel::marks(const QString & category)
 	return res;
 }
 
-bool MarkModel::removeMark(const QString& category, AbstractMarkItem* mark)
+bool MarkModel::removeMark(const QString& category, QGraphicsItem* mark)
 {
 	auto id = category_index_helper_(category);
 	int r = rowCount(id);
@@ -213,12 +211,12 @@ bool MarkModel::removeMark(const QString& category, AbstractMarkItem* mark)
 		"MarkModel::removeMark", "insert error");
 	Q_ASSERT_X(item->type() == TreeItemType::Mark,
 		"MarkModel::removeMark", "type error");
-	Q_ASSERT_X(item->child(r)->data(0).canConvert<AbstractMarkItem*>(),
+	Q_ASSERT_X(item->child(r)->data(0).canConvert<QGraphicsItem*>(),
 		"MarkModel::removeMark", "convert failure");
 	int removedId = -1;
 	for (int i = 0; i < r; i++)
 	{
-		auto d = item->child(r)->data(0).value<AbstractMarkItem*>();
+		auto d = item->child(r)->data(0).value<QGraphicsItem*>();
 		Q_ASSERT_X(d,
 			"MarkModel::removeMarks", "null pointer");
 		if (d == mark)
@@ -235,7 +233,7 @@ bool MarkModel::removeMark(const QString& category, AbstractMarkItem* mark)
 	return true;
 }
 
-int MarkModel::removeMarks(const QString& category, const QList<AbstractMarkItem*>& marks)
+int MarkModel::removeMarks(const QString& category, const QList<QGraphicsItem*>& marks)
 {
 	int success = 0;
 	auto func = std::bind(&MarkModel::removeMark, this,
@@ -280,21 +278,19 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 
 			if(index.column() == 0)
 			{
-				Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+				Q_ASSERT_X(d.canConvert<QGraphicsItem*>(),
 					"MarkModel::data", "convert failure");
-				auto mark = d.value<AbstractMarkItem*>();
+				auto mark = d.value<QGraphicsItem*>();
 
-				//get name
-
-				return QVariant::fromValue(mark->name());
+				return QVariant::fromValue(mark->data(MarkProperty::Name).toString());
 			}
 			else if(index.column() == 1)
 			{
 				//display slice index
 				auto d = item->data(0);
-				auto mark = d.value<AbstractMarkItem*>();
+				auto mark = d.value<QGraphicsItem*>();
 				QString sliceType;
-				switch(mark->sliceType())
+				switch(static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
 				{
 				case SliceType::Top:
 					sliceType = QStringLiteral("Top:");
@@ -307,7 +303,7 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 					break;
 				}
 				//get slicetype and index
-				return sliceType+QString::number(mark->sliceIndex());
+				return sliceType+QString::number(mark->data(MarkProperty::SliceIndex).toInt());
 			}
 			return QVariant();
 		}
@@ -325,11 +321,11 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 				"MarkModel::data", "convert failure");
 			return d.value<QSharedPointer<CategoryItem>>()->visible() ? Qt::Checked : Qt::Unchecked;
 		case TreeItemType::Mark:
-			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+			Q_ASSERT_X(d.canConvert<QGraphicsItem*>(),
 				"MarkModel::data", "convert failure");
-			auto mark = d.value<AbstractMarkItem*>();
+			auto mark = d.value<QGraphicsItem*>();
 			//get visible stats
-			return mark->checkState() ? Qt::Checked : Qt::Unchecked;
+			return mark->data(MarkProperty::VisibleState).toBool() ? Qt::Checked : Qt::Unchecked;
 		}
 	}
 	if(role == Qt::DecorationRole && index.column() == 0)
@@ -345,12 +341,12 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 				"MarkModel::data", "convert failure");
 			return d.value<QSharedPointer<CategoryItem>>()->color();
 		case TreeItemType::Mark:
-			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+			Q_ASSERT_X(d.canConvert<QGraphicsItem*>(),
 				"MarkModel::data", "convert failure");
-			auto mark = d.value<AbstractMarkItem*>();
+			auto mark = d.value<QGraphicsItem*>();
 
 			//get color
-			return mark->color();
+			return mark->data(MarkProperty::Color);
 		}
 	}
 	return QVariant();
@@ -389,12 +385,12 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 			return true;
 		}
 		case TreeItemType::Mark:
-			Q_ASSERT_X(d.canConvert<AbstractMarkItem*>(),
+			Q_ASSERT_X(d.canConvert<QGraphicsItem*>(),
 				"MarkModel::setData", "convert failure");
-			auto mark = d.value<AbstractMarkItem*>();
+			auto mark = d.value<QGraphicsItem*>();
 			bool vis = value == Qt::Checked;
 			//set display states
-			mark->setCheckState(vis);
+			mark->setData(MarkProperty::VisibleState, vis);
 			//This is a bull shit
 			//auto m = QueryMarkItemInterface(mark);
 			//m->setVisible(vis);

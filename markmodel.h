@@ -8,7 +8,7 @@
 QT_BEGIN_NAMESPACE
 class QGraphicsItem;
 QT_END_NAMESPACE
-class AbstractMarkItem;
+class QGraphicsItem;
 class ImageView;
 class AbstractSliceDataModel;
 class TreeItem;
@@ -39,7 +39,7 @@ Q_DECLARE_METATYPE(QSharedPointer<CategoryItem>);
 class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
-	using MarkSliceList = QVector<QList<AbstractMarkItem*>>;
+	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
 	TreeItem * m_rootItem;
 	const AbstractSliceDataModel * m_dataModel;
 	ImageView * m_view;
@@ -53,8 +53,8 @@ class MarkModel :public QAbstractItemModel
 	QModelIndex category_index_helper_(const QString& category);
 	QModelIndex category_add_helper_(const QString& category);
 	bool check_match_helper_(const AbstractSliceDataModel * dataModel);
-	void add_mark_in_slice_helper_(AbstractMarkItem * mark);
-	void update_mark_visible_helper(AbstractMarkItem * mark);
+	void add_mark_in_slice_helper_(QGraphicsItem * mark);
+	void update_mark_visible_helper(QGraphicsItem * mark);
 
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
@@ -90,11 +90,11 @@ public:
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	//test file
 	//Custom functions for accessing and setting data
-	void addMark(const QString & category, AbstractMarkItem * mark);
-	void addMarks(const QString & category, const QList<AbstractMarkItem*> & marks);
-	QList<AbstractMarkItem*> marks(const QString & category);
-	bool removeMark(const QString& category, AbstractMarkItem* mark);
-	int removeMarks(const QString& category, const QList<AbstractMarkItem*>& marks = QList<AbstractMarkItem*>());
+	void addMark(const QString & category, QGraphicsItem * mark);
+	void addMarks(const QString & category, const QList<QGraphicsItem*> & marks);
+	QList<QGraphicsItem*> marks(const QString & category);
+	bool removeMark(const QString& category, QGraphicsItem* mark);
+	int removeMarks(const QString& category, const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());
 	int markCount(const QString & category);
 
 	int save(const QString & fileName);
