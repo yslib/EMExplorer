@@ -101,6 +101,7 @@ void MainWindow::exploererDoubleClicked(const QModelIndex & index)
 }
 void MainWindow::createWidget()
 {
+	setDockOptions(QMainWindow::AnimatedDocks);
 	QDockWidget * dock;
 	m_profileView = new ProfileView(this);
 	dock = new QDockWidget(QStringLiteral("Profile:"));

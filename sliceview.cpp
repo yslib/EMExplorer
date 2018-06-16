@@ -1,4 +1,5 @@
 #include <QWheelEvent>
+#include <QDebug>
 
 #include "sliceview.h"
 #include "globals.h"
@@ -106,30 +107,21 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 				//draw a polygon and add to scene as the child of current paint item
 				QPolygon poly(m_paintViewPointsBuffer);
 				QPolygonF polyF = mapToScene(poly);
-
 				polyF = m_currentPaintItem->mapFromScene(polyF);
-				PolyMarkItem * polyItem = new PolyMarkItem(polyF, m_currentPaintItem, -1, QString(), m_color);
-
+				auto polyItem = new QGraphicsPolygonItem(polyF, m_currentPaintItem);
 				QBrush aBrush(m_color);
 				QPen aPen(aBrush, 5, Qt::SolidLine);
 				polyItem->setPen(aPen);
 				polyItem->setZValue(100);
 				//emit
 				if (m_currentPaintItem == m_slice)
-				{
 					emit markAdded(polyItem);
-				}
 				return;
 			}
 		}
 	}
 	QGraphicsView::mouseReleaseEvent(event);
 }
-
-
-
-
-
 void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
 	if (sliceItem == nullptr)
@@ -151,12 +143,7 @@ void SliceView::set_mark_helper_(
 	const QList<QGraphicsItem*>& items)
 {
 	foreach(QGraphicsItem * item, items)
-	{
-		//item->setParentItem(sliceItem);
-		auto t = QueryMarkItemInterface<AbstractMarkItem*, PolyMarkItem*>(item);
-
-		item->setVisible(t->checkState());
-	}
+		item->setVisible(item->data(MarkProperty::VisibleState).toBool());
 }
 inline
 void SliceView::clear_slice_marks_helper_(SliceItem * slice)
@@ -169,10 +156,7 @@ void SliceView::clear_slice_marks_helper_(SliceItem * slice)
 	auto children = slice->childItems();
 	foreach(QGraphicsItem * item, children)
 	{
-		//item->setParentItem(nullptr);
-		//TODO::
 		item->setVisible(false);
-		//item->setVisible(true);
 	}
 }
 void SliceView::setImage(const QImage& image)

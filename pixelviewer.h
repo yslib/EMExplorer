@@ -7,9 +7,6 @@
 
 class QLabel;
 class QLineEdit;
-
-
-
 class PixelViewer:public AbstractPlugin
 {
     Q_OBJECT
@@ -32,7 +29,8 @@ private:
 	void setWidth(int width);
 	void setHeight(int height);
 	void setImage(const QImage & image);
-private:
+
+
 	static const int s_width = 50;
 	static const int s_height = 20;
 	static const int s_top = 0;

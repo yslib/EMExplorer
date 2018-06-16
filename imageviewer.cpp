@@ -399,31 +399,45 @@ MarkModel* ImageView::createMarkModel(ImageView *view, AbstractSliceDataModel * 
 void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
 {
 	QString cate = m_categoryCBBox->currentText();
+	QVariant categoryColor = m_categoryCBBox->currentData();
 	if(cate.isEmpty())
 	{
 		cate = QStringLiteral("Category#%1").arg(m_categoryCBBox->count());
-		m_categoryCBBox->addItem(cate, QVariant::fromValue(Qt::black));
+		categoryColor = QVariant::fromValue(Qt::black);
+		m_categoryCBBox->addItem(cate, categoryColor);
 		m_categoryCBBox->setCurrentText(cate);
 	}
-	auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
-	m->setSliceType(type);
+	//auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
+
+	mark->setData(MarkProperty::SliceType, QVariant::fromValue(static_cast<int>(type)));
+	mark->setData(MarkProperty::CategoryName, QVariant::fromValue(cate));
+	mark->setData(MarkProperty::CategoryColor, categoryColor);
+	mark->setData(MarkProperty::VisibleState, QVariant::fromValue(true));
+	
+	//slicetype, sliceindex, categoryname, name, color, categorycolor, visible state
 	int index;
+	QColor color;
 	switch(type)
 	{
 	case SliceType::Top:
 		index = m_topSlider->value();
+		color = m_topView->color();
 		break;
 	case SliceType::Right:
 		index = m_rightSlider->value();
+		color = m_rightView->color();
 		break;
 	case SliceType::Front:
 		index = m_frontSlider->value();
+		color = m_frontView->color();
 		break;
 	}
-	m->setSliceIndex(index);
+	mark->setData(MarkProperty::SliceIndex, QVariant::fromValue(index));
+	mark->setData(MarkProperty::Color, color);
+
 	Q_ASSERT_X(m_markModel != nullptr,
 		"mark_create_helper_", "null pointer");
-	m_markModel->addMark(cate, m);
+	m_markModel->addMark(cate,mark);
 }
 
 
@@ -745,10 +759,7 @@ void ImageView::updateSlice(SliceType type)
 	if (m_markModel == nullptr)
 		return;
 	//Q_ASSERT_X(m_markModel, "ImageView::updateSlice", "null pointer");
-	QList<QGraphicsItem*> items;
-	for (auto item : (*list)[index])
-		items.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(item));
-	view->setMarks(items);
+	view->setMarks((*list)[index]);
 }
 
 void ImageView::updateMarks(SliceType type)
@@ -759,29 +770,29 @@ void ImageView::updateMarks(SliceType type)
 	{
 	case SliceType::Top:
 	{
-		QList<QGraphicsItem*> res;
+		//QList<QGraphicsItem*> res;
 		auto m = m_markModel->topSliceVisibleMarks()[topSliceIndex()];
-		for (int i = 0; i < m.size(); i++)
-			res.append(QueryMarkItemInterface<QGraphicsItem*,PolyMarkItem*>(m[i]));
-		m_topView->setMarks(res);
+		//for (int i = 0; i < m.size(); i++)
+			//res.append(QueryMarkItemInterface<QGraphicsItem*,PolyMarkItem*>(m[i]));
+		m_topView->setMarks(m);
 	}
 	break;
 	case SliceType::Right:
 	{
-		QList<QGraphicsItem*> res;
+		//QList<QGraphicsItem*> res;
 		auto m = m_markModel->rightSliceVisibleMarks()[rightSliceIndex()];
-		for (int i = 0; i < m.size(); i++)
-			res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
-		m_rightView->setMarks(res);
+		//for (int i = 0; i < m.size(); i++)
+			//res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
+		m_rightView->setMarks(m);
 	}
 	break;
 	case SliceType::Front:
 	{
-		QList<QGraphicsItem*> res;
+		//QList<QGraphicsItem*> res;
 		auto m = m_markModel->frontSliceVisibleMarks()[frontSliceIndex()];
-		for (int i = 0; i < m.size(); i++)
-			res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
-		m_frontView->setMarks(res);
+		//for (int i = 0; i < m.size(); i++)
+		//	res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
+		m_frontView->setMarks(m);
 	}
 	break;
 	}
