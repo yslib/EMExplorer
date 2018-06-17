@@ -12,7 +12,8 @@ m_currentPaintItem(nullptr),
 m_paint(false),
 m_moveble(true),
 m_color(Qt::black),
-m_slice(nullptr)
+m_slice(nullptr),
+m_paintingItem(nullptr)
 {
 	//setScene(new SliceScene(this));
 	setScene(new QGraphicsScene(this));
@@ -54,9 +55,13 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 		{
 			QPoint itemPoint = slice->mapFromScene(pos).toPoint();
 			emit sliceSelected(itemPoint);
-
 			if (m_paint == true)
+			{
 				m_currentPaintItem = slice;
+				m_paintingItem = new StrokeMarkItem(m_currentPaintItem);
+				m_paintingItem->setPen(QPen(QBrush(m_color), 5, Qt::SolidLine));
+				m_paintingItem->appendPoint(itemPoint);
+			}
 			m_paintViewPointsBuffer.clear();
 			m_paintViewPointsBuffer << viewPos;
 			return;
@@ -74,6 +79,7 @@ void SliceView::mouseMoveEvent(QMouseEvent *event)
 		if (m_currentPaintItem != nullptr)
 		{
 			QPoint viewPos = event->pos();
+			m_paintingItem->appendPoint(m_currentPaintItem->mapFromScene(mapToScene(viewPos)));
 			m_paintViewPointsBuffer << viewPos;
 			return;
 		}
@@ -102,22 +108,27 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 	{
 		if (m_currentPaintItem != nullptr)
 		{
-			if (m_paintViewPointsBuffer.empty() == false)
-			{
-				//draw a polygon and add to scene as the child of current paint item
-				QPolygon poly(m_paintViewPointsBuffer);
-				QPolygonF polyF = mapToScene(poly);
-				polyF = m_currentPaintItem->mapFromScene(polyF);
-				auto polyItem = new QGraphicsPolygonItem(polyF, m_currentPaintItem);
-				QBrush aBrush(m_color);
-				QPen aPen(aBrush, 5, Qt::SolidLine);
-				polyItem->setPen(aPen);
-				polyItem->setZValue(100);
-				//emit
-				if (m_currentPaintItem == m_slice)
-					emit markAdded(polyItem);
-				return;
-			}
+			m_paintingItem->appendPoint(m_currentPaintItem->mapFromScene(mapToScene(event->pos())));
+			
+			if (m_currentPaintItem == m_slice)
+				emit markAdded(m_paintingItem);
+
+			//if (m_paintViewPointsBuffer.empty() == false)
+			//{
+			//	//draw a polygon and add to scene as the child of current paint item
+			//	QPolygon poly(m_paintViewPointsBuffer);
+			//	QPolygonF polyF = mapToScene(poly);
+			//	polyF = m_currentPaintItem->mapFromScene(polyF);
+			//	auto polyItem = new QGraphicsPolygonItem(polyF, m_currentPaintItem);
+			//	QBrush aBrush(m_color);
+			//	QPen aPen(aBrush, 5, Qt::SolidLine);
+			//	polyItem->setPen(aPen);
+			//	polyItem->setZValue(100);
+			//	//emit
+			//	if (m_currentPaintItem == m_slice)
+			//		emit markAdded(polyItem);
+			//	return;
+			//}
 		}
 	}
 	QGraphicsView::mouseReleaseEvent(event);

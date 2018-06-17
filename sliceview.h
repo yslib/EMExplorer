@@ -1,6 +1,7 @@
 #ifndef SLICEVIEW_H
 #define SLICEVIEW_H
 #include <QGraphicsView>
+#include "markitem.h"
 
 class SliceItem;
 
@@ -41,6 +42,10 @@ private:
 	QColor m_color;
 	SliceItem * m_slice;
 	QImage  m_image;
+
+	//QGraphicsItem * m_paintingItem;
+	StrokeMarkItem * m_paintingItem;
+
 };
 
 #endif // SLICEVIEW_H

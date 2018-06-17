@@ -441,11 +441,11 @@ void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
 }
 
 
-inline int ImageView::topSliceIndex() const { return m_topSlider->value(); }
+int ImageView::topSliceIndex() const { return m_topSlider->value(); }
 
-inline int ImageView::rightSliceIndex() const { return m_rightSlider->value(); }
+int ImageView::rightSliceIndex() const { return m_rightSlider->value(); }
 
-inline int ImageView::frontSliceIndex() const { return m_frontSlider->value(); }
+int ImageView::frontSliceIndex() const { return m_frontSlider->value(); }
 
 inline void ImageView::topSliceEnable(bool enable)
 {

@@ -51,9 +51,9 @@ class ImageView :public QWidget
 	Q_OBJECT
 public:
 	ImageView(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
-	inline int topSliceIndex()const;
-	inline int rightSliceIndex()const;
-	inline int frontSliceIndex()const;
+	 int topSliceIndex()const;
+	 int rightSliceIndex()const;
+	int frontSliceIndex()const;
 
 	inline void topSliceEnable(bool enable);
 	inline void rightSliceEnable(bool enable);
