@@ -393,7 +393,12 @@ MarkModel* ImageView::createMarkModel(ImageView *view, AbstractSliceDataModel * 
 	const MarkModel::MarkSliceList top(d->topSliceCount());
 	const MarkModel::MarkSliceList right(d->rightSliceCount());
 	const MarkModel::MarkSliceList front(d->frontSliceCount());
-	return new MarkModel( d, view, top, right, front, nullptr);
+	return new MarkModel( d, view,
+		new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
+		top,
+		right,
+		front,
+		nullptr);
 }
 
 void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
@@ -485,7 +490,7 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	//TODO::update marks
 	if (m_markModel != nullptr)
 	{
-		if (m_markModel->check_match_helper_(model) == false)		//If the mark model doesnt match the slice model
+		if (m_markModel->checkMatch_Helper(model) == false)		//If the mark model doesnt match the slice model
 			m_markModel = nullptr;
 	}
 	else
@@ -521,7 +526,7 @@ MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 			*success = true;
 		return temp;
 	}
-	if (model->check_match_helper_(m_sliceModel) == false)
+	if (model->checkMatch_Helper(m_sliceModel) == false)
 	{
 		if (success != nullptr)
 			*success = false;
@@ -536,6 +541,34 @@ MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 MarkModel * ImageView::markModel()
 {
 	return m_markModel;
+}
+bool ImageView::openMarkFromFile(const QString & fileName)
+{
+	///TODO::
+
+	if(m_markModel == nullptr)
+	{
+		///TODO::handle this exception
+		return false;
+	}
+
+	if(m_markModel->dirty() == true)
+	{
+
+		//notify the user and,delete the m_markModel
+	}
+	//allocate a new mark model from file
+	m_markModel = new MarkModel(fileName);
+	bool success;
+	replaceMarkModel(m_markModel,&success);
+	if(success == false)
+	{
+		
+	}else
+	{
+		
+	}
+	return true;
 }
 void ImageView::setEnabled(bool enable)
 {

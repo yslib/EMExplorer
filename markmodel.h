@@ -5,6 +5,10 @@
 #include <QSharedPointer>
 #include <QColor>
 
+#include "treeitem.h"
+
+//#include <QDataStream>
+
 QT_BEGIN_NAMESPACE
 class QGraphicsItem;
 QT_END_NAMESPACE
@@ -20,7 +24,7 @@ class CategoryItem
 	bool m_visible;
 	QColor m_color;
 public:
-	CategoryItem(const QString & name,const QColor & color = Qt::black, int count = 0, bool visible = true):
+	CategoryItem(const QString & name = QString(),const QColor & color = Qt::black, int count = 0, bool visible = true):
 	m_name(name),m_color(color),m_count(count),m_visible(visible){}
 	QString name()const noexcept{ return m_name; }
 	int count()const noexcept{ return m_count; }
@@ -32,29 +36,50 @@ public:
 	void setColor(const QColor & c)noexcept { m_color = c; }
 	void increaseCount()noexcept{ m_count++; }
 	void decreaseCount()noexcept{ if (m_count != 0)m_count--; }
+
+	friend QDataStream & operator<< (QDataStream & stream, const CategoryItem & item);
+	friend QDataStream & operator>>(QDataStream & stream, CategoryItem & item);
+	friend QDataStream & operator<< (QDataStream & stream, const QSharedPointer<CategoryItem> & item);
+	friend QDataStream & operator>>(QDataStream & stream, QSharedPointer<CategoryItem>& item);
 };
 
+
+
+Q_DECLARE_METATYPE(CategoryItem);
 Q_DECLARE_METATYPE(QSharedPointer<CategoryItem>);
 
 class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
 	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
-	TreeItem * m_rootItem;
 	const AbstractSliceDataModel * m_dataModel;
 	ImageView * m_view;
+	bool m_dirty;
 
+
+	TreeItem * m_rootItem;
 	MarkSliceList m_topSliceVisibleMarks;		//store the visible marks for every slice
 	MarkSliceList m_rightSliceVisibleMarks;
 	MarkSliceList m_frontSliceVisibleMarks;
 
-	TreeItem* get_item_helper_(const QModelIndex& index) const;
-	QModelIndex model_index_helper_(const QModelIndex& root, const QString& display);
-	QModelIndex category_index_helper_(const QString& category);
-	QModelIndex category_add_helper_(const QString& category);
-	bool check_match_helper_(const AbstractSliceDataModel * dataModel);
-	void add_mark_in_slice_helper_(QGraphicsItem * mark);
-	void update_mark_visible_helper(QGraphicsItem * mark);
+
+	TreeItem* getItem_Helper(const QModelIndex& index) const;
+	QModelIndex modelIndex_Helper(const QModelIndex& root, const QString& display)const;
+	QModelIndex categoryIndex_Helper(const QString& category)const;
+	QModelIndex categoryAdd_Helper(const QString& category);		//set dirty
+	bool checkMatch_Helper(const AbstractSliceDataModel * dataModel);
+	void addMarkInSlice_Helper(QGraphicsItem * mark);				//set dirty
+	void updateMarkVisible_Helper(QGraphicsItem * mark);			//set dirty
+
+	void encode_Helper(TreeItem * m_rootItem,QDataStream & stream);
+	TreeItem * decode_Helper(QDataStream & stream);
+
+
+	//TODO::
+	inline void setDirty() { m_dirty = true; }
+	inline bool dirty()const { return m_dirty; }
+	inline void resetDirty() { m_dirty = false; }
+
 
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
@@ -62,14 +87,24 @@ class MarkModel :public QAbstractItemModel
 
 	//This constructor is for ImageView to create the MarkModel
 	MarkModel(AbstractSliceDataModel * dataModel,ImageView * view,
+		TreeItem * root ,
 		MarkSliceList top = MarkSliceList(),
 		MarkSliceList right = MarkSliceList(),
 		MarkSliceList front = MarkSliceList(),
 		QObject * parent = nullptr);
 
+	bool open(const QString & fileName);
+	enum {MagicNumber = 1827635234};
+
 	friend class ImageView;
 public:
+	enum MarkFormat
+	{
+		Binary,
+		Raw
+	};
 	MarkModel() = delete;
+	MarkModel(const QString & fileName);
 	~MarkModel();
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
@@ -90,14 +125,15 @@ public:
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	//test file
 	//Custom functions for accessing and setting data
-	void addMark(const QString & category, QGraphicsItem * mark);
-	void addMarks(const QString & category, const QList<QGraphicsItem*> & marks);
+	void addMark(const QString & category, QGraphicsItem * mark);		//set dirty
+	void addMarks(const QString & category, const QList<QGraphicsItem*> & marks);			//set dirty
 	QList<QGraphicsItem*> marks(const QString & category);
-	bool removeMark(const QString& category, QGraphicsItem* mark);
-	int removeMarks(const QString& category, const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());
+	bool removeMark(const QString& category, QGraphicsItem* mark);			//set dirty
+	int removeMarks(const QString& category, const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
 	int markCount(const QString & category);
 
-	int save(const QString & fileName);
+	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
+
 };
 
 

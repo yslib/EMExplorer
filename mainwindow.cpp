@@ -55,7 +55,7 @@ void MainWindow::open()
 void MainWindow::save()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("Mark Save"),
-		"", QStringLiteral("Raw Files(*.raw);;MRC Files(*.mrc)"));
+		"", QStringLiteral("Raw Files(*.raw);;MRC Files(*.mar)"));
 	if (fileName.isEmpty() == true)
 		return;
 	if (fileName.endsWith(QStringLiteral(".raw")) == true) {
@@ -68,9 +68,9 @@ void MainWindow::save()
 				QMessageBox::Ok, QMessageBox::Ok);
 		}
 	}
-	else if (fileName.endsWith(QStringLiteral(".mrc")) == true) {
+	else if (fileName.endsWith(QStringLiteral(".mar")) == true) {
 		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
-		bool ok = false;
+		bool ok = m_imageView->markModel()->save(fileName);
 		if (ok == false) {
 			QMessageBox::critical(this,
 				QStringLiteral("Error"),

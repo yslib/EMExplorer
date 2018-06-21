@@ -64,6 +64,8 @@ public:
 	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
 	MarkModel* replaceMarkModel(MarkModel* model,bool * success)noexcept;
 	MarkModel* markModel();
+	bool openMarkFromFile(const QString & fileName);
+
 signals:
 	void topSliceOpened(int index);
 	void topSliceChanged(int index);

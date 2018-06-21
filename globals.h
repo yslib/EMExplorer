@@ -34,7 +34,7 @@ enum class SliceType
 enum ItemTypes
 {
 	Slice = 1,
-	Mark
+	StrokeMark
 };
 
 namespace MarkProperty

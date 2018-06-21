@@ -2,6 +2,7 @@
 #define TREEITEM_H
 #include <QVector>
 #include <QVariant>
+#include <QDataStream>
 
 enum class TreeItemType
 {
@@ -9,6 +10,8 @@ enum class TreeItemType
 	Category,
 	Mark
 };
+QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
+QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 
 class TreeItem
 {
@@ -16,6 +19,7 @@ class TreeItem
 	QVector<TreeItem*> m_children;
 	QVector<QVariant> m_data;
 	TreeItemType m_type;
+
 public:
 	explicit TreeItem(const QVector<QVariant> & data, TreeItemType type, TreeItem * parent = nullptr) :m_parent(parent), m_data(data), m_type(type) {}
 	~TreeItem() { qDeleteAll(m_children); }
@@ -113,10 +117,10 @@ public:
 		m_data[column] = value;
 		return true;
 	}
-
 	TreeItemType type()const { return m_type; }
 
+	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);
+	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
 
 };
-
 #endif // TREEITEM_H

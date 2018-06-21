@@ -68,18 +68,17 @@
 class StrokeMarkItem :public QGraphicsPolygonItem {
 	
 public:
+	enum {Type = UserType+StrokeMark};
 	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
 	StrokeMarkItem(QGraphicsItem * parent = nullptr);
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;
 	void appendPoint(const QPointF & p);
+	int type() const override { return Type; }
 };
 
+QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item);
+QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item);
 
-namespace ysl
-{
-
-}
-
-
+//Q_DECLARE_METATYPE(QGraphicsItem *)
 
 #endif // ABSTRACTMARKITEM_H
