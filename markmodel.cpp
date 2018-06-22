@@ -79,11 +79,7 @@ QModelIndex MarkModel::categoryAdd_Helper(const QString& category)
 
 bool MarkModel::checkMatch_Helper(const AbstractSliceDataModel * dataModel)
 {
-	Q_ASSERT_X(m_dataModel, "MarkModel::check_match_helper_", "null pointer");
-	return ((m_dataModel->frontSliceCount() == dataModel->frontSliceCount()) &&
-		(m_dataModel->topSliceCount() == dataModel->topSliceCount()) &&
-		(m_dataModel->rightSliceCount() == dataModel->rightSliceCount()));
-	//Image size need to be considered later
+	return m_identity == SliceDataIdentityTester::createTester(dataModel);
 }
 
 void MarkModel::addMarkInSlice_Helper(QGraphicsItem * mark)
@@ -107,6 +103,8 @@ void MarkModel::addMarkInSlice_Helper(QGraphicsItem * mark)
 void MarkModel::updateMarkVisible_Helper(QGraphicsItem * mark)
 {
 	Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
+	if (m_view == nullptr)
+		return;
 	int index = -1;
 	switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
 	{
@@ -126,16 +124,6 @@ void MarkModel::updateMarkVisible_Helper(QGraphicsItem * mark)
 	bool visible = mark->data(MarkProperty::VisibleState).toBool();
 	mark->setVisible(visible);
 }
-void MarkModel::encode_Helper(TreeItem * root, QDataStream & stream)
-{
-	Q_UNUSED(root);
-	Q_UNUSED(stream);
-}
-TreeItem * MarkModel::decode_Helper(QDataStream & stream)
-{
-	Q_UNUSED(stream);
-	return nullptr;
-}
 
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	ImageView * view,
@@ -148,20 +136,38 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_rootItem(root),
 	m_dataModel(dataModel),
 	m_view(view),
-m_dirty(false),
+	m_dirty(false),
 	m_topSliceVisibleMarks(std::move(top)),
 	m_rightSliceVisibleMarks(std::move(right)),
-	m_frontSliceVisibleMarks(std::move(front))
+	m_frontSliceVisibleMarks(std::move(front)),
+	m_identity(dataModel)
 {
 }
-bool MarkModel::open(const QString & fileName)
-{
 
-	return false;
-}
-MarkModel::MarkModel(const QString & fileName)
+MarkModel::MarkModel(const QString & fileName):
+m_rootItem(nullptr),
+m_dataModel(nullptr),
+m_view(nullptr),
+m_dirty(false)
 {
-	///TODO::
+	QFile file(fileName);
+	file.open(QIODevice::ReadOnly);
+	if (file.isOpen() == false)
+		return;
+	QDataStream in(&file);
+	in.setVersion(QDataStream::Qt_5_10);
+	int magicNumber;
+	in >> magicNumber;
+	if (magicNumber != MagicNumber)
+		return;
+	qRegisterMetaTypeStreamOperators<QGraphicsItem*>("QGraphicsItem*");
+	//qRegisterMetaTypeStreamOperators<CategoryItem>("CategoryItem");
+	qRegisterMetaTypeStreamOperators<QSharedPointer<CategoryItem>>("QSharedPointer<CategoryItem>");
+	in >> m_identity;
+	in >> m_topSliceVisibleMarks;
+	in >> m_rightSliceVisibleMarks;
+	in >> m_frontSliceVisibleMarks;
+	in >> m_rootItem;
 }
 MarkModel::~MarkModel()
 {
@@ -288,11 +294,11 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		QDataStream stream(&file);
 		stream.setVersion(QDataStream::Qt_5_10);
 		stream << static_cast<qint32>(MagicNumber);
+		stream << m_identity;
 		stream << m_topSliceVisibleMarks;
 		stream << m_rightSliceVisibleMarks;
 		stream << m_frontSliceVisibleMarks;
 		stream << m_rootItem;
-
 		resetDirty();
 		return true;
 
@@ -300,8 +306,8 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 	{
 		return false;
 	}
+	return false;
 }
-
 
 QVariant MarkModel::data(const QModelIndex & index, int role) const
 {

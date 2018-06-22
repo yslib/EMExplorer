@@ -50,4 +50,3 @@ AbstractSliceDataModel::AbstractSliceDataModel(int nTop, int nRight, int nFront)
 	m_modifiedTopSlice.resize(nTop);
 	m_modifiedTopSliceFlags.resize(nTop);
 }
-

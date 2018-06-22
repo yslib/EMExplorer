@@ -503,28 +503,33 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	updateActions();
 }
 
+
+
 MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 {
 	//check the model
 	if (m_sliceModel == nullptr)
 	{
 		QMessageBox::critical(this, QStringLiteral("Error"),
-			QStringLiteral("Mark model can't be set without slice data."),
+			QStringLiteral("Mark model can't be applied without slice data."),
 			QMessageBox::StandardButton::Ok, QMessageBox::StandardButton::Ok);
 		if (success != nullptr)
 			*success = false;
 		return nullptr;
 	}
-	if (model == nullptr)
+	if (model == nullptr)			//remove mark
 	{
-		auto temp = m_markModel;
+		auto t= m_markModel;
+		t->m_view = nullptr;
+		t->m_dataModel = nullptr;
+
 		m_markModel = nullptr;
 		updateMarks(SliceType::Top);
 		updateMarks(SliceType::Right);
 		updateMarks(SliceType::Front);
 		if (success != nullptr)
 			*success = true;
-		return temp;
+		return t;
 	}
 	if (model->checkMatch_Helper(m_sliceModel) == false)
 	{
@@ -532,43 +537,27 @@ MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 			*success = false;
 		return nullptr;
 	}
-	auto temp = m_markModel;
+
+	auto t = m_markModel;
+	t->m_view = nullptr;
+	t->m_dataModel = nullptr;
+
 	m_markModel = model;
+	m_markModel->m_view = this;
+	m_markModel->m_dataModel = m_sliceModel;
+
+
+	updateMarks(SliceType::Top);
+	updateMarks(SliceType::Right);
+	updateMarks(SliceType::Front);
+
 	if (success != nullptr)
 		*success = true;
-	return temp;
+	return t;
 }
 MarkModel * ImageView::markModel()
 {
 	return m_markModel;
-}
-bool ImageView::openMarkFromFile(const QString & fileName)
-{
-	///TODO::
-
-	if(m_markModel == nullptr)
-	{
-		///TODO::handle this exception
-		return false;
-	}
-
-	if(m_markModel->dirty() == true)
-	{
-
-		//notify the user and,delete the m_markModel
-	}
-	//allocate a new mark model from file
-	m_markModel = new MarkModel(fileName);
-	bool success;
-	replaceMarkModel(m_markModel,&success);
-	if(success == false)
-	{
-		
-	}else
-	{
-		
-	}
-	return true;
 }
 void ImageView::setEnabled(bool enable)
 {

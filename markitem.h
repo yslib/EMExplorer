@@ -68,7 +68,7 @@
 class StrokeMarkItem :public QGraphicsPolygonItem {
 	
 public:
-	enum {Type = UserType+StrokeMark};
+	enum {Type = StrokeMark};
 	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
 	StrokeMarkItem(QGraphicsItem * parent = nullptr);
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;

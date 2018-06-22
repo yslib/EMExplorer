@@ -154,7 +154,11 @@ void SliceView::set_mark_helper_(
 	const QList<QGraphicsItem*>& items)
 {
 	foreach(QGraphicsItem * item, items)
+	{
 		item->setVisible(item->data(MarkProperty::VisibleState).toBool());
+		item->setParentItem(m_slice);
+	}
+		
 }
 inline
 void SliceView::clear_slice_marks_helper_(SliceItem * slice)

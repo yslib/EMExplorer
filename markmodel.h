@@ -6,6 +6,7 @@
 #include <QColor>
 
 #include "treeitem.h"
+#include "abstractslicedatamodel.h"
 
 //#include <QDataStream>
 
@@ -42,9 +43,6 @@ public:
 	friend QDataStream & operator<< (QDataStream & stream, const QSharedPointer<CategoryItem> & item);
 	friend QDataStream & operator>>(QDataStream & stream, QSharedPointer<CategoryItem>& item);
 };
-
-
-
 Q_DECLARE_METATYPE(CategoryItem);
 Q_DECLARE_METATYPE(QSharedPointer<CategoryItem>);
 
@@ -56,12 +54,11 @@ class MarkModel :public QAbstractItemModel
 	ImageView * m_view;
 	bool m_dirty;
 
-
 	TreeItem * m_rootItem;
 	MarkSliceList m_topSliceVisibleMarks;		//store the visible marks for every slice
 	MarkSliceList m_rightSliceVisibleMarks;
 	MarkSliceList m_frontSliceVisibleMarks;
-
+	SliceDataIdentityTester m_identity;
 
 	TreeItem* getItem_Helper(const QModelIndex& index) const;
 	QModelIndex modelIndex_Helper(const QModelIndex& root, const QString& display)const;
@@ -70,16 +67,6 @@ class MarkModel :public QAbstractItemModel
 	bool checkMatch_Helper(const AbstractSliceDataModel * dataModel);
 	void addMarkInSlice_Helper(QGraphicsItem * mark);				//set dirty
 	void updateMarkVisible_Helper(QGraphicsItem * mark);			//set dirty
-
-	void encode_Helper(TreeItem * m_rootItem,QDataStream & stream);
-	TreeItem * decode_Helper(QDataStream & stream);
-
-
-	//TODO::
-	inline void setDirty() { m_dirty = true; }
-	inline bool dirty()const { return m_dirty; }
-	inline void resetDirty() { m_dirty = false; }
-
 
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
@@ -93,9 +80,7 @@ class MarkModel :public QAbstractItemModel
 		MarkSliceList front = MarkSliceList(),
 		QObject * parent = nullptr);
 
-	bool open(const QString & fileName);
 	enum {MagicNumber = 1827635234};
-
 	friend class ImageView;
 public:
 	enum MarkFormat
@@ -131,9 +116,11 @@ public:
 	bool removeMark(const QString& category, QGraphicsItem* mark);			//set dirty
 	int removeMarks(const QString& category, const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
 	int markCount(const QString & category);
-
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
 
+	inline void setDirty() { m_dirty = true; }
+	inline bool dirty()const { return m_dirty; }
+	inline void resetDirty() { m_dirty = false; }
 };
 
 

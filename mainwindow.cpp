@@ -7,8 +7,6 @@
 #include <QTreeView>
 #include <QDebug>
 
-
-//custom headers
 #include "mainwindow.h"
 #include "mrc.h"
 #include "imageviewer.h"
@@ -52,12 +50,12 @@ void MainWindow::open()
 	//m_models[fileName] = std::make_tuple(infoModel, sliceModel, markModel);
 }
 
-void MainWindow::save()
+bool MainWindow::save()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("Mark Save"),
-		"", QStringLiteral("Raw Files(*.raw);;MRC Files(*.mar)"));
+		"", QStringLiteral("Mark Files(*.mar);;Raw Files(*.raw)"));
 	if (fileName.isEmpty() == true)
-		return;
+		return false;
 	if (fileName.endsWith(QStringLiteral(".raw")) == true) {
 		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::RAW);
 		bool ok = false;
@@ -70,6 +68,12 @@ void MainWindow::save()
 	}
 	else if (fileName.endsWith(QStringLiteral(".mar")) == true) {
 		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
+		auto model = m_imageView->markModel();
+		if(model == nullptr)
+		{
+			QMessageBox::warning(this, QStringLiteral("Warning"), QStringLiteral("There is no mark model"), QMessageBox::Ok);
+			return false;
+		}
 		bool ok = m_imageView->markModel()->save(fileName);
 		if (ok == false) {
 			QMessageBox::critical(this,
@@ -77,7 +81,66 @@ void MainWindow::save()
 				QStringLiteral("Can not save this marks"),
 				QMessageBox::Ok, QMessageBox::Ok);
 		}
+		return ok;
 	}
+}
+
+void MainWindow::openMark()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, 
+		QStringLiteral("Mark Open"),
+		QStringLiteral(""),
+		QStringLiteral("Mark File(*.mar)"));
+	if (fileName.isEmpty() == true)
+		return;
+	if (fileName.endsWith(QStringLiteral(".mar")) == true)
+	{
+		const auto model = m_imageView->markModel();
+		if(model == nullptr || model->dirty() == false)
+		{
+			auto newModel = new MarkModel(fileName);
+			bool success;
+			
+			auto t = m_imageView->replaceMarkModel(newModel, &success);
+			m_treeView->setModel(newModel);
+			t->deleteLater();
+			if(success == false)
+			{
+				QMessageBox::critical(this, QStringLiteral("Error"), QStringLiteral("Open failed."), QMessageBox::Ok);
+				return;
+			}
+		}else if(model->dirty() == true)
+		{
+			auto button = QMessageBox::question(this, QStringLiteral("Save"),
+				QStringLiteral("The mark model has been modified.Do you want to save it before opening a new one?"),
+				QMessageBox::Save | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Save);
+			if (button == QMessageBox::Cancel)
+				return;
+			if(button == QMessageBox::Save)
+			{
+				if(MainWindow::save() == false)
+				{
+					auto button = QMessageBox::warning(this, QStringLiteral("Wrong"), 
+						QStringLiteral("Saving mark model failed for some reasons.Open the new one anyway?"), 
+						QMessageBox::No | QMessageBox::Yes, QMessageBox::No);
+					if (button = QMessageBox::No)
+						return;
+				}
+				//open a new one
+				auto newModel = new MarkModel(fileName);
+				bool success;
+				auto t =  m_imageView->replaceMarkModel(newModel, nullptr);
+				m_treeView->setModel(newModel);
+				t->deleteLater();
+				if (success == false)
+				{
+					QMessageBox::critical(this, QStringLiteral("Error"), QStringLiteral("Open failed."), QMessageBox::Ok);
+					return;
+				}
+			}
+		}
+	}
+
 }
 
 void MainWindow::saveAs()
@@ -158,6 +221,13 @@ void MainWindow::createActions()
 	m_saveAsAction->setText(QStringLiteral("Save Data As"));
 	toolBar->addAction(m_saveAsAction);
 	connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
+
+	//open mark action
+	m_openMarkAction = new QAction(this);
+	m_openMarkAction->setText(QString("Open Mark"));
+	toolBar->addAction(m_openMarkAction);
+	connect(m_openMarkAction, &QAction::triggered, this, &MainWindow::openMark);
+
 }
 
 void MainWindow::createStatusBar()

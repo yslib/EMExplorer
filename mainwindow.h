@@ -23,7 +23,8 @@ public:
     ~MainWindow();
 private slots:
     void open();
-	void save();
+	bool save();
+	void openMark();
     void saveAs();
 	void exploererDoubleClicked(const QModelIndex & index);
 private:
@@ -49,13 +50,14 @@ private:
 	QAction * m_saveAction;
 	QAction * m_saveAsAction;
 	QAction * m_colorAction;
+	QAction * m_openMarkAction;
 
 	void createWidget();
 	void createMenu();
     void createActions();
     void createStatusBar();
 
-	void setupModels(const MRC & mrc);
+	//void setupModels(const MRC & mrc);
 	QAbstractTableModel * setupProfileModel(const MRC & mrc);
 
 };

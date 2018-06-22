@@ -3,6 +3,9 @@
 
 //inline helper function
 #include <type_traits>
+#include <exception>
+
+#include <QGraphicsItem>
 
 
 //template<typename T,typename U,typename V>
@@ -33,7 +36,7 @@ enum class SliceType
 
 enum ItemTypes
 {
-	Slice = 1,
+	Slice = QGraphicsItem::UserType+1,
 	StrokeMark
 };
 
@@ -51,6 +54,18 @@ namespace MarkProperty
 		Length,
 	};
 }
+
+class ResourceException:public std::exception
+{
+public:
+	ResourceException():exception("Allocation for resources faildd.",1){}
+};
+class FileOpenException:public std::exception
+{
+public:
+	FileOpenException() :exception("Opening file failed", 2){}
+};
+
 
 
 

@@ -76,6 +76,10 @@ QDataStream & operator>>(QDataStream & stream, TreeItem *& item)
 	item = new TreeItem(data,type, nullptr);
 	stream >> item->m_children;
 
+	for(auto item:item->m_children)
+		item->setParentItem(item);		//set parent for the children
+
+
 	//Decode the children node
 	//int nChild;
 	//stream >> nChild;

@@ -1,7 +1,8 @@
 #include "markitem.h"
+#include "treeitem.h"
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
-#include "treeitem.h"
+#include <QDebug>
 
 //StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type, bool visible) : QGraphicsItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible)
 //{
@@ -86,60 +87,64 @@ QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item)
 	if (item->type() == ItemTypes::StrokeMark)
 	{
 		auto mark = static_cast<const StrokeMarkItem*>(item);
-		stream << mark->type()
-			<< mark->data(MarkProperty::CategoryColor)
-			<< mark->data(MarkProperty::CategoryName)
-			<< mark->data(MarkProperty::Color)
-			<< mark->data(MarkProperty::Length)
-			<< mark->data(MarkProperty::Name)
-			<< mark->data(MarkProperty::SliceIndex)
-			<< mark->data(MarkProperty::SliceType)
-			<< mark->data(MarkProperty::VisibleState)
-			<< mark->polygon();
+		stream << (qint32)mark->type()
+			<< mark->data(MarkProperty::CategoryColor).value<QColor>()
+			<< mark->data(MarkProperty::CategoryName).value<QString>()
+			<< mark->data(MarkProperty::Color).value<QColor>()
+			<< mark->data(MarkProperty::Length).value<double>()
+			<< mark->data(MarkProperty::Name).value<QString>()
+			<< mark->data(MarkProperty::SliceIndex).value<int>()
+			<< mark->data(MarkProperty::SliceType).value<int>()
+			<< mark->data(MarkProperty::VisibleState).value<bool>()
+			<< mark->polygon()
+			<< mark->pen();
 	}
 
 }
 
 QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)
 {
-	int type;
+	qint32 type;
 	stream >> type;
 	Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd, 
 		"QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)", "corrupt data");
-	Q_ASSERT_X(type != ItemTypes::StrokeMark, 
+	Q_ASSERT_X(type == ItemTypes::StrokeMark, 
 		"QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)", "corrupt data");
 	if(type == ItemTypes::StrokeMark)			//There may be a error
 	{
-		QVariant categoryColor;			//QColor
-		QVariant categoryName;			//QString
-		QVariant color;					//QColor
-		QVariant length;				//double
-		QVariant name;					//QString
-		QVariant sliceIndex;			//int
-		QVariant sliceType;				//int
-		QVariant vis;					//bool
-		QPolygonF poly;					//QPolygonF
-		stream >> categoryColor 
-		>> categoryName
-		>> color 
-		>> length 
-		>> name 
-		>> sliceIndex
-		>> sliceType 
-		>> vis 
-		>> poly;
+		QColor categoryColor;			//QColor
+		QString categoryName;			//QString
+		QColor color;					//QColor
+		double length;				//double
+		QString name;					//QString
+		int sliceIndex;			//int
+		int sliceType;				//int
+		bool vis;					//bool
+		QPolygonF poly;					//QPolygon
+		QPen pen;
+		stream >> categoryColor
+			>> categoryName
+			>> color
+			>> length
+			>> name
+			>> sliceIndex
+			>> sliceType
+			>> vis
+			>> poly
+			>> pen;
 		Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd,
 			"QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)", "corrupt data");
 		auto mark = new StrokeMarkItem;
-		mark->setData(MarkProperty::CategoryColor, categoryColor);
-		mark->setData(MarkProperty::CategoryName, categoryName);
-		mark->setData(MarkProperty::Color, color);
-		mark->setData(MarkProperty::Length, length);
-		mark->setData(MarkProperty::Name, name);
-		mark->setData(MarkProperty::SliceIndex, sliceIndex);
-		mark->setData(MarkProperty::SliceType, sliceType);
-		mark->setData(MarkProperty::VisibleState, vis);
+		mark->setData(MarkProperty::CategoryColor, QVariant::fromValue<QColor>(categoryColor));
+		mark->setData(MarkProperty::CategoryName, QVariant::fromValue<QString>(categoryName));
+		mark->setData(MarkProperty::Color, QVariant::fromValue<QColor>(color));
+		mark->setData(MarkProperty::Length, QVariant::fromValue<double>(length));
+		mark->setData(MarkProperty::Name, QVariant::fromValue<QString>(name));
+		mark->setData(MarkProperty::SliceIndex, QVariant::fromValue<int>(sliceIndex));
+		mark->setData(MarkProperty::SliceType, QVariant::fromValue<int>(sliceType));
+		mark->setData(MarkProperty::VisibleState, QVariant::fromValue<bool>(vis));
 		mark->setPolygon(poly);
+		mark->setPen(pen);
 		item = mark;
 	}
 	return stream;

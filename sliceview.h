@@ -31,7 +31,7 @@ signals:
 private:
 	inline static void clear_slice_marks_helper_(SliceItem * slice);
 	void set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
-	inline static void set_mark_helper_(const QList<QGraphicsItem*>& items);
+	inline  void set_mark_helper_(const QList<QGraphicsItem*>& items);
 	Q_OBJECT
 		qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
