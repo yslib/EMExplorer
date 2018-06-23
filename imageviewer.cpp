@@ -40,46 +40,75 @@ void ImageView::createToolBar()
 	m_rightSlicePlayAction->setCheckable(true);
 	m_frontSlicePlayAction = new QAction(tr("Play"), this);
 	m_frontSlicePlayAction->setCheckable(true);
-	m_markAction = new QAction(QStringLiteral("Mark"), this);
-	m_markAction->setCheckable(true);
-	m_colorAction = new QAction(QStringLiteral("Color"), this);
+
 	m_zoomInAction = new QAction(QStringLiteral("ZoomIn"), this);
 	m_zoomOutAction = new QAction(QStringLiteral("ZoomOut"), this);
-	m_addCategoryAction = new QAction(QStringLiteral("Add..."), this);
-	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
-	m_categoryCBBox = new QComboBox(this);
 	//tool bar
-	m_toolBar = new QToolBar(this);
-	m_layout->addWidget(m_toolBar, 0, 0, 1, 2);
-	m_toolBar->addWidget(m_topSliceCheckBox);
-	m_toolBar->addWidget(m_topSlider);
-	m_toolBar->addAction(m_topSlicePlayAction);
-	m_toolBar->addSeparator();
-	m_toolBar->addWidget(m_rightSliceCheckBox);
-	m_toolBar->addWidget(m_rightSlider);
-	m_toolBar->addAction(m_rightSlicePlayAction);
-	m_toolBar->addSeparator();
-	m_toolBar->addWidget(m_frontSliceCheckBox);
-	m_toolBar->addWidget(m_frontSlider);
-	m_toolBar->addAction(m_frontSlicePlayAction);
-	m_toolBar->addSeparator();
-	m_toolBar->addWidget(m_categoryLabel);
-	m_toolBar->addWidget(m_categoryCBBox);
-	m_toolBar->addAction(m_addCategoryAction);
-	m_toolBar->addAction(m_colorAction);
-	m_toolBar->addAction(m_markAction);
-	m_toolBar->addSeparator();
-	m_toolBar->addAction(m_zoomInAction);
-	m_toolBar->addAction(m_zoomOutAction);
+	m_viewToolBar = new QToolBar(QStringLiteral("View ToolBar"),this);
+	m_layout->addWidget(m_viewToolBar, 0, 0, 1, 2);
+	m_viewToolBar->addWidget(m_topSliceCheckBox);
+	m_viewToolBar->addWidget(m_topSlider);
+	m_viewToolBar->addAction(m_topSlicePlayAction);
+	m_viewToolBar->addSeparator();
+	m_viewToolBar->addWidget(m_rightSliceCheckBox);
+	m_viewToolBar->addWidget(m_rightSlider);
+	m_viewToolBar->addAction(m_rightSlicePlayAction);
+	m_viewToolBar->addSeparator();
+	m_viewToolBar->addWidget(m_frontSliceCheckBox);
+	m_viewToolBar->addWidget(m_frontSlider);
+	m_viewToolBar->addAction(m_frontSlicePlayAction);
+
+	//m_viewToolBar->addAction(m_colorAction);
+	//m_viewToolBar->addAction(m_markAction);
+	m_viewToolBar->addSeparator();
+	m_viewToolBar->addAction(m_zoomInAction);
+	m_viewToolBar->addAction(m_zoomOutAction);
 	//create menu on toolbar
 	m_menu = new QMenu(this);
 	m_menuButton = new QToolButton(this);
 	m_menuButton->setText(QStringLiteral("Options"));
 	m_menuButton->setPopupMode(QToolButton::MenuButtonPopup);
 	m_menuButton->setMenu(m_menu);
-	m_toolBar->addSeparator();
-	m_toolBar->addWidget(m_menuButton);
+	m_viewToolBar->addSeparator();
+	m_viewToolBar->addWidget(m_menuButton);
 	m_histDlg = m_menu->addAction(QStringLiteral("Histogram..."));
+
+	//create edit tool bar
+	m_editToolBar = new QToolBar(QStringLiteral("Edit ToolBar"),this);
+	m_layout->addWidget(m_editToolBar,1,0,1,2);
+
+	m_markAction = new QAction(QStringLiteral("Mark"), this);
+	m_markAction->setCheckable(true);
+	m_colorAction = new QAction(QStringLiteral("Color"), this);
+	m_markSeletectionAction = new QAction(QStringLiteral("Select"),this);
+	m_markMergeAction = new QAction(QStringLiteral("Merge"), this);
+	m_markDeletionAction = new QAction(QStringLiteral("Delete"), this);
+	m_renameAction = new QAction(QStringLiteral("Rename"), this);
+
+	m_addCategoryAction = new QAction(QStringLiteral("Add..."), this);
+	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
+	m_categoryCBBox = new QComboBox(this);
+	m_penSizeLabel = new QLabel(QStringLiteral("PenSize:"), this);
+	m_penSizeCCBox = new QComboBox(this);
+
+	for(int i=1;i<=30;i++)
+		m_penSizeCCBox->addItem(QString::number(i), QVariant::fromValue(i));
+	m_editToolBar->addWidget(m_categoryLabel);
+	m_editToolBar->addWidget(m_categoryCBBox);
+	m_editToolBar->addAction(m_addCategoryAction);
+
+	m_editToolBar->addSeparator();
+	m_editToolBar->addWidget(m_penSizeLabel);
+	m_editToolBar->addWidget(m_penSizeCCBox);
+	m_editToolBar->addAction(m_colorAction);
+	m_editToolBar->addAction(m_markAction);
+	m_editToolBar->addSeparator();
+	m_editToolBar->addAction(m_markSeletectionAction);
+	m_editToolBar->addAction(m_markMergeAction);
+	m_editToolBar->addAction(m_markDeletionAction);
+	m_editToolBar->addSeparator();
+	m_editToolBar->addAction(m_renameAction);
+
 }
 
 void ImageView::createConnections()
@@ -97,9 +126,9 @@ void ImageView::createConnections()
 	connect(m_rightView, &SliceView::sliceSelected, this, &ImageView::rightSliceSelected);
 	connect(m_frontView, &SliceView::sliceSelected, this, &ImageView::frontSliceSelected);
 
-	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark){mark_created_helper_(SliceType::Top, mark);});
-	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark){mark_created_helper_(SliceType::Right, mark);});
-	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark){mark_created_helper_(SliceType::Front, mark);});
+	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark){markAddedHelper(SliceType::Top, mark);});
+	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark){markAddedHelper(SliceType::Right, mark);});
+	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark){markAddedHelper(SliceType::Front, mark);});
 
 	connect(m_reset, &QPushButton::clicked, [this](bool click)
 	{
@@ -122,14 +151,12 @@ void ImageView::createConnections()
 		MarkCategoryDialog dlg(this);
 		connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
 		{
-			m_categoryCBBox->addItem(name);
-			m_categoryCBBox->setCurrentText(name);
-			int index = m_categoryCBBox->currentIndex();
-			m_categoryCBBox->setItemData(index, color);
+			addCategoryManagerHelper(name, color);
 			setColor(color);
 		});
 		dlg.exec();
 	});
+
 	connect(m_colorAction, &QAction::triggered, [this]()
 	{
 		auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
@@ -313,10 +340,10 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_layout->setSizeConstraint(QLayout::SetFixedSize);
 	//m_layout->setColumnStretch(0, 5);
 	//m_layout->setColumnStretch(1,1);
-	m_layout->addWidget(m_topView, 1, 0, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_rightView, 1, 1, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_frontView, 2, 0, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_reset, 2, 1, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_rightView, 2, 1, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_frontView, 3, 0, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_reset, 3, 1, 1, 1, Qt::AlignCenter);
 	//m_view->setScene(m_scene);
 
 	//sliders
@@ -386,22 +413,14 @@ int ImageView::currentIndex(SliceType type)
 	}
 }
 
-
-
 MarkModel* ImageView::createMarkModel(ImageView *view, AbstractSliceDataModel * d)
 {
-	const MarkModel::MarkSliceList top(d->topSliceCount());
-	const MarkModel::MarkSliceList right(d->rightSliceCount());
-	const MarkModel::MarkSliceList front(d->frontSliceCount());
 	return new MarkModel( d, view,
 		new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
-		top,
-		right,
-		front,
 		nullptr);
 }
 
-void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
+void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 {
 	QString cate = m_categoryCBBox->currentText();
 	QVariant categoryColor = m_categoryCBBox->currentData();
@@ -409,16 +428,13 @@ void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
 	{
 		cate = QStringLiteral("Category#%1").arg(m_categoryCBBox->count());
 		categoryColor = QVariant::fromValue(Qt::black);
-		m_categoryCBBox->addItem(cate, categoryColor);
-		m_categoryCBBox->setCurrentText(cate);
+		addCategoryManagerHelper(cate, categoryColor.value<QColor>());
 	}
 	//auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
-
 	mark->setData(MarkProperty::SliceType, QVariant::fromValue(static_cast<int>(type)));
 	mark->setData(MarkProperty::CategoryName, QVariant::fromValue(cate));
 	mark->setData(MarkProperty::CategoryColor, categoryColor);
 	mark->setData(MarkProperty::VisibleState, QVariant::fromValue(true));
-	
 	//slicetype, sliceindex, categoryname, name, color, categorycolor, visible state
 	int index;
 	QColor color;
@@ -445,6 +461,24 @@ void ImageView::mark_created_helper_(SliceType type, QGraphicsItem * mark)
 	m_markModel->addMark(cate,mark);
 }
 
+void ImageView::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
+{
+	Q_ASSERT_X(m_categoryCBBox, "ImageVIew::initCCBoxHelper", "null pointer");
+	m_categoryCBBox->clear();
+	foreach(const auto & p,cates)
+		m_categoryCBBox->addItem(p.first, QVariant::fromValue(p.second));
+}
+
+void ImageView::addCategoryManagerHelper(const QString & name, const QColor & color)
+{
+	m_categoryCBBox->addItem(name,color);
+	m_categoryCBBox->setCurrentText(name);
+}
+
+void ImageView::markModelUpdatedHelper(MarkModel * model)
+{
+
+}
 
 int ImageView::topSliceIndex() const { return m_topSlider->value(); }
 
@@ -483,6 +517,7 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	updateSliceCount(SliceType::Top);
 	updateSliceCount(SliceType::Right);
 	updateSliceCount(SliceType::Front);
+
 	updateSlice(SliceType::Front);
 	updateSlice(SliceType::Right);
 	updateSlice(SliceType::Top);
@@ -490,8 +525,11 @@ void ImageView::setSliceModel(AbstractSliceDataModel * model)
 	//TODO::update marks
 	if (m_markModel != nullptr)
 	{
-		if (m_markModel->checkMatch_Helper(model) == false)		//If the mark model doesnt match the slice model
+		if (m_markModel->checkMatchHelper(model) == false)		//If the mark model doesnt match the slice model
+		{
+			m_markModel->deleteLater();				//Error
 			m_markModel = nullptr;
+		}
 	}
 	else
 	{
@@ -527,29 +565,33 @@ MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 		updateMarks(SliceType::Top);
 		updateMarks(SliceType::Right);
 		updateMarks(SliceType::Front);
+		setCategoryManagerHelper(QVector<QPair<QString, QColor>>());
+
 		if (success != nullptr)
 			*success = true;
 		return t;
 	}
-	if (model->checkMatch_Helper(m_sliceModel) == false)
+	if (model->checkMatchHelper(m_sliceModel) == false)
 	{
 		if (success != nullptr)
 			*success = false;
 		return nullptr;
 	}
-
 	auto t = m_markModel;
 	t->m_view = nullptr;
 	t->m_dataModel = nullptr;
-
 	m_markModel = model;
 	m_markModel->m_view = this;
 	m_markModel->m_dataModel = m_sliceModel;
-
-
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
 	updateMarks(SliceType::Front);
+	auto cateItems = m_markModel->categoryItems();
+	QVector<QPair<QString, QColor>> cates;
+
+	foreach(const auto & item,cateItems)
+		cates << qMakePair(item->name(),item->color());
+	setCategoryManagerHelper(cates);
 
 	if (success != nullptr)
 		*success = true;

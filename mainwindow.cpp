@@ -204,6 +204,7 @@ void MainWindow::createActions()
 	toolBar->addAction(m_openAction);
 	connect(m_openAction, &QAction::triggered, this, &MainWindow::open);
 
+
 	//color action
 	m_colorAction = new QAction(this);
 	m_colorAction->setText(QStringLiteral("Color"));

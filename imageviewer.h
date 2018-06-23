@@ -54,11 +54,9 @@ public:
 	 int topSliceIndex()const;
 	 int rightSliceIndex()const;
 	int frontSliceIndex()const;
-
 	inline void topSliceEnable(bool enable);
 	inline void rightSliceEnable(bool enable);
 	inline void frontSliceEnable(bool enable);
-
 	void setColor(const QColor & color);
 	void setSliceModel(AbstractSliceDataModel * model);
 	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
@@ -94,11 +92,9 @@ private:
 	void updateSlice(SliceType type);
 	void updateMarks(SliceType type);
 	void updateActions();
-
 	void updateTopSliceActions();
 	void updateFrontSliceActions();
 	void updateRightSliceActions();
-
 	void createWidgets();
 	void createToolBar();
 	void createConnections();
@@ -109,39 +105,42 @@ private:
 	inline void setRightSliceCount(int value);
 	inline void setFrontSliceCount(int value);
 	int currentIndex(SliceType type);
+
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
-	static MarkModel * createMarkModel(ImageView * view,AbstractSliceDataModel * d);
+	void markAddedHelper(SliceType type,QGraphicsItem * mark);
+	void setCategoryManagerHelper(const QVector<QPair<QString,QColor>> & cates);
+	void addCategoryManagerHelper(const QString & name, const QColor & color);
+	void markModelUpdatedHelper(MarkModel * model);
 
-	void mark_created_helper_(SliceType type,QGraphicsItem * mark);
 
-
+	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
 	//Data Model
+
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
 
-	//------
+	//main layout
 	QGridLayout *m_layout;
 	SliceView * m_topView;
 	SliceView * m_rightView;
 	SliceView * m_frontView;
 	QPushButton * m_reset;
-	//Tool Bar
-	QToolBar * m_toolBar;
 
-	//Widgets on toolbar
+	//Tool Bar
+	QToolBar * m_viewToolBar;
+	QToolBar * m_editToolBar;
+
+	//Widgets on view toolbar
 	TitledSliderWithSpinBox * m_topSlider;
 	QCheckBox * m_topSliceCheckBox;
 	QCheckBox * m_rightSliceCheckBox;
 	TitledSliderWithSpinBox * m_rightSlider;
 	QCheckBox * m_frontSliceCheckBox;
 	TitledSliderWithSpinBox * m_frontSlider;
-	QLabel * m_categoryLabel;;
-	QComboBox * m_categoryCBBox;
-	//actions on toolbar
-	QAction *m_addCategoryAction;
-	QAction *m_markAction;
-	QAction *m_colorAction;
+
+	//actions on view toolbar
+
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
 
@@ -150,7 +149,7 @@ private:
 	QAction *m_frontSlicePlayAction;
 	QToolButton * m_menuButton;
 
-	//menu on toolbar
+	//menu on view toolbar
 	QMenu * m_menu;
 	QAction * m_histDlg;
 	PlayDirection m_topSlicePlayDirection;
@@ -159,6 +158,24 @@ private:
 	int m_rightTimerId;
 	PlayDirection m_frontSlicePlayDirection;
 	int m_frontTimerId;
+
+	//Widgets on edit toolbar
+	QLabel * m_categoryLabel;
+	QComboBox * m_categoryCBBox;
+
+	QLabel * m_penSizeLabel;
+	QComboBox* m_penSizeCCBox;
+
+	//actions on edit toolbar
+	QAction *m_markAction;
+	QAction *m_colorAction;
+	QAction *m_markSeletectionAction;
+	QAction *m_markMergeAction;
+	QAction *m_markDeletionAction;
+	QAction *m_addCategoryAction;
+	QAction * m_renameAction;
+
+	//menu on edit toolbar
 
 	//ContextMenu
 	QMenu *m_contextMenu;

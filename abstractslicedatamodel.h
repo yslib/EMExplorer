@@ -45,23 +45,25 @@ public:
 	inline bool isValid()const noexcept;
 	inline bool operator== (const SliceDataIdentityTester & id)const noexcept;
 	inline bool operator!=(const SliceDataIdentityTester & id)const noexcept;
+	inline int topSliceCount()const;
+	inline int rightSliceCount()const;
+	inline int frontSliceCount()const;
 	inline friend QDataStream & operator<<(QDataStream & stream, const SliceDataIdentityTester & id);
-	inline friend QDataStream & operator>>(QDataStream & stream,SliceDataIdentityTester & id);
-
+	inline friend QDataStream & operator>>(QDataStream & stream, SliceDataIdentityTester & id);
 	inline static SliceDataIdentityTester createTester(const AbstractSliceDataModel * model);
 
 };
-inline SliceDataIdentityTester::SliceDataIdentityTester():
-m_topSliceCount(-1),
-m_rightSliceCount(-1),
-m_frontSliceCount(-1)
+inline SliceDataIdentityTester::SliceDataIdentityTester() :
+	m_topSliceCount(-1),
+	m_rightSliceCount(-1),
+	m_frontSliceCount(-1)
 {}
-inline SliceDataIdentityTester::SliceDataIdentityTester(const AbstractSliceDataModel* model):
-m_topSliceCount(-1),
-m_rightSliceCount(-1),
-m_frontSliceCount(-1)
+inline SliceDataIdentityTester::SliceDataIdentityTester(const AbstractSliceDataModel* model) :
+	m_topSliceCount(-1),
+	m_rightSliceCount(-1),
+	m_frontSliceCount(-1)
 {
-	if(model != nullptr)
+	if (model != nullptr)
 	{
 		m_topSliceCount = model->topSliceCount();
 		m_rightSliceCount = model->rightSliceCount();
@@ -93,11 +95,13 @@ inline bool SliceDataIdentityTester::isValid() const noexcept
 		m_rightSliceSize.isValid() &&
 		m_frontSliceSize.isValid();
 }
-inline bool SliceDataIdentityTester::operator==(const SliceDataIdentityTester& id) const noexcept{return identity(id);}
-inline bool SliceDataIdentityTester::operator!=(const SliceDataIdentityTester& id) const noexcept{return!identity(id);}
+inline bool SliceDataIdentityTester::operator==(const SliceDataIdentityTester& id) const noexcept { return identity(id); }
+inline bool SliceDataIdentityTester::operator!=(const SliceDataIdentityTester& id) const noexcept { return!identity(id); }
+inline int SliceDataIdentityTester::topSliceCount()const { return m_topSliceCount; }
+inline int SliceDataIdentityTester::rightSliceCount()const { return m_rightSliceCount; }
+inline int SliceDataIdentityTester::frontSliceCount()const { return m_frontSliceCount; }
 
-
-inline QDataStream & operator<<(QDataStream & stream,const SliceDataIdentityTester &id)
+inline QDataStream & operator<<(QDataStream & stream, const SliceDataIdentityTester &id)
 {
 	stream << static_cast<qint32>(id.m_topSliceCount)
 		<< static_cast<qint32>(id.m_rightSliceCount)
@@ -111,7 +115,7 @@ inline QDataStream & operator<<(QDataStream & stream,const SliceDataIdentityTest
 inline QDataStream & operator>>(QDataStream & stream, SliceDataIdentityTester & id)
 {
 	qint32 a, b, c;
-	stream >> a >> b >> c>> id.m_topSliceSize >> id.m_rightSliceSize >> id.m_frontSliceSize;
+	stream >> a >> b >> c >> id.m_topSliceSize >> id.m_rightSliceSize >> id.m_frontSliceSize;
 	id.m_topSliceCount = static_cast<int>(a);
 	id.m_rightSliceCount = static_cast<int>(b);
 	id.m_frontSliceCount = static_cast<int>(c);

@@ -66,7 +66,6 @@
 //
 
 class StrokeMarkItem :public QGraphicsPolygonItem {
-	
 public:
 	enum {Type = StrokeMark};
 	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);

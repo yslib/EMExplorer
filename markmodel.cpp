@@ -4,13 +4,15 @@
 #include "abstractslicedatamodel.h"
 #include "markitem.h"
 #include "treeitem.h"
+#include <QStyleOptionGraphicsItem>
+#include <QStyledItemDelegate>
 
 /*
 *New data Model
 */
 
 
-TreeItem* MarkModel::getItem_Helper(const QModelIndex& index) const
+TreeItem* MarkModel::getItemHelper(const QModelIndex& index) const
 {
 	if (index.isValid())
 	{
@@ -19,7 +21,7 @@ TreeItem* MarkModel::getItem_Helper(const QModelIndex& index) const
 	}
 	return m_rootItem;
 }
-QModelIndex MarkModel::modelIndex_Helper(const QModelIndex& root, const QString& display)const
+QModelIndex MarkModel::modelIndexHelper(const QModelIndex& root, const QString& display)const
 {
 	int c = rowCount(root);
 	for (int i = 0; i < c; i++)
@@ -45,11 +47,11 @@ QModelIndex MarkModel::modelIndex_Helper(const QModelIndex& root, const QString&
 		if (value == display)
 			return id;
 		else
-			modelIndex_Helper(id, display);
+			modelIndexHelper(id, display);
 	}
 	return QModelIndex();
 }
-QModelIndex MarkModel::categoryIndex_Helper(const QString& category)const
+QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 {
 	int c = rowCount();
 	for (int i = 0; i < c; i++)
@@ -66,7 +68,7 @@ QModelIndex MarkModel::categoryIndex_Helper(const QString& category)const
 	}
 	return QModelIndex();
 }
-QModelIndex MarkModel::categoryAdd_Helper(const QString& category)
+QModelIndex MarkModel::categoryAddHelper(const QString& category)
 {
 	int c = rowCount();
 	beginInsertRows(QModelIndex(), c, c);
@@ -74,15 +76,11 @@ QModelIndex MarkModel::categoryAdd_Helper(const QString& category)
 	auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
 	m_rootItem->appendChild(p);
 	endInsertRows();
+	setDirty();
 	return createIndex(c, 0, p);
 }
 
-bool MarkModel::checkMatch_Helper(const AbstractSliceDataModel * dataModel)
-{
-	return m_identity == SliceDataIdentityTester::createTester(dataModel);
-}
-
-void MarkModel::addMarkInSlice_Helper(QGraphicsItem * mark)
+void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
 {
 	int index = mark->data(MarkProperty::SliceIndex).toInt();
 	MarkSliceList * markList;
@@ -99,8 +97,9 @@ void MarkModel::addMarkInSlice_Helper(QGraphicsItem * mark)
 		break;
 	}
 	(*markList)[index].append(mark);
+	setDirty();
 }
-void MarkModel::updateMarkVisible_Helper(QGraphicsItem * mark)
+void MarkModel::updateMarkVisibleHelper(QGraphicsItem * mark)
 {
 	Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
 	if (m_view == nullptr)
@@ -120,28 +119,71 @@ void MarkModel::updateMarkVisible_Helper(QGraphicsItem * mark)
 	}
 	if (index != mark->data(MarkProperty::SliceIndex).toInt())
 		return;
-	//auto item = QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(mark);
 	bool visible = mark->data(MarkProperty::VisibleState).toBool();
 	mark->setVisible(visible);
+	setDirty();
+}
+void MarkModel::retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type, int column, QVector<QVariant>& data)
+{
+	if (root == nullptr)
+		return;
+	if (root->type() == type)
+		data << root->data(column);
+	for (int i = 0; i < root->childCount(); i++)
+		retrieveDataFromTreeItemHelper(root->child(i), type, column, data);
+}
+
+QList<QGraphicsItem*> MarkModel::marks() const
+{
+	QVector<QVariant> data;
+	retrieveDataFromTreeItemHelper(m_rootItem, TreeItemType::Mark, 0, data);
+	QList<QGraphicsItem*> items;
+	foreach(const auto & var,data)
+		items << var.value<QGraphicsItem*>();
+	return items;
+}
+
+QStringList MarkModel::categoryText() const
+{
+	QVector<QVariant> data;
+	QStringList list;
+	retrieveDataFromTreeItemHelper(m_rootItem, TreeItemType::Category, 0, data);
+	foreach(const auto & var, data)
+		list << var.value<QSharedPointer<CategoryItem>>()->name();
+	return list;
+}
+
+QList<QSharedPointer<CategoryItem>> MarkModel::categoryItems() const
+{
+	QList<QSharedPointer<CategoryItem>> list;
+	QVector<QVariant> data;
+	retrieveDataFromTreeItemHelper(m_rootItem, TreeItemType::Category, 0, data);
+	foreach(const auto & var,data)
+		list<<var.value<QSharedPointer<CategoryItem>>();
+	return list;
+}
+
+void MarkModel::initSliceMarkContainerHelper()
+{
+	Q_ASSERT_X(m_identity.isValid() == true, 
+		"MarkModel::initSliceMarkContainer_Helper", "IdentityTester is not valid");
+	m_topSliceVisibleMarks.resize(m_identity.topSliceCount());
+	m_rightSliceVisibleMarks.resize(m_identity.rightSliceCount());
+	m_frontSliceVisibleMarks.resize(m_identity.frontSliceCount());
 }
 
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	ImageView * view,
 	TreeItem * root,
-	MarkSliceList top,
-	MarkSliceList right,
-	MarkSliceList front,
 	QObject * parent) :
 	QAbstractItemModel(parent),
 	m_rootItem(root),
 	m_dataModel(dataModel),
 	m_view(view),
 	m_dirty(false),
-	m_topSliceVisibleMarks(std::move(top)),
-	m_rightSliceVisibleMarks(std::move(right)),
-	m_frontSliceVisibleMarks(std::move(front)),
 	m_identity(dataModel)
 {
+	initSliceMarkContainerHelper();
 }
 
 MarkModel::MarkModel(const QString & fileName):
@@ -164,10 +206,28 @@ m_dirty(false)
 	//qRegisterMetaTypeStreamOperators<CategoryItem>("CategoryItem");
 	qRegisterMetaTypeStreamOperators<QSharedPointer<CategoryItem>>("QSharedPointer<CategoryItem>");
 	in >> m_identity;
-	in >> m_topSliceVisibleMarks;
-	in >> m_rightSliceVisibleMarks;
-	in >> m_frontSliceVisibleMarks;
 	in >> m_rootItem;
+	//construct sliceMarks from the tree
+	initSliceMarkContainerHelper();
+
+	auto items = marks();
+	foreach(auto item,items)
+	{
+		int value = item->data(MarkProperty::SliceType).value<int>();
+		int index = item->data(MarkProperty::SliceIndex).value<int>();
+		switch(static_cast<SliceType>(value))
+		{
+		case SliceType::Top:
+			m_topSliceVisibleMarks[index].append(item);
+			break;
+		case SliceType::Front:
+			m_rightSliceVisibleMarks[index].append(item);
+			break;
+		case SliceType::Right:
+			m_frontSliceVisibleMarks[index].append(item);
+			break;
+		}
+	}
 }
 MarkModel::~MarkModel()
 {
@@ -178,22 +238,18 @@ MarkModel::~MarkModel()
 	}
 }
 
-void MarkModel::addMark(const QString & category, QGraphicsItem * mark)
-{
-	addMarks(category, QList<QGraphicsItem*>{mark});
-}
+
 void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& marks)
 {
-	auto i = categoryIndex_Helper(category);
+	auto i = categoryIndexHelper(category);
 	if (i.isValid() == false)
 	{
-		i = categoryAdd_Helper(category);
+		i = categoryAddHelper(category);
 	}
 	int r = rowCount(i);
 	int c = marks.size();
 	beginInsertRows(i, r, r + c - 1);
-	auto item = getItem_Helper(i);
-
+	auto item = getItemHelper(i);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::addMark", "insert error");
 	int n = 0;
@@ -202,7 +258,7 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 	{
 		QVector<QVariant> d;
 		m->setData(MarkProperty::Name,category + QString("#%1").arg(r + n++));
-		addMarkInSlice_Helper(m);
+		addMarkInSliceHelper(m);
 		d.append(QVariant::fromValue(m));	
 		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
 	}
@@ -211,11 +267,11 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 	setDirty();
 }
 
-QList<QGraphicsItem*> MarkModel::marks(const QString & category)
+QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
 {
-	auto id = categoryIndex_Helper(category);
+	auto id = categoryIndexHelper(category);
 	int r = rowCount(id);
-	auto item = getItem_Helper(id);
+	auto item = getItemHelper(id);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::addMark", "insert error");
 	Q_ASSERT_X(item->type() == TreeItemType::Mark,
@@ -223,9 +279,9 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & category)
 	QList<QGraphicsItem*> res;
 	for (int i = 0; i < r; i++)
 	{
+		Q_ASSERT_X(item->child(i)->data(0).canConvert<QGraphicsItem*>(),
+			"MarkModel::marks", "convert failed");
 		auto d = item->child(i)->data(0).value<QGraphicsItem*>();
-		Q_ASSERT_X(d,
-			"MarkModel::marks", "null pointer");
 		res.append(d);
 	}
 	return res;
@@ -233,9 +289,9 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & category)
 
 bool MarkModel::removeMark(const QString& category, QGraphicsItem* mark)
 {
-	auto id = categoryIndex_Helper(category);
+	auto id = categoryIndexHelper(category);
 	int r = rowCount(id);
-	auto item = getItem_Helper(id);
+	auto item = getItemHelper(id);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::removeMark", "insert error");
 	Q_ASSERT_X(item->type() == TreeItemType::Mark,
@@ -274,11 +330,7 @@ int MarkModel::removeMarks(const QString& category, const QList<QGraphicsItem*>&
 	return success;
 }
 
-int MarkModel::markCount(const QString & category)
-{
-	auto i = categoryIndex_Helper(category);
-	return rowCount(i);
-}
+
 
 bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 {
@@ -295,15 +347,18 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		stream.setVersion(QDataStream::Qt_5_10);
 		stream << static_cast<qint32>(MagicNumber);
 		stream << m_identity;
-		stream << m_topSliceVisibleMarks;
-		stream << m_rightSliceVisibleMarks;
-		stream << m_frontSliceVisibleMarks;
+		//stream << m_topSliceVisibleMarks;
+		//stream << m_rightSliceVisibleMarks;
+		//stream << m_frontSliceVisibleMarks;
 		stream << m_rootItem;
+
 		resetDirty();
 		return true;
 
 	}else if(format == MarkFormat::Raw)
 	{
+
+		//resetDirt();
 		return false;
 	}
 	return false;
@@ -403,7 +458,6 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 			Q_ASSERT_X(d.canConvert<QGraphicsItem*>(),
 				"MarkModel::data", "convert failure");
 			auto mark = d.value<QGraphicsItem*>();
-
 			//get color
 			return mark->data(MarkProperty::Color);
 		}
@@ -422,7 +476,6 @@ Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 
 bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-
 	if (role == Qt::CheckStateRole && index.column() == 0)
 	{
 		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
@@ -448,12 +501,8 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 				"MarkModel::setData", "convert failure");
 			auto mark = d.value<QGraphicsItem*>();
 			bool vis = value == Qt::Checked;
-			//set display states
 			mark->setData(MarkProperty::VisibleState, vis);
-			//This is a bull shit
-			//auto m = QueryMarkItemInterface(mark);
-			//m->setVisible(vis);
-			updateMarkVisible_Helper(mark);
+			updateMarkVisibleHelper(mark);		//set dirty
 			emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
 			return true;
 		}
@@ -465,7 +514,6 @@ bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
 {
 	beginInsertColumns(parent, column, column + count - 1);
 	//insert same columns at same position from the top of the tree to down recursively
-
 	bool success = m_rootItem->insertColumns(column, count);
 	endInsertColumns();
 	return success;
@@ -484,7 +532,7 @@ bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 
 bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 {
-	TreeItem * item = getItem_Helper(parent);
+	TreeItem * item = getItemHelper(parent);
 	beginInsertRows(parent, row, count + row - 1);
 	//the number of inserted column is the same as the root, i.e 2
 	TreeItemType type;
@@ -508,7 +556,7 @@ bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 
 bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
-	TreeItem * item = getItem_Helper(parent);
+	TreeItem * item = getItemHelper(parent);
 	bool success = true;
 
 	beginRemoveRows(parent, row, row + count - 1);
@@ -528,7 +576,7 @@ QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) co
 {
 	if (parent.isValid() == true && parent.column() != 0)
 		return QModelIndex();
-	TreeItem * parentItem = getItem_Helper(parent);
+	TreeItem * parentItem = getItemHelper(parent);
 	TreeItem * childItem = parentItem->child(row);
 	if (childItem == nullptr)
 		return QModelIndex();
@@ -541,7 +589,7 @@ QModelIndex MarkModel::parent(const QModelIndex & index) const
 	//Index points to a root item
 	if (index.isValid() == false)return QModelIndex();
 
-	TreeItem * item = getItem_Helper(index);
+	TreeItem * item = getItemHelper(index);
 	TreeItem * parentItem = item->parentItem();
 
 	//If index points to a child item of root item
@@ -556,7 +604,7 @@ int MarkModel::rowCount(const QModelIndex & parent) const
 	//Only a item with 0 column number has children
 	if (parent.column() > 0)
 		return 0;
-	TreeItem * item = getItem_Helper(parent);
+	TreeItem * item = getItemHelper(parent);
 	return item->childCount();
 }
 
