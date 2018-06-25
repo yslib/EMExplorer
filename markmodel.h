@@ -122,11 +122,11 @@ public:
 	QStringList categoryText()const;
 	QList<QSharedPointer<CategoryItem>> categoryItems()const;
 
-	bool removeMark(const QString& category, QGraphicsItem* mark);			//set dirty
-	int removeMarks(const QString& category, const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
+	bool removeMark(QGraphicsItem* mark);			//set dirty
+	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
+
 	inline int markCount(const QString & category)const;
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
-
 	inline void setDirty();
 	inline bool dirty()const;
 	inline void resetDirty();

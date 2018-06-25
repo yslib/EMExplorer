@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent):
 	createStatusBar();
 	resize(1650,1080);
 	setWindowTitle(QStringLiteral("MRC Editor"));
+	setUnifiedTitleAndToolBarOnMac(true);
 }
 MainWindow::~MainWindow()
 {
@@ -43,6 +44,7 @@ void MainWindow::open()
 	MRCDataModel * sliceModel = new MRCDataModel(mrc);
 	//MarkModel * markModel = new MarkModel(this);
 	auto infoModel = setupProfileModel(*mrc);
+	//m_profileView->resizeColumnsToContents();
 	m_profileView->addModel(fileName, infoModel);
 	m_imageView->setSliceModel(sliceModel);
 	//m_imageView->setMarkModel(markModel);

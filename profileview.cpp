@@ -4,6 +4,7 @@
 #include <QTableView>
 #include <QGroupBox>
 #include <QDebug>
+#include <QHeaderView>
 
 
 ProfileView::ProfileView(QWidget* parent): QWidget(parent)
@@ -46,6 +47,8 @@ void ProfileView::addModel(const QString & text, QAbstractTableModel * model)
 {
 	m_hash[text] = model;
 	m_listWidget->addItem(text);
+	//m_tableView->resizeColumnsToContents();
+	m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     m_tableView->setModel(model);
 }
 

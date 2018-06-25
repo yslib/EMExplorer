@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QMessageBox>
+#include <QDebug>
 #include <QLabel>
 
 #include "imageviewer.h"
@@ -44,7 +45,7 @@ void ImageView::createToolBar()
 	m_zoomInAction = new QAction(QStringLiteral("ZoomIn"), this);
 	m_zoomOutAction = new QAction(QStringLiteral("ZoomOut"), this);
 	//tool bar
-	m_viewToolBar = new QToolBar(QStringLiteral("View ToolBar"),this);
+	m_viewToolBar = new QToolBar(QStringLiteral("View ToolBar"), this);
 	m_layout->addWidget(m_viewToolBar, 0, 0, 1, 2);
 	m_viewToolBar->addWidget(m_topSliceCheckBox);
 	m_viewToolBar->addWidget(m_topSlider);
@@ -63,6 +64,7 @@ void ImageView::createToolBar()
 	m_viewToolBar->addSeparator();
 	m_viewToolBar->addAction(m_zoomInAction);
 	m_viewToolBar->addAction(m_zoomOutAction);
+	m_viewToolBar->addAction(m_resetAction);
 	//create menu on toolbar
 	m_menu = new QMenu(this);
 	m_menuButton = new QToolButton(this);
@@ -74,13 +76,59 @@ void ImageView::createToolBar()
 	m_histDlg = m_menu->addAction(QStringLiteral("Histogram..."));
 
 	//create edit tool bar
-	m_editToolBar = new QToolBar(QStringLiteral("Edit ToolBar"),this);
-	m_layout->addWidget(m_editToolBar,1,0,1,2);
+	m_editToolBar = new QToolBar(QStringLiteral("Edit ToolBar"), this);
+	m_layout->addWidget(m_editToolBar, 1, 0, 1, 2);
 
 	m_markAction = new QAction(QStringLiteral("Mark"), this);
 	m_markAction->setCheckable(true);
 	m_colorAction = new QAction(QStringLiteral("Color"), this);
-	m_markSeletectionAction = new QAction(QStringLiteral("Select"),this);
+	m_markSelectionAction = new QAction(QStringLiteral("Select"), this);
+	m_markSelectionAction->setCheckable(true);
+	m_moveAction = new QAction(QStringLiteral("Move"), this);
+	m_moveAction->setCheckable(true);
+
+	QActionGroup * group = new QActionGroup(this);
+	group->addAction(m_markAction);
+	group->addAction(m_markSelectionAction);
+	group->addAction(m_moveAction);
+	connect(group, &QActionGroup::triggered, [this](QAction * action)
+	{
+		bool check = action->isChecked();
+		if(action == m_markAction)
+		{
+			if(check)
+			{
+				m_topView->setOperation(SliceView::Paint);
+				m_rightView->setOperation(SliceView::Paint);
+				m_frontView->setOperation(SliceView::Paint);
+			}
+
+		}else if(action == m_markSelectionAction)
+		{
+			if(check)
+			{
+				m_topView->setOperation(SliceView::Selection);
+				m_rightView->setOperation(SliceView::Selection);
+				m_frontView->setOperation(SliceView::Selection);
+			}
+		}else if(action == m_moveAction)
+		{
+			if(check)
+			{
+				m_topView->setOperation(SliceView::Move);
+				m_rightView->setOperation(SliceView::None);
+				m_frontView->setOperation(SliceView::None);
+			}
+		}
+		if(check == false)
+		{
+			m_topView->setOperation(SliceView::None);
+			m_rightView->setOperation(SliceView::None);
+			m_frontView->setOperation(SliceView::None);
+		}
+	});
+
+
 	m_markMergeAction = new QAction(QStringLiteral("Merge"), this);
 	m_markDeletionAction = new QAction(QStringLiteral("Delete"), this);
 	m_renameAction = new QAction(QStringLiteral("Rename"), this);
@@ -89,26 +137,27 @@ void ImageView::createToolBar()
 	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
 	m_categoryCBBox = new QComboBox(this);
 	m_penSizeLabel = new QLabel(QStringLiteral("PenSize:"), this);
-	m_penSizeCCBox = new QComboBox(this);
+	m_penSizeCBBox = new QComboBox(this);
 
-	for(int i=1;i<=30;i++)
-		m_penSizeCCBox->addItem(QString::number(i), QVariant::fromValue(i));
+	for (int i = 1; i <= 30; i++)
+		m_penSizeCBBox->addItem(QString::number(i), QVariant::fromValue(i));
 	m_editToolBar->addWidget(m_categoryLabel);
 	m_editToolBar->addWidget(m_categoryCBBox);
 	m_editToolBar->addAction(m_addCategoryAction);
 
 	m_editToolBar->addSeparator();
 	m_editToolBar->addWidget(m_penSizeLabel);
-	m_editToolBar->addWidget(m_penSizeCCBox);
+	m_editToolBar->addWidget(m_penSizeCBBox);
 	m_editToolBar->addAction(m_colorAction);
-	m_editToolBar->addAction(m_markAction);
 	m_editToolBar->addSeparator();
-	m_editToolBar->addAction(m_markSeletectionAction);
+	m_editToolBar->addAction(m_moveAction);
+	m_editToolBar->addAction(m_markAction);
+	m_editToolBar->addAction(m_markSelectionAction);
+	m_editToolBar->addSeparator();
 	m_editToolBar->addAction(m_markMergeAction);
 	m_editToolBar->addAction(m_markDeletionAction);
 	m_editToolBar->addSeparator();
 	m_editToolBar->addAction(m_renameAction);
-
 }
 
 void ImageView::createConnections()
@@ -126,23 +175,25 @@ void ImageView::createConnections()
 	connect(m_rightView, &SliceView::sliceSelected, this, &ImageView::rightSliceSelected);
 	connect(m_frontView, &SliceView::sliceSelected, this, &ImageView::frontSliceSelected);
 
-	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark){markAddedHelper(SliceType::Top, mark);});
-	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark){markAddedHelper(SliceType::Right, mark);});
-	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark){markAddedHelper(SliceType::Front, mark);});
+	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
+	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
+	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
 
-	connect(m_reset, &QPushButton::clicked, [this](bool click)
+	connect(m_viewToolBar, &QToolBar::actionTriggered, this, &ImageView::viewToolBarActionTriggered);
+	connect(m_editToolBar, &QToolBar::actionTriggered, this, &ImageView::editToolBarActionTriggered);
+
+	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateTopSliceActions(); });
+	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
+	connect(m_frontSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateFrontSliceActions(); });
+
+	connect(m_resetAction, &QAction::triggered, [this](bool enable)
 	{
-		Q_UNUSED(click);
+		Q_UNUSED(enable);
 		m_topView->resetMatrix();
 		m_rightView->resetMatrix();
 		m_frontView->resetMatrix();
 	});
-	connect(m_markAction, &QAction::triggered, [this](bool enable)
-	{
-		m_topView->paintEnable(enable);
-		m_rightView->paintEnable(enable);
-		m_frontView->paintEnable(enable);
-	});
+	//view toolbar actions
 	connect(m_topSlicePlayAction, &QAction::triggered, [this](bool enable) {onTopSlicePlay(enable); if (!enable)emit topSlicePlayStoped(m_topSlider->value()); });
 	connect(m_rightSlicePlayAction, &QAction::triggered, [this](bool enable) {onRightSlicePlay(enable); if (!enable)emit rightSlicePlayStoped(m_rightSlider->value()); });
 	connect(m_frontSlicePlayAction, &QAction::triggered, [this](bool enable) {onFrontSlicePlay(enable); if (!enable)emit frontSlicePlayStoped(m_frontSlider->value()); });
@@ -152,34 +203,107 @@ void ImageView::createConnections()
 		connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
 		{
 			addCategoryManagerHelper(name, color);
-			setColor(color);
+			setPen(color);
 		});
 		dlg.exec();
 	});
 
-	connect(m_colorAction, &QAction::triggered, [this]()
+
+
+	connect(m_zoomInAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, 1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
+	connect(m_zoomOutAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, -1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
+
+	connect(m_topView, &SliceView::sliceMoved, [this](const QPointF & delta)
+	{
+		m_rightView->moveSlice(QPointF(0.0f, delta.y()));
+		m_frontView->moveSlice(QPointF(delta.x(), 0.0f));
+	});
+
+	connect(m_topView, &SliceView::rubberBandChanged,[this](const QRect &rect,const QPointF &p1,const QPointF &p2)
+	{
+		//update some actions
+
+	});
+
+
+	connect(m_colorAction, &QAction::triggered, [this](bool enable)
 	{
 		auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
 		QColor c = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
-		setColor(QColorDialog::getColor(c, this, QStringLiteral("Color")));
+		setPen(QColorDialog::getColor(c, this, QStringLiteral("Color")));
 	});
-	connect(m_zoomInAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, 1); m_topView->scale(factor, factor); });
-	connect(m_zoomOutAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, -1); m_topView->scale(factor, factor); });
-	connect(m_histDlg, &QAction::triggered, []()
+	//connect(m_markAction, &QAction::triggered, [this](bool enable)
+	//{
+	//	if(enable == true)
+	//	{
+	//		m_topView->setOperation(SliceView::Paint);
+	//		m_rightView->setOperation(SliceView::Paint);
+	//		m_frontView->setOperation(SliceView::Paint);
+	//		m_moveAction->setChecked(false);
+	//		m_markSelectionAction->setChecked(false);
+	//	}
+	//	else
+	//	{
+	//		m_topView->setOperation(SliceView::Move);
+	//		m_rightView->setOperation(SliceView::Move);
+	//		m_frontView->setOperation(SliceView::Move);
+	//	}
+	//});
+	//connect(m_markSelectionAction, &QAction::triggered, [this](bool enable)
+	//{
+	//	if(enable == true)
+	//	{
+	//		m_topView->setOperation(SliceView::Selection);
+	//		m_rightView->setOperation(SliceView::Selection);
+	//		m_frontView->setOperation(SliceView::Selection);
+	//		m_markAction->setChecked(false);
+	//		m_moveAction->setChecked(false);
+	//	}else
+	//	{
+
+	//	}
+
+	//});
+	//connect(m_moveAction, &QAction::triggered, [this](bool enable)
+	//{
+	//	if(enable == true)
+	//	{
+	//		m_topView->setOperation(SliceView::Move);
+	//		m_markSelectionAction->setChecked(false);
+	//		m_markAction->setChecked(false);
+	//	}
+	//	else
+	//	{
+	//		
+	//	}
+
+	//});
+	connect(m_markDeletionAction, &QAction::triggered, [this](bool enable)
 	{
-		///TODO::open histogram dialog
+
 	});
-	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateTopSliceActions(); });
-	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
-	connect(m_frontSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateFrontSliceActions(); });
+	connect(m_markMergeAction, &QAction::triggered, [this](bool enable) {});
 }
 
 void ImageView::updateActions()
 {
 	bool enable = m_sliceModel != nullptr;
 	m_addCategoryAction->setEnabled(enable);
+	m_categoryLabel->setEnabled(enable);
 	m_categoryCBBox->setEnabled(enable);
-
+	m_penSizeLabel->setEnabled(enable);
+	m_penSizeCBBox->setEnabled(enable);
+	m_zoomInAction->setEnabled(enable);
+	m_zoomOutAction->setEnabled(enable);
+	m_colorAction->setEnabled(enable);
+	m_markAction->setEnabled(enable);
+	m_markSelectionAction->setEnabled(enable);
+	m_moveAction->setEnabled(enable);
+	m_markMergeAction->setEnabled(enable);
+	m_markDeletionAction->setEnabled(enable);
+	m_renameAction->setEnabled(enable);
+	m_resetAction->setEnabled(enable);
+	///TODO::delete merge rename action depend on the seleted items
 	updateTopSliceActions();
 	updateRightSliceActions();
 	updateFrontSliceActions();
@@ -191,7 +315,6 @@ void ImageView::updateTopSliceActions()
 	m_topSlicePlayAction->setEnabled(enable);
 	m_topSlider->setEnabled(enable);
 	m_topView->setHidden(!enable);
-	m_reset->setHidden(enable == false && !m_frontSliceCheckBox->isChecked() && !m_rightSliceCheckBox->isChecked());
 }
 
 void ImageView::updateFrontSliceActions()
@@ -200,7 +323,6 @@ void ImageView::updateFrontSliceActions()
 	m_frontSlicePlayAction->setEnabled(enable);
 	m_frontSlider->setEnabled(enable);
 	m_frontView->setHidden(!enable);
-	m_reset->setHidden(enable == false && !m_topSliceCheckBox->isChecked() && !m_rightSliceCheckBox->isChecked());
 }
 
 void ImageView::updateRightSliceActions()
@@ -209,15 +331,12 @@ void ImageView::updateRightSliceActions()
 	m_rightSlicePlayAction->setEnabled(enable);
 	m_rightSlider->setEnabled(enable);
 	m_rightView->setHidden(!enable);
-	m_reset->setHidden(enable == false && !m_frontSliceCheckBox->isChecked() && !m_topSliceCheckBox->isChecked());
 }
 
 void ImageView::createContextMenu()
 {
 	m_contextMenu = new QMenu(this);
 	///TODO:: add icons here
-	m_zoomIn = new QAction(QStringLiteral("Zoom In"), this);
-	m_zoomOut = new QAction(QStringLiteral("Zoom Out"), this);
 
 	m_histDlgAction = new QAction(QStringLiteral("Histgoram..."), this);
 	m_pixelViewDlgAction = new QAction(QStringLiteral("Pixel View..."), this);
@@ -304,13 +423,9 @@ void ImageView::createContextMenu()
 			emit frontSliceOpened(m_frontSlider->value());
 		}
 	});
-	connect(m_marksManagerDlgAction, &QAction::triggered, [this]()
-	{
 
-	});
-
-	m_contextMenu->addAction(m_zoomIn);
-	m_contextMenu->addAction(m_zoomOut);
+	m_contextMenu->addAction(m_zoomInAction);
+	m_contextMenu->addAction(m_zoomOutAction);
 	m_contextMenu->addSeparator();
 	m_contextMenu->addAction(m_histDlgAction);
 	m_contextMenu->addAction(m_pixelViewDlgAction);
@@ -322,32 +437,29 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_markModel(nullptr),
 	m_sliceModel(model)
 {
-	//layout
 	m_layout = new QGridLayout;
-	//QGraphicsView
 	m_topView = new SliceView;
 	m_rightView = new SliceView;
 	m_frontView = new SliceView;
-	m_topView->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-	m_rightView->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-	m_frontView->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	m_topView->setDragMode(QGraphicsView::RubberBandDrag);
+	m_rightView->setDragMode(QGraphicsView::RubberBandDrag);
+	m_frontView->setDragMode(QGraphicsView::RubberBandDrag);
 
-	m_reset = new QPushButton(QStringLiteral("Reset"));
-	m_reset->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
-	//m_view->resize(500, 500);
-	//m_rightView->resize(50, 500);
-	//m_frontView->resize(500, 50);
+	m_topView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_topView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_rightView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_rightView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_frontView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_frontView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+	m_resetAction = new QAction(QStringLiteral("Reset"),this);
+
 	m_layout->setSizeConstraint(QLayout::SetFixedSize);
-	//m_layout->setColumnStretch(0, 5);
-	//m_layout->setColumnStretch(1,1);
 	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_rightView, 2, 1, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_frontView, 3, 0, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_reset, 3, 1, 1, 1, Qt::AlignCenter);
-	//m_view->setScene(m_scene);
-
+	//m_layout->addWidget(m_reset, 3, 1, 1, 1, Qt::AlignCenter);
 	//sliders
-
 	m_topSliceCheckBox = new QCheckBox;
 	m_topSliceCheckBox->setChecked(topSliceVisible);
 	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
@@ -357,10 +469,7 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_frontSliceCheckBox = new QCheckBox;
 	m_frontSliceCheckBox->setChecked(frontSliceVisible);
 	m_frontSlider = new TitledSliderWithSpinBox(this, tr("X:"));
-
 	createToolBar();
-
-
 	createContextMenu();
 	createConnections();
 	updateActions();
@@ -369,7 +478,7 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 
 void ImageView::changeSlice(int value, SliceType type)
 {
-	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null model pointer");
+	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
 	SliceView * view = nullptr;
 	std::function<QImage(int)> sliceGetter;
 	//TODO:: 
@@ -415,7 +524,7 @@ int ImageView::currentIndex(SliceType type)
 
 MarkModel* ImageView::createMarkModel(ImageView *view, AbstractSliceDataModel * d)
 {
-	return new MarkModel( d, view,
+	return new MarkModel(d, view,
 		new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
 		nullptr);
 }
@@ -424,7 +533,7 @@ void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 {
 	QString cate = m_categoryCBBox->currentText();
 	QVariant categoryColor = m_categoryCBBox->currentData();
-	if(cate.isEmpty())
+	if (cate.isEmpty())
 	{
 		cate = QStringLiteral("Category#%1").arg(m_categoryCBBox->count());
 		categoryColor = QVariant::fromValue(Qt::black);
@@ -438,19 +547,19 @@ void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	//slicetype, sliceindex, categoryname, name, color, categorycolor, visible state
 	int index;
 	QColor color;
-	switch(type)
+	switch (type)
 	{
 	case SliceType::Top:
 		index = m_topSlider->value();
-		color = m_topView->color();
+		color = m_topView->pen().color();
 		break;
 	case SliceType::Right:
 		index = m_rightSlider->value();
-		color = m_rightView->color();
+		color = m_rightView->pen().color();
 		break;
 	case SliceType::Front:
 		index = m_frontSlider->value();
-		color = m_frontView->color();
+		color = m_frontView->pen().color();
 		break;
 	}
 	mark->setData(MarkProperty::SliceIndex, QVariant::fromValue(index));
@@ -458,26 +567,37 @@ void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 
 	Q_ASSERT_X(m_markModel != nullptr,
 		"mark_create_helper_", "null pointer");
-	m_markModel->addMark(cate,mark);
+	m_markModel->addMark(cate, mark);
 }
 
 void ImageView::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
 {
 	Q_ASSERT_X(m_categoryCBBox, "ImageVIew::initCCBoxHelper", "null pointer");
 	m_categoryCBBox->clear();
-	foreach(const auto & p,cates)
+	foreach(const auto & p, cates)
 		m_categoryCBBox->addItem(p.first, QVariant::fromValue(p.second));
 }
 
 void ImageView::addCategoryManagerHelper(const QString & name, const QColor & color)
 {
-	m_categoryCBBox->addItem(name,color);
+	m_categoryCBBox->addItem(name, color);
 	m_categoryCBBox->setCurrentText(name);
 }
 
 void ImageView::markModelUpdatedHelper(MarkModel * model)
 {
 
+}
+
+SliceView* ImageView::focusOn()
+{
+	if (m_topView->hasFocus())
+		return m_topView;
+	if (m_rightView->hasFocus())
+		return m_rightView;
+	if (m_frontView->hasFocus())
+		return m_frontView;
+	return nullptr;
 }
 
 int ImageView::topSliceIndex() const { return m_topSlider->value(); }
@@ -504,11 +624,11 @@ inline void ImageView::frontSliceEnable(bool enable)
 	updateActions();
 }
 
-void ImageView::setColor(const QColor & color)
+void ImageView::setPen(const QColor & color)
 {
-	m_topView->setColor(color);
-	m_rightView->setColor(color);
-	m_frontView->setColor(color);
+	m_topView->setPen(QPen(color,m_penSizeCBBox->currentData().toInt(),Qt::SolidLine));
+	m_rightView->setPen(QPen(color, m_penSizeCBBox->currentData().toInt(), Qt::SolidLine));
+	m_frontView->setPen(QPen(color, m_penSizeCBBox->currentData().toInt(), Qt::SolidLine));
 }
 
 void ImageView::setSliceModel(AbstractSliceDataModel * model)
@@ -557,7 +677,7 @@ MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 	}
 	if (model == nullptr)			//remove mark
 	{
-		auto t= m_markModel;
+		auto t = m_markModel;
 		t->m_view = nullptr;
 		t->m_dataModel = nullptr;
 
@@ -589,8 +709,8 @@ MarkModel* ImageView::replaceMarkModel(MarkModel* model, bool * success)noexcept
 	auto cateItems = m_markModel->categoryItems();
 	QVector<QPair<QString, QColor>> cates;
 
-	foreach(const auto & item,cateItems)
-		cates << qMakePair(item->name(),item->color());
+	foreach(const auto & item, cateItems)
+		cates << qMakePair(item->name(), item->color());
 	setCategoryManagerHelper(cates);
 
 	if (success != nullptr)
@@ -767,6 +887,15 @@ void ImageView::contextMenuEvent(QContextMenuEvent* event)
 	}
 	event->accept();
 }
+void ImageView::viewToolBarActionTriggered(QAction * action)
+{
+
+
+}
+void ImageView::editToolBarActionTriggered(QAction * action)
+{
+
+}
 void ImageView::updateSliceCount(SliceType type)
 {
 	switch (type)
@@ -795,7 +924,7 @@ void ImageView::updateSlice(SliceType type)
 	{
 	case SliceType::Top:
 		view = m_topView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice, 
+		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice,
 			m_sliceModel, std::placeholders::_1);
 		list = &m_markModel->topSliceVisibleMarks();
 		break;

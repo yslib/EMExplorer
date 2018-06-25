@@ -215,6 +215,7 @@ m_dirty(false)
 	{
 		int value = item->data(MarkProperty::SliceType).value<int>();
 		int index = item->data(MarkProperty::SliceIndex).value<int>();
+		item->setFlags(QGraphicsItem::ItemIsSelectable);
 		switch(static_cast<SliceType>(value))
 		{
 		case SliceType::Top:
@@ -287,8 +288,9 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
 	return res;
 }
 
-bool MarkModel::removeMark(const QString& category, QGraphicsItem* mark)
+bool MarkModel::removeMark(QGraphicsItem* mark)
 {
+	QString category = mark->data(MarkProperty::CategoryName).toString();
 	auto id = categoryIndexHelper(category);
 	int r = rowCount(id);
 	auto item = getItemHelper(id);
@@ -319,19 +321,15 @@ bool MarkModel::removeMark(const QString& category, QGraphicsItem* mark)
 	return true;
 }
 
-int MarkModel::removeMarks(const QString& category, const QList<QGraphicsItem*>& marks)
+int MarkModel::removeMarks(const QList<QGraphicsItem*>& marks)
 {
 	int success = 0;
-	auto func = std::bind(&MarkModel::removeMark, this,
-		category, std::placeholders::_1);
+	auto func = std::bind(&MarkModel::removeMark, this,std::placeholders::_1);
 	for (auto item : marks)
 		if (func(item))
 			success++;
 	return success;
 }
-
-
-
 bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 {
 	if(format == MarkFormat::Binary)

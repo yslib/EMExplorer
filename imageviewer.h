@@ -57,7 +57,7 @@ public:
 	inline void topSliceEnable(bool enable);
 	inline void rightSliceEnable(bool enable);
 	inline void frontSliceEnable(bool enable);
-	void setColor(const QColor & color);
+	void setPen(const QColor & color);
 	void setSliceModel(AbstractSliceDataModel * model);
 	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
 	MarkModel* replaceMarkModel(MarkModel* model,bool * success)noexcept;
@@ -88,6 +88,8 @@ private:
 		Forward,
 		Backward
 	};
+	void viewToolBarActionTriggered(QAction * action);
+	void editToolBarActionTriggered(QAction * action);
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
 	void updateMarks(SliceType type);
@@ -105,13 +107,13 @@ private:
 	inline void setRightSliceCount(int value);
 	inline void setFrontSliceCount(int value);
 	int currentIndex(SliceType type);
-
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
 	void markAddedHelper(SliceType type,QGraphicsItem * mark);
 	void setCategoryManagerHelper(const QVector<QPair<QString,QColor>> & cates);
 	void addCategoryManagerHelper(const QString & name, const QColor & color);
 	void markModelUpdatedHelper(MarkModel * model);
+	SliceView * focusOn();
 
 
 	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
@@ -125,7 +127,7 @@ private:
 	SliceView * m_topView;
 	SliceView * m_rightView;
 	SliceView * m_frontView;
-	QPushButton * m_reset;
+	
 
 	//Tool Bar
 	QToolBar * m_viewToolBar;
@@ -143,6 +145,7 @@ private:
 
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
+	QAction * m_resetAction;
 
 	QAction *m_topSlicePlayAction;
 	QAction *m_rightSlicePlayAction;
@@ -164,12 +167,15 @@ private:
 	QComboBox * m_categoryCBBox;
 
 	QLabel * m_penSizeLabel;
-	QComboBox* m_penSizeCCBox;
+	QComboBox* m_penSizeCBBox;
 
 	//actions on edit toolbar
+	//QActionGroup * m_markActionsGroup;
 	QAction *m_markAction;
+	QAction *m_markSelectionAction;
+	QAction *m_moveAction;
+
 	QAction *m_colorAction;
-	QAction *m_markSeletectionAction;
 	QAction *m_markMergeAction;
 	QAction *m_markDeletionAction;
 	QAction *m_addCategoryAction;
