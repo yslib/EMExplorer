@@ -99,6 +99,24 @@ void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
 	(*markList)[index].append(mark);
 	setDirty();
 }
+void MarkModel::removeMarkInSliceHelper(QGraphicsItem * mark)
+{
+	int index = mark->data(MarkProperty::SliceIndex).toInt();
+	auto type = static_cast<SliceType>(mark->data(MarkProperty::SliceType).value<int>());
+	switch (type)
+	{
+	case SliceType::Top:
+		m_topSliceVisibleMarks[index].removeOne(mark);
+		break;
+	case SliceType::Front:
+		m_rightSliceVisibleMarks[index].removeOne(mark);
+		break;
+	case SliceType::Right:
+		m_frontSliceVisibleMarks[index].removeOne(mark);
+		break;
+	}
+	setDirty();
+}
 void MarkModel::updateMarkVisibleHelper(QGraphicsItem * mark)
 {
 	Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
@@ -296,14 +314,15 @@ bool MarkModel::removeMark(QGraphicsItem* mark)
 	auto item = getItemHelper(id);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::removeMark", "insert error");
-	Q_ASSERT_X(item->type() == TreeItemType::Mark,
+	Q_ASSERT_X(item->type() == TreeItemType::Category,
 		"MarkModel::removeMark", "type error");
-	Q_ASSERT_X(item->child(r)->data(0).canConvert<QGraphicsItem*>(),
-		"MarkModel::removeMark", "convert failure");
+
 	int removedId = -1;
 	for (int i = 0; i < r; i++)
 	{
-		auto d = item->child(r)->data(0).value<QGraphicsItem*>();
+		Q_ASSERT_X(item->child(i)->data(0).canConvert<QGraphicsItem*>(),
+			"MarkModel::removeMark", "convert failure");
+		auto d = item->child(i)->data(0).value<QGraphicsItem*>();
 		Q_ASSERT_X(d,
 			"MarkModel::removeMarks", "null pointer");
 		if (d == mark)
@@ -314,8 +333,11 @@ bool MarkModel::removeMark(QGraphicsItem* mark)
 	}
 	if (removedId == -1)
 		return false;
+
 	beginRemoveRows(id, removedId, removedId);
 	item->removeChildren(removedId, 1);
+	//remove from slice
+	removeMarkInSliceHelper(mark);
 	endRemoveRows();
 	setDirty();
 	return true;
@@ -339,23 +361,19 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		if (file.isOpen() == false)
 			return false;
 		qRegisterMetaTypeStreamOperators<QGraphicsItem*>("QGraphicsItem*");
+		//qRegisterMetaTypeStreamOperators<QScopedPointer<QGraphicsItem>>("QScopedPointer<QGraphicsItem>");
 		//qRegisterMetaTypeStreamOperators<CategoryItem>("CategoryItem");
 		qRegisterMetaTypeStreamOperators<QSharedPointer<CategoryItem>>("QSharedPointer<CategoryItem>");
 		QDataStream stream(&file);
 		stream.setVersion(QDataStream::Qt_5_10);
 		stream << static_cast<qint32>(MagicNumber);
 		stream << m_identity;
-		//stream << m_topSliceVisibleMarks;
-		//stream << m_rightSliceVisibleMarks;
-		//stream << m_frontSliceVisibleMarks;
 		stream << m_rootItem;
-
 		resetDirty();
 		return true;
 
 	}else if(format == MarkFormat::Raw)
 	{
-
 		//resetDirt();
 		return false;
 	}

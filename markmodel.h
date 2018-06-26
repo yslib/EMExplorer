@@ -75,7 +75,9 @@ class MarkModel :public QAbstractItemModel
 	QModelIndex categoryAddHelper(const QString& category);		//set dirty
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);				//set dirty
+	void removeMarkInSliceHelper(QGraphicsItem * mark);
 	void updateMarkVisibleHelper(QGraphicsItem * mark);			//set dirty
+
 	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
 	void initSliceMarkContainerHelper();
 
@@ -124,9 +126,10 @@ public:
 
 	bool removeMark(QGraphicsItem* mark);			//set dirty
 	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
-
 	inline int markCount(const QString & category)const;
+
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
+
 	inline void setDirty();
 	inline bool dirty()const;
 	inline void resetDirty();

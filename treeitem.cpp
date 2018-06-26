@@ -15,6 +15,14 @@ QDataStream& operator>>(QDataStream& stream, TreeItemType& type)
 	return stream;
 }
 
+TreeItem::~TreeItem()
+
+{
+	if (m_type == TreeItemType::Mark)
+		delete m_data[0].value<QGraphicsItem*>();
+	qDeleteAll(m_children);
+}
+
 /**
 * \brief Note:The stream operator would serialized the 
 * \brief TreeItem to a binary file underly the stream	recursively.

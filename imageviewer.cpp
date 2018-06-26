@@ -84,63 +84,20 @@ void ImageView::createToolBar()
 	m_colorAction = new QAction(QStringLiteral("Color"), this);
 	m_markSelectionAction = new QAction(QStringLiteral("Select"), this);
 	m_markSelectionAction->setCheckable(true);
-	m_moveAction = new QAction(QStringLiteral("Move"), this);
-	m_moveAction->setCheckable(true);
-
-	QActionGroup * group = new QActionGroup(this);
-	group->addAction(m_markAction);
-	group->addAction(m_markSelectionAction);
-	group->addAction(m_moveAction);
-	connect(group, &QActionGroup::triggered, [this](QAction * action)
-	{
-		bool check = action->isChecked();
-		if(action == m_markAction)
-		{
-			if(check)
-			{
-				m_topView->setOperation(SliceView::Paint);
-				m_rightView->setOperation(SliceView::Paint);
-				m_frontView->setOperation(SliceView::Paint);
-			}
-
-		}else if(action == m_markSelectionAction)
-		{
-			if(check)
-			{
-				m_topView->setOperation(SliceView::Selection);
-				m_rightView->setOperation(SliceView::Selection);
-				m_frontView->setOperation(SliceView::Selection);
-			}
-		}else if(action == m_moveAction)
-		{
-			if(check)
-			{
-				m_topView->setOperation(SliceView::Move);
-				m_rightView->setOperation(SliceView::None);
-				m_frontView->setOperation(SliceView::None);
-			}
-		}
-		if(check == false)
-		{
-			m_topView->setOperation(SliceView::None);
-			m_rightView->setOperation(SliceView::None);
-			m_frontView->setOperation(SliceView::None);
-		}
-	});
-
-
+	//m_moveAction = new QAction(QStringLiteral("Move"), this);
+	//m_moveAction->setCheckable(true);
 	m_markMergeAction = new QAction(QStringLiteral("Merge"), this);
 	m_markDeletionAction = new QAction(QStringLiteral("Delete"), this);
-	m_renameAction = new QAction(QStringLiteral("Rename"), this);
-
 	m_addCategoryAction = new QAction(QStringLiteral("Add..."), this);
 	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
 	m_categoryCBBox = new QComboBox(this);
 	m_penSizeLabel = new QLabel(QStringLiteral("PenSize:"), this);
 	m_penSizeCBBox = new QComboBox(this);
-
 	for (int i = 1; i <= 30; i++)
 		m_penSizeCBBox->addItem(QString::number(i), QVariant::fromValue(i));
+
+
+
 	m_editToolBar->addWidget(m_categoryLabel);
 	m_editToolBar->addWidget(m_categoryCBBox);
 	m_editToolBar->addAction(m_addCategoryAction);
@@ -150,14 +107,12 @@ void ImageView::createToolBar()
 	m_editToolBar->addWidget(m_penSizeCBBox);
 	m_editToolBar->addAction(m_colorAction);
 	m_editToolBar->addSeparator();
-	m_editToolBar->addAction(m_moveAction);
+	//m_editToolBar->addAction(m_moveAction);
 	m_editToolBar->addAction(m_markAction);
 	m_editToolBar->addAction(m_markSelectionAction);
 	m_editToolBar->addSeparator();
 	m_editToolBar->addAction(m_markMergeAction);
 	m_editToolBar->addAction(m_markDeletionAction);
-	m_editToolBar->addSeparator();
-	m_editToolBar->addAction(m_renameAction);
 }
 
 void ImageView::createConnections()
@@ -178,9 +133,6 @@ void ImageView::createConnections()
 	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
 	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
 	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
-
-	connect(m_viewToolBar, &QToolBar::actionTriggered, this, &ImageView::viewToolBarActionTriggered);
-	connect(m_editToolBar, &QToolBar::actionTriggered, this, &ImageView::editToolBarActionTriggered);
 
 	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateTopSliceActions(); });
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
@@ -203,86 +155,64 @@ void ImageView::createConnections()
 		connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
 		{
 			addCategoryManagerHelper(name, color);
-			setPen(color);
+			updatePen(color);
 		});
 		dlg.exec();
 	});
-
-
-
 	connect(m_zoomInAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, 1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
 	connect(m_zoomOutAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, -1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
 
-	connect(m_topView, &SliceView::sliceMoved, [this](const QPointF & delta)
-	{
-		m_rightView->moveSlice(QPointF(0.0f, delta.y()));
-		m_frontView->moveSlice(QPointF(delta.x(), 0.0f));
-	});
+	connect(m_topView, &SliceView::sliceMoved, [this](const QPointF & delta){m_rightView->moveSlice(QPointF(0.0f, delta.y()));m_frontView->moveSlice(QPointF(delta.x(), 0.0f));});
+	connect(m_topView, &SliceView::rubberBandChanged, [this](const QRect &rect, const QPointF &p1, const QPointF &p2){Q_UNUSED(rect);Q_UNUSED(p1);Q_UNUSED(p2);updateDeleteAction();});
 
-	connect(m_topView, &SliceView::rubberBandChanged,[this](const QRect &rect,const QPointF &p1,const QPointF &p2)
-	{
-		//update some actions
-
-	});
-
+	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int){QPen pen = m_topView->pen();pen.setWidth(m_penSizeCBBox->currentData().toInt());updatePen(pen);});
 
 	connect(m_colorAction, &QAction::triggered, [this](bool enable)
 	{
 		auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
-		QColor c = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
-		setPen(QColorDialog::getColor(c, this, QStringLiteral("Color")));
+		QColor defaultColor = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
+		QPen pen = m_topView->pen();
+		pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color")));
+		updatePen(pen);
 	});
-	//connect(m_markAction, &QAction::triggered, [this](bool enable)
-	//{
-	//	if(enable == true)
-	//	{
-	//		m_topView->setOperation(SliceView::Paint);
-	//		m_rightView->setOperation(SliceView::Paint);
-	//		m_frontView->setOperation(SliceView::Paint);
-	//		m_moveAction->setChecked(false);
-	//		m_markSelectionAction->setChecked(false);
-	//	}
-	//	else
-	//	{
-	//		m_topView->setOperation(SliceView::Move);
-	//		m_rightView->setOperation(SliceView::Move);
-	//		m_frontView->setOperation(SliceView::Move);
-	//	}
-	//});
-	//connect(m_markSelectionAction, &QAction::triggered, [this](bool enable)
-	//{
-	//	if(enable == true)
-	//	{
-	//		m_topView->setOperation(SliceView::Selection);
-	//		m_rightView->setOperation(SliceView::Selection);
-	//		m_frontView->setOperation(SliceView::Selection);
-	//		m_markAction->setChecked(false);
-	//		m_moveAction->setChecked(false);
-	//	}else
-	//	{
-
-	//	}
-
-	//});
-	//connect(m_moveAction, &QAction::triggered, [this](bool enable)
-	//{
-	//	if(enable == true)
-	//	{
-	//		m_topView->setOperation(SliceView::Move);
-	//		m_markSelectionAction->setChecked(false);
-	//		m_markAction->setChecked(false);
-	//	}
-	//	else
-	//	{
-	//		
-	//	}
-
-	//});
-	connect(m_markDeletionAction, &QAction::triggered, [this](bool enable)
+	connect(m_markAction, &QAction::triggered, [this](bool enable)
 	{
+		if (enable == true)
+		{
+			m_topView->setOperation(SliceView::Paint);
+			m_rightView->setOperation(SliceView::Paint);
+			m_frontView->setOperation(SliceView::Paint);
+			//m_moveAction->setChecked(false);
+			m_markSelectionAction->setChecked(false);
+		}
+		else
+		{
+			m_topView->setOperation(SliceView::Move);
+			m_rightView->setOperation(SliceView::Move);
+			m_frontView->setOperation(SliceView::Move);
+		}
+	});
+	connect(m_markSelectionAction, &QAction::triggered, [this](bool enable)
+	{
+		if (enable == true)
+		{
+			m_topView->setOperation(SliceView::Selection);
+			m_rightView->setOperation(SliceView::Selection);
+			m_frontView->setOperation(SliceView::Selection);
+			m_markAction->setChecked(false);
+			//m_moveAction->setChecked(false);
+		}
+		else
+		{
+			m_topView->setOperation(SliceView::Move);
+			m_rightView->setOperation(SliceView::Move);
+			m_frontView->setOperation(SliceView::Move);
+		}
 
 	});
+	connect(m_markDeletionAction, &QAction::triggered, [this](bool enable){Q_UNUSED(enable);markDeleteHelper();updateDeleteAction();});
 	connect(m_markMergeAction, &QAction::triggered, [this](bool enable) {});
+	
 }
 
 void ImageView::updateActions()
@@ -298,15 +228,23 @@ void ImageView::updateActions()
 	m_colorAction->setEnabled(enable);
 	m_markAction->setEnabled(enable);
 	m_markSelectionAction->setEnabled(enable);
-	m_moveAction->setEnabled(enable);
 	m_markMergeAction->setEnabled(enable);
-	m_markDeletionAction->setEnabled(enable);
-	m_renameAction->setEnabled(enable);
 	m_resetAction->setEnabled(enable);
-	///TODO::delete merge rename action depend on the seleted items
+	updateDeleteAction();
 	updateTopSliceActions();
 	updateRightSliceActions();
 	updateFrontSliceActions();
+}
+
+void ImageView::updateDeleteAction()
+{
+	Q_ASSERT_X(m_topView||m_rightView||m_frontView,
+		"ImageView::updateDeleteAction","null pointer");
+	const bool enable = m_markModel
+		&&(m_topView->selectedItemCount()
+			|| m_rightView->selectedItemCount()
+			|| m_frontView->selectedItemCount());
+	m_markDeletionAction->setEnabled(enable);
 }
 
 void ImageView::updateTopSliceActions()
@@ -333,6 +271,7 @@ void ImageView::updateRightSliceActions()
 	m_rightView->setHidden(!enable);
 }
 
+
 void ImageView::createContextMenu()
 {
 	m_contextMenu = new QMenu(this);
@@ -355,7 +294,6 @@ void ImageView::createContextMenu()
 			connect(this, &ImageView::topSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
 			connect(this, &ImageView::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
 			connect(this, &ImageView::topSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
-
 			emit topSliceOpened(m_topSlider->value());
 		}
 		else if (m_menuWidget == m_rightView)
@@ -452,7 +390,7 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_frontView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	m_frontView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	m_resetAction = new QAction(QStringLiteral("Reset"),this);
+	m_resetAction = new QAction(QStringLiteral("Reset"), this);
 
 	m_layout->setSizeConstraint(QLayout::SetFixedSize);
 	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
@@ -469,14 +407,18 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_frontSliceCheckBox = new QCheckBox;
 	m_frontSliceCheckBox->setChecked(frontSliceVisible);
 	m_frontSlider = new TitledSliderWithSpinBox(this, tr("X:"));
+	createWidgets();
 	createToolBar();
 	createContextMenu();
 	createConnections();
 	updateActions();
+
+	m_penSizeCBBox->setCurrentIndex(20);
+
 	setLayout(m_layout);
 }
 
-void ImageView::changeSlice(int value, SliceType type)
+void ImageView::changeSliceHelper(int value, SliceType type)
 {
 	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
 	SliceView * view = nullptr;
@@ -504,10 +446,10 @@ void ImageView::changeSlice(int value, SliceType type)
 	view->clearSliceMarks();
 }
 
-inline void ImageView::setTopSliceCount(int value) { m_topSlider->setMaximum(value - 1); }
-inline void ImageView::setRightSliceCount(int value) { m_rightSlider->setMaximum(value - 1); }
-inline void ImageView::setFrontSliceCount(int value) { m_frontSlider->setMaximum(value - 1); }
-int ImageView::currentIndex(SliceType type)
+inline void ImageView::setTopSliceCountHelper(int value) { m_topSlider->setMaximum(value - 1); }
+inline void ImageView::setRightSliceCountHelper(int value) { m_rightSlider->setMaximum(value - 1); }
+inline void ImageView::setFrontSliceCountHelper(int value) { m_frontSlider->setMaximum(value - 1); }
+int ImageView::currentIndexHelper(SliceType type)
 {
 	switch (type)
 	{
@@ -533,10 +475,15 @@ void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 {
 	QString cate = m_categoryCBBox->currentText();
 	QVariant categoryColor = m_categoryCBBox->currentData();
+
 	if (cate.isEmpty())
 	{
+		//Add a default catetory
 		cate = QStringLiteral("Category#%1").arg(m_categoryCBBox->count());
 		categoryColor = QVariant::fromValue(Qt::black);
+		QPen pen = m_topView->pen();
+		pen.setColor(Qt::black);
+		updatePen(pen);
 		addCategoryManagerHelper(cate, categoryColor.value<QColor>());
 	}
 	//auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
@@ -564,10 +511,26 @@ void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	}
 	mark->setData(MarkProperty::SliceIndex, QVariant::fromValue(index));
 	mark->setData(MarkProperty::Color, color);
-
 	Q_ASSERT_X(m_markModel != nullptr,
 		"mark_create_helper_", "null pointer");
+
 	m_markModel->addMark(cate, mark);
+}
+
+void ImageView::markDeleteHelper()
+{
+	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
+	QList<QGraphicsItem*> items;
+	if(m_topView != nullptr)
+		foreach(auto item, m_topView->selectedItems())
+			items << item;
+	if(m_rightView != nullptr)
+		foreach(auto item, m_rightView->selectedItems())
+		items << item;
+	if(m_frontView != nullptr)
+		foreach(auto item, m_frontView->selectedItems())
+			items << item;
+	m_markModel->removeMarks(items);
 }
 
 void ImageView::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
@@ -624,11 +587,11 @@ inline void ImageView::frontSliceEnable(bool enable)
 	updateActions();
 }
 
-void ImageView::setPen(const QColor & color)
+void ImageView::updatePen(const QPen &pen)
 {
-	m_topView->setPen(QPen(color,m_penSizeCBBox->currentData().toInt(),Qt::SolidLine));
-	m_rightView->setPen(QPen(color, m_penSizeCBBox->currentData().toInt(), Qt::SolidLine));
-	m_frontView->setPen(QPen(color, m_penSizeCBBox->currentData().toInt(), Qt::SolidLine));
+	m_topView->setPen(pen);
+	m_rightView->setPen(pen);
+	m_frontView->setPen(pen);
 }
 
 void ImageView::setSliceModel(AbstractSliceDataModel * model)
@@ -887,27 +850,19 @@ void ImageView::contextMenuEvent(QContextMenuEvent* event)
 	}
 	event->accept();
 }
-void ImageView::viewToolBarActionTriggered(QAction * action)
-{
 
-
-}
-void ImageView::editToolBarActionTriggered(QAction * action)
-{
-
-}
 void ImageView::updateSliceCount(SliceType type)
 {
 	switch (type)
 	{
 	case SliceType::Top:
-		setTopSliceCount(m_sliceModel->topSliceCount() - 1);
+		setTopSliceCountHelper(m_sliceModel->topSliceCount() - 1);
 		break;
 	case SliceType::Right:
-		setRightSliceCount(m_sliceModel->rightSliceCount() - 1);
+		setRightSliceCountHelper(m_sliceModel->rightSliceCount() - 1);
 		break;
 	case SliceType::Front:
-		setFrontSliceCount(m_sliceModel->frontSliceCount() - 1);
+		setFrontSliceCountHelper(m_sliceModel->frontSliceCount() - 1);
 		break;
 	default:
 		break;
@@ -946,7 +901,7 @@ void ImageView::updateSlice(SliceType type)
 	}
 	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true,
 		"ImageView::updateSlice", "null function");
-	int index = currentIndex(type);
+	int index = currentIndexHelper(type);
 	view->setImage(sliceGetter(index));
 	view->clearSliceMarks();
 	if (m_markModel == nullptr)

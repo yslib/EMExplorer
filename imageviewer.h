@@ -57,7 +57,7 @@ public:
 	inline void topSliceEnable(bool enable);
 	inline void rightSliceEnable(bool enable);
 	inline void frontSliceEnable(bool enable);
-	void setPen(const QColor & color);
+	
 	void setSliceModel(AbstractSliceDataModel * model);
 	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
 	MarkModel* replaceMarkModel(MarkModel* model,bool * success)noexcept;
@@ -88,51 +88,48 @@ private:
 		Forward,
 		Backward
 	};
-	void viewToolBarActionTriggered(QAction * action);
-	void editToolBarActionTriggered(QAction * action);
-	void updateSliceCount(SliceType type);
-	void updateSlice(SliceType type);
-	void updateMarks(SliceType type);
-	void updateActions();
-	void updateTopSliceActions();
-	void updateFrontSliceActions();
-	void updateRightSliceActions();
 	void createWidgets();
 	void createToolBar();
 	void createConnections();
 	void createContextMenu();
+	void updatePen(const QPen & pen);
+	void updateSliceCount(SliceType type);
+	void updateSlice(SliceType type);
+	void updateMarks(SliceType type);
+	void updateActions();
+	void updateDeleteAction();
+	void updateTopSliceActions();
+	void updateFrontSliceActions();
+	void updateRightSliceActions();
 
-	void changeSlice(int value, SliceType type);
-	inline void setTopSliceCount(int value);
-	inline void setRightSliceCount(int value);
-	inline void setFrontSliceCount(int value);
-	int currentIndex(SliceType type);
 	inline bool contains(const QWidget* widget, const QPoint& pos);
+	inline void setTopSliceCountHelper(int value);
+	inline void setRightSliceCountHelper(int value);
+	inline void setFrontSliceCountHelper(int value);
 
 	void markAddedHelper(SliceType type,QGraphicsItem * mark);
+	void markDeleteHelper();
 	void setCategoryManagerHelper(const QVector<QPair<QString,QColor>> & cates);
 	void addCategoryManagerHelper(const QString & name, const QColor & color);
 	void markModelUpdatedHelper(MarkModel * model);
+
+	void changeSliceHelper(int value, SliceType type);
+	int currentIndexHelper(SliceType type);
+
 	SliceView * focusOn();
-
-
 	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
+	
 	//Data Model
-
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
-
 	//main layout
 	QGridLayout *m_layout;
 	SliceView * m_topView;
 	SliceView * m_rightView;
 	SliceView * m_frontView;
-	
-
 	//Tool Bar
 	QToolBar * m_viewToolBar;
 	QToolBar * m_editToolBar;
-
 	//Widgets on view toolbar
 	TitledSliderWithSpinBox * m_topSlider;
 	QCheckBox * m_topSliceCheckBox;
@@ -170,19 +167,14 @@ private:
 	QComboBox* m_penSizeCBBox;
 
 	//actions on edit toolbar
-	//QActionGroup * m_markActionsGroup;
 	QAction *m_markAction;
 	QAction *m_markSelectionAction;
-	QAction *m_moveAction;
-
+	//QAction *m_moveAction;
 	QAction *m_colorAction;
 	QAction *m_markMergeAction;
 	QAction *m_markDeletionAction;
 	QAction *m_addCategoryAction;
-	QAction * m_renameAction;
-
 	//menu on edit toolbar
-
 	//ContextMenu
 	QMenu *m_contextMenu;
 	QAction * m_zoomIn;

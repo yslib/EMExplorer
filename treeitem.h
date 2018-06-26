@@ -19,11 +19,9 @@ class TreeItem
 	QVector<TreeItem*> m_children;
 	QVector<QVariant> m_data;
 	TreeItemType m_type;
-
 public:
 	explicit TreeItem(const QVector<QVariant> & data, TreeItemType type, TreeItem * parent = nullptr) :m_parent(parent), m_data(data), m_type(type) {}
-	~TreeItem() { qDeleteAll(m_children); }
-
+	~TreeItem();
 	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
 	TreeItem* parentItem()const { return m_parent; };
@@ -104,6 +102,7 @@ public:
 			child->removeColumns(position, columns);
 		return true;
 	}
+
 	/**
 	* \brief To make implementation of the model easier, we return true
 	* \brief to indicate whether the data was set successfully, or false if an invalid column
@@ -111,12 +110,15 @@ public:
 	* \param value
 	* \return
 	*/
+
+
 	bool setData(int column, const QVariant & value)
 	{
 		if (column < 0 || column >= m_data.size())return false;
 		m_data[column] = value;
 		return true;
 	}
+
 	TreeItemType type()const { return m_type; }
 
 	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);

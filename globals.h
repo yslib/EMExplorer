@@ -14,6 +14,9 @@
 //	return static_cast<T>(static_cast<U>(mark));
 //}
 
+Q_DECLARE_METATYPE(QScopedPointer<QGraphicsItem>); 
+
+
 template<typename T>
 inline
 void DELETEANDSETNULL(std::remove_reference<std::remove_pointer<T>> *& p)
