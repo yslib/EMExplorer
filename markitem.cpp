@@ -141,6 +141,10 @@ void StrokeMarkItem::appendPoint(const QPointF& p)
 	setPolygon(poly);
 	update(boundingRect());
 }
+
+
+
+
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item)
 {
 	if (item == nullptr || item->type() != ItemTypes::StrokeMark)
@@ -160,7 +164,7 @@ QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item)
 			<< mark->polygon()
 			<< mark->pen();
 	}
-
+	return stream;
 }
 
 QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)

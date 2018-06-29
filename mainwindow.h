@@ -4,7 +4,6 @@
 #include "mrcdatamodel.h"
 QT_BEGIN_NAMESPACE
 class QTableView;
-class QTreeView;
 class QStandardItemModel;
 class QAbstractTableModel;
 class QAction;
@@ -14,6 +13,7 @@ class ImageView;
 class MarkModel;
 class ProfileView;
 class MRC;
+class MarkTreeView;
 
 
 class MainWindow : public QMainWindow
@@ -32,7 +32,7 @@ private:
 	//Widgets
 	ImageView * m_imageView;
 	ProfileView * m_profileView;
-	QTreeView * m_treeView;
+	MarkTreeView * m_treeView;
 
 	//Data Model
 	QHash<QString,std::tuple<QAbstractTableModel*,MRCDataModel* ,MarkModel*>> m_models;
@@ -56,6 +56,7 @@ private:
 	void createMenu();
     void createActions();
     void createStatusBar();
+	void createMarkTreeView();
 
 	//void setupModels(const MRC & mrc);
 	QAbstractTableModel * setupProfileModel(const MRC & mrc);

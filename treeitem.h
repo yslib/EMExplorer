@@ -13,14 +13,53 @@ enum class TreeItemType
 QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
 QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 
+#define RAW_POINTER_TYPE
+
+
+
+
+#define PTR_TYPE(TYPE) __PTR_TYPE_(TYPE)
+#define INTERNAL_PTR(x) __INTERNAL_PTR_(x)
+
+#ifdef RAW_POINTER_TYPE
+#define __TREE_NODE_POINTER_TYPE_RAW_PTR_
+#elif defined(STD_UNIQUE_POINTER_TYPE)
+#define __TREE_NODE_POINTER_TYPE_STD_UNIQUE_PTR_
+#elif defined(STD_SHARED_POINTER_TYPE)
+#define __TREE_NODE_POINTER_TYPE_STD_SHARED_PTR_
+#elif defined(QT_SCOPED_POINTER_TYPE)
+#define __TREE_NODE_POINTER_TYPE_QT_SCOPED_PTR_
+#elif defined(QT_SHARED_POINTER_TYPE)
+#define __TREE_NODE_POINTER_TYPE_QT_SHARED_PTR_
+#endif
+
+
+#ifdef __TREE_NODE_POINTER_TYPE_RAW_PTR_
+	#define __PTR_TYPE_(TYPE) TYPE*
+	#define __INTERNAL_PTR_(x) (x)
+#elif defined(__TREE_NODE_POINTER_TYPE_STD_UNIQUE_PTR_)
+	#define __PTR_TYPE_(TYPE) std::unique_ptr<TYPE>
+	#define __INTERNAL_PTR_(x) (x.get())
+#elif defined (__TREE_NODE_POINTER_TYPE_QT_SCOPED_PTR_)
+	#define __PTR_TYPE_(TYPE) std::shared_ptr<TYPE>
+	#define __INTERNAL_PTR_(x) (x.get())
+#elif defined(__TREE_NODE_POINTER_TYPE_STD_SHARED_PTR_)
+	#define __PTR_TYPE_(TYPE) QSharedPointer<TYPE>
+	#define __INTERNAL_PTR_(x) (x.get())
+#elif defined(__TREE_NODE_POINTER_TYPE_QT_SHARED_PTR_)
+	#define __PTR_TYPE_(TYPE) QScopedPointer<TYPE>
+	#define __INTERNAL_PTR_(x) (x.get())
+#endif
+
+
 class TreeItem
 {
-	TreeItem * m_parent;
-	QVector<TreeItem*> m_children;
+	PTR_TYPE(TreeItem) m_parent;
+	QVector<PTR_TYPE(TreeItem)> m_children;
 	QVector<QVariant> m_data;
 	TreeItemType m_type;
 public:
-	explicit TreeItem(const QVector<QVariant> & data, TreeItemType type, TreeItem * parent = nullptr) :m_parent(parent), m_data(data), m_type(type) {}
+	explicit TreeItem(const QVector<QVariant> & data, TreeItemType type, PTR_TYPE(TreeItem)parent = nullptr) :m_parent(parent), m_data(data), m_type(type) {}
 	~TreeItem();
 	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
 	void setParentItem(TreeItem * parent) { m_parent = parent; }

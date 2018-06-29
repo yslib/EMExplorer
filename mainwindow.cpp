@@ -4,7 +4,6 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QToolBar>
-#include <QTreeView>
 #include <QDebug>
 
 #include "mainwindow.h"
@@ -13,6 +12,7 @@
 #include "profileview.h"
 #include "mrcdatamodel.h"
 #include "markmodel.h"
+#include "marktreeview.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent):
@@ -23,9 +23,10 @@ MainWindow::MainWindow(QWidget *parent):
 	createActions();
 	createMenu();
 	createWidget();
+	createMarkTreeView();
 	createStatusBar();
 	resize(1650,1080);
-	setWindowTitle(QStringLiteral("MRC Editor"));
+	setWindowTitle(QStringLiteral("MRC Marker"));
 	setUnifiedTitleAndToolBarOnMac(true);
 }
 MainWindow::~MainWindow()
@@ -175,13 +176,6 @@ void MainWindow::createWidget()
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 	m_viewMenu->addAction(dock->toggleViewAction());
 
-	m_treeView = new QTreeView;
-	dock = new QDockWidget(QStringLiteral("Mark Manager"));
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	dock->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	m_viewMenu->addAction(dock->toggleViewAction());
-
 	m_imageView = new ImageView;
 	setCentralWidget(m_imageView);
 }
@@ -238,6 +232,25 @@ void MainWindow::createStatusBar()
 	m_statusBar = statusBar();
 	m_statusBar->showMessage(QStringLiteral("Ready"));
 }
+
+void MainWindow::createMarkTreeView()
+{
+	m_treeView = new MarkTreeView;
+	QDockWidget * dock = new QDockWidget(QStringLiteral("Mark Manager"));
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	dock->setWidget(m_treeView);
+	addDockWidget(Qt::LeftDockWidgetArea, dock);
+	m_viewMenu->addAction(dock->toggleViewAction());
+
+	//m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	//QAction * m_markDeleteAction = new QAction(QStringLiteral("Delete"),m_treeView);
+	//QAction * m_markRenameAction = new QAction(QStringLiteral("Delete"),m_treeView);
+	//QAction * m_markUnionAction = new QAction(QStringLiteral("Union"),m_treeView);
+	//m_treeView->addAction(m_markDeleteAction);
+	//m_treeView->addAction(m_markRenameAction);
+	//m_treeView->addAction(m_markUnionAction);
+}
+
 QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 {
 	QAbstractTableModel * model = nullptr;

@@ -1,8 +1,9 @@
-#include "mrc.h"
 #include <cstring>
 #include <cassert>
 #include <sstream>
 #include <iostream>
+
+#include "mrc.h"
 
 MRC::MRC():MRC("",false)
 {
@@ -16,18 +17,13 @@ MRC::MRC(const std::string &fileName):MRC(fileName,false)
 
 MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType DimensionType, DataType dataType)
 {
-	Q_UNUSED(DimensionType);
-	//DataType
+	(void)(DimensionType);
 	if (dataType != DataType::Integer8) {
 		//NOTICE: Only support byte type
 		exit(-1);
 	}
 	m_header.mode = MRC_MODE_BYTE;
-
-	//There is a critical fault to reference a outer raw pointer directly
-	//This is a ad hoc.
 	m_d = MRCDataPrivate::create(data);
-
 	m_header.nx = width;
 	m_header.ny = height;
 	m_header.nz = slice;
@@ -48,12 +44,9 @@ MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType Dimen
 	m_header.alpha = 90;
 	m_header.beta = 90;
 	m_header.gamma = 90;
-
-	_dmin_dmax_dmean_rms_Field();
+	UpdateDminDmaxDmeanRMSHelper();
 	//TODO::update MRCHeader
-
 	m_opened = true;
-
 }
 
 MRC::MRC(void * data, 
@@ -64,13 +57,13 @@ MRC::MRC(void * data,
 	VolumeDimensionType type, 
 	DataType dataType)
 {
-	Q_UNUSED(data);
-	Q_UNUSED(width);
-	Q_UNUSED(height);
-	Q_UNUSED(volumeZ);
-	Q_UNUSED(volumeCount);
-	Q_UNUSED(type);
-	Q_UNUSED(dataType);
+	(void)(data);
+	(void)(width);
+	(void)(height);
+	(void)(volumeZ);
+	(void)(volumeCount);
+	(void)(type);
+	(void)(dataType);
 	exit(-1);
 }
 
@@ -78,6 +71,8 @@ MRC::MRC(const MRC & otherMRC, void * data)
 {
 	m_header = otherMRC.m_header;
 	m_d = MRCDataPrivate::create(data);
+	//copyHeaderBuffer(hdBuffer, otherMRC.hdBuffer, MRC_HEADER_SIZE);
+	memcpy(hdBuffer, otherMRC.hdBuffer, MRC_HEADER_SIZE);
 	m_opened = true;
 }
 
@@ -86,7 +81,17 @@ MRC::MRC(const MRC &rhs)
     m_header = rhs.m_header;
 	m_d = rhs.m_d;
 	++m_d->ref;		//reference count increasement
+	memcpy(hdBuffer, rhs.hdBuffer, MRC_HEADER_SIZE);
     m_opened = rhs.m_opened;
+}
+
+MRC::MRC(MRC && rhs) noexcept
+{
+	m_header = std::move(rhs.m_header);
+	m_d = rhs.m_d;
+	rhs.m_d = nullptr;
+	memcpy(hdBuffer, rhs.hdBuffer, MRC_HEADER_SIZE);
+	m_opened = rhs.m_opened;
 }
 
 MRC & MRC::operator=(const MRC &rhs)
@@ -95,41 +100,45 @@ MRC & MRC::operator=(const MRC &rhs)
     m_header = rhs.m_header;
 	m_d = rhs.m_d;
 	++m_d->ref;
+	memcpy(hdBuffer, rhs.hdBuffer, MRC_HEADER_SIZE);
     m_opened = rhs.m_opened;
     return *this;
+}
+
+MRC & MRC::operator=(MRC && rhs) noexcept
+{
+	m_header = std::move(rhs.m_header);
+	m_d = rhs.m_d;
+	rhs.m_d = nullptr;
+	m_opened = rhs.m_opened;
+	return *this;
 }
 
 MRC MRC::fromData(void* data, int width, int height, int slice, DataType type)
 {
 	return MRC(data,width,height,slice,ImageDimensionType::ImageStack,type);
 }
-
-
-
 MRC MRC::fromMRC(const MRC & otherMRC,unsigned char * data)
 {
     return MRC(otherMRC,data);
 }
-
 bool MRC::open(const std::string &fileName)
 {
 	detach();
-
     FILE * fp = fopen(fileName.c_str(),"rb");
     if(fp != nullptr){
         bool noError = true;
         if(true == noError){
-            noError = _mrcHeaderRead(fp,&m_header);
+            noError = headerReadHelper(fp,&m_header);
         }
         if(true == noError){
-            noError = _readDataFromFile(fp);
+            noError = readDataFromFileHelper(fp);
         }
         m_opened = noError;
         fclose(fp);
     }
     return m_opened;
 }
-
 bool MRC::save(const std::string & fileName, MRC::Format format)
 {
 	FILE * fp = fopen(fileName.c_str(), "wb");
@@ -140,7 +149,7 @@ bool MRC::save(const std::string & fileName, MRC::Format format)
 	size_t elemSize = typeSize(dataType());
 	size_t dataCount = m_header.nx*m_header.ny*m_header.nz;
 	if (format == Format::MRC) {
-		_mrcHeaderWrite(fp, &m_header);
+		headerWriteHelper(fp, &m_header);
 		fseek(fp, MRC_HEADER_SIZE, SEEK_SET);
 		size_t count = fwrite(m_d->data, elemSize, dataCount, fp);
 		if (count != dataCount) {
@@ -162,30 +171,7 @@ bool MRC::save(const std::string & fileName, MRC::Format format)
 	return true;
 }
 
-bool MRC::isOpened() const
-{
-    return m_opened;
-}
 
-int MRC::getWidth() const
-{
-    return m_header.nx;
-}
-
-int MRC::getHeight() const
-{
-    return m_header.ny;
-}
-
-int MRC::getSliceCount() const
-{
-    return m_header.nz;
-}
-
-int MRC::propertyCount() const
-{
-	return 32;
-}
 
 std::string MRC::propertyName(int index)const
 {
@@ -321,9 +307,9 @@ size_t MRC::typeSize(MRC::DataType type) const
 }
 
 
-std::string MRC::getMRCInfo()const
+std::string MRC::info()const
 {
-	return _getMRCHeaderInfo(&m_header);
+	return propertyInfoString(&m_header);
 }
 
 MRC::~MRC()
@@ -332,7 +318,7 @@ MRC::~MRC()
 }
 
 
-void MRC::_dmin_dmax_dmean_rms_Field()
+void MRC::UpdateDminDmaxDmeanRMSHelper()
 {
 	/*For efficency
 	*DMAX < DMIN indicates that minimum and maximum of density are not determined.
@@ -346,11 +332,10 @@ void MRC::_dmin_dmax_dmean_rms_Field()
 }
 
 //Only for byte and float data
-bool MRC::_mrcHeaderRead(FILE * fp, MRCHeader *hd)
+bool MRC::headerReadHelper(FILE * fp, MRCHeader *hd)
 {
     if(fp == nullptr)return false;
     rewind(fp);
-
     //unsigned char hdBuffer[MRC_HEADER_SIZE];
     int elemSize = 0;
     elemSize = fread(hdBuffer,sizeof(unsigned char),MRC_HEADER_SIZE,fp);
@@ -394,7 +379,7 @@ bool MRC::_mrcHeaderRead(FILE * fp, MRCHeader *hd)
     return true;
 }
 
-bool MRC::_mrcHeaderWrite(FILE * fp, MRCHeader * hd)
+bool MRC::headerWriteHelper(FILE * fp, MRCHeader * hd)
 {
 	if (fp == nullptr)return false;
 	unsigned char hdBuffer[MRC_HEADER_SIZE];
@@ -434,9 +419,8 @@ bool MRC::_mrcHeaderWrite(FILE * fp, MRCHeader * hd)
 	return true;
 }
 
-std::string MRC::_getMRCHeaderInfo(const MRCHeader *header) const
+std::string MRC::propertyInfoString(const MRCHeader *header) const
 {
-
     std::stringstream ss;
     ss<<"NX:"<<header->nx<<std::endl
     <<"NY:"<<header->ny<<std::endl
@@ -470,7 +454,7 @@ std::string MRC::_getMRCHeaderInfo(const MRCHeader *header) const
     return ss.str();
 }
 
-bool MRC::_readDataFromFile(FILE *fp)
+bool MRC::readDataFromFileHelper(FILE *fp)
 {
     bool noError = true;
     if(true == noError){
@@ -494,7 +478,6 @@ bool MRC::_readDataFromFile(FILE *fp)
                 std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
                 noError =false;
             }
-
         }else if(MRC_MODE_FLOAT == m_header.mode){
             //float * buffer = new float[m_mrcDataSize*sizeof(float)];
             std::unique_ptr<MRCFloat[]> buffer(new float[dataCount*sizeof(MRCFloat)]);
@@ -512,7 +495,6 @@ bool MRC::_readDataFromFile(FILE *fp)
                     static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>(k*buffer[i]);
                 }
             }
-            //delete[] buffer;
         }else{
             std::cerr<<"Only float and byte type are supported now.";
             return false;
@@ -520,10 +502,4 @@ bool MRC::_readDataFromFile(FILE *fp)
     }
 
     return (noError);
-}
-
-void MRC::detach()
-{
-	if (m_d != nullptr && --m_d->ref == 0)
-		delete m_d;
 }

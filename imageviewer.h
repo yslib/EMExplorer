@@ -171,7 +171,7 @@ private:
 	QAction *m_markSelectionAction;
 	//QAction *m_moveAction;
 	QAction *m_colorAction;
-	QAction *m_markMergeAction;
+	//QAction *m_markMergeAction;
 	QAction *m_markDeletionAction;
 	QAction *m_addCategoryAction;
 	//menu on edit toolbar

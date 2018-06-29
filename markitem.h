@@ -1,8 +1,9 @@
 #ifndef ABSTRACTMARKITEM_H
 #define ABSTRACTMARKITEM_H
 #include "globals.h"
-#include <QList>
+//#include <QList>
 #include <QAbstractGraphicsShapeItem>
+//#include <QtContainerFwd>
 
 //
 //enum class SliceType;
@@ -65,6 +66,9 @@
 //};
 //
 
+
+
+
 class StrokeMarkItem :public QGraphicsPolygonItem {
 public:
 	enum {Type = StrokeMark};
@@ -78,6 +82,22 @@ public:
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item);
 QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item);
 
-//Q_DECLARE_METATYPE(QGraphicsItem *)
 
+//Q_DECLARE_METATYPE(QGraphicsItem*);
+Q_DECLARE_METATYPE(QSharedPointer<QGraphicsItem>);
+
+
+inline QDataStream& operator<<(QDataStream& stream, const QSharedPointer<QGraphicsItem>& item)
+{
+	stream << item.data();
+	return stream;
+}
+
+inline QDataStream& operator>>(QDataStream& stream, QSharedPointer<QGraphicsItem>& item)
+{
+	QGraphicsItem * ptr;
+	stream >> ptr;
+	item.reset(ptr);
+	return stream;
+}
 #endif // ABSTRACTMARKITEM_H

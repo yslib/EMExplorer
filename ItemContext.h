@@ -46,8 +46,8 @@ public:
 	int getMaxGrayscale()const { return m_mrcContext.maxGrayscale; }
 
 
-	int getWidth()const { return m_mrcFile.getWidth(); }
-	int getHeight()const { return m_mrcFile.getHeight(); }
+	int getWidth()const { return m_mrcFile.width(); }
+	int getHeight()const { return m_mrcFile.height(); }
 
 	/*zoom factor*/
 	void setZoomFactor(qreal factor) { m_mrcContext.zoomFactor = factor; }
@@ -64,7 +64,7 @@ public:
 	int getCurrentRightSliceIndex()const { return m_mrcContext.currentRightSliceIndex; }
 	void setCurrentFrontSliceIndex(int index) { m_mrcContext.currentFrontSliceIndex = index; }
 	int getCurrentFrontSliceIndex()const { return m_mrcContext.currentFrontSliceIndex; }
-	int getTopSliceCount()const { return m_mrcFile.getSliceCount(); }
+	int getTopSliceCount()const { return m_mrcFile.slice(); }
 
 	bool save(const QString & fileName, ItemContext::DataFormat formate = ItemContext::DataFormat::mrc);
 	bool open(const QString & fileName);
@@ -72,7 +72,7 @@ public:
 
 	bool openMarks(const QString & fileName);
 	bool saveMarks(const QString & fileName, MarkFormat format = MarkFormat::MRC);
-	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.getMRCInfo().c_str())); }
+	QString getMRCInfo()const { return QString(QString::fromLocal8Bit(m_mrcFile.info().c_str())); }
 
 	QImage getOriginalTopSlice(int index)const;
 	QImage getTopSlice(int index)const;
@@ -80,13 +80,13 @@ public:
 
 
 
-	int getRightSliceCount()const { return m_mrcFile.getWidth(); }
+	int getRightSliceCount()const { return m_mrcFile.width(); }
 	QImage getOriginalRightSlice(int index) const;
 	QImage getRightSlice(int index)const;
 	void setRightSlice(const QImage & image, int index);
 
 
-	int getFrontSliceCount()const { return m_mrcFile.getHeight(); }
+	int getFrontSliceCount()const { return m_mrcFile.height(); }
 	QImage getOriginalFrontSlice(int index) const;
 	QImage getFrontSlice(int index)const;
 	void setFrontSlice(const QImage & image, int index);

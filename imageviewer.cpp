@@ -20,6 +20,7 @@
 #include "markmodel.h"
 #include "markitem.h"
 #include "sliceview.h"
+#include "categoryitem.h"
 
 
 inline bool ImageView::contains(const QWidget* widget, const QPoint& pos)
@@ -86,7 +87,7 @@ void ImageView::createToolBar()
 	m_markSelectionAction->setCheckable(true);
 	//m_moveAction = new QAction(QStringLiteral("Move"), this);
 	//m_moveAction->setCheckable(true);
-	m_markMergeAction = new QAction(QStringLiteral("Merge"), this);
+	//m_markMergeAction = new QAction(QStringLiteral("Merge"), this);
 	m_markDeletionAction = new QAction(QStringLiteral("Delete"), this);
 	m_addCategoryAction = new QAction(QStringLiteral("Add..."), this);
 	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
@@ -111,7 +112,7 @@ void ImageView::createToolBar()
 	m_editToolBar->addAction(m_markAction);
 	m_editToolBar->addAction(m_markSelectionAction);
 	m_editToolBar->addSeparator();
-	m_editToolBar->addAction(m_markMergeAction);
+	//m_editToolBar->addAction(m_markMergeAction);
 	m_editToolBar->addAction(m_markDeletionAction);
 }
 
@@ -155,7 +156,9 @@ void ImageView::createConnections()
 		connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
 		{
 			addCategoryManagerHelper(name, color);
-			updatePen(color);
+			QPen pen = m_topView->pen();
+			pen.setColor(color);
+			updatePen(pen);
 		});
 		dlg.exec();
 	});
@@ -163,10 +166,12 @@ void ImageView::createConnections()
 	connect(m_zoomOutAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, -1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
 
 	connect(m_topView, &SliceView::sliceMoved, [this](const QPointF & delta){m_rightView->moveSlice(QPointF(0.0f, delta.y()));m_frontView->moveSlice(QPointF(delta.x(), 0.0f));});
-	connect(m_topView, &SliceView::rubberBandChanged, [this](const QRect &rect, const QPointF &p1, const QPointF &p2){Q_UNUSED(rect);Q_UNUSED(p1);Q_UNUSED(p2);updateDeleteAction();});
+
+	connect(m_topView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
+	connect(m_rightView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
+	connect(m_frontView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
 
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int){QPen pen = m_topView->pen();pen.setWidth(m_penSizeCBBox->currentData().toInt());updatePen(pen);});
-
 	connect(m_colorAction, &QAction::triggered, [this](bool enable)
 	{
 		auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
@@ -175,6 +180,7 @@ void ImageView::createConnections()
 		pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color")));
 		updatePen(pen);
 	});
+
 	connect(m_markAction, &QAction::triggered, [this](bool enable)
 	{
 		if (enable == true)
@@ -211,7 +217,7 @@ void ImageView::createConnections()
 
 	});
 	connect(m_markDeletionAction, &QAction::triggered, [this](bool enable){Q_UNUSED(enable);markDeleteHelper();updateDeleteAction();});
-	connect(m_markMergeAction, &QAction::triggered, [this](bool enable) {});
+	//connect(m_markMergeAction, &QAction::triggered, [this](bool enable) {});
 	
 }
 
@@ -228,7 +234,7 @@ void ImageView::updateActions()
 	m_colorAction->setEnabled(enable);
 	m_markAction->setEnabled(enable);
 	m_markSelectionAction->setEnabled(enable);
-	m_markMergeAction->setEnabled(enable);
+	//m_markMergeAction->setEnabled(enable);
 	m_resetAction->setEnabled(enable);
 	updateDeleteAction();
 	updateTopSliceActions();
@@ -413,7 +419,7 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	createConnections();
 	updateActions();
 
-	m_penSizeCBBox->setCurrentIndex(20);
+	m_penSizeCBBox->setCurrentIndex(4);
 
 	setLayout(m_layout);
 }

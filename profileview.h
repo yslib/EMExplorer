@@ -3,7 +3,8 @@
 
 #include <QWidget>
 #include <QAbstractTableModel>
-#include <QHash>
+
+//#include <QHash>
 
 class MRC;
 class QTableView;

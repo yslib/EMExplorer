@@ -1,13 +1,10 @@
 #ifndef ZOOMVIWER_H
 #define ZOOMVIWER_H
-#include <QWidget>
 #include <QImage>
 #include <QPainter>
 #include <QWheelEvent>
 #include <QSlider>
 #include <QLayout>
-#include <QLabel>
-#include <QDoubleSpinBox>
 
 class ZoomViwer:public QWidget
 {

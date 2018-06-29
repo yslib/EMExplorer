@@ -5,6 +5,7 @@
 
 class SliceItem;
 
+using AnchorItem = QGraphicsPixmapItem;
 
 
 
@@ -48,25 +49,31 @@ signals:
 	void sliceSelected(const QPoint & point);
 	void markAdded(QGraphicsItem * item);
 	void sliceMoved(const QPointF & delta);
+	void selectionChanged();
 private:
 	inline static void clear_slice_marks_helper_(SliceItem * slice);
 	void set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
 	inline  void set_mark_helper_(const QList<QGraphicsItem*>& items);
 	QGraphicsItem * createMarkItem();
 
+	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
+
 	Q_OBJECT
 	qreal m_scaleFactor;
 	QVector<QPoint> m_paintViewPointsBuffer;
-	SliceItem * m_currentPaintingSlice;
-
+	
 	QPointF m_prevScenePoint;
 	//QColor m_color;
 	QPen m_pen;
 	SliceItem * m_slice;
 	QImage  m_image;
-
 	//QGraphicsItem * m_paintingItem;
+
+
+	//items
+	SliceItem * m_currentPaintingSlice;
 	StrokeMarkItem * m_paintingItem;
+	AnchorItem * m_anchorItem;
 
 	//state variable
 	bool m_paint;

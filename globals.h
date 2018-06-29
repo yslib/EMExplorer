@@ -4,7 +4,6 @@
 //inline helper function
 #include <type_traits>
 #include <exception>
-
 #include <QGraphicsItem>
 
 
@@ -14,7 +13,7 @@
 //	return static_cast<T>(static_cast<U>(mark));
 //}
 
-Q_DECLARE_METATYPE(QScopedPointer<QGraphicsItem>); 
+
 
 
 template<typename T>

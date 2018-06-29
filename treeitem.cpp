@@ -16,10 +16,7 @@ QDataStream& operator>>(QDataStream& stream, TreeItemType& type)
 }
 
 TreeItem::~TreeItem()
-
 {
-	if (m_type == TreeItemType::Mark)
-		delete m_data[0].value<QGraphicsItem*>();
 	qDeleteAll(m_children);
 }
 

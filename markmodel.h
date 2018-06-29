@@ -17,41 +17,15 @@ class QGraphicsItem;
 class ImageView;
 class AbstractSliceDataModel;
 class TreeItem;
+class CategoryItem;
 
-class CategoryItem
-{
-	QString m_name;
-	int m_count;
-	bool m_visible;
-	QColor m_color;
-public:
-	CategoryItem(const QString & name = QString(),const QColor & color = Qt::black, int count = 0, bool visible = true):
-	m_name(name),m_color(color),m_count(count),m_visible(visible){}
-	inline QString name()const noexcept;
-	inline int count()const noexcept;
-	inline bool visible()const noexcept{ return m_visible; }
-	inline QColor color()const noexcept { return m_color; }
-	inline void setName(const QString & n)noexcept{ m_name = n; }
-	inline void setCount(int c)noexcept { m_count = c; }
-	inline void setVisible(bool visible)noexcept { m_visible = visible; }
-	inline void setColor(const QColor & c)noexcept { m_color = c; }
-	inline void increaseCount()noexcept{ m_count++; }
-	inline void decreaseCount()noexcept{ if (m_count != 0)m_count--; }
-
-	friend QDataStream & operator<< (QDataStream & stream, const CategoryItem & item);
-	friend QDataStream & operator>>(QDataStream & stream, CategoryItem & item);
-	friend QDataStream & operator<< (QDataStream & stream, const QSharedPointer<CategoryItem> & item);
-	friend QDataStream & operator>>(QDataStream & stream, QSharedPointer<CategoryItem>& item);
-};
-
-inline QString CategoryItem::name()const noexcept {return m_name;}
-inline int CategoryItem::count()const noexcept { return m_count; }
-
-Q_DECLARE_METATYPE(CategoryItem);
-Q_DECLARE_METATYPE(QSharedPointer<CategoryItem>);
 
 class MarkModel :public QAbstractItemModel
 {
+	typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
+	typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
+	typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
+
 	Q_OBJECT
 	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
 	//state member
@@ -76,10 +50,11 @@ class MarkModel :public QAbstractItemModel
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);				//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);
-	void updateMarkVisibleHelper(QGraphicsItem * mark);			//set dirty
+	void updateMarkVisibleHelper(__Internal_Mark_Type_& mark);			//set dirty
 
 	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
 	void initSliceMarkContainerHelper();
+	void createContectMenu();
 
 	//Functions used by ImageView
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
@@ -89,6 +64,8 @@ class MarkModel :public QAbstractItemModel
 	enum {MagicNumber = 1827635234};
 
 	friend class ImageView;
+
+
 public:
 	enum MarkFormat
 	{
@@ -105,6 +82,7 @@ public:
 	QModelIndex parent(const QModelIndex&index)const Q_DECL_OVERRIDE;
 	int rowCount(const QModelIndex & parent = QModelIndex())const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
 	/*
 	*Read-only tree models only need to provide the above functions.
 	*The following functions provide support for editing and resizing.
@@ -137,33 +115,17 @@ public:
 
 
 //inline member functions definations
-inline void MarkModel::addMark(const QString& category, QGraphicsItem* mark)
-{
-	addMarks(category, QList<QGraphicsItem*>{mark});
-}
-inline int MarkModel::markCount(const QString & category)const
-{
-	return rowCount(categoryIndexHelper(category));
-}
-
-inline void MarkModel::setDirty()
-{
-	m_dirty = true;
-}
-inline bool MarkModel::dirty()const
-{
-	return m_dirty;
-}
-inline void MarkModel::resetDirty()
-{
-	m_dirty = false;
-}
-
-inline bool MarkModel::checkMatchHelper(const AbstractSliceDataModel* dataModel) const
-{
-	return m_identity == SliceDataIdentityTester::createTester(dataModel);
-}
-
+/**
+ * \brief:
+ * \Note: The operation will take the ownership of the pointer. If the model is destructed, 
+ * \Note: the pointer will also be deleted.
+ */
+inline void MarkModel::addMark(const QString& category, QGraphicsItem* mark){addMarks(category, QList<QGraphicsItem*>{mark});}
+inline int MarkModel::markCount(const QString & category)const{return rowCount(categoryIndexHelper(category));}
+inline void MarkModel::setDirty(){m_dirty = true;}
+inline bool MarkModel::dirty()const{return m_dirty;}
+inline void MarkModel::resetDirty(){m_dirty = false;}
+inline bool MarkModel::checkMatchHelper(const AbstractSliceDataModel* dataModel) const{return m_identity == SliceDataIdentityTester::createTester(dataModel);}
 
 
 #endif // MARKMODEL_H

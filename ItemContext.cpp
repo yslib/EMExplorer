@@ -75,8 +75,8 @@ ItemContext::~ItemContext()
 
 QImage ItemContext::getOriginalTopSlice(int index) const
 {
-	int width = m_mrcFile.getWidth();
-	int height = m_mrcFile.getHeight();
+	int width = m_mrcFile.width();
+	int height = m_mrcFile.height();
 	unsigned char * d = m_mrcFile.data<unsigned char>();
 	Q_ASSERT_X(d != nullptr, "ItemContext::getOriginalTopSlice", "type convertion error");
 	return QImage(d+index * width*height, width, height, QImage::Format_Grayscale8);
@@ -114,9 +114,9 @@ bool ItemContext::open(const QString & fileName)
 	m_mrcContext.currentFrontSliceIndex = 0;
 
 
-	int topSliceCount = m_mrcFile.getSliceCount();
-	int rightSliceCount = m_mrcFile.getWidth();
-	int frontSliceCount = m_mrcFile.getHeight();
+	int topSliceCount = m_mrcFile.slice();
+	int rightSliceCount = m_mrcFile.width();
+	int frontSliceCount = m_mrcFile.height();
 
 	//Members initialization
 	m_topSliceMarks.resize(topSliceCount);
@@ -267,7 +267,7 @@ void ItemContext::setTopSlice(const QImage & image, int index)
 	}
 	int width = image.width();
 	int height = image.height();
-	if (width != m_mrcFile.getWidth() || height != m_mrcFile.getHeight()) {
+	if (width != m_mrcFile.width() || height != m_mrcFile.height()) {
 		qCritical("Lengths are not matched.");
 		return;
 	}
@@ -279,9 +279,9 @@ void ItemContext::setTopSlice(const QImage & image, int index)
 
 QImage ItemContext::getOriginalRightSlice(int index) const
 {
-	int width = m_mrcFile.getWidth();
-	int height = m_mrcFile.getHeight();
-	int slice = m_mrcFile.getSliceCount();
+	int width = m_mrcFile.width();
+	int height = m_mrcFile.height();
+	int slice = m_mrcFile.slice();
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
 	auto data = m_mrcFile.data<unsigned char>();
@@ -320,7 +320,7 @@ void ItemContext::setRightSlice(const QImage & image, int index)
 	}
 	int width = image.width();
 	int height = image.height();
-	if (width != m_mrcFile.getSliceCount() || height != m_mrcFile.getHeight()) {
+	if (width != m_mrcFile.slice() || height != m_mrcFile.height()) {
 		qCritical("Lengths are not matched.");
 		return;
 	}
@@ -330,9 +330,9 @@ void ItemContext::setRightSlice(const QImage & image, int index)
 
 QImage ItemContext::getOriginalFrontSlice(int index) const
 {
-	int width = m_mrcFile.getWidth();
-	int height = m_mrcFile.getHeight();
-	int slice = m_mrcFile.getSliceCount();
+	int width = m_mrcFile.width();
+	int height = m_mrcFile.height();
+	int slice = m_mrcFile.slice();
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
 	auto data = m_mrcFile.data<unsigned char>();
@@ -366,7 +366,7 @@ void ItemContext::setFrontSlice(const QImage & image, int index)
 	}
 	int width = image.width();
 	int height = image.height();
-	if (width != m_mrcFile.getWidth() || height != m_mrcFile.getSliceCount()) {
+	if (width != m_mrcFile.width() || height != m_mrcFile.slice()) {
 		qCritical("Lengths are not matched.");
 		return;
 	}

@@ -14,10 +14,15 @@ m_selection(false),
 m_pen(QPen(Qt::black,5,Qt::SolidLine)),
 m_slice(nullptr),
 m_paintingItem(nullptr),
-m_state(0)
+m_state(0),
+m_anchorItem(nullptr)
 {
 	setScene(new QGraphicsScene(this));
 	scale(m_scaleFactor, m_scaleFactor);
+	connect(scene(), &QGraphicsScene::selectionChanged, this, &SliceView::selectionChanged);
+	m_anchorItem = new QGraphicsPixmapItem(createAnchorItemPixmap());
+	m_anchorItem->setVisible(false);
+	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
 void SliceView::setMarks(const QList<QGraphicsItem*>& items)
@@ -41,7 +46,7 @@ void SliceView::focusInEvent(QFocusEvent* event)
 void SliceView::focusOutEvent(QFocusEvent* event)
 {
 	Q_UNUSED(event);
-	this->setStyleSheet("");
+	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
 
@@ -54,6 +59,13 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 	m_prevScenePoint = pos;
 	auto items = scene()->items(pos);
 	Qt::MouseButton button = event->button();
+
+	if(button == Qt::LeftButton)			//locate the anchor for left button click
+	{
+		m_anchorItem->setPos(m_slice->mapFromScene(pos).toPoint());
+		m_anchorItem->setVisible(true);
+	}
+
 	for (const auto & item : items) {
 		if (m_state == OperationState::Paint
 			&&button == Qt::LeftButton)
@@ -176,9 +188,10 @@ void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, Slic
 		sliceItem = new SliceItem(QPixmap::fromImage(inImage));
 		(sliceItem)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
 		sliceItem->setPos(pos);
+		m_anchorItem->setParentItem(sliceItem);
 		scene()->addItem(sliceItem);
 		//scene()->setSceneRect(0,0,5000,5000);
-		qDebug() << scene()->sceneRect();
+		//qDebug() << scene()->sceneRect();
 	}
 	else
 	{
@@ -191,6 +204,29 @@ QGraphicsItem * SliceView::createMarkItem()
 {
 	return nullptr;
 }
+
+QPixmap SliceView::createAnchorItemPixmap(const QString & fileName)
+{
+	int length = 12;
+	QRect target(0, 0, length, length);
+
+	QPixmap pixmap(target.size());
+	pixmap.fill(Qt::transparent);
+	QPainter painter(&pixmap);
+	
+	if(fileName.isEmpty() == false)
+	{
+		QPixmap image(fileName);
+		painter.drawPixmap(target, image, image.rect());
+	}else
+	{
+		painter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
+		painter.drawLine(0, length / 2, length, length / 2);
+		painter.drawLine(length / 2, 0, length / 2, length);
+	}
+	return pixmap;
+}
+
 inline
 void SliceView::set_mark_helper_(
 	const QList<QGraphicsItem*>& items)

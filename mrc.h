@@ -8,7 +8,6 @@
 #include <qlist.h>
 #include <tuple>
 
-
 /*
 * http://www.sciencedirect.com/science/article/pii/S104784771500074X
 * The pdf above shows the details of the MRC 2014 format, and
@@ -24,7 +23,7 @@
 *			float data type reading,char data type reading
 *			and the creating of char data type with single image,
 *			image stack,single volume and volume stack dimension type.
-*			For creating MRC fils, only few of fields in the header are
+*			For creating MRC files, only few of fields in the header are
 *			considered.
 */
 
@@ -160,7 +159,10 @@
 
 
 
-
+/**
+* @brief \n
+*
+*/
 
 class MRC
 {
@@ -192,7 +194,6 @@ public:
 
 
 	enum class Format { MRC, RAW };
-
 	enum class ImageDimensionType { SingleImage, ImageStack };
 	enum class VolumeDimensionType { SingleVolume, VolumeStack };
 	enum class DataType { Integer8, Integer16, Integer32, Real32, Complex16, Complex32 };
@@ -351,7 +352,6 @@ private:
 		void * data;
 		bool own;
 		MRCDataPrivate() = default;
-
 		~MRCDataPrivate() {
 			if (data && own)
 				free(data);
@@ -380,21 +380,31 @@ private:
 		}
 
 	};
-
-
-
-
 public:
+	/**
+	* @brief Default constructor
+	*/
 	MRC();
+	/**
+	* @brief Constructor receiving a path string
+	* @param fileName	mrc file path
+	*/
 	explicit MRC(const std::string & fileName);
-
 	//image and image stack
-	MRC(void * data,
+	/**
+	* @brief  
+	* @param data 
+	* @param width 
+	* @param height
+	* @param slice 
+	* @param DimensionType
+	*
+	*/
+	MRC(void * data,			
 		int width,
 		int height,
 		int slice, ImageDimensionType DimensionType, DataType dataType = MRC::DataType::Integer8);
 	//volume and volume stack
-
 	MRC(void * data,
 		int width,
 		int height,
@@ -402,101 +412,85 @@ public:
 		int volumeCount,
 		VolumeDimensionType DimensionType,
 		DataType dataType = MRC::DataType::Integer8);
-
 	MRC(const MRC & otherMRC, void * data);
 	MRC(const MRC & rhs);
-	//MRC(MRC && rhs)noexcept;
+	MRC(MRC && rhs)noexcept;
 	MRC& operator=(const MRC & rhs);
-	//MRC& operator=(MRC && rhs)noexcept;
+	MRC& operator=(MRC && rhs)noexcept;
 public:
 	static MRC fromData(void * data, int width, int height, int slice, DataType type = MRC::DataType::Integer8);
 	static MRC fromMRC(const MRC & otherMRC, unsigned char *data);
-
 	bool open(const std::string & fileName);
 	bool save(const std::string & fileName, MRC::Format format = Format::MRC);
-	std::string getFileName()const { return std::string(); }
+	std::string fileName()const { return std::string(); }
 	bool isOpened()const;
-	int getWidth()const;           //first dimension
-	int getHeight()const;          //second dimension
-	int getSliceCount()const;          //third dimension  z-axis
-
+	int width()const;           //first dimension
+	int height()const;          //second dimension
+	int slice()const;          //third dimension  z-axis
 	int propertyCount()const;
 	std::string propertyName(int index)const;
 	DataType propertyType(int index)const;
 	template<typename T> T property(int index)const;
-
-
-
-	//const unsigned char * data()const;
-	//unsigned char * data();
-
-	template<typename T>
-	T * data()const;
+	template<typename T> T * data()const;
 	DataType dataType()const;
-	std::string getMRCInfo()const;
+	std::string info()const;
 	virtual ~MRC()noexcept;
 private:
 	MRCHeader m_header;
 	unsigned char hdBuffer[MRC_HEADER_SIZE];
-
 	MRCDataPrivate* m_d;
 	bool m_opened;
 private:
-	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } { Q_UNUSED(fileName); }
-	void _nversion_Field(int year, int version = 0);
-	void _dmin_dmax_dmean_rms_Field();
-	bool _mrcHeaderRead(FILE *fp, MRCHeader * header);
-	bool _mrcHeaderWrite(FILE * fp, MRCHeader * header);
-	void _createMRCHeader();
-	void _updateMRCHeader();
+	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } { (void)fileName; }
+	void udpateNVersionFiled(int year, int version = 0);
+	void UpdateDminDmaxDmeanRMSHelper();
+	bool headerReadHelper(FILE *fp, MRCHeader * header);
+	bool headerWriteHelper(FILE * fp, MRCHeader * header);
+	void createMRCHeader();
+	void updateMRCHeader();
+	static inline void copyHeaderBuffer(unsigned char* dst, const unsigned char* src, int size);
 	size_t typeSize(MRC::DataType type) const;
-	std::string _getMRCHeaderInfo(const MRCHeader *header)const;
-	bool _readDataFromFile(FILE * fp);
-
-	void detach();
-
-	//void _reset();
-	//bool _init();
-	//bool _allocate();
-	//void _destroy();
+	std::string propertyInfoString(const MRCHeader *header)const;
+	bool readDataFromFileHelper(FILE * fp);
+	inline void detach();
 };
 
 template<typename T>
 inline T MRC::property(int index)const
 {
 	static const int offset[] = {
-	 NX_OFFSET,
-	 NY_OFFSET,
-	 NZ_OFFSET,
-	 MODE_OFFSET,
-	 NXSTART_OFFSET,
-	 NYSTART_OFFSET,
-	 NZSTART_OFFSET,
-	 MX_OFFSET,
-	 MY_OFFSET,
-	 MZ_OFFSET,
-	 XLEN_OFFSET,
-	 YLEN_OFFSET,
-	 ZLEN_OFFSET,
-	 ALPHA_OFFSET,
-	 BETA_OFFSET,
-	 GAMMA_OFFSET,
-	 MAPC_OFFSET,
-	 MAPR_OFFSET,
-	 MAPS_OFFSET,
-	 DMIN_OFFSET,
-	 DMAX_OFFSET,
-	 DMEAN_OFFSET,
-	 ISPG_OFFSET,
-	 NSYMBT_OFFSET,
-	 EXTTYP_OFFSET,
-	 EXTTYP_OFFSET + 1,
-	 EXTTYP_OFFSET + 2,
-	 EXTTYP_OFFSET + 3,
-	 NVERSION_OFFSET,
-	 XORIGIN_OFFSET,
-	 YORIGIN_OFFSET,
-	 ZORIGIN_OFFSET
+		NX_OFFSET,
+		NY_OFFSET,
+		NZ_OFFSET,
+		MODE_OFFSET,
+		NXSTART_OFFSET,
+		NYSTART_OFFSET,
+		NZSTART_OFFSET,
+		MX_OFFSET,
+		MY_OFFSET,
+		MZ_OFFSET,
+		XLEN_OFFSET,
+		YLEN_OFFSET,
+		ZLEN_OFFSET,
+		ALPHA_OFFSET,
+		BETA_OFFSET,
+		GAMMA_OFFSET,
+		MAPC_OFFSET,
+		MAPR_OFFSET,
+		MAPS_OFFSET,
+		DMIN_OFFSET,
+		DMAX_OFFSET,
+		DMEAN_OFFSET,
+		ISPG_OFFSET,
+		NSYMBT_OFFSET,
+		EXTTYP_OFFSET,
+		EXTTYP_OFFSET + 1,
+		EXTTYP_OFFSET + 2,
+		EXTTYP_OFFSET + 3,
+		NVERSION_OFFSET,
+		XORIGIN_OFFSET,
+		YORIGIN_OFFSET,
+		ZORIGIN_OFFSET
 	};
 	T * d = ((T*)(hdBuffer + offset[index]));
 	return *d;
@@ -535,5 +529,11 @@ T* MRC::data() const
 	else
 		return nullptr;
 }
-
+inline void MRC::detach(){if (m_d != nullptr && --m_d->ref == 0)delete m_d;}
+inline void MRC::copyHeaderBuffer(unsigned char* dst, const unsigned char* src, int size){memcpy(dst, src, size);}
+inline bool MRC::isOpened() const{return m_opened;}
+inline int MRC::width() const{return m_header.nx;}
+inline int MRC::height() const { return m_header.ny; }
+inline int MRC::slice() const{return m_header.nz;}
+inline int MRC::propertyCount() const{return 32;}
 #endif // MRC_H

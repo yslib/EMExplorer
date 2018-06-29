@@ -42,7 +42,9 @@ SOURCES += main.cpp\
     markitem.cpp \
     treeitem.cpp \
     sliceitem.cpp \
-    sliceview.cpp
+    sliceview.cpp \
+    marktreeview.cpp \
+    categoryitem.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -64,7 +66,9 @@ HEADERS  += mainwindow.h \
     markitem.h \
     treeitem.h \
     sliceitem.h \
-    sliceview.h
+    sliceview.h \
+    marktreeview.h \
+    categoryitem.h
 
 FORMS    +=
 
