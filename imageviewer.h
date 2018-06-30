@@ -116,6 +116,7 @@ private:
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
 
+
 	SliceView * focusOn();
 	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
 	

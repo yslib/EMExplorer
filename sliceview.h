@@ -23,13 +23,10 @@ public:
 	SliceView(QWidget * parent = nullptr);
 	void setMarks(const QList<QGraphicsItem *> & items);
 	public slots:
-	//void paintEnable(bool enable) { m_paint = true; }
-	//void moveEnable(bool enable) { m_selection = enable; }
 	inline void setOperation(int func);
 	void setImage(const QImage & image);
-	//inline void setColor(const QColor & color);
-	//inline QColor color()const;
 	inline void setPen(const QPen & pen);
+	inline void setNavigationViewEnabled(bool enabled);
 	inline QPen pen()const;
 	void clearSliceMarks();
 	QList<QGraphicsItem*> selectedItems()const;
@@ -40,36 +37,33 @@ protected:
 	void mousePressEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
-
 	void wheelEvent(QWheelEvent * event)Q_DECL_OVERRIDE;
 	void focusInEvent(QFocusEvent* event) Q_DECL_OVERRIDE;
 	void focusOutEvent(QFocusEvent* event)Q_DECL_OVERRIDE;
-	//void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
+	void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
 signals:
 	void sliceSelected(const QPoint & point);
 	void markAdded(QGraphicsItem * item);
-	void sliceMoved(const QPointF & delta);
+	void viewMoved(const QPointF & delta);
 	void selectionChanged();
 private:
 	inline static void clear_slice_marks_helper_(SliceItem * slice);
 	void set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
 	inline  void set_mark_helper_(const QList<QGraphicsItem*>& items);
+	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
 	QGraphicsItem * createMarkItem();
-
 	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
-
 	Q_OBJECT
 	qreal m_scaleFactor;
+	bool m_paintNavigationView;
 	QVector<QPoint> m_paintViewPointsBuffer;
-	
-	QPointF m_prevScenePoint;
+	QPointF m_prevViewPoint;
 	//QColor m_color;
 	QPen m_pen;
 	SliceItem * m_slice;
-	QImage  m_image;
+	QImage m_image;
+	QImage m_thumbnail;
 	//QGraphicsItem * m_paintingItem;
-
-
 	//items
 	SliceItem * m_currentPaintingSlice;
 	StrokeMarkItem * m_paintingItem;
@@ -78,7 +72,6 @@ private:
 	//state variable
 	bool m_paint;
 	bool m_selection;
-
 	int m_state;
 
 };
@@ -93,6 +86,13 @@ inline void SliceView::setOperation(int state)
 //inline QColor SliceView::color()const { return  QColor(); }
 inline void SliceView::setPen(const QPen & pen){m_pen = pen;}
 inline QPen SliceView::pen()const{return m_pen;}
+inline void SliceView::setNavigationViewEnabled(bool enabled)
+{
+	m_paintNavigationView = enabled;
+	update();
+	updateGeometry();
+}
+
 
 
 #endif // SLICEVIEW_H

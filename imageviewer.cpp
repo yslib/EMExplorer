@@ -33,6 +33,8 @@ void ImageView::createWidgets()
 
 }
 
+
+
 void ImageView::createToolBar()
 {
 	//createToolBar()
@@ -162,15 +164,24 @@ void ImageView::createConnections()
 		});
 		dlg.exec();
 	});
-	connect(m_zoomInAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, 1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
-	connect(m_zoomOutAction, &QAction::triggered, [this]() {double factor = std::pow(1.125, -1); m_topView->scale(factor, factor); m_rightView->scale(factor, factor); m_frontView->scale(factor, factor); });
-
-	connect(m_topView, &SliceView::sliceMoved, [this](const QPointF & delta){m_rightView->moveSlice(QPointF(0.0f, delta.y()));m_frontView->moveSlice(QPointF(delta.x(), 0.0f));});
-
+	connect(m_zoomInAction, &QAction::triggered, [this]()
+	{
+		double factor = std::pow(1.125, 1); 
+		m_topView->scale(factor, factor); 
+		m_rightView->scale(factor, factor); 
+		m_frontView->scale(factor, factor);
+	});
+	connect(m_zoomOutAction, &QAction::triggered, [this]()
+	{
+		double factor = std::pow(1.125, -1); 
+		m_topView->scale(factor, factor); 
+		m_rightView->scale(factor, factor);
+		m_frontView->scale(factor, factor);
+	});
+	connect(m_topView, &SliceView::viewMoved, [this](const QPointF & delta){m_rightView->translate(0.0f, delta.y());m_frontView->translate(delta.x(), 0.0f);});
 	connect(m_topView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
 	connect(m_rightView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
 	connect(m_frontView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
-
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int){QPen pen = m_topView->pen();pen.setWidth(m_penSizeCBBox->currentData().toInt());updatePen(pen);});
 	connect(m_colorAction, &QAction::triggered, [this](bool enable)
 	{
@@ -382,19 +393,12 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_sliceModel(model)
 {
 	m_layout = new QGridLayout;
-	m_topView = new SliceView;
-	m_rightView = new SliceView;
-	m_frontView = new SliceView;
-	m_topView->setDragMode(QGraphicsView::RubberBandDrag);
-	m_rightView->setDragMode(QGraphicsView::RubberBandDrag);
-	m_frontView->setDragMode(QGraphicsView::RubberBandDrag);
-
-	m_topView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	m_topView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	m_rightView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	m_rightView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	m_frontView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	m_frontView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	m_topView = new SliceView(this);
+	m_rightView = new SliceView(this);
+	m_frontView = new SliceView(this);
+	m_topView->setNavigationViewEnabled(true);
+	m_rightView->setNavigationViewEnabled(false);
+	m_frontView->setNavigationViewEnabled(false);
 
 	m_resetAction = new QAction(QStringLiteral("Reset"), this);
 
@@ -417,6 +421,7 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	createToolBar();
 	createContextMenu();
 	createConnections();
+
 	updateActions();
 
 	m_penSizeCBBox->setCurrentIndex(4);

@@ -15,11 +15,17 @@ m_pen(QPen(Qt::black,5,Qt::SolidLine)),
 m_slice(nullptr),
 m_paintingItem(nullptr),
 m_state(0),
-m_anchorItem(nullptr)
+m_anchorItem(nullptr),
+m_paintNavigationView(false)
 {
 	setScene(new QGraphicsScene(this));
 	scale(m_scaleFactor, m_scaleFactor);
 	connect(scene(), &QGraphicsScene::selectionChanged, this, &SliceView::selectionChanged);
+	setTransformationAnchor(QGraphicsView::NoAnchor);
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setDragMode(QGraphicsView::RubberBandDrag);
+
 	m_anchorItem = new QGraphicsPixmapItem(createAnchorItemPixmap());
 	m_anchorItem->setVisible(false);
 	setStyleSheet(QStringLiteral("border:0px solid white"));
@@ -49,6 +55,36 @@ void SliceView::focusOutEvent(QFocusEvent* event)
 	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
+void SliceView::paintEvent(QPaintEvent* event)
+{
+	QGraphicsView::paintEvent(event);
+
+	if (m_paintNavigationView == false)
+		return;
+	const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
+	const auto & viewRectInScene = mapToScene(rect()).boundingRect();
+	if (viewRectInScene.contains(sliceRectInScene))
+		return;
+	const auto & scRect = sceneRect();
+	QImage thumbnail(QSize(200, 200), QImage::Format_Grayscale8);
+	QPainter p0(&thumbnail);
+	render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
+	p0.end();
+	const auto & navigationRect = thumbnail.rect();
+	const double f1 =  navigationRect.width()/ scRect.width(),f2 = navigationRect.height()/scRect.height();
+	QPainter p(&thumbnail);
+	p.setPen(QPen(Qt::red, 2));
+	p.drawRect(QRect(
+		f1 * (viewRectInScene.x() - scRect.x()),			//transform from view rectangle to thumbnail rectangle
+		f2 * (viewRectInScene.y() - scRect.y()),
+		f1 * viewRectInScene.width(),
+		f2 * viewRectInScene.height()));			//draw the zoom rectangle onto the thumbnail
+	p.end();
+	QPainter p2(this->viewport());//draw the zoom image
+	const auto s = size();
+	p2.drawPixmap(thumbnailRect(sliceRectInScene,viewRectInScene), QPixmap::fromImage(thumbnail));
+	p2.end();
+}
 
 void SliceView::mousePressEvent(QMouseEvent *event)
 {
@@ -56,7 +92,7 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 		return;
 	QPoint viewPos = event->pos();
 	QPointF pos = mapToScene(viewPos);
-	m_prevScenePoint = pos;
+	m_prevViewPoint = viewPos;
 	auto items = scene()->items(pos);
 	Qt::MouseButton button = event->button();
 
@@ -134,22 +170,31 @@ void SliceView::mouseMoveEvent(QMouseEvent *event)
 	}
 	else if (m_state == OperationState::Move)	//move the slice
 	{
-		QPointF currentScenePoint = mapToScene(event->pos());
-		QPointF delta = currentScenePoint - m_prevScenePoint;
-		m_prevScenePoint = currentScenePoint;
-		auto items = scene()->items();
-		for (const auto & item : items)
-		{
-			SliceItem * sliceItem = qgraphicsitem_cast<SliceItem*>(item);
-			if (sliceItem == m_slice)
-			{
-				sliceItem->setPos(sliceItem->pos() + delta);
-				emit sliceMoved(delta);
-				event->accept();
-				return;
-			}
-		}
-		return QGraphicsView::mouseMoveEvent(event);
+		QPointF currentScenePoint = event->pos();
+		QPointF delta = currentScenePoint - m_prevViewPoint;
+		m_prevViewPoint = currentScenePoint;
+		//resetTransform();
+		//translate(1,1);
+		translate(delta.x(), delta.y());
+		emit viewMoved(delta);
+		//qDebug() << delta << " " << sceneRect() << " " << rect();
+		//auto items = scene()->items();
+		//for (const auto & item : items)
+		//{
+		//	SliceItem * sliceItem = qgraphicsitem_cast<SliceItem*>(item);
+		//	if (sliceItem == m_slice)
+		//	{
+		//		//Moving range need to be restrict in sceneRect so as to prevent the change of the scene bounding rect.
+		//		auto rect = sliceItem->mapRectToScene(sliceItem->boundingRect());
+		//		rect.translate(delta.x(), delta.y());	
+		//		if (sceneRect().contains(rect) == false)
+		//			return;
+		//		sliceItem->setPos(sliceItem->pos() + delta);
+		//		emit sliceMoved(delta);
+		//		return;
+		//	}
+		//}
+		//return QGraphicsView::mouseMoveEvent(event);
 	}
 	else if (m_state == OperationState::Selection)
 	{
@@ -190,8 +235,13 @@ void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, Slic
 		sliceItem->setPos(pos);
 		m_anchorItem->setParentItem(sliceItem);
 		scene()->addItem(sliceItem);
-		//scene()->setSceneRect(0,0,5000,5000);
-		//qDebug() << scene()->sceneRect();
+		/**
+		 *We need to give a exactly scene rect according to the image size for efficiency rendering.
+		 *We assumpt that the size of rect of the scene is two times larger than the size of image.
+		 */
+		QRect rect = inImage.rect();
+		rect.adjust(-rect.width(),-rect.height(),0,0);
+		scene()->setSceneRect(rect);
 	}
 	else
 	{
@@ -200,6 +250,30 @@ void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, Slic
 	QSize size = inImage.size();
 	*outImage = inImage;
 }
+
+QRect SliceView::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect)
+{
+	const int w = 0.2*width(), h = 0.2*height();
+	const int W = width(), H = height();
+	if(sliceRect.contains(viewRect))
+	{
+		return QRect(0,0,w,h);
+	}else if(sliceRect.contains(viewRect.topLeft()))
+	{
+		return QRect(W-w,H-h,w,h);
+	}else if(sliceRect.contains(viewRect.bottomLeft()))
+	{
+		return QRect(W-w,0,w,h);
+	}else if(sliceRect.contains(viewRect.topRight()))
+	{
+		return QRect(0, H - h, w, h);
+	}else if(sliceRect.contains(viewRect.bottomRight()))
+	{
+		return QRect(0, 0, w, h);
+	}
+	return QRect(0,0,w,h);
+}
+
 QGraphicsItem * SliceView::createMarkItem()
 {
 	return nullptr;
