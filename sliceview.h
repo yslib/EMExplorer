@@ -19,7 +19,6 @@ public:
 		Move = 2,
 		Selection = 4
 	};
-
 	SliceView(QWidget * parent = nullptr);
 	void setMarks(const QList<QGraphicsItem *> & items);
 	public slots:
@@ -68,17 +67,18 @@ private:
 	SliceItem * m_currentPaintingSlice;
 	StrokeMarkItem * m_paintingItem;
 	AnchorItem * m_anchorItem;
-
 	//state variable
 	bool m_paint;
 	bool m_selection;
 	int m_state;
-
 };
 
 inline void SliceView::setOperation(int state)
 {
-	Q_ASSERT_X(state == OperationState::Paint || state == OperationState::Move || state == OperationState::Selection||state == OperationState::None,
+	Q_ASSERT_X(state == OperationState::Paint || 
+		state == OperationState::Move || 
+		state == OperationState::Selection||
+		state == OperationState::None,
 		"SliceView::setFunction", "state must be exclusive");
 	m_state = state;
 }

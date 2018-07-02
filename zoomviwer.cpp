@@ -278,7 +278,6 @@ QRectF ZoomView::_regionToRect(const QRect &region)
         kWidth = m_minZoomFactor;
         kHeight = m_minZoomFactor;
     }
-
 	return QRectF(
         QPointF(kLeft*m_imageRect.width(), kTop*m_imageRect.height()),
         QSizeF(kWidth*m_imageRect.width(), kHeight*m_imageRect.height())

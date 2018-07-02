@@ -51,16 +51,21 @@ class ImageView :public QWidget
 	Q_OBJECT
 public:
 	ImageView(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
-	 int topSliceIndex()const;
-	 int rightSliceIndex()const;
+	int topSliceIndex()const;
+	int rightSliceIndex()const;
 	int frontSliceIndex()const;
-	inline void topSliceEnable(bool enable);
-	inline void rightSliceEnable(bool enable);
-	inline void frontSliceEnable(bool enable);
-	
-	void setSliceModel(AbstractSliceDataModel * model);
+	bool isTopSliceEnabled() const;
+	bool isRightSliceEnabled() const;
+	bool isFrontSliceEnabled() const;
+	QPen pen()const;
+	void setPen(const QPen & pen);
+	void topSliceEnable(bool enable);
+	void rightSliceEnable(bool enable);
+	void frontSliceEnable(bool enable);
+
+	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
-	MarkModel* replaceMarkModel(MarkModel* model,bool * success)noexcept;
+	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
 signals:
 	void topSliceOpened(int index);
@@ -75,7 +80,9 @@ signals:
 	void topSliceSelected(const QPoint & point);
 	void rightSliceSelected(const QPoint & point);
 	void frontSliceSelected(const QPoint & point);
-public slots:
+	void markModified();
+	void markSaved();
+	public slots:
 	void setEnabled(bool enable);
 	void onTopSlicePlay(bool enable);
 	void onRightSlicePlay(bool enable);
@@ -92,6 +99,8 @@ private:
 	void createToolBar();
 	void createConnections();
 	void createContextMenu();
+
+	//update helper
 	void updatePen(const QPen & pen);
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
@@ -101,25 +110,28 @@ private:
 	void updateTopSliceActions();
 	void updateFrontSliceActions();
 	void updateRightSliceActions();
+	void installMarkModel(MarkModel* model);
+	void updateSliceModel();
+
+	void detachMarkModel();
+	//void detachSliceModel();
+
 
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 	inline void setTopSliceCountHelper(int value);
 	inline void setRightSliceCountHelper(int value);
 	inline void setFrontSliceCountHelper(int value);
 
-	void markAddedHelper(SliceType type,QGraphicsItem * mark);
+	void markAddedHelper(SliceType type, QGraphicsItem * mark);
 	void markDeleteHelper();
-	void setCategoryManagerHelper(const QVector<QPair<QString,QColor>> & cates);
+	void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);
 	void addCategoryManagerHelper(const QString & name, const QColor & color);
-	void markModelUpdatedHelper(MarkModel * model);
 
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
 
-
 	SliceView * focusOn();
 	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
-	
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;

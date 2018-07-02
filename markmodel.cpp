@@ -120,7 +120,7 @@ void MarkModel::removeMarkInSliceHelper(QGraphicsItem * mark)
 }
 void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 {
-	Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
+	//Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
 	if (m_view == nullptr)
 		return;
 	int index = -1;
@@ -141,6 +141,13 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 	bool visible = mark->data(MarkProperty::VisibleState).toBool();
 	mark->setVisible(visible);
 	setDirty();
+}
+void MarkModel::detachFromView()
+{
+	disconnect(this, &MarkModel::modified, m_view, &ImageView::markModified);
+	disconnect(this, &MarkModel::saved, m_view, &ImageView::markSaved);
+	m_view = nullptr;
+	m_dataModel = nullptr;
 }
 void MarkModel::retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type, int column, QVector<QVariant>& data)
 {
@@ -207,7 +214,6 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_dirty(false),
 	m_identity(dataModel)
 {
-
 	initSliceMarkContainerHelper();
 }
 

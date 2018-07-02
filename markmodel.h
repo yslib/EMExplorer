@@ -51,10 +51,11 @@ class MarkModel :public QAbstractItemModel
 	void addMarkInSliceHelper(QGraphicsItem * mark);				//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);
 	void updateMarkVisibleHelper(__Internal_Mark_Type_& mark);			//set dirty
+	void detachFromView();
 
 	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
 	void initSliceMarkContainerHelper();
-	void createContectMenu();
+	void createContextMenu();
 
 	//Functions used by ImageView
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
@@ -64,8 +65,9 @@ class MarkModel :public QAbstractItemModel
 	enum {MagicNumber = 1827635234};
 
 	friend class ImageView;
-
-
+signals:
+	void modified();
+	void saved();
 public:
 	enum MarkFormat
 	{
@@ -122,9 +124,9 @@ public:
  */
 inline void MarkModel::addMark(const QString& category, QGraphicsItem* mark){addMarks(category, QList<QGraphicsItem*>{mark});}
 inline int MarkModel::markCount(const QString & category)const{return rowCount(categoryIndexHelper(category));}
-inline void MarkModel::setDirty(){m_dirty = true;}
+inline void MarkModel::setDirty() { m_dirty = true; emit modified(); }
 inline bool MarkModel::dirty()const{return m_dirty;}
-inline void MarkModel::resetDirty(){m_dirty = false;}
+inline void MarkModel::resetDirty() { m_dirty = false; emit saved(); }
 inline bool MarkModel::checkMatchHelper(const AbstractSliceDataModel* dataModel) const{return m_identity == SliceDataIdentityTester::createTester(dataModel);}
 
 

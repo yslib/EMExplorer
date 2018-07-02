@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>resources/icons/color.png</file>
+        <file>resources/icons/delete.png</file>
+        <file>resources/icons/mark.png</file>
+        <file>resources/icons/open.png</file>
+        <file>resources/icons/open_mark.png</file>
+        <file>resources/icons/option.png</file>
+        <file>resources/icons/play.png</file>
+        <file>resources/icons/reset.png</file>
+        <file>resources/icons/save_as.png</file>
+        <file>resources/icons/save.png</file>
+        <file>resources/icons/select.png</file>
+        <file>resources/icons/zoom_in.png</file>
+        <file>resources/icons/zoom_out.png</file>
+        <file>resources/icons/add.png</file>
+    </qresource>
+</RCC>

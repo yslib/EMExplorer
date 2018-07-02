@@ -25,7 +25,7 @@ m_paintNavigationView(false)
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setDragMode(QGraphicsView::RubberBandDrag);
-
+	setOperation(OperationState::Move);
 	m_anchorItem = new QGraphicsPixmapItem(createAnchorItemPixmap());
 	m_anchorItem->setVisible(false);
 	setStyleSheet(QStringLiteral("border:0px solid white"));
@@ -65,7 +65,8 @@ void SliceView::paintEvent(QPaintEvent* event)
 	const auto & viewRectInScene = mapToScene(rect()).boundingRect();
 	if (viewRectInScene.contains(sliceRectInScene))
 		return;
-	const auto & scRect = sceneRect();
+	//const auto & scRect = sceneRect();
+	const auto & scRect = m_slice->mapRectToScene(m_slice->boundingRect());
 	QImage thumbnail(QSize(200, 200), QImage::Format_Grayscale8);
 	QPainter p0(&thumbnail);
 	render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
@@ -73,12 +74,14 @@ void SliceView::paintEvent(QPaintEvent* event)
 	const auto & navigationRect = thumbnail.rect();
 	const double f1 =  navigationRect.width()/ scRect.width(),f2 = navigationRect.height()/scRect.height();
 	QPainter p(&thumbnail);
-	p.setPen(QPen(Qt::red, 2));
+	p.setPen(QPen(Qt::black, 2));
 	p.drawRect(QRect(
 		f1 * (viewRectInScene.x() - scRect.x()),			//transform from view rectangle to thumbnail rectangle
 		f2 * (viewRectInScene.y() - scRect.y()),
 		f1 * viewRectInScene.width(),
 		f2 * viewRectInScene.height()));			//draw the zoom rectangle onto the thumbnail
+	
+	p.drawRect(thumbnail.rect());
 	p.end();
 	QPainter p2(this->viewport());//draw the zoom image
 	const auto s = size();
@@ -255,23 +258,24 @@ QRect SliceView::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect
 {
 	const int w = 0.2*width(), h = 0.2*height();
 	const int W = width(), H = height();
-	if(sliceRect.contains(viewRect))
-	{
-		return QRect(0,0,w,h);
-	}else if(sliceRect.contains(viewRect.topLeft()))
-	{
-		return QRect(W-w,H-h,w,h);
-	}else if(sliceRect.contains(viewRect.bottomLeft()))
-	{
-		return QRect(W-w,0,w,h);
-	}else if(sliceRect.contains(viewRect.topRight()))
-	{
-		return QRect(0, H - h, w, h);
-	}else if(sliceRect.contains(viewRect.bottomRight()))
-	{
-		return QRect(0, 0, w, h);
-	}
-	return QRect(0,0,w,h);
+	//if(sliceRect.contains(viewRect))
+	//{
+	//	return QRect(0,0,w,h);
+	//}else if(sliceRect.contains(viewRect.topLeft()))
+	//{
+	//	return QRect(W-w,H-h,w,h);
+	//}else if(sliceRect.contains(viewRect.bottomLeft()))
+	//{
+	//	return QRect(W-w,0,w,h);
+	//}else if(sliceRect.contains(viewRect.topRight()))
+	//{
+	//	
+	//}else if(sliceRect.contains(viewRect.bottomRight()))
+	//{
+	//	return QRect(0, 0, w, h);
+	//}
+	//return QRect(0,0,w,h);
+	return QRect(0, H - h, w, h);
 }
 
 QGraphicsItem * SliceView::createMarkItem()

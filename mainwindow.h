@@ -7,8 +7,8 @@ class QTableView;
 class QStandardItemModel;
 class QAbstractTableModel;
 class QAction;
+class QSettings;
 QT_END_NAMESPACE
-
 class ImageView;
 class MarkModel;
 class ProfileView;
@@ -21,35 +21,39 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+	
+protected:
+	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
 private slots:
     void open();
-	bool save();
+	bool saveMark();
 	void openMark();
     void saveAs();
-	void exploererDoubleClicked(const QModelIndex & index);
+
+	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
+	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
+	void writeSettingsForImageView(ImageView * view, QSettings * settings);
+	void readSettingsForImageView(ImageView * view, QSettings * settings);
+	void readSettings();
+	void writeSettings();
 private:
 	Q_OBJECT
 	//Widgets
 	ImageView * m_imageView;
+	QDockWidget * m_profileViewDockWidget;
 	ProfileView * m_profileView;
+	QDockWidget * m_treeViewDockWidget;
 	MarkTreeView * m_treeView;
-
-	//Data Model
-	QHash<QString,std::tuple<QAbstractTableModel*,MRCDataModel* ,MarkModel*>> m_models;
-
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;
-	
 	//Status bar
 	QStatusBar * m_statusBar;
-
-
 	//Actions
 	QAction * m_openAction;
 	QAction * m_saveAction;
-	QAction * m_saveAsAction;
-	QAction * m_colorAction;
+    //QAction * m_saveAsAction;
+    //QAction * m_colorAction;
 	QAction * m_openMarkAction;
 
 	void createWidget();
@@ -57,7 +61,9 @@ private:
     void createActions();
     void createStatusBar();
 	void createMarkTreeView();
-
+	AbstractSliceDataModel * replaceSliceModel(AbstractSliceDataModel* model);
+	MarkModel * replaceMarkModel( MarkModel * model);
+	QAbstractTableModel * replaceProfileModel(QAbstractTableModel * model);
 	//void setupModels(const MRC & mrc);
 	QAbstractTableModel * setupProfileModel(const MRC & mrc);
 

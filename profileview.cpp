@@ -10,13 +10,13 @@
 ProfileView::ProfileView(QWidget* parent): QWidget(parent)
 {
 	QGridLayout *layout = new QGridLayout;
-	m_listWidget = new QListWidget;
+	//m_listWidget = new QListWidget;
 	m_tableView = new QTableView;
 
 	QGroupBox * listGroup = new QGroupBox;
 	listGroup->setTitle(QStringLiteral("Explorer"));
 	QGridLayout * listLayout = new QGridLayout;
-	listLayout->addWidget(m_listWidget, 0, 0);
+	//listLayout->addWidget(m_listWidget, 0, 0);
 	listGroup->setLayout(listLayout);
 
 	QGroupBox * tableGroup = new QGroupBox;
@@ -30,26 +30,25 @@ ProfileView::ProfileView(QWidget* parent): QWidget(parent)
 	layout->setRowStretch(0, 3);
 	layout->setRowStretch(1, 7);
 
-	//signals
-	//connect(m_listWidget, &QListWidget::currentItemChanged, [](QListWidgetItem * current,QListWidgetItem * previous)
-	//{
-	//	
-	//});
-
-	connect(m_listWidget, &QListWidget::itemDoubleClicked, [](QListWidgetItem * item)
-	{
-
-	});
+	m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	setLayout(layout);
 }
 
-void ProfileView::addModel(const QString & text, QAbstractTableModel * model)
+QAbstractItemModel * ProfileView::takeModel(QAbstractItemModel* model)
 {
-	m_hash[text] = model;
-	m_listWidget->addItem(text);
-	//m_tableView->resizeColumnsToContents();
-	m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	auto t = m_tableView->model();
     m_tableView->setModel(model);
+	return t;
+}
+
+void ProfileView::setModel(QAbstractItemModel * model)
+{
+	m_tableView->setModel(model);
+}
+
+QAbstractItemModel* ProfileView::model() const
+{
+	return m_tableView->model();
 }
 
 MRCInfoTableModel::MRCInfoTableModel(int row,int column,QObject* parent):
@@ -112,3 +111,4 @@ QVariant MRCInfoTableModel::headerData(int section, Qt::Orientation orientation,
     }
 	return QVariant();
 }
+
