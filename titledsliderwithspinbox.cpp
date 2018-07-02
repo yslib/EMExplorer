@@ -38,6 +38,16 @@ void TitledSliderWithSpinBox::setRange(int min, int max)
 	m_spinBox->setRange(min, max);
 }
 
+void TitledSliderWithSpinBox::setTracking(bool enable)
+{
+	return m_slider->setTracking(enable);
+}
+
+bool TitledSliderWithSpinBox::hasTracking() const
+{
+	return m_slider->hasTracking();
+}
+
 int TitledSliderWithSpinBox::minimum() const
 {
 	return m_slider->minimum();

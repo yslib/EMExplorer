@@ -19,6 +19,8 @@ public:
     void setMinimum(int value);
     void setMaximum(int value);
     void setRange(int min,int max);
+	void setTracking(bool enable);
+	bool hasTracking()const;
     int minimum()const;
     int maximum()const;
     int value()const;

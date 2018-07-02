@@ -6,9 +6,6 @@
 #include <QTextEdit>
 #include <QLayout>
 #include <QTreeView>
-
-
-
 class MRC;
 
 class MRCFileInfoViewer : public QWidget

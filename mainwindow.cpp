@@ -1,505 +1,442 @@
-#include <QRect>
 #include <QDockWidget>
-#include <QColorDialog>
-#include <QMenu>
-#include <QAction>
-#include <QTreeView>
-#include <qglobal.h>
+#include <QFileDialog>
 #include <QMessageBox>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QSettings>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDebug>
 
-#include "imageviewer.h"
-#include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "mrc.h"
+#include "imageviewer.h"
+#include "profileview.h"
+#include "mrcdatamodel.h"
+#include "markmodel.h"
+#include "marktreeview.h"
 
-QSize imageSize(500, 500);
-
-MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+//QSize imageSize(500, 500);
+MainWindow::MainWindow(QWidget *parent):
+	QMainWindow(parent)
+	
 {
-	//ui->setupUi(this);
-	setWindowTitle(tr("MRC Editor"));
-	//Menu [1]
-	//File menu
-	QMenu *m_fileMenu = menuBar()->addMenu(tr("File"));
-	QAction *m_openFileAction = m_fileMenu->addAction("Open..");
-	connect(m_openFileAction, SIGNAL(triggered()), this, SLOT(onActionOpenTriggered()));
-
-	QAction *m_saveDataAsAction = m_fileMenu->addAction("Save As..");
-	connect(m_saveDataAsAction, SIGNAL(triggered()), this, SLOT(onSaveDataAsActionTriggered()));
-
-	//View menu
-	QMenu * viewMenu = menuBar()->addMenu(tr("View"));
-
+	//These functions need to be call in order.
+	setWindowTitle("MRC Marker");
+	createActions();
+	createMenu();
+	createWidget();
+	createMarkTreeView();
+	createStatusBar();
+	resize(1650,1080);
 	
-
-	m_treeView = new QTreeView(this);
-	QDockWidget *dock = new QDockWidget(tr("File Information View"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	dock->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-	m_treeView->setItemDelegate(new DataItemModelDelegate(m_treeView));
-
-	m_treeViewModel = new DataItemModel(QString(), this);
-	connect(m_treeView, &QTreeView::doubleClicked, this, &MainWindow::onTreeViewDoubleClicked);
-	m_treeView->setModel(m_treeViewModel);
-	
-
-	
-	m_histogramView = new HistogramViewer(this);
-
-	m_histogramView->setModel(m_treeViewModel);
-
-	dock = new QDockWidget(tr("Histgoram"), this);
-	dock->setAllowedAreas(Qt::RightDockWidgetArea);
-	dock->setWidget(m_histogramView);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-
-	///TODO:: m_histogramView
-	//connect(m_histogramView,SIGNAL(minValueChanged(int)),this,SLOT(onMinGrayValueChanged(int)));
-	//connect(m_histogramView,SIGNAL(maxValueChanged(int)),this,SLOT(onMaxGrayValueChanged(int)));
-
-
-
-
-	//Test ImageView
-	m_imageView = new ImageView(this);
-
-	m_imageView->setModel(m_treeViewModel);
-	setCentralWidget(m_imageView);
-
-
-
-	//pixel viewer dock widget
-	m_pixelViewer = new PixelViewer(this);
-	dock = new QDockWidget(tr("PixelViewer"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-	dock->setWidget(m_pixelViewer);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	viewMenu->addAction(dock->toggleViewAction());
-	m_pixelViewer->setModel(m_treeViewModel);
-
-	//ToolBar and Actions [3]
-	//open action
-	m_actionOpen = new QAction(this);
-	m_actionOpen->setText(tr("Open"));
-	QToolBar * toolBar = addToolBar(tr("Tools"));
-	toolBar->addAction(m_actionOpen);
-	connect(m_actionOpen, SIGNAL(triggered()), this, SLOT(onActionOpenTriggered()));
-	connect(m_imageView, SIGNAL(zSliceSelected(const QPoint &)), m_pixelViewer, SLOT(setPosition(const QPoint &)));
-
-	//color action
-	m_actionColor = new QAction(this);
-	m_actionColor->setText(QStringLiteral("Color"));
-	toolBar = addToolBar(tr("Tools"));
-	toolBar->addAction(m_actionColor);
-	connect(m_actionColor, SIGNAL(triggered(bool)), this, SLOT(onColorActionTriggered()));
-
-	//save mark action
-	QAction * actionSaveMark = new QAction(this);
-	actionSaveMark->setText(QStringLiteral("Save Mark"));
-	toolBar->addAction(actionSaveMark);
-	connect(actionSaveMark, SIGNAL(triggered()), this, SLOT(onSaveActionTriggered()));
-
-	//save data as action
-	QAction * actionSaveDataAs = new QAction(this);
-	actionSaveDataAs->setText(QStringLiteral("Save Data As"));
-	toolBar->addAction(actionSaveDataAs);
-	connect(actionSaveDataAs, SIGNAL(triggered()), this, SLOT(onSaveDataAsActionTriggered()));
-
-	//Status bar
-
-	m_currentContext = -1;
-	allControlWidgetsEnable(false);
-
+	readSettings();
+	setUnifiedTitleAndToolBarOnMac(true);
 }
 MainWindow::~MainWindow()
 {
-	_destroy();
-	delete ui;
 }
 
-void MainWindow::onActionOpenTriggered()
+void MainWindow::closeEvent(QCloseEvent* event)
 {
-	//if(m_currentContext != -1){
-	//    QMessageBox::critical(this,"Error",
-	//                          tr("Multi files aren't supported now\n"),
-	//                          QMessageBox::Yes,QMessageBox::Yes);
-	//    return;
-	//}
-	QString fileName = QFileDialog::getOpenFileName(this, tr("OpenFile"), tr("/Users/Ysl/Downloads/ETdataSegmentation"), tr("mrc Files(*.mrc *mrcs)"));
-	if (fileName == "") {
-		return;
+	const auto model = m_imageView->markModel();
+	if(model != nullptr &&model->dirty())
+	{
+		auto button = QMessageBox::warning(this, QStringLiteral("Save Mark"),
+			QStringLiteral("Marks have not been saved. Do you want to save them before closing?"),
+			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+			QMessageBox::Yes);
+		if(QMessageBox::Cancel == button)
+		{
+			event->ignore();
+			return;
+		}
+		if (button == QMessageBox::Yes)
+			saveMark();
+		event->accept();
 	}
-	//m_mrcs.push_back(MRC(fileName));
-	//ItemContext mrcModel(fileName);
-	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
-
-	//QString headerInfo = mrcModel.getMRCInfo();
-
-
-	///TODO:: TEST,insert row into TreeView 
-	//m_treeViewModel->addItemHelper(fileName, headerInfo);
-
-	QSharedPointer<ItemContext> sharedItem(new ItemContext(fileName));
-	m_treeViewModel->addItem(sharedItem);
-
-
-
+	event->accept();
+	writeSettings();
 }
 
-void MainWindow::onMRCFilesComboBoxIndexActivated(int index)
+void MainWindow::open()
 {
-	//Find first item to change
-	//QVariant userData =m_fileInfoViewer->itemData(index);
-	//if(userData.canConvert(QVariant::Int) == false)
-	//    return;
-	//int context = userData.toInt();
-	//saveMRCDataModel();
-	//setMRCDataModel(context);
-}
-
-void MainWindow::addMRCDataModel(const ItemContext & model)
-{
-	m_mrcDataModels.push_back(model);
-}
-
-void MainWindow::addMRCDataModel(ItemContext && model)
-{
-	m_mrcDataModels.push_back(std::move(model));
-}
-
-/*
- * This function is to set the properties of
- * control widgets according to context
-*/
-void MainWindow::setMRCDataModel(int index)
-{
-	m_currentContext = index;
-
-	const ItemContext & model = m_mrcDataModels[m_currentContext];
-
-	/*sliceSlider's*/
-	int maxSliceIndex = model.getTopSliceCount() - 1;
-	int currentSliceIndex = model.getCurrentSliceIndex();
-
-	int maxRightSliceIndex = model.getRightSliceCount() - 1;
-	int maxFrontSliceIndex = model.getFrontSliceCount() - 1;
-
-	//m_nestedSliceViewer->setMaximumImageCount(maxSliceIndex,maxRightSliceIndex,maxFrontSliceIndex);
-
-	/*Max Gray Slider and SpinBox*/
-	///TODO::maybe the tow values are useless
-	int minGrayscaleValue = model.getMinGrayscale();     //Usually 255
-	int maxGrayscaleValue = model.getMaxGrayscale();
-	int grayscaleStrechingLowerBound = model.getGrayscaleStrechingLowerBound();
-
-	///TODO::m_histogramView
-	//m_histogramView->setLeftCursorValue(grayscaleStrechingLowerBound);
-
-	/*Min Gray Slider and SpinBox*/
-	int grayscaleStrechingUpperBound = model.getGrayscaleStrechingUpperBound();
-	//TODO::m_histogramView
-	//m_histogramView->setRightCursorValue(grayscaleStrechingUpperBound);
-
-	const QImage & image = model.getTopSlice(currentSliceIndex);
-
-	//ImageView
-	//m_imageView->setTopImage(image);
-	//m_imageView->setRightImage(model.getOriginalRightSlice(0));
-	//m_imageView->setFrontImage(model.getOriginalFrontSlice(0));
-
-	int topSliceCount = model.getTopSliceCount();
-	int rightSliceCount = model.getRightSliceCount();
-	int frontSliceCount = model.getFrontSliceCount();
-
-	//m_imageView->setTopSliceCount(topSliceCount-1);
-	//m_imageView->setRightSliceCount(rightSliceCount-1);
-	//m_imageView->setFrontSliceCount(frontSliceCount-1);
-
-
-	/*Histogram*/
-
-
-	QRect region = model.getZoomRegion();
-	//m_histogram->setImage(image);
-
-	///TODO::m_histgoramView
-	//m_histogramView->setImage(image);
-
-
-	/*ZoomViwer*/
-	//m_zoomViewer->setImage(image,region);
-	/*There should be a image scale region context to be restored*/
-	//m_sliceViewer->setImage(image,region);
-
-	//m_nestedSliceViewer->setImage(image,region);
-	//m_nestedSliceViewer->setRightImage(model.getOriginalRightSlice(0));
-	//m_nestedSliceViewer->setFrontImage(model.getOriginalFrontSlice(0));
-
-
-	//m_nestedSliceViewer->setMarks(model.getTopSliceMarks(currentSliceIndex));
-
-	/*PixelViewer*/
-	//m_pixelViewer->setImage(image);
-
-	/*Set all widgets enable*/
-	allControlWidgetsEnable(true);
-
-
-}
-
-void MainWindow::saveMRCDataModel()
-{
-	if (m_currentContext == -1)
+	QString fileName = QFileDialog::getOpenFileName(this, 
+		QStringLiteral("OpenFile"), 
+		QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
+		QStringLiteral("mrc Files(*.mrc *mrcs)"));
+	if (fileName.isEmpty()) 
 		return;
+	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
+	Q_UNUSED(name);
+	auto markModel = m_imageView->markModel();
 
-	//Save previous context
-	ItemContext & model = m_mrcDataModels[m_currentContext];
-
-	//int sliceIndex = m_nestedSliceViewer->getZSliceValue();
-	//int sliceIndex = m_imageView->getZSliceValue();
-
-
-	//model.setCurrentSliceIndex(sliceIndex);
-
-	//TODO::m_histogramView
-	//model.setGrayscaleStrechingLowerBound(m_histogramView->getLeftCursorValue());
-	//model.setGrayScaleStrechingUpperBound(m_histogramView->getRightCursorValue());
-
-	//model.setZoomRegion(m_zoomViewer->zoomRegion().toRect());
+	if(markModel != nullptr && markModel->dirty() == true)
+	{
+		auto button = QMessageBox::warning(this, 
+			QStringLiteral("Warning"), 
+			QStringLiteral("Marks have not been saved.Do you want to save them before open a new slice data?"),
+			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+			QMessageBox::Yes);
+		if (button == QMessageBox::Yes)
+			saveMark();
+		else if (button == QMessageBox::Cancel)
+			return;
+	}
+	QSharedPointer<MRC> mrc(new MRC(fileName.toStdString()));
+	MRCDataModel * sliceModel = new MRCDataModel(mrc);
+	auto infoModel = setupProfileModel(*mrc);
+	auto m = m_imageView->markModel();
+	m->deleteLater();
+	auto t =  m_imageView->takeSliceModel(sliceModel);
+	delete t;
+	m_treeView->setModel(m_imageView->markModel());
+	auto d = m_profileView->takeModel(infoModel);
+		d->deleteLater();
+}
+bool MainWindow::saveMark()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("Mark Save"),
+		"", QStringLiteral("Mark Files(*.mar);;Raw Files(*.raw)"));
+	if (fileName.isEmpty() == true)
+		return false;
+	if (fileName.endsWith(QStringLiteral(".raw")) == true) {
+		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::RAW);
+		bool ok = false;
+		if (ok == false) {
+			QMessageBox::critical(this,
+				QStringLiteral("Error"),
+				QStringLiteral("Can not save this marks"),
+				QMessageBox::Ok, QMessageBox::Ok);
+		}
+	}
+	else if (fileName.endsWith(QStringLiteral(".mar")) == true) {
+		//bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
+		auto model = m_imageView->markModel();
+		if(model == nullptr)
+		{
+			QMessageBox::warning(this, 
+				QStringLiteral("Warning"), 
+				QStringLiteral("There is no mark model"), QMessageBox::Ok);
+			return false;
+		}
+		bool ok = m_imageView->markModel()->save(fileName);
+		if (ok == false) {
+			QMessageBox::critical(this,
+				QStringLiteral("Error"),
+				QStringLiteral("Can not save this marks"),
+				QMessageBox::Ok, QMessageBox::Ok);
+		}
+		return ok;
+	}
+	return false;
 }
 
-void MainWindow::deleteMRCDataModel(int index)
+void MainWindow::openMark()
 {
-
-}
-
-void MainWindow::allControlWidgetsEnable(bool enable)
-{
-	//TODO::m_histogramView
-	//m_histogramView->setEnabled(enable);
-}
-
-
-
-void MainWindow::updateGrayThreshold(int lower, int upper)
-{
-	//   size_t width = m_mrcDataModels[m_currentContext].getWidth();
-	//   size_t height = m_mrcDataModels[m_currentContext].getHeight();
-
-	//   //QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalTopSlice(m_nestedSliceViewer->getZSliceValue());
-	//   QImage originalImage = m_mrcDataModels[m_currentContext].getOriginalTopSlice(m_imageView->getZSliceValue());
-
-	   //unsigned char *image = originalImage.bits();
-
-	   //qreal k = 256.0 / static_cast<qreal>(upper - lower);
-	   //QImage strechingImage(width, height, QImage::Format_Grayscale8);
-	   //unsigned char * data = strechingImage.bits();
-	//   for(int j=0;j<height;j++){
-	//       for(int i=0;i<width;i++){
-	//           int index = i+j*width;
-	   //		unsigned char pixelGrayValue = image[index];
-	   //		unsigned char clower = static_cast<unsigned char>(lower);
-	   //		unsigned char cupper = static_cast<unsigned char>(upper);
-	   //		if (pixelGrayValue < clower) {
-	   //			data[index] = 0;
-	   //		}
-	   //		else if (pixelGrayValue>cupper) {
-	   //			data[index] = 255;
-	   //		}
-	   //		else {
-	   //			data[index] = static_cast<unsigned char>(pixelGrayValue* k+0.5);
-	   //		}
-	//       }
-	//   }
-	   //m_sliceViewer->setImage(strechingImage);
-	   //m_mrcDataModels[m_currentContext].setTopSlice(strechingImage,m_nestedSliceViewer->getZSliceValue());
-	   //m_mrcDataModels[m_currentContext].setTopSlice(strechingImage,m_imageView->getZSliceValue());
-}
-/*
- * This function only sets the initial ui layout,
- * and it doesn't set their properties.
-*/
-void MainWindow::_initUI()
-{
-
-}
-/*
- * This function sets all the connections
- * between signal and slot except for the actions'
-*/
-void MainWindow::_connection()
-{
-
-}
-
-void MainWindow::_destroy()
-{
-	//Nothing need to be destroyed
-}
-
-void MainWindow::onMaxGrayValueChanged(int position)
-{
-	//int minv = m_histogram->getMinimumCursorValue();
-	//int maxv = m_histogram->getMaximumCursorValue();
-	int minv = m_histogramView->getLeftCursorValue();
-	int maxv = m_histogramView->getRightCursorValue();
-
-
-	//qDebug()<<minv<<" "<<maxv;
-	updateGrayThreshold(minv, maxv);
-
-	//QRect rect = m_zoomViewer->zoomRegion().toRect();
-
-	/*int slice = m_nestedSliceViewer->getZSliceValue();
-	m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(slice),rect);
-	m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
-	m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(slice),rect);*/
-
-	//int slice = m_imageView->getZSliceValue();
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
-}
-
-void MainWindow::onMinGrayValueChanged(int position)
-{
-	//int minv = m_histogram->getMinimumCursorValue();
-	//int maxv = m_histogram->getMaximumCursorValue();
-	int minv = m_histogramView->getLeftCursorValue();
-	int maxv = m_histogramView->getRightCursorValue();
-	//qDebug()<<minv<<" "<<maxv;
-	updateGrayThreshold(minv, maxv);
-	//QRect rect = m_zoomViewer->zoomRegion().toRect();
-
-	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()),rect);
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()));
-	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(m_nestedSliceViewer->getZSliceValue()),rect);
-
-	//int slice = m_imageView->getZSliceValue();
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getTopSlice(slice));
-
-}
-
-void MainWindow::onSliceValueChanged(int value)
-{
-}
-
-void MainWindow::onZSliderValueChanged(int value)
-{
-	//QRectF regionf = m_zoomViewer->zoomRegion();
-	//QRect region = QRect(regionf.left(),regionf.top(),regionf.width(),regionf.height());
-	//qDebug() << "onSliceValueChanged(int):" << region;
-	//m_nestedSliceViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value),region);
-	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getTopSliceMarks(value));
-	//
-	//m_histogram->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
-
-	//TODO::m_histogramView
-   // m_histogramView->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
-
-
-	//m_zoomViewer->setImage(m_mrcDataModels[m_currentContext].getTopSlice(value),region);
-	//m_imageView->setTopImage(m_mrcDataModels[m_currentContext].getTopSlice(value));
-}
-
-void MainWindow::onYSliderValueChanged(int value)
-{
-	//m_nestedSliceViewer->setFrontImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
-	//m_imageView->setFrontImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
-}
-
-void MainWindow::onXSliderValueChanged(int value)
-{
-	//m_nestedSliceViewer->setRightImage(m_mrcDataModels[m_currentContext].getOriginalFrontSlice(value));
-	//m_imageView->setRightImage(m_mrcDataModels[m_currentContext].getOriginalRightSlice(value));
-}
-
-
-void MainWindow::onZoomDoubleSpinBoxValueChanged(double d)
-{
-
-}
-
-/*
- *
-*/
-void MainWindow::onZoomRegionChanged(const QRectF &region)
-{
-	//int slice = m_nestedSliceViewer->getZSliceValue();
-	//QImage image = m_mrcDataModels[m_currentContext].getTopSlice(slice);
-	//m_nestedSliceViewer->setImage(image,region.toRect());
-}
-
-void MainWindow::onSliceViewerDrawingFinished(const QPicture & p)
-{
-	//int slice = m_nestedSliceViewer->getZSliceValue();
-	//m_mrcDataModels[m_currentContext].addMark(slice,p);
-	//m_nestedSliceViewer->setMarks(m_mrcDataModels[m_currentContext].getTopSliceMarks(slice));
-}
-
-void MainWindow::onColorActionTriggered()
-{
-	//qDebug() << "ColorActionTriggered";
-	QColor color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color Selection"));
-	//m_nestedSliceViewer->setMarkColor(color);
-	//m_imageView->setColor(color);
-}
-
-void MainWindow::onSaveActionTriggered()
-{
-	QString fileName = QFileDialog::getSaveFileName(this, QString("Mark Save"),
-		"", QString("Raw Files(*.raw);;MRC Files(*.mrc)"));
+	QString fileName = QFileDialog::getOpenFileName(this, 
+		QStringLiteral("Mark Open"),
+		QStringLiteral(""),
+		QStringLiteral("Mark File(*.mar)"));
 	if (fileName.isEmpty() == true)
 		return;
-	if (fileName.endsWith(QString(".raw")) == true) {
-		bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::RAW);
-		if (ok == false) {
-			QMessageBox::critical(this,
-				QStringLiteral("Error"),
-				QStringLiteral("Can not save this marks"),
-				QMessageBox::Ok, QMessageBox::Ok);
+	if (fileName.endsWith(QStringLiteral(".mar")) == true)
+	{
+		const auto model = m_imageView->markModel();
+		if(model == nullptr || model->dirty() == false)
+		{
+			auto newModel = new MarkModel(fileName);
+			bool success;
+			
+			auto t = m_imageView->takeMarkModel(newModel, &success);
+			m_treeView->setModel(newModel);
+			t->deleteLater();
+			if(success == false)
+			{
+				QMessageBox::critical(this, 
+					QStringLiteral("Error"), 
+					QStringLiteral("Open failed."), QMessageBox::Ok);
+				return;
+			}
+		}else if(model->dirty() == true)
+		{
+			auto button = QMessageBox::question(this, QStringLiteral("Save"),
+				QStringLiteral("The mark model has been modified. Do you want to save it before opening a new one?"),
+				QMessageBox::Save | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Save);
+			if (button == QMessageBox::Cancel)
+				return;
+			if(button == QMessageBox::Save)
+			{
+				if(MainWindow::saveMark() == false)
+				{
+					auto button = QMessageBox::warning(this, QStringLiteral("Wrong"), 
+						QStringLiteral("Saving mark model failed for some reasons. Open the new one anyway?"), 
+						QMessageBox::No | QMessageBox::Yes, QMessageBox::No);
+					if (button = QMessageBox::No)
+						return;
+				}
+				//open a new one
+			}
+			auto newModel = new MarkModel(fileName);
+			bool success;
+			auto t = m_imageView->takeMarkModel(newModel, &success);
+			m_treeView->setModel(newModel);
+			t->deleteLater();
+			if (success == false)
+			{
+				QMessageBox::critical(this, QStringLiteral("Error"), QStringLiteral("Open failed."), QMessageBox::Ok);
+				return;
+			}
 		}
 	}
-	else if (fileName.endsWith(QString(".mrc")) == true) {
-		bool ok = m_mrcDataModels[m_currentContext].saveMarks(fileName, ItemContext::MarkFormat::MRC);
-		if (ok == false) {
-			QMessageBox::critical(this,
-				QStringLiteral("Error"),
-				QStringLiteral("Can not save this marks"),
-				QMessageBox::Ok, QMessageBox::Ok);
-		}
-	}
+
 }
 
-void MainWindow::onSaveDataAsActionTriggered()
+void MainWindow::saveAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
 		QStringLiteral("Save Data As"),
-		".", QString("mrc File(*.mrc);;raw File(*.raw)"));
+		".", QStringLiteral("mrc File(*.mrc);;raw File(*.raw)"));
 	if (fileName.isEmpty() == true)
 		return;
-	if (fileName.endsWith(".raw") == true) {
-		m_mrcDataModels[m_currentContext].save(fileName);
+	if (fileName.endsWith(QStringLiteral(".raw")) == true) {
+		//m_mrcDataModels[m_currentContext].save(fileName);
 	}
-	else if (fileName.endsWith(".mrc") == true) {
-		m_mrcDataModels[m_currentContext].save(fileName);
+	else if (fileName.endsWith(QStringLiteral(".mrc")) == true) {
+		//m_mrcDataModels[m_currentContext].save(fileName);
 	}
 }
 
-void MainWindow::onTreeViewDoubleClicked(const QModelIndex & index)
+void MainWindow::writeSettingsForDockWidget(QDockWidget * dock, QSettings* settings)
 {
-	///TODO::
-	QModelIndex parent;
-	QModelIndex rootItem = index;
-	while ((parent = m_treeViewModel->parent(rootItem)).isValid())
-		rootItem = parent;
-	m_histogramView->activateItem(rootItem);
-	m_imageView->activateItem(rootItem);
-	m_pixelViewer->activateItem(rootItem);
+	if (settings == nullptr)
+	{
+		QScopedPointer<QSettings> ptr(new QSettings);
+		settings = ptr.data();
+	}
+	settings->beginGroup(dock->windowTitle());
+	settings->setValue(QStringLiteral("floatarea"), dockWidgetArea(dock));
+	settings->setValue(QStringLiteral("floating"), dock->isFloating());
+	settings->setValue(QStringLiteral("visible"), dock->isVisible());
+	settings->setValue(QStringLiteral("pos"), dock->pos());
+	settings->setValue(QStringLiteral("size"), dock->size());
+	settings->endGroup();
 }
-void MainWindow::createDockWindows()
+
+void MainWindow::readSettingsForDockWidget(QDockWidget* dock, QSettings* settings)
+{
+	if (settings == nullptr)
+	{
+		QScopedPointer<QSettings> ptr(new QSettings);
+		settings = ptr.data();
+	}
+	settings->beginGroup(dock->windowTitle());
+	bool floating = settings->value(QStringLiteral("floating"), false).toBool();
+	bool visible = settings->value(QStringLiteral("visible"), true).toBool();
+	dock->move(settings->value(QStringLiteral("pos"), QPoint(0, 0)).toPoint());
+	dock->resize(settings->value(QStringLiteral("size"), QSize(100, 500)).toSize());
+	dock->setVisible(visible);
+	if (floating == true)
+	{
+		dock->setFloating(true);
+	}
+	else
+	{
+		addDockWidget(Qt::DockWidgetArea(settings->value(QStringLiteral("floatarea"),
+			Qt::LeftDockWidgetArea).toInt()),
+			dock);
+	}
+	settings->endGroup();
+}
+
+void MainWindow::writeSettingsForImageView(ImageView * view, QSettings * settings)
+{
+	if (settings == nullptr)
+	{
+		QScopedPointer<QSettings> ptr(new QSettings);
+		settings = ptr.data();
+	}
+	settings->beginGroup(view->windowTitle());
+	settings->setValue(QStringLiteral("topvisible"), view->isTopSliceEnabled());
+	settings->setValue(QStringLiteral("rightvisible"), view->isRightSliceEnabled());
+	settings->setValue(QStringLiteral("frontvisible"), view->isFrontSliceEnabled());
+	settings->setValue(QStringLiteral("pen"), view->pen());
+	settings->endGroup();
+}
+
+void MainWindow::readSettingsForImageView(ImageView * view, QSettings * settings)
+{
+	if (settings == nullptr)
+	{
+		QScopedPointer<QSettings> ptr(new QSettings);
+		settings = ptr.data();
+	}
+	settings->beginGroup(view->windowTitle());
+	view->topSliceEnable(settings->value(QStringLiteral("topvisible"), true).toBool());
+	view->rightSliceEnable(settings->value(QStringLiteral("rightvisible"), true).toBool());
+	view->frontSliceEnable(settings->value(QStringLiteral("frontvisible"), true).toBool());
+	view->setPen(settings->value(QStringLiteral("pen"), QVariant::fromValue(QPen(Qt::black, 5, Qt::SolidLine))).value<QPen>());
+	settings->endGroup();
+
+}
+
+void MainWindow::readSettings()
+{
+	QSettings settings;
+	//
+	settings.beginGroup(this->windowTitle());
+	auto d = (QApplication::desktop()->screenGeometry()).size();
+	setGeometry(settings.value(QStringLiteral("geometry"),QRect(QPoint(d.width()/2-1680/2,d.height()/2-1050/2),QSize(1680,1050))).toRect());
+	settings.endGroup();
+
+	readSettingsForDockWidget(m_profileViewDockWidget, &settings);
+	readSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	readSettingsForImageView(m_imageView,&settings);
+
+}
+
+void MainWindow::writeSettings()
+{
+	QSettings settings;
+	settings.beginGroup(this->windowTitle());
+	settings.setValue(QStringLiteral("geometry"), geometry());
+	settings.endGroup();
+
+	writeSettingsForDockWidget(m_profileViewDockWidget, &settings);
+	writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	writeSettingsForImageView(m_imageView, &settings);
+}
+
+void MainWindow::createWidget()
+{
+	setDockOptions(QMainWindow::AnimatedDocks);
+	m_profileView = new ProfileView(this);
+	m_profileViewDockWidget = new QDockWidget(QStringLiteral("Profile"));
+	m_profileViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	m_profileViewDockWidget->setWidget(m_profileView);
+	addDockWidget(Qt::RightDockWidgetArea, m_profileViewDockWidget);
+
+	m_profileViewDockWidget->installEventFilter(this);
+	m_profileViewDockWidget->setObjectName(QStringLiteral("profileviewdockwidget"));
+
+	m_viewMenu->addAction(m_profileViewDockWidget->toggleViewAction());
+	m_imageView = new ImageView;
+	connect(m_imageView, &ImageView::markModified, [this](){setWindowTitle(QStringLiteral("MRC Marker*"));});
+	connect(m_imageView, &ImageView::markSaved, [this](){setWindowTitle(QStringLiteral("MRC Marker"));});
+
+	setCentralWidget(m_imageView);
+}
+
+void MainWindow::createMenu()
+{
+	//File menu
+	m_fileMenu = menuBar()->addMenu(QStringLiteral("File"));
+	m_fileMenu->addAction(m_openAction);
+	m_fileMenu->addAction(m_saveAction);
+	//m_fileMenu->addAction(m_saveAsAction);
+	//View menu
+	m_viewMenu = menuBar()->addMenu(QStringLiteral("View"));
+
+}
+
+void MainWindow::createActions()
 {
 
+	m_openAction= new QAction(QIcon(":/icons/resources/icons/open.png"), QStringLiteral("Open"),this);
+	m_openAction->setToolTip(QStringLiteral("Open MRC file"));
+	QToolBar * toolBar = addToolBar(QStringLiteral("Tools"));
+	toolBar->addAction(m_openAction);
+	connect(m_openAction, &QAction::triggered, this, &MainWindow::open);
+
+
+
+	//save mark action
+	 m_saveAction = new QAction(QIcon(":/icons/resources/icons/save_as.png"), QStringLiteral("Save Mark"),this);
+	 m_saveAction->setToolTip(QStringLiteral("Save Mark"));
+	toolBar->addAction(m_saveAction);
+	connect(m_saveAction, &QAction::triggered, this, &MainWindow::saveMark);
+
+	//save data as action
+	//m_saveAsAction= new QAction(this);
+	//m_saveAsAction->setText(QStringLiteral("Save Data As"));
+	//toolBar->addAction(m_saveAsAction);
+	//connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
+
+	//open mark action
+	m_openMarkAction = new QAction(QIcon(":/icons/resources/icons/open_mark.png"),QStringLiteral("Open Mark"),this);
+	m_openMarkAction->setToolTip(QStringLiteral("Open Mark"));
+	toolBar->addAction(m_openMarkAction);
+	connect(m_openMarkAction, &QAction::triggered, this, &MainWindow::openMark);
+
+}
+
+void MainWindow::createStatusBar()
+{
+	m_statusBar = statusBar();
+	m_statusBar->showMessage(QStringLiteral("Ready"));
+}
+
+void MainWindow::createMarkTreeView()
+{
+	m_treeView = new MarkTreeView;
+	m_treeViewDockWidget = new QDockWidget(QStringLiteral("MarkManager"));
+	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	m_treeViewDockWidget->setWidget(m_treeView);
+	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+
+	//m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	//QAction * m_markDeleteAction = new QAction(QStringLiteral("Delete"),m_treeView);
+	//QAction * m_markRenameAction = new QAction(QStringLiteral("Delete"),m_treeView);
+	//QAction * m_markUnionAction = new QAction(QStringLiteral("Union"),m_treeView);
+	//m_treeView->addAction(m_markDeleteAction);
+	//m_treeView->addAction(m_markRenameAction);
+	//m_treeView->addAction(m_markUnionAction);
+
+}
+
+AbstractSliceDataModel * MainWindow::replaceSliceModel(AbstractSliceDataModel * model)
+{
+	auto old = m_imageView->sliceModel();
+	m_imageView->takeSliceModel(model);
+	return old;
+}
+
+MarkModel * MainWindow::replaceMarkModel(MarkModel * model)
+{
+	return m_imageView->takeMarkModel(model,nullptr);
+
+}
+
+QAbstractTableModel * MainWindow::replaceProfileModel( QAbstractTableModel * model)
+{
+	return nullptr;
+}
+
+QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
+{
+	QAbstractTableModel * model = nullptr;
+	model = new MRCInfoTableModel(mrc.propertyCount(), 2, this);
+	for(int i=0;i<mrc.propertyCount();i++)
+	{
+        model->setData(model->index(i,0),QVariant::fromValue(QString::fromStdString(mrc.propertyName(i))),Qt::DisplayRole);
+        //qDebug()<<QString::fromStdString(mrc.propertyName(i));
+		MRC::DataType type = mrc.propertyType(i);
+		QVariant value;
+		if(type == MRC::DataType::Integer32)
+		{
+			value.setValue(mrc.property<MRC::MRCInt32>(i));
+		}else if(type == MRC::DataType::Real32)
+		{
+			value.setValue(mrc.property<MRC::MRCFloat>(i));
+		}else if(type == MRC::DataType::Integer8)
+		{
+			value.setValue(mrc.property<MRC::MRCInt8>(i));
+		}
+        //qDebug()<<value;
+        model->setData(model->index(i, 1), value,Qt::DisplayRole);
+	}
+
+	return model;
 }

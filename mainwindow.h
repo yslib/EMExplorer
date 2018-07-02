@@ -1,126 +1,72 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
-#include <QImage>
-#include <QPixmap>
-#include <QFileDialog>
-#include <QAction>
-#include "mrc.h"
-#include "histogram.h"
-#include "zoomviwer.h"
-#include "sliceviewer.h"
-#include "ItemContext.h"
-#include "pixelviewer.h"
-#include "mrcfileinfoviewer.h"
-
-
-
-namespace Ui {
-class MainWindow;
-}
-
-struct MRCContext{
-    int currentMinGray;
-    int currentMaxGray;
-    int maxSlice;
-    int minSlice;
-    int currentSlice;
-    double currentScale;
-    MRC mrcFile;
-    QVector<QPixmap> images;
-
-};
-
-
-class Histogram;
-class HistogramViewer;
-class SliceViewer;
-class PixelViewer;
-class ImageViewer;
-class MRCFileInfoViewer;
+#include "mrcdatamodel.h"
+QT_BEGIN_NAMESPACE
+class QTableView;
+class QStandardItemModel;
+class QAbstractTableModel;
+class QAction;
+class QSettings;
+QT_END_NAMESPACE
 class ImageView;
+class MarkModel;
+class ProfileView;
+class MRC;
+class MarkTreeView;
 
-class QTreeView;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
-
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+	
+protected:
+	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
 private slots:
+    void open();
+	bool saveMark();
+	void openMark();
+    void saveAs();
 
-
-    void onActionOpenTriggered();
-    void onMRCFilesComboBoxIndexActivated(int index);
-
-    void onMaxGrayValueChanged(int position);
-    void onMinGrayValueChanged(int position);
-    void onSliceValueChanged(int value);
-
-	void onZSliderValueChanged(int value);
-	void onYSliderValueChanged(int value);
-	void onXSliderValueChanged(int value);
-
-    //void onZoomValueChanged(int value);
-    void onZoomDoubleSpinBoxValueChanged(double d);
-
-    void onZoomRegionChanged(const QRectF &region);
-	void onSliceViewerDrawingFinished(const QPicture & p);
-	void onColorActionTriggered();
-	void onSaveActionTriggered();
-    void onSaveDataAsActionTriggered();
-
-
-	void onTreeViewDoubleClicked(const QModelIndex & index);
-
+	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
+	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
+	void writeSettingsForImageView(ImageView * view, QSettings * settings);
+	void readSettingsForImageView(ImageView * view, QSettings * settings);
+	void readSettings();
+	void writeSettings();
 private:
-    Ui::MainWindow *ui;
-    int m_currentContext;
-    QVector<MRCContext> m_mrcs;
-	QVector<ItemContext> m_mrcDataModels;
-private:
-    static constexpr int ZOOM_SLIDER_MAX_VALUE=100;
-private:		//ui
+	Q_OBJECT
+	//Widgets
+	ImageView * m_imageView;
+	QDockWidget * m_profileViewDockWidget;
+	ProfileView * m_profileView;
+	QDockWidget * m_treeViewDockWidget;
+	MarkTreeView * m_treeView;
+	//Menu
+	QMenu * m_fileMenu;
+	QMenu * m_viewMenu;
+	//Status bar
+	QStatusBar * m_statusBar;
+	//Actions
+	QAction * m_openAction;
+	QAction * m_saveAction;
+    //QAction * m_saveAsAction;
+    //QAction * m_colorAction;
+	QAction * m_openMarkAction;
 
-	QLabel * m_mrcFileLabel;
-	QComboBox * m_mrcFileCBox;
-    MRCFileInfoViewer * m_fileInfoViewer;
-
-	QTreeView * m_treeView;
-	DataItemModel * m_treeViewModel;
-
-	//NestedSliceViewer *m_nestedSliceViewer;
-
-    //Histogram * m_histogram;
-    HistogramViewer * m_histogramView;
-	//ZoomViwer * m_zoomViewer;
-    PixelViewer * m_pixelViewer;
-	//actions
-
-    QAction * m_actionColor;
-    QAction * m_actionOpen;
-    //test
-    //ImageViewer * m_imageViewer;
-    ImageView * m_imageView;
-private:
+	void createWidget();
+	void createMenu();
     void createActions();
     void createStatusBar();
-    void createDockWindows();
+	void createMarkTreeView();
+	AbstractSliceDataModel * replaceSliceModel(AbstractSliceDataModel* model);
+	MarkModel * replaceMarkModel( MarkModel * model);
+	QAbstractTableModel * replaceProfileModel(QAbstractTableModel * model);
+	//void setupModels(const MRC & mrc);
+	QAbstractTableModel * setupProfileModel(const MRC & mrc);
 
-	void addMRCDataModel(const ItemContext & model);
-	void addMRCDataModel(ItemContext && model);
-	void setMRCDataModel(int index);
-	void saveMRCDataModel();
-    void deleteMRCDataModel(int index);
-    void allControlWidgetsEnable(bool enable);
-    void updateGrayThreshold(int minGray,int maxGray);
-    void _initUI();
-	void _connection();
-    void _destroy();
 };
 
 #endif // MAINWINDOW_H

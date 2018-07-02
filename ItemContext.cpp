@@ -6,6 +6,9 @@
 #include <qdebug.h>
 #include <cassert>
 #include <memory>
+#include <iostream>
+
+#include "globals.h"
 
 
 ItemContext::ItemContext() :
@@ -49,6 +52,7 @@ ItemContext & ItemContext::operator=(const ItemContext & model)
 	m_topSliceMarks = model.m_topSliceMarks;
 	m_modifiedTopSlice = model.m_modifiedTopSlice;
 	m_modifiedTopSliceFlags = model.m_modifiedTopSliceFlags;
+	return *this;
 }
 
 ItemContext & ItemContext::operator=(ItemContext && model)noexcept
@@ -60,7 +64,8 @@ ItemContext & ItemContext::operator=(ItemContext && model)noexcept
 	m_topSliceMarks = std::move(model.m_topSliceMarks);
 	m_modifiedTopSlice = std::move(model.m_modifiedTopSlice);
 	m_modifiedTopSliceFlags = std::move(model.m_modifiedTopSliceFlags);
-	// TODO: insert return statement here
+	//TODO: insert return statement here
+	return *this;
 }
 
 ItemContext::~ItemContext()
@@ -70,9 +75,12 @@ ItemContext::~ItemContext()
 
 QImage ItemContext::getOriginalTopSlice(int index) const
 {
-	int width = m_mrcFile.getWidth();
-	int height = m_mrcFile.getHeight();
-	return QImage(m_mrcFile.data() + index * width*height, width, height, QImage::Format_Grayscale8);
+	int width = m_mrcFile.width();
+	int height = m_mrcFile.height();
+	unsigned char * d = m_mrcFile.data<unsigned char>();
+	Q_ASSERT_X(d != nullptr, "ItemContext::getOriginalTopSlice", "type convertion error");
+	return QImage(d+index * width*height, width, height, QImage::Format_Grayscale8);
+
 }
 
 bool ItemContext::save(const QString & fileName, ItemContext::DataFormat formate)
@@ -106,9 +114,9 @@ bool ItemContext::open(const QString & fileName)
 	m_mrcContext.currentFrontSliceIndex = 0;
 
 
-	int topSliceCount = m_mrcFile.getSliceCount();
-	int rightSliceCount = m_mrcFile.getWidth();
-	int frontSliceCount = m_mrcFile.getHeight();
+	int topSliceCount = m_mrcFile.slice();
+	int rightSliceCount = m_mrcFile.width();
+	int frontSliceCount = m_mrcFile.height();
 
 	//Members initialization
 	m_topSliceMarks.resize(topSliceCount);
@@ -177,7 +185,7 @@ bool ItemContext::saveMarks(const QString & fileName, MarkFormat format)
 		//
 		int width = getWidth();
 		int height = getHeight();
-		int sliceCount = getTopSliceCount();
+		//int sliceCount = getTopSliceCount();
 		unsigned char * data = new unsigned char[m_topSliceMarks.size()*getWidth()*getHeight()];
 		if (data == nullptr) {
 			qDebug() << "allocating faild";
@@ -192,7 +200,7 @@ bool ItemContext::saveMarks(const QString & fileName, MarkFormat format)
 
 		//MRC mrcMarks(data,getWidth(),getHeight(),getSliceCount(),
 		//	MRC::ImageDimensionType::ImageStack,
-		//	MRC::DataType::Byte8);
+		//	MRC::DataType::Integer8);
 
 
 
@@ -220,7 +228,7 @@ bool ItemContext::saveMarks(const QString & fileName, MarkFormat format)
 				sizeof(unsigned char),
 				image.width()*image.height(),
 				fp);
-			if (sizeOfWrite < image.width()*image.height()) {
+			if (sizeOfWrite < (int)image.width()*image.height()) {
 				std::cerr << __LINE__;
 				return false;
 			}
@@ -259,7 +267,7 @@ void ItemContext::setTopSlice(const QImage & image, int index)
 	}
 	int width = image.width();
 	int height = image.height();
-	if (width != m_mrcFile.getWidth() || height != m_mrcFile.getHeight()) {
+	if (width != m_mrcFile.width() || height != m_mrcFile.height()) {
 		qCritical("Lengths are not matched.");
 		return;
 	}
@@ -271,12 +279,17 @@ void ItemContext::setTopSlice(const QImage & image, int index)
 
 QImage ItemContext::getOriginalRightSlice(int index) const
 {
-	int width = m_mrcFile.getWidth();
-	int height = m_mrcFile.getHeight();
-	int slice = m_mrcFile.getSliceCount();
+	int width = m_mrcFile.width();
+	int height = m_mrcFile.height();
+	int slice = m_mrcFile.slice();
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
-	auto data = m_mrcFile.data();
+	auto data = m_mrcFile.data<unsigned char>();
+	if(data == nullptr)
+	{
+		qCritical() << "Format error\n";
+		return QImage();
+	}
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < slice; j++)
@@ -307,7 +320,7 @@ void ItemContext::setRightSlice(const QImage & image, int index)
 	}
 	int width = image.width();
 	int height = image.height();
-	if (width != m_mrcFile.getSliceCount() || height != m_mrcFile.getHeight()) {
+	if (width != m_mrcFile.slice() || height != m_mrcFile.height()) {
 		qCritical("Lengths are not matched.");
 		return;
 	}
@@ -317,12 +330,12 @@ void ItemContext::setRightSlice(const QImage & image, int index)
 
 QImage ItemContext::getOriginalFrontSlice(int index) const
 {
-	int width = m_mrcFile.getWidth();
-	int height = m_mrcFile.getHeight();
-	int slice = m_mrcFile.getSliceCount();
+	int width = m_mrcFile.width();
+	int height = m_mrcFile.height();
+	int slice = m_mrcFile.slice();
 	int size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
-	auto data = m_mrcFile.data();
+	auto data = m_mrcFile.data<unsigned char>();
 	for (int i = 0; i < slice; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -353,7 +366,7 @@ void ItemContext::setFrontSlice(const QImage & image, int index)
 	}
 	int width = image.width();
 	int height = image.height();
-	if (width != m_mrcFile.getWidth() || height != m_mrcFile.getSliceCount()) {
+	if (width != m_mrcFile.width() || height != m_mrcFile.slice()) {
 		qCritical("Lengths are not matched.");
 		return;
 	}
@@ -366,11 +379,11 @@ int ItemContext::sliceCount(SliceType type)
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		return getTopSliceCount();
-	case SliceType::SliceY:
+	case SliceType::Right:
 		return getRightSliceCount();
-	case SliceType::SliceX:
+	case SliceType::Front:
 		return getFrontSliceCount();
 	default:
 		return 0;
@@ -381,11 +394,11 @@ QImage ItemContext::orignalSlice(int index, SliceType type)
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		return getOriginalTopSlice(index);
-	case SliceType::SliceY:
+	case SliceType::Right:
 		return getOriginalRightSlice(index);
-	case SliceType::SliceX:
+	case SliceType::Front:
 		return getOriginalFrontSlice(index);
 	default:
 		return QImage();
@@ -396,11 +409,11 @@ QImage ItemContext::slice(int index, SliceType type) const
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		return getTopSlice(index);
-	case SliceType::SliceY:
+	case SliceType::Right:
 		return getRightSlice(index);
-	case SliceType::SliceX:
+	case SliceType::Front:
 		return getFrontSlice(index);
 	default:
 		return QImage();
@@ -412,13 +425,13 @@ void ItemContext::setSlice(const QImage & image, int index, SliceType type)
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		setTopSlice(image, index);
 		return;
-	case SliceType::SliceY:
+	case SliceType::Right:
 		setRightSlice(image, index);
 		return;
-	case SliceType::SliceX:
+	case SliceType::Front:
 		setFrontSlice(image, index);
 		return;
 	default:
@@ -518,13 +531,13 @@ void ItemContext::addSliceMark(QGraphicsItem * mark, int index, SliceType type)
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		addTopSliceMark(index, mark);
 		return;
-	case SliceType::SliceY:
+	case SliceType::Right:
 		addRightSliceMark(index, mark);
 		return;
-	case SliceType::SliceX:
+	case SliceType::Front:
 		addFrontSliceMark(index, mark);
 		return;
 	default:
@@ -537,11 +550,11 @@ QList<QGraphicsItem*> ItemContext::sliceMarks(int index, SliceType type)
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		return getTopSliceMarks(index);
-	case SliceType::SliceY:
+	case SliceType::Right:
 		return getRightSliceMarks(index);
-	case SliceType::SliceX:
+	case SliceType::Front:
 		return getFrontSliceMarks(index);
 	default:
 		qWarning("Type does not exisit.");
@@ -554,7 +567,7 @@ QList<QGraphicsItem*> ItemContext::visibleSliceMarks(int index, SliceType type)
 	QList<QGraphicsItem *> items;
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		foreach(auto item,m_topSliceMarks[index])
 		{
 			///TODO::please ensure that item in marks also must be in visible hash table
@@ -562,7 +575,7 @@ QList<QGraphicsItem*> ItemContext::visibleSliceMarks(int index, SliceType type)
 				items.push_back(item);
 		}
 		break;
-	case SliceType::SliceY:
+	case SliceType::Right:
 		foreach(auto item, m_rightSliceMarks[index])
 		{
 			///TODO::please ensure that item in marks also must be in visible hash table
@@ -570,7 +583,7 @@ QList<QGraphicsItem*> ItemContext::visibleSliceMarks(int index, SliceType type)
 				items.push_back(item);
 		}
 		break;
-	case SliceType::SliceX:
+	case SliceType::Front:
 		foreach(auto item, m_frontSliceMarks[index])
 		{
 			///TODO::please ensure that item in marks also must be in visible hash table
@@ -586,11 +599,11 @@ bool ItemContext::sliceMarkVisible(QGraphicsItem * item, SliceType type)
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		return topSliceMarkVisble(item);
-	case SliceType::SliceY:
+	case SliceType::Right:
 		return rightSliceMarkVisble(item);
-	case SliceType::SliceX:
+	case SliceType::Front:
 		return frontSliceMarkVisble(item);
 	default:
 		qWarning("Type does not exisit.");
@@ -603,13 +616,13 @@ void ItemContext::setSliceMarkVisible(QGraphicsItem * item,bool visible, SliceTy
 {
 	switch (type)
 	{
-	case SliceType::SliceZ:
+	case SliceType::Top:
 		setTopSliceMarkVisible(item, visible);
 		return;
-	case SliceType::SliceY:
+	case SliceType::Right:
 		setRightSliceMarkVisible(item, visible);
 		return;
-	case SliceType::SliceX:
+	case SliceType::Front:
 		setFrontSLiceMarkVisible(item,visible);
 		return;
 	default:
@@ -619,26 +632,7 @@ void ItemContext::setSliceMarkVisible(QGraphicsItem * item,bool visible, SliceTy
 
 void ItemContext::createScene()
 {
-	m_scene.reset(new GraphicsScene(nullptr));
 
-	for (int i = 0; i < getTopSliceCount(); i++)
-	{
-		QPixmap pix = QPixmap::fromImage(getTopSlice(i), Qt::MonoOnly);
-
-		qDebug() << pix.depth() << " " << getTopSlice(i).depth();
-		m_scene->addPixmap(QPixmap::fromImage(getTopSlice(i), Qt::MonoOnly));
-		//qDebug() << "Top Slice:"<<i;
-	}
-	for (int i = 0; i < getRightSliceCount(); i++)
-	{
-		m_scene->addPixmap(QPixmap::fromImage(getRightSlice(i), Qt::MonoOnly));
-		//qDebug() << "Right Slice:" << i;
-	}
-	for (int i = 0; i < getFrontSliceCount(); i++)
-	{
-		//qDebug() << "Front Slice:" << i;
-		m_scene->addPixmap(QPixmap::fromImage(getFrontSlice(i), Qt::MonoOnly));
-	}
 }
 
 void ItemContext::setTopSliceMarkVisible(QGraphicsItem * mark,bool visible)
@@ -666,271 +660,11 @@ void ItemContext::setFrontSLiceMarkVisible(QGraphicsItem * mark, bool visible)
 }
 
 
-/*
- *New data Model
- */
 
 
-QModelIndex DataItemModel::appendChild(const QModelIndex & parent, bool * success)
+QWidget * MarkItemModelDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-	bool flag = insertRows(rowCount(parent), 1, parent);
-	if (success)*success = flag;
-	return index(rowCount(parent) - 1, 0, parent);
-}
-
-bool DataItemModel::removeChild(const QModelIndex & index, const QModelIndex & parent)
-{
-	Q_UNUSED(index);
-	return removeRows(0, rowCount(parent), parent);
-}
-
-QModelIndex DataItemModel::modelIndexOf(int column, const QModelIndex & itemIndex)
-{
-	TreeItem * item = static_cast<TreeItem*>(itemIndex.internalPointer());
-	if (item == nullptr)return QModelIndex();
-	return index(item->row(), column, parent(itemIndex));
-}
-
-void DataItemModel::insertRootItemIndex(const QModelIndex & index, int position)
-{
-	if (position == -1)
-		m_itemRootIndex.append(index);
-	else
-		m_itemRootIndex.insert(position, index);
-}
-
-void DataItemModel::removeRootItemIndex(int position)
-{
-	m_itemRootIndex.removeAt(position);
-}
-
-QModelIndex DataItemModel::rootItemIndex(int position)
-{
-	return m_itemRootIndex.value(position);
-}
-
-DataItemModel::DataItemModel(const QString & data, QObject * parent) :QAbstractItemModel(parent)
-{
-	///TODO:: construct a new root
-	Q_UNUSED(data);
-	QVector<QVariant> headers;
-	headers << "Value:" << "Descption:";
-	m_rootItem = new TreeItem(headers);
-}
-
-DataItemModel::~DataItemModel()
-{
-	delete m_rootItem;
-}
-
-QVariant DataItemModel::data(const QModelIndex & index, int role) const
-{
-	if (role != Qt::DisplayRole)
-		return QVariant();
-	if (index.isValid() == false)
-		return QVariant();
-	TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
-	//qDebug() << item->data(index.column());
-	return item->data(index.column());
-}
-
-Qt::ItemFlags DataItemModel::flags(const QModelIndex & index) const
-{
-	if (index.isValid() == false)
-		return 0;
-	return QAbstractItemModel::flags(index);
-}
-
-bool DataItemModel::setData(const QModelIndex & index, const QVariant & value, int role)
-{
-	if (role != Qt::EditRole)return false;
-
-	TreeItem * item = getItem(index);
-
-	bool ok = item->setData(index.column(), value);
-	if (ok == true)
-		emit dataChanged(index, index);
-	return ok;
-}
-
-bool DataItemModel::insertColumns(int column, int count, const QModelIndex & parent)
-{
-	beginInsertColumns(parent, column, column + count - 1);
-	//insert same columns at same position from the top of the tree to down recursively
-	bool success = m_rootItem->insertColumns(column, count);
-	endInsertColumns();
-	return success;
-}
-
-bool DataItemModel::removeColumns(int column, int count, const QModelIndex & parent)
-{
-	beginRemoveColumns(parent, column, column + count - 1);
-	bool success = m_rootItem->removeColumns(column, count);
-	endRemoveColumns();
-
-	if (m_rootItem->columnCount() == 0)
-		removeRows(0, rowCount());
-	return success;
-}
-
-bool DataItemModel::insertRows(int row, int count, const QModelIndex & parent)
-{
-	TreeItem * item = getItem(parent);
-	beginInsertRows(parent, row, count + row - 1);
-	//the number of inserted column is the same as the root, i.e 2
-	bool success = item->insertChildren(row, count, columnCount());
-	endInsertRows();
-	return success;
-}
-
-bool DataItemModel::removeRows(int row, int count, const QModelIndex & parent)
-{
-	TreeItem * item = getItem(parent);
-	bool success = true;
-
-	beginRemoveRows(parent, row, row + count - 1);
-	success = item->removeChildren(row, count);
-	endRemoveRows();
-	return success;
-}
-
-QVariant DataItemModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-		return m_rootItem->data(section);
-	return QVariant();
-}
-
-QModelIndex DataItemModel::index(int row, int column, const QModelIndex & parent) const
-{
-
-	//Check if the index is valid
-	//if(hasIndex(row,column,parent) == false)
-	//	return QModelIndex();
-	//If the index points to a non-root node and its column is not 0
-
-	if (parent.isValid() == true && parent.column() != 0)
-		return QModelIndex();
-	TreeItem * parentItem = getItem(parent);
-	TreeItem * childItem = parentItem->child(row);
-	if (childItem == nullptr)
-		return QModelIndex();
-	else
-		return createIndex(row, column, childItem);
-}
-
-QModelIndex DataItemModel::parent(const QModelIndex & index) const
-{
-	//Index points to a root item
-	if (index.isValid() == false)return QModelIndex();
-
-	TreeItem * item = getItem(index);
-	TreeItem * parentItem = item->parentItem();
-
-	//If index points to a child item of root item
-	if (parentItem == m_rootItem)
-		return QModelIndex();
-
-	return createIndex(parentItem->row(), 0, parentItem);
-}
-
-int DataItemModel::rowCount(const QModelIndex & parent) const
-{
-	//Only a item with 0 column number has children
-	if (parent.column() > 0)
-		return 0;
-	TreeItem * item = getItem(parent);
-	return item->childCount();
-}
-
-int DataItemModel::columnCount(const QModelIndex & parent) const
-{
-	if (parent.isValid() == false)
-		return m_rootItem->columnCount();
-	return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-}
-
-QModelIndex DataItemModel::addItemHelper(const QString& fileName, const QString& info)
-{
-	bool success;
-	const QModelIndex & newRootItemIndex = appendChild(QModelIndex(), &success);//add a new file to as the last child of the parent
-	if (success == false)
-		return QModelIndex();
-
-	//get the newest index inserted before
-	//const QModelIndex & newRootItemIndex = index(rowCount() - 1, 0);
-	//add file row
-	insertRootItemIndex(newRootItemIndex);
-	setData(newRootItemIndex, fileName);
-
-	//add properties row
-	const QModelIndex & informationIndex = appendChild(newRootItemIndex, &success);
-	if (success == false)
-		return QModelIndex();
-	setData(informationIndex, QStringLiteral("Properties"));
-	QStringList lines = info.split('\n', QString::SkipEmptyParts);
-	for (auto & it : lines)
-	{
-		auto line = it.split(':', QString::SkipEmptyParts);
-		{
-			//success = insertRows(rowCount(informationIndex), 1, informationIndex);
-			//int lastRow = rowCount(informationIndex) - 1;
-			//QModelIndex valueIndex = index(lastRow, 0, informationIndex);
-			//QModelIndex descIndex = index(lastRow, 1, informationIndex);
-			QModelIndex newInserted = appendChild(informationIndex, &success);
-			QModelIndex valueIndex = modelIndexOf(0, newInserted);
-			QModelIndex descIndex = modelIndexOf(1, newInserted);
-			if (success == true) {
-				setData(valueIndex, line.value(1));
-				setData(descIndex, line.value(0));
-			}
-		}
-	}
-
-	//add marks row
-	const QModelIndex & marksIndex = appendChild(newRootItemIndex, &success);
-	if(success == false)
-	{
-		qCritical("append Child failed\n");
-		return QModelIndex();
-	}
-	setData(marksIndex, QStringLiteral("Marks"));
-
-	setData(modelIndexOf(1, marksIndex), QVariant::fromValue(0));
-
-	return newRootItemIndex;
-}
-
-//void DataItemModel::addItem(const QSharedPointer<MRC>& item)
-//{
-//
-//	const auto fileName = QString::fromStdString(item->getFileName());
-//	const auto info = QString::fromStdString(item->getMRCInfo());
-//	qDebug() << fileName << " " << info;
-//	const QModelIndex & newModelIndex = addItemHelper(fileName, info);
-//	QModelIndex idx = modelIndexOf(1, newModelIndex);
-//
-//	setData(idx, QVariant::fromValue<QSharedPointer<MRC>>(item));
-//
-//	QVariant var = data(idx,Qt::DisplayRole);
-//}
-
-void DataItemModel::addItem(const QSharedPointer<ItemContext>& item)
-{
-	const auto fileName = QString::fromStdString(item->getMRCFile().getFileName());
-	const auto info = QString::fromStdString(item->getMRCInfo().toStdString());
-	//qDebug() << fileName << " " << info;
-	const QModelIndex & newModelIndex = addItemHelper(fileName, info);
-	QModelIndex idx = modelIndexOf(1, newModelIndex);
-	setData(idx, QVariant::fromValue<QSharedPointer<ItemContext>>(item));
-
-	//QVariant var = data(idx, Qt::DisplayRole);
-	//qDebug() << var.canConvert<QSharedPointer<ItemContext>>();
-}
-
-QWidget * DataItemModelDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const
-{
-	qDebug() << "Delegate.";
+	Q_UNUSED(option);
 	auto m = index.model();
 	auto var = m->data(index);
 	if (var.canConvert<QString>() == true) {
@@ -944,7 +678,7 @@ QWidget * DataItemModelDelegate::createEditor(QWidget * parent, const QStyleOpti
 	return nullptr;
 }
 
-void DataItemModelDelegate::setEditorData(QWidget * editor, const QModelIndex & index) const
+void MarkItemModelDelegate::setEditorData(QWidget * editor, const QModelIndex & index) const
 {
 	auto m = index.model();
 	auto var = m->data(index);
@@ -963,7 +697,7 @@ void DataItemModelDelegate::setEditorData(QWidget * editor, const QModelIndex & 
 	}
 }
 
-void DataItemModelDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index) const
+void MarkItemModelDelegate::setModelData(QWidget * editor, QAbstractItemModel * model, const QModelIndex & index) const
 {
 	auto var = model->data(index);
 	if (var.canConvert<QString>() == true) {
@@ -981,12 +715,14 @@ void DataItemModelDelegate::setModelData(QWidget * editor, QAbstractItemModel * 
 	}
 }
 
-void DataItemModelDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const
+void MarkItemModelDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
+	Q_UNUSED(option);
+	Q_UNUSED(index);
 	editor->setGeometry(option.rect);
 }
 
-int DataItemModelDelegate::level(const QModelIndex & index)
+int MarkItemModelDelegate::level(const QModelIndex & index)
 {
 	auto m = index.model();
 	int level = 0;
@@ -999,7 +735,8 @@ int DataItemModelDelegate::level(const QModelIndex & index)
 	return level;
 }
 
-bool DataItemModelDelegate::isMark(const QModelIndex & index)
+bool MarkItemModelDelegate::isMark(const QModelIndex & index)
 {
+	Q_UNUSED(index);
 	return true;
 }

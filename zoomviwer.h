@@ -1,33 +1,27 @@
 #ifndef ZOOMVIWER_H
 #define ZOOMVIWER_H
-#include <QWidget>
 #include <QImage>
 #include <QPainter>
 #include <QWheelEvent>
 #include <QSlider>
 #include <QLayout>
-#include <QLabel>
-#include <QDoubleSpinBox>
 
-class ZoomViwer:public QWidget
+class ZoomView:public QWidget
 {
 	Q_OBJECT
 public:
-    ZoomViwer(QWidget* parent = nullptr);
+    ZoomView(QWidget* parent = nullptr);
     void setImage(const QImage & image,const QRect & region = QRect());
     void clearImage();
 
     QRectF zoomRegion()const;
     void setZoomRegion(const QRect &region);
     QPointF zoomPosition()const;
-
     //void setZoomFactor(qreal factor);
-	qreal zoomFactor()const { return m_zoomFactor; }
-
+	double zoomFactor() const { return m_zoomFactor; }
 	void setMinZoomFactor(qreal minFactor);
-	qreal minZoomFactor()const { return m_minZoomFactor; }
-
-	virtual ~ZoomViwer();
+	double minZoomFactor() const { return m_minZoomFactor; }
+	virtual ~ZoomView();
 protected:
     void paintEvent(QPaintEvent *event)override;
     void mousePressEvent(QMouseEvent *event)override;
@@ -41,8 +35,6 @@ signals:
 private:
     static constexpr int WIDTH = 300;
     static constexpr int HEIGHT = 200;
-		
-
 	qreal m_zoomFactor;
 	qreal m_minZoomFactor;
 	QRectF m_imageRect;		//The position of the thumbnail in the Widget
@@ -51,6 +43,21 @@ private:
 	size_t m_originalWidth;	
 	size_t m_originalHeight;
 	QImage m_thumbnail;
+};
+
+class NavigationViewPrivate;
+
+class NavigationView:public QWidget
+{
+public:
+	NavigationView(QWidget * parent = nullptr);
+	void setImage(const QImage & image);
+	void setRegion(const QRect & region);
+	QRect region()const;
+	QPoint topLeftPosition()const;
+
+private:
+	Q_OBJECT
 };
 
 #endif // ZOOMVIWER_H
