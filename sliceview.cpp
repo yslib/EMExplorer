@@ -118,11 +118,9 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 				m_currentPaintingSlice = slice;
 				m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
 				m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
+
 				m_paintingItem->setPen(m_pen);
 				m_paintingItem->appendPoint(itemPoint);
-
-				//m_paintViewPointsBuffer.clear();
-				//m_paintViewPointsBuffer << viewPos;
 				event->accept();
 				return;	//In painting state, We only find the click position on slice and do nothing else
 			}

@@ -144,8 +144,8 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 }
 void MarkModel::detachFromView()
 {
-	disconnect(this, &MarkModel::modified, m_view, &ImageView::markModified);
-	disconnect(this, &MarkModel::saved, m_view, &ImageView::markSaved);
+	disconnect(this, &MarkModel::modified, m_view, &ImageCanvas::markModified);
+	disconnect(this, &MarkModel::saved, m_view, &ImageCanvas::markSaved);
 	m_view = nullptr;
 	m_dataModel = nullptr;
 }
@@ -204,7 +204,7 @@ void MarkModel::initSliceMarkContainerHelper()
 }
 
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
-	ImageView * view,
+	ImageCanvas * view,
 	TreeItem * root,
 	QObject * parent) :
 	QAbstractItemModel(parent),

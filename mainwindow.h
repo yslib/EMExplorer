@@ -9,7 +9,7 @@ class QAbstractTableModel;
 class QAction;
 class QSettings;
 QT_END_NAMESPACE
-class ImageView;
+class ImageCanvas;
 class MarkModel;
 class ProfileView;
 class MRC;
@@ -32,14 +32,14 @@ private slots:
 
 	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
 	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
-	void writeSettingsForImageView(ImageView * view, QSettings * settings);
-	void readSettingsForImageView(ImageView * view, QSettings * settings);
+	void writeSettingsForImageView(ImageCanvas * view, QSettings * settings);
+	void readSettingsForImageView(ImageCanvas * view, QSettings * settings);
 	void readSettings();
 	void writeSettings();
 private:
 	Q_OBJECT
 	//Widgets
-	ImageView * m_imageView;
+	ImageCanvas * m_imageView;
 	QDockWidget * m_profileViewDockWidget;
 	ProfileView * m_profileView;
 	QDockWidget * m_treeViewDockWidget;

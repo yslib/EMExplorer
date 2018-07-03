@@ -119,10 +119,28 @@ static void drawHighlightSelected(
 
 StrokeMarkItem::StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent) :QGraphicsPolygonItem(parent)
 {
+
 }
 
 StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : QGraphicsPolygonItem(parent)
 {
+
+}
+
+QVector<QPair<int,QString>> StrokeMarkItem::propertyKey() const
+{
+	const  static QVector<QPair<int, QString>> propertyKeys = {
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+	};
+
+	return propertyKeys;
 }
 
 void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

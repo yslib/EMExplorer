@@ -71,7 +71,7 @@ void MainWindow::open()
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
 	Q_UNUSED(name);
 	auto markModel = m_imageView->markModel();
-
+	
 	if(markModel != nullptr && markModel->dirty() == true)
 	{
 		auto button = QMessageBox::warning(this, 
@@ -250,7 +250,7 @@ void MainWindow::readSettingsForDockWidget(QDockWidget* dock, QSettings* setting
 	settings->endGroup();
 }
 
-void MainWindow::writeSettingsForImageView(ImageView * view, QSettings * settings)
+void MainWindow::writeSettingsForImageView(ImageCanvas * view, QSettings * settings)
 {
 	if (settings == nullptr)
 	{
@@ -265,7 +265,7 @@ void MainWindow::writeSettingsForImageView(ImageView * view, QSettings * setting
 	settings->endGroup();
 }
 
-void MainWindow::readSettingsForImageView(ImageView * view, QSettings * settings)
+void MainWindow::readSettingsForImageView(ImageCanvas * view, QSettings * settings)
 {
 	if (settings == nullptr)
 	{
@@ -321,9 +321,9 @@ void MainWindow::createWidget()
 	m_profileViewDockWidget->setObjectName(QStringLiteral("profileviewdockwidget"));
 
 	m_viewMenu->addAction(m_profileViewDockWidget->toggleViewAction());
-	m_imageView = new ImageView;
-	connect(m_imageView, &ImageView::markModified, [this](){setWindowTitle(QStringLiteral("MRC Marker*"));});
-	connect(m_imageView, &ImageView::markSaved, [this](){setWindowTitle(QStringLiteral("MRC Marker"));});
+	m_imageView = new ImageCanvas;
+	connect(m_imageView, &ImageCanvas::markModified, [this](){setWindowTitle(QStringLiteral("MRC Marker*"));});
+	connect(m_imageView, &ImageCanvas::markSaved, [this](){setWindowTitle(QStringLiteral("MRC Marker"));});
 
 	setCentralWidget(m_imageView);
 }

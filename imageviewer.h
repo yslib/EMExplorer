@@ -1,6 +1,5 @@
 #ifndef IMAGEVIEWER_H
 #define IMAGEVIEWER_H
-//#include <QMainWindow>
 
 #include <QList>
 #include <QWidget>
@@ -46,11 +45,12 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
-class ImageView :public QWidget
+
+class ImageCanvas :public QWidget
 {
 	Q_OBJECT
 public:
-	ImageView(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
+	ImageCanvas(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
 	int topSliceIndex()const;
 	int rightSliceIndex()const;
 	int frontSliceIndex()const;
@@ -99,9 +99,11 @@ private:
 	void createToolBar();
 	void createConnections();
 	void createContextMenu();
+	QIcon createColorIcon(const QColor & color);
 
 	//update helper
 	void updatePen(const QPen & pen);
+
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
 	void updateMarks(SliceType type);
@@ -131,7 +133,7 @@ private:
 	int currentIndexHelper(SliceType type);
 
 	SliceView * focusOn();
-	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
+	static MarkModel * createMarkModel(ImageCanvas * view, AbstractSliceDataModel * d);
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;

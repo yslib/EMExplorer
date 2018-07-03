@@ -1,6 +1,7 @@
 #ifndef ABSTRACTMARKITEM_H
 #define ABSTRACTMARKITEM_H
 #include "globals.h"
+//#include <QVariant>
 //#include <QList>
 #include <QAbstractGraphicsShapeItem>
 //#include <QtContainerFwd>
@@ -68,10 +69,14 @@
 
 
 
-
 class StrokeMarkItem :public QGraphicsPolygonItem {
 public:
+
+	typedef QVector<QPair<int, QString>> PropertyMetaType;
+	PropertyMetaType propertyKey()const;			// this should be a force-implement interface
 	enum {Type = StrokeMark};
+
+
 	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
 	StrokeMarkItem(QGraphicsItem * parent = nullptr);
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;

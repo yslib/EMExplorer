@@ -30,7 +30,7 @@ private:
 	SliceType m_type;
 	QString m_sliceName;
 
-	friend class ImageView;
+	friend class ImageCanvas;
 };
 
 #endif // ABSTRACTPLUGIN_H
