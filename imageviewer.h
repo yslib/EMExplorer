@@ -50,7 +50,11 @@ class ImageCanvas :public QWidget
 {
 	Q_OBJECT
 public:
-	ImageCanvas(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
+	ImageCanvas(QWidget * parent = nullptr,
+		bool topSliceVisible = true, 
+		bool rightSliceVisible = true,
+		bool frontSliceVisible = true,
+		AbstractSliceDataModel * model = nullptr);
 	int topSliceIndex()const;
 	int rightSliceIndex()const;
 	int frontSliceIndex()const;
@@ -82,7 +86,8 @@ signals:
 	void frontSliceSelected(const QPoint & point);
 	void markModified();
 	void markSaved();
-	public slots:
+	void markSeleteced(QGraphicsItem * item);
+public slots:
 	void setEnabled(bool enable);
 	void onTopSlicePlay(bool enable);
 	void onRightSlicePlay(bool enable);
@@ -100,10 +105,8 @@ private:
 	void createConnections();
 	void createContextMenu();
 	QIcon createColorIcon(const QColor & color);
-
 	//update helper
 	void updatePen(const QPen & pen);
-
 	void updateSliceCount(SliceType type);
 	void updateSlice(SliceType type);
 	void updateMarks(SliceType type);
@@ -114,24 +117,19 @@ private:
 	void updateRightSliceActions();
 	void installMarkModel(MarkModel* model);
 	void updateSliceModel();
-
 	void detachMarkModel();
 	//void detachSliceModel();
-
-
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 	inline void setTopSliceCountHelper(int value);
 	inline void setRightSliceCountHelper(int value);
 	inline void setFrontSliceCountHelper(int value);
-
 	void markAddedHelper(SliceType type, QGraphicsItem * mark);
 	void markDeleteHelper();
+	void markSingleSelectionHelper();
 	void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);
 	void addCategoryManagerHelper(const QString & name, const QColor & color);
-
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
-
 	SliceView * focusOn();
 	static MarkModel * createMarkModel(ImageCanvas * view, AbstractSliceDataModel * d);
 	//Data Model

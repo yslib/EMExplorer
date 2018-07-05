@@ -145,9 +145,9 @@ void ImageCanvas::createConnections()
 	connect(m_rightView, &SliceView::sliceSelected, this, &ImageCanvas::rightSliceSelected);
 	connect(m_frontView, &SliceView::sliceSelected, this, &ImageCanvas::frontSliceSelected);
 
-	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
-	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
-	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
+	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark);});
+	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark);});
+	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark);});
 
 	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateTopSliceActions(); });
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
@@ -194,6 +194,11 @@ void ImageCanvas::createConnections()
 	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
 	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
 	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
+
+	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); updatePen(pen); });
 	connect(m_colorAction, &QAction::triggered, [this](bool enable)
 	{
@@ -274,6 +279,7 @@ void ImageCanvas::updateDeleteAction()
 			|| m_rightView->selectedItemCount()
 			|| m_frontView->selectedItemCount());
 	m_markDeletionAction->setEnabled(enable);
+
 }
 
 void ImageCanvas::updateTopSliceActions()
@@ -612,6 +618,21 @@ void ImageCanvas::markDeleteHelper()
 		foreach(auto item, m_frontView->selectedItems())
 		items << item;
 	m_markModel->removeMarks(items);
+}
+
+void ImageCanvas::markSingleSelectionHelper()
+{
+	int count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
+	if (count != 1)
+		return;
+	QGraphicsItem * item = nullptr;
+	if (m_topView->selectedItemCount() == 1)
+		item = m_topView->selectedItems()[0];
+	else if (m_rightView->selectedItemCount() == 1)
+		item = m_rightView->selectedItems()[0];
+	else if (m_frontView->selectedItemCount() == 1)
+		item = m_frontView->selectedItems()[0];
+	emit markSeleteced(item);
 }
 
 void ImageCanvas::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)

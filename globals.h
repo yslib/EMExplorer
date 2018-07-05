@@ -44,7 +44,7 @@ enum ItemTypes
 
 namespace MarkProperty
 {
-	enum
+	enum Property
 	{
 		Color,
 		CategoryColor,
@@ -54,22 +54,20 @@ namespace MarkProperty
 		SliceType,
 		VisibleState,
 		Length,
+		PropertyInfo
 	};
 }
 
 class ResourceException:public std::exception
 {
 public:
-	ResourceException():exception("Allocation for resources faildd.",1){}
+	ResourceException():exception("Allocation for resources faild.",1){}
 };
 class FileOpenException:public std::exception
 {
 public:
 	FileOpenException() :exception("Opening file failed", 2){}
 };
-
-
-
 
 
 #endif // GLOBALS_H

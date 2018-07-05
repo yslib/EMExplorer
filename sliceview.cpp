@@ -25,7 +25,7 @@ m_paintNavigationView(false)
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setDragMode(QGraphicsView::RubberBandDrag);
-	setOperation(OperationState::Move);
+	setOperation(Operation::Move);
 	m_anchorItem = new QGraphicsPixmapItem(createAnchorItemPixmap());
 	m_anchorItem->setVisible(false);
 	setStyleSheet(QStringLiteral("border:0px solid white"));
@@ -46,7 +46,7 @@ void SliceView::wheelEvent(QWheelEvent *event) {
 void SliceView::focusInEvent(QFocusEvent* event)
 {
 	Q_UNUSED(event);
-	setStyleSheet(QStringLiteral("border:2px solid red"));
+	setStyleSheet(QStringLiteral("border:1px solid red"));
 }
 
 void SliceView::focusOutEvent(QFocusEvent* event)
@@ -106,7 +106,7 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 	}
 
 	for (const auto & item : items) {
-		if (m_state == OperationState::Paint
+		if (m_state == Operation::Paint
 			&&button == Qt::LeftButton)
 		{
 			SliceItem * slice = qgraphicsitem_cast<SliceItem*>(item);
@@ -125,7 +125,7 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 				return;	//In painting state, We only find the click position on slice and do nothing else
 			}
 		}
-		else if (m_state == OperationState::Selection
+		else if (m_state == Operation::Selection
 			&& button == Qt::LeftButton)
 		{
 			SliceItem * slice = qgraphicsitem_cast<SliceItem*>(item);
@@ -146,7 +146,7 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 			}
 
 		}
-		else if (m_state == OperationState::Move && button == Qt::LeftButton)
+		else if (m_state == Operation::Move && button == Qt::LeftButton)
 		{
 			event->accept();
 			return;
@@ -159,7 +159,7 @@ void SliceView::mouseMoveEvent(QMouseEvent *event)
 {
 	if (m_state == None)
 		return;
-	if (m_state == OperationState::Paint)		// on drawing a mark
+	if (m_state == Operation::Paint)		// on drawing a mark
 	{
 		if (m_currentPaintingSlice != nullptr)
 		{
@@ -169,7 +169,7 @@ void SliceView::mouseMoveEvent(QMouseEvent *event)
 			return;
 		}
 	}
-	else if (m_state == OperationState::Move)	//move the slice
+	else if (m_state == Operation::Move)	//move the slice
 	{
 		QPointF currentScenePoint = event->pos();
 		QPointF delta = currentScenePoint - m_prevViewPoint;
@@ -197,7 +197,7 @@ void SliceView::mouseMoveEvent(QMouseEvent *event)
 		//}
 		//return QGraphicsView::mouseMoveEvent(event);
 	}
-	else if (m_state == OperationState::Selection)
+	else if (m_state == Operation::Selection)
 	{
 		QGraphicsView::mouseMoveEvent(event);
 	}
@@ -209,7 +209,7 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 	if (m_state == None)
 		return;
 	Qt::MouseButton button = event->button();
-	if (button == Qt::LeftButton && m_state == OperationState::Paint)			//create a mark
+	if (button == Qt::LeftButton && m_state == Operation::Paint)			//create a mark
 	{
 		Q_ASSERT_X(m_currentPaintingSlice, 
 			"SliceView::mouseReleaseEvent", "null pointer");
@@ -218,16 +218,16 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 			emit markAdded(m_paintingItem);
 		m_currentPaintingSlice = nullptr;
 		return;
-	}else if(button == Qt::LeftButton && m_state == OperationState::Move)
+	}else if(button == Qt::LeftButton && m_state == Operation::Move)
 	{
 		QGraphicsView::mouseReleaseEvent(event);
-	}else if(button == Qt::LeftButton && m_state == OperationState::Selection)
+	}else if(button == Qt::LeftButton && m_state == Operation::Selection)
 	{
 		QGraphicsView::mouseReleaseEvent(event);
 	}
 	QGraphicsView::mouseReleaseEvent(event);
 }
-void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
+void SliceView::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
 	if (sliceItem == nullptr)
 	{
@@ -241,6 +241,8 @@ void SliceView::set_image_helper_(const QPoint& pos, const QImage& inImage, Slic
 		 *We assumpt that the size of rect of the scene is two times larger than the size of image.
 		 */
 		QRect rect = inImage.rect();
+		//auto rectInView = mapFromScene(rect).boundingRect();
+		translate(rect.width()/2, rect.height()/2);
 		rect.adjust(-rect.width(),-rect.height(),0,0);
 		scene()->setSceneRect(rect);
 	}
@@ -333,7 +335,7 @@ void SliceView::setImage(const QImage& image)
 	//set_image_helper(image);
 	QSize size = image.size();
 	QPoint pos = QPoint(-size.width() / 2, -size.height() / 2);
-	set_image_helper_(pos, image, m_slice, &m_image);
+	setImageHelper(pos, image, m_slice, &m_image);
 }
 
 void SliceView::clearSliceMarks()
@@ -360,10 +362,3 @@ QSize SliceView::sizeHint() const
 {
 	return m_image.size()*0.45;
 }
-
-//
-//QSize SliceView::sizeHint() const
-//{
-//	return QAbstractScrollArea::sizeHint();
-//}
-

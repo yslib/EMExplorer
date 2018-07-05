@@ -119,28 +119,12 @@ static void drawHighlightSelected(
 
 StrokeMarkItem::StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent) :QGraphicsPolygonItem(parent)
 {
-
+	createPropertyInfo();
 }
 
 StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : QGraphicsPolygonItem(parent)
 {
-
-}
-
-QVector<QPair<int,QString>> StrokeMarkItem::propertyKey() const
-{
-	const  static QVector<QPair<int, QString>> propertyKeys = {
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
-	};
-
-	return propertyKeys;
+	createPropertyInfo();
 }
 
 void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -158,10 +142,42 @@ void StrokeMarkItem::appendPoint(const QPointF& p)
 	poly.append(p);
 	setPolygon(poly);
 	update(boundingRect());
+	updateLength();
 }
 
 
+void StrokeMarkItem::createPropertyInfo()
+{
+	const MarkPropertyInfo propertyInfos = {
+		qMakePair(MarkProperty::Color,QStringLiteral("Color")),
+		qMakePair(MarkProperty::CategoryColor,QStringLiteral("Category Color")),
+		qMakePair(MarkProperty::Name,QStringLiteral("ID")),
+		qMakePair(MarkProperty::CategoryName,QStringLiteral("Category ID")),
+		qMakePair(MarkProperty::SliceIndex,QStringLiteral("Slice Index")),
+		qMakePair(MarkProperty::SliceType,QStringLiteral("Slice Type")),
+		qMakePair(MarkProperty::VisibleState,QStringLiteral("Visible")),
+		qMakePair(MarkProperty::Length,QStringLiteral("Length")),
+	};
+	setData(MarkProperty::PropertyInfo, QVariant::fromValue(propertyInfos));
+}
 
+void StrokeMarkItem::updateLength()
+{
+	const auto  & poly = polygon();
+	double length = data(MarkProperty::Length).toDouble();
+	const int c = poly.count();
+	if (c <= 1)
+	{
+		setData(MarkProperty::Length, 0);
+		return;
+	}
+	const auto &p0 = poly[c - 2];
+	const auto &p1 = poly[c - 1];
+	const auto dx = p0.x() - p1.x();
+	const auto dy = p0.y() - p1.y();
+	length += std::sqrt(dx*dx + dy * dy);
+	setData(MarkProperty::Length, length);
+}
 
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item)
 {
@@ -198,11 +214,11 @@ QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)
 		QColor categoryColor;			//QColor
 		QString categoryName;			//QString
 		QColor color;					//QColor
-		double length;				//double
+		double length;					//double
 		QString name;					//QString
-		int sliceIndex;			//int
-		int sliceType;				//int
-		bool vis;					//bool
+		int sliceIndex;					//int
+		int sliceType;					//int
+		bool vis;						//bool
 		QPolygonF poly;					//QPolygon
 		QPen pen;
 		stream >> categoryColor

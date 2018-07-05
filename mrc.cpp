@@ -494,6 +494,7 @@ bool MRC::readDataFromFileHelper(FILE *fp)
                 for(size_t i =0;i<dataCount;i++){
                     static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>(k*buffer[i]);
                 }
+				m_header.mode = MRC_MODE_BYTE;
             }
         }else{
             std::cerr<<"Only float and byte type are supported now.";

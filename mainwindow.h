@@ -14,8 +14,7 @@ class MarkModel;
 class ProfileView;
 class MRC;
 class MarkTreeView;
-
-
+class MarkInfoWidget;
 class MainWindow : public QMainWindow
 {
 public:
@@ -44,6 +43,7 @@ private:
 	ProfileView * m_profileView;
 	QDockWidget * m_treeViewDockWidget;
 	MarkTreeView * m_treeView;
+	MarkInfoWidget * m_markInfoWidget;
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;
@@ -52,8 +52,6 @@ private:
 	//Actions
 	QAction * m_openAction;
 	QAction * m_saveAction;
-    //QAction * m_saveAsAction;
-    //QAction * m_colorAction;
 	QAction * m_openMarkAction;
 
 	void createWidget();

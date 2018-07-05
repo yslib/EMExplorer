@@ -4,6 +4,8 @@
 //#include <QVariant>
 //#include <QList>
 #include <QAbstractGraphicsShapeItem>
+#include <qcoreapplication.h>
+
 //#include <QtContainerFwd>
 
 //
@@ -66,32 +68,25 @@
 //	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(poly, parent){}
 //};
 //
-
-
+typedef QList<QPair<MarkProperty::Property, QString>> MarkPropertyInfo;
+Q_DECLARE_METATYPE(MarkPropertyInfo)
 
 class StrokeMarkItem :public QGraphicsPolygonItem {
 public:
-
-	typedef QVector<QPair<int, QString>> PropertyMetaType;
-	PropertyMetaType propertyKey()const;			// this should be a force-implement interface
 	enum {Type = StrokeMark};
-
-
 	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
 	StrokeMarkItem(QGraphicsItem * parent = nullptr);
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;
 	void appendPoint(const QPointF & p);
 	int type() const override { return Type; }
+private:
+	void createPropertyInfo();
+	void updateLength();
 };
 
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item);
 QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item);
-
-
-//Q_DECLARE_METATYPE(QGraphicsItem*);
 Q_DECLARE_METATYPE(QSharedPointer<QGraphicsItem>);
-
-
 inline QDataStream& operator<<(QDataStream& stream, const QSharedPointer<QGraphicsItem>& item)
 {
 	stream << item.data();

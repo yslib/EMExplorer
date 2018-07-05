@@ -16,6 +16,8 @@
 #include "mrcdatamodel.h"
 #include "markmodel.h"
 #include "marktreeview.h"
+#include <QTableWidget>
+#include "markinfowidget.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent):
@@ -317,14 +319,22 @@ void MainWindow::createWidget()
 	m_profileViewDockWidget->setWidget(m_profileView);
 	addDockWidget(Qt::RightDockWidgetArea, m_profileViewDockWidget);
 
-	m_profileViewDockWidget->installEventFilter(this);
-	m_profileViewDockWidget->setObjectName(QStringLiteral("profileviewdockwidget"));
+	m_markInfoWidget = new MarkInfoWidget(this);
+	
+	
+	auto dock = new QDockWidget(QStringLiteral("Mark Info"));
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	dock->setWidget(m_markInfoWidget);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
+
+	//m_profileViewDockWidget->installEventFilter(this);
+	//m_profileViewDockWidget->setObjectName(QStringLiteral("profileviewdockwidget"));
 
 	m_viewMenu->addAction(m_profileViewDockWidget->toggleViewAction());
 	m_imageView = new ImageCanvas;
 	connect(m_imageView, &ImageCanvas::markModified, [this](){setWindowTitle(QStringLiteral("MRC Marker*"));});
 	connect(m_imageView, &ImageCanvas::markSaved, [this](){setWindowTitle(QStringLiteral("MRC Marker"));});
-
+	connect(m_imageView, &ImageCanvas::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
 	setCentralWidget(m_imageView);
 }
 
@@ -334,7 +344,6 @@ void MainWindow::createMenu()
 	m_fileMenu = menuBar()->addMenu(QStringLiteral("File"));
 	m_fileMenu->addAction(m_openAction);
 	m_fileMenu->addAction(m_saveAction);
-	//m_fileMenu->addAction(m_saveAsAction);
 	//View menu
 	m_viewMenu = menuBar()->addMenu(QStringLiteral("View"));
 
@@ -348,20 +357,11 @@ void MainWindow::createActions()
 	QToolBar * toolBar = addToolBar(QStringLiteral("Tools"));
 	toolBar->addAction(m_openAction);
 	connect(m_openAction, &QAction::triggered, this, &MainWindow::open);
-
-
-
 	//save mark action
 	 m_saveAction = new QAction(QIcon(":/icons/resources/icons/save_as.png"), QStringLiteral("Save Mark"),this);
 	 m_saveAction->setToolTip(QStringLiteral("Save Mark"));
 	toolBar->addAction(m_saveAction);
 	connect(m_saveAction, &QAction::triggered, this, &MainWindow::saveMark);
-
-	//save data as action
-	//m_saveAsAction= new QAction(this);
-	//m_saveAsAction->setText(QStringLiteral("Save Data As"));
-	//toolBar->addAction(m_saveAsAction);
-	//connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
 
 	//open mark action
 	m_openMarkAction = new QAction(QIcon(":/icons/resources/icons/open_mark.png"),QStringLiteral("Open Mark"),this);
@@ -386,13 +386,6 @@ void MainWindow::createMarkTreeView()
 	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
 	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 
-	//m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	//QAction * m_markDeleteAction = new QAction(QStringLiteral("Delete"),m_treeView);
-	//QAction * m_markRenameAction = new QAction(QStringLiteral("Delete"),m_treeView);
-	//QAction * m_markUnionAction = new QAction(QStringLiteral("Union"),m_treeView);
-	//m_treeView->addAction(m_markDeleteAction);
-	//m_treeView->addAction(m_markRenameAction);
-	//m_treeView->addAction(m_markUnionAction);
 
 }
 
