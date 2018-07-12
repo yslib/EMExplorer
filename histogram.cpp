@@ -371,7 +371,9 @@ void HistogramViewer::updateImage()
     m_hist->setImage(oriImage);			//Note:: this variable is no longer the original image.
 	SliceItem * item = sliceItem();
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
+	qDebug() << item->pos();
 	item->setPixmap(QPixmap::fromImage(oriImage));
+	qDebug() << item->pos();
 }
 
 //QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)

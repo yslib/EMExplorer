@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     sliceview.cpp \
     marktreeview.cpp \
     categoryitem.cpp \
-    markinfowidget.cpp
+    markinfowidget.cpp \
+    volumewidget.cpp
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -70,7 +71,8 @@ HEADERS  += mainwindow.h \
     sliceview.h \
     marktreeview.h \
     categoryitem.h \
-    markinfowidget.h
+    markinfowidget.h \
+    volumewidget.h
 
 FORMS    +=
 

@@ -804,7 +804,7 @@ void ImageCanvas::onTopSlicePlay(bool enable)
 {
 	if (enable)
 	{
-		m_topTimerId = startTimer(10);
+		m_topTimerId = startTimer(50);
 		//qDebug() << "onTopSliceTimer" << m_topTimerId;
 		m_topSlicePlayDirection = PlayDirection::Forward;
 	}
@@ -819,7 +819,7 @@ void ImageCanvas::onRightSlicePlay(bool enable)
 {
 	if (enable)
 	{
-		m_rightTimerId = startTimer(10);
+		m_rightTimerId = startTimer(50);
 		//qDebug() << "onRightSliceTimer" << m_rightTimerId;
 		m_rightSlicePlayDirection = PlayDirection::Forward;
 	}
@@ -834,7 +834,7 @@ void ImageCanvas::onFrontSlicePlay(bool enable)
 {
 	if (enable)
 	{
-		m_frontTimerId = startTimer(10);
+		m_frontTimerId = startTimer(50);
 		//qDebug() << "onFrontSliceTimer" << m_frontTimerId;
 		m_frontSlicePlayDirection = PlayDirection::Forward;
 	}
