@@ -140,6 +140,7 @@ private:
 	SliceView * m_topView;
 	SliceView * m_rightView;
 	SliceView * m_frontView;
+	
 	//Tool Bar
 	QToolBar * m_viewToolBar;
 	QToolBar * m_editToolBar;
@@ -156,10 +157,11 @@ private:
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
 	QAction * m_resetAction;
-
+	
 	QAction *m_topSlicePlayAction;
 	QAction *m_rightSlicePlayAction;
 	QAction *m_frontSlicePlayAction;
+	QAction * m_volumeRenderAction;
 	QToolButton * m_menuButton;
 
 	//menu on view toolbar

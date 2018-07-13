@@ -16,6 +16,8 @@ public:
     inline int topSliceCount() const Q_DECL_OVERRIDE;
     inline int rightSliceCount() const Q_DECL_OVERRIDE;
     inline int frontSliceCount() const Q_DECL_OVERRIDE;
+
+	
 private:
     QSharedPointer<MRC> m_d;
 };

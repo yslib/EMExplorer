@@ -22,6 +22,8 @@
 #include "sliceview.h"
 #include "categoryitem.h"
 
+#include "volume/VolumeRenderingWindow.h"
+
 
 inline bool ImageView::contains(const QWidget* widget, const QPoint& pos)
 {
@@ -54,6 +56,15 @@ void ImageView::createToolBar()
 	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
 	m_zoomOutAction = new QAction(QIcon(":icons/resources/icons/zoom_out.png"),QStringLiteral("Zoom Out"), this);
 	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
+
+	m_volumeRenderAction = new QAction(QStringLiteral("Volume Render"), this);
+	m_volumeRenderAction->setToolTip(QStringLiteral("Volume Rendering"));
+	connect(m_volumeRenderAction, &QAction::triggered, [this]() {
+		auto window = new VolumeRenderingWindow(this);
+		window->setAttribute(Qt::WA_DeleteOnClose);
+		window->show();
+	});
+
 	//tool bar
 	m_viewToolBar = new QToolBar(QStringLiteral("View ToolBar"), this);
 	m_layout->addWidget(m_viewToolBar, 0, 0, 1, 2);
@@ -75,6 +86,7 @@ void ImageView::createToolBar()
 	m_viewToolBar->addAction(m_zoomInAction);
 	m_viewToolBar->addAction(m_zoomOutAction);
 	m_viewToolBar->addAction(m_resetAction);
+	m_viewToolBar->addAction(m_volumeRenderAction);
 	//create menu on toolbar
 	m_menu = new QMenu(this);
 	m_menuButton = new QToolButton(this);

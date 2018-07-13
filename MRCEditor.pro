@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts
+QT       += core gui charts opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -44,7 +44,27 @@ SOURCES += main.cpp\
     sliceitem.cpp \
     sliceview.cpp \
     marktreeview.cpp \
-    categoryitem.cpp
+    categoryitem.cpp \
+    volume/BasicControlWidget.cpp \
+    volume/BMPWriter.cpp \
+    volume/ClassificationWidget.cpp \
+    volume/DoubleSlider.cpp \
+    volume/framebufferObject.cpp \
+    volume/TF1DEditor.cpp \
+    volume/TF1DMappingCanvas.cpp \
+    volume/TF1DTextureCanvas.cpp \
+    volume/TransferFunction1DWidget.cpp \
+    volume/Volume.cpp \
+    volume/VolumeRenderWidget.cpp \
+    volume/Rendering/Shader.cpp \
+    volume/Rendering/ShaderProgram.cpp \
+    volume/VolumeRenderingWindow.cpp \
+    volume/TF2DEditor.cpp \
+    volume/TF2DMappingCanvas.cpp \
+    volume/TF2DPrimitive.cpp \
+    volume/Healpix/cxxutils.cpp \
+    volume/Healpix/healpix_base.cpp \
+
 
 HEADERS  += mainwindow.h \
     mrc.h \
@@ -68,7 +88,45 @@ HEADERS  += mainwindow.h \
     sliceitem.h \
     sliceview.h \
     marktreeview.h \
-    categoryitem.h
+    categoryitem.h \
+    volume/BasicControlWidget.h \
+    volume/BMPWriter.h \
+    volume/ClassificationWidget.h \
+    volume/DoubleSlider.h \
+    volume/framebufferObject.h \
+    volume/ModelData.h \
+    volume/ShaderData.h \
+    volume/TF1DEditor.h \
+    volume/TF1DMappingCanvas.h \
+    volume/TF1DMappingKey.h \
+    volume/TF1DTextureCanvas.h \
+    volume/TransferFunction1DWidget.h \
+    volume/Volume.h \
+    volume/VolumeRenderWidget.h \
+    volume/Rendering/matrix2.h \
+    volume/Rendering/matrix3.h \
+    volume/Rendering/matrix4.h \
+    volume/Rendering/MIPRender.h \
+    volume/Rendering/Shader.h \
+    volume/Rendering/ShaderProgram.h \
+    volume/Rendering/Vector.h \
+    volume/Rendering/VolumeLightingRenderingTF2D.h \
+    volume/Rendering/VolumeLightingRenderTF1D.h \
+    volume/Rendering/VolumeRenderingTF1D.h \
+    volume/Healpix/arr.h \
+    volume/Healpix/constants.h \
+    volume/Healpix/cxxutils.h \
+    volume/Healpix/healpix_base.h \
+    volume/Healpix/message_error.h \
+    volume/Healpix/pointing.h \
+    volume/Healpix/vec3.h \
+    volume/VolumeRenderingWindow.h \
+    volume/TF2DEditor.h \
+    volume/TF2DPrimitive.h \
+    volume/TF2DMappingCanvas.h
+
+
+
 
 FORMS    +=
 
@@ -76,3 +134,20 @@ CONFIG += c++11
 
 RESOURCES += \
     resources.qrc
+
+
+
+INCLUDEPATH += $$PWD/volume/GL/include
+DEPENDPATH += $$PWD/volume/GL/include
+
+
+
+INCLUDEPATH += $$PWD/volume/GL/include
+DEPENDPATH += $$PWD/volume/GL/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/volume/GL/lib/Release/x64/ -lglew32
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/volume/GL/lib/Release/x64/ -lglew32d
+else:unix: LIBS += -L$$PWD/volume/GL/lib/Release/x64/ -lglew32
+
+INCLUDEPATH += $$PWD/volume/GL/include
+DEPENDPATH += $$PWD/volume/GL/include
