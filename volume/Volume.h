@@ -99,6 +99,7 @@ protected:
 
 private:
 	VoxelFormat voxelFormat;
+
 	unsigned char* pOriginalData;		// the original data
 
 	int xiSize, yiSize, ziSize;			// size of the original volume
