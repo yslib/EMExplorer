@@ -12,7 +12,7 @@ using AnchorItem = QGraphicsPixmapItem;
 class SliceView :public QGraphicsView
 {
 public:
-	enum OperationState
+	enum Operation
 	{
 		None = 0,
 		Paint = 1,
@@ -47,7 +47,7 @@ signals:
 	void selectionChanged();
 private:
 	inline static void clear_slice_marks_helper_(SliceItem * slice);
-	void set_image_helper_(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
+	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
 	inline  void set_mark_helper_(const QList<QGraphicsItem*>& items);
 	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
 	QGraphicsItem * createMarkItem();
@@ -75,10 +75,10 @@ private:
 
 inline void SliceView::setOperation(int state)
 {
-	Q_ASSERT_X(state == OperationState::Paint || 
-		state == OperationState::Move || 
-		state == OperationState::Selection||
-		state == OperationState::None,
+	Q_ASSERT_X(state == Operation::Paint || 
+		state == Operation::Move || 
+		state == Operation::Selection||
+		state == Operation::None,
 		"SliceView::setFunction", "state must be exclusive");
 	m_state = state;
 }

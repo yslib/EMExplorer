@@ -9,8 +9,7 @@ QGLFormat getQGLFormat()
     return format;
 }
 
-TF1DTextureCanvas::TF1DTextureCanvas(ModelData *model, QWidget *parent, QGLWidget *shareWidget)
-	: QGLWidget(getQGLFormat(), parent, shareWidget)
+TF1DTextureCanvas::TF1DTextureCanvas(ModelData *model, QWidget *parent /*= 0*/, QGLWidget *shareWidget /*= 0*/) : QGLWidget(getQGLFormat(), parent, shareWidget)
 	, modelData(model)
 {
 	

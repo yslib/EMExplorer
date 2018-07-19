@@ -13,11 +13,11 @@ ProfileView::ProfileView(QWidget* parent): QWidget(parent)
 	//m_listWidget = new QListWidget;
 	m_tableView = new QTableView;
 
-	QGroupBox * listGroup = new QGroupBox;
-	listGroup->setTitle(QStringLiteral("Explorer"));
-	QGridLayout * listLayout = new QGridLayout;
+	//QGroupBox * listGroup = new QGroupBox;
+	//listGroup->setTitle(QStringLiteral("Explorer"));
+	//QGridLayout * listLayout = new QGridLayout;
 	//listLayout->addWidget(m_listWidget, 0, 0);
-	listGroup->setLayout(listLayout);
+	//listGroup->setLayout(listLayout);
 
 	QGroupBox * tableGroup = new QGroupBox;
 	tableGroup->setTitle(QStringLiteral("Details"));
@@ -25,10 +25,10 @@ ProfileView::ProfileView(QWidget* parent): QWidget(parent)
 	tableLayout->addWidget(m_tableView, 0, 0);
 	tableGroup->setLayout(tableLayout);
 
-	layout->addWidget(listGroup, 0,0);
+	//layout->addWidget(listGroup, 0,0);
 	layout->addWidget(tableGroup, 1, 0);
-	layout->setRowStretch(0, 3);
-	layout->setRowStretch(1, 7);
+	//layout->setRowStretch(0, 3);
+	//layout->setRowStretch(1, 7);
 
 	m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	setLayout(layout);

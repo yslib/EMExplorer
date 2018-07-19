@@ -3,7 +3,11 @@
 #include "sliceview.h"
 #include "abstractslicedatamodel.h"
 
-AbstractPlugin::AbstractPlugin(SliceType type,const QString & name,SliceView * view,AbstractSliceDataModel * model,QWidget * parent):
+AbstractPlugin::AbstractPlugin(SliceType type,
+	const QString & name,
+	SliceView * view,
+	AbstractSliceDataModel * model,
+	QWidget * parent):
 QWidget(parent),
 m_model(model),
 m_view(view),
@@ -40,11 +44,12 @@ void AbstractPlugin::slicePlaying(int index)
 
 SliceItem * AbstractPlugin::sliceItem()
 {
-	return static_cast<SliceItem*>(m_view->items().value(0));
+	return static_cast<SliceItem*>(m_view->items().value(1));
 }
 QImage AbstractPlugin::originalImage(int index)
 {
-	Q_ASSERT_X(m_model, "asdfasf", "adsfsadfsadfsdaf");
+	Q_ASSERT_X(m_model, 
+		"AbstractPlugin::originalImage", "null pointer");
 	if (m_model == nullptr)
 		return QImage();
 	switch(m_type)

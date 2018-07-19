@@ -64,6 +64,10 @@ SOURCES += main.cpp\
     volume/TF2DPrimitive.cpp \
     volume/Healpix/cxxutils.cpp \
     volume/Healpix/healpix_base.cpp \
+    markinfowidget.cpp \
+    volumewidget.cpp \
+    volume/renderview.cpp \
+    volume/camera.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -123,9 +127,11 @@ HEADERS  += mainwindow.h \
     volume/VolumeRenderingWindow.h \
     volume/TF2DEditor.h \
     volume/TF2DPrimitive.h \
-    volume/TF2DMappingCanvas.h
-
-
+    volume/TF2DMappingCanvas.h \
+    markinfowidget.h \
+    volumewidget.h \
+    volume/renderview.h \
+    volume/camera.h
 
 
 FORMS    +=

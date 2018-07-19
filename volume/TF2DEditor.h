@@ -2,6 +2,7 @@
 #define TF2DEDITOR_H
 
 #include <QWidget>
+#include <QOpenGLWidget>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;

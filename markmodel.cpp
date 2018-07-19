@@ -6,6 +6,8 @@
 #include "treeitem.h"
 #include <QStyleOptionGraphicsItem>
 #include <QStyledItemDelegate>
+#include <QScopedPointer>
+#include <QPainter>
 #include "categoryitem.h"
 
 /*
@@ -144,8 +146,8 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 }
 void MarkModel::detachFromView()
 {
-	disconnect(this, &MarkModel::modified, m_view, &ImageView::markModified);
-	disconnect(this, &MarkModel::saved, m_view, &ImageView::markSaved);
+	disconnect(this, &MarkModel::modified, m_view, &ImageCanvas::markModified);
+	disconnect(this, &MarkModel::saved, m_view, &ImageCanvas::markSaved);
 	m_view = nullptr;
 	m_dataModel = nullptr;
 }
@@ -204,7 +206,7 @@ void MarkModel::initSliceMarkContainerHelper()
 }
 
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
-	ImageView * view,
+	ImageCanvas * view,
 	TreeItem * root,
 	QObject * parent) :
 	QAbstractItemModel(parent),
@@ -387,7 +389,36 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 	}else if(format == MarkFormat::Raw)
 	{
 		//resetDirt();
-		return false;
+		QImage origin = m_dataModel->originalTopSlice(0);
+		QImage slice(origin.size(), QImage::Format_Grayscale8);
+		const int width = slice.width(), height = slice.height(), depth = m_dataModel->rightSlice(0).width();
+		QScopedPointer<char> buffer(new char[width * height*depth ]);
+		
+		int sliceCount = 0;
+		foreach(const auto & items, m_topSliceVisibleMarks) {
+			//slice.fill(Qt::black);
+			slice = m_dataModel->originalTopSlice(sliceCount);
+			QPainter p(&slice);
+			foreach(const auto & item, items) {
+				auto mark = qgraphicsitem_cast<StrokeMarkItem*>(item);
+				if (mark != nullptr) {
+					const auto & poly = mark->polygon();
+					auto pen = mark->pen();
+					pen.setColor(Qt::black);
+					p.setPen(pen);
+					p.drawPolyline(poly);
+				}
+			}
+			memcpy(buffer.data()+ width * height*sliceCount, slice.bits(), width*height);
+			sliceCount++;
+		}
+		slice.fill(Qt::black);
+		QFile out(fileName);
+		out.open(QIODevice::WriteOnly);
+		if (out.isOpen() == false)
+			return false;
+		out.write((const char *)buffer.data(), width*height*depth);
+		return true;
 	}
 	return false;
 }

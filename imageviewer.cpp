@@ -21,25 +21,25 @@
 #include "markitem.h"
 #include "sliceview.h"
 #include "categoryitem.h"
+#include "volumewidget.h"
 
-#include "volume/VolumeRenderingWindow.h"
 
 
-inline bool ImageView::contains(const QWidget* widget, const QPoint& pos)
+inline bool ImageCanvas::contains(const QWidget* widget, const QPoint& pos)
 {
 	return (widget->rect()).contains(pos);
 }
 
-void ImageView::createWidgets()
+void ImageCanvas::createWidgets()
 {
 
 }
 
 
-
-void ImageView::createToolBar()
+void ImageCanvas::createToolBar()
 {
 	//createToolBar()
+	//qRegisterMetaType("asdfsadf");
 	m_topSlicePlayAction = new QAction(QIcon(":icons/resources/icons/play.png"),QStringLiteral("Play"), this);
 	m_topSlicePlayAction->setToolTip(QStringLiteral("Play"));
 	m_topSlicePlayAction->setCheckable(true);
@@ -57,17 +57,13 @@ void ImageView::createToolBar()
 	m_zoomOutAction = new QAction(QIcon(":icons/resources/icons/zoom_out.png"),QStringLiteral("Zoom Out"), this);
 	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
 
-	m_volumeRenderAction = new QAction(QStringLiteral("Volume Render"), this);
-	m_volumeRenderAction->setToolTip(QStringLiteral("Volume Rendering"));
-	connect(m_volumeRenderAction, &QAction::triggered, [this]() {
-		auto window = new VolumeRenderingWindow(this);
-		window->setAttribute(Qt::WA_DeleteOnClose);
-		window->show();
-	});
+	m_volumeWidgetAction = new QAction(QStringLiteral("Volume Render"), this);
+	m_volumeWidgetAction->setToolTip(QStringLiteral("Volume Rendering"));
+	m_volumeWidgetAction->setCheckable(true);
+	connect(m_volumeWidgetAction, &QAction::triggered, [this](bool check) {m_renderView->setVisible(check);});
 
 	//tool bar
 	m_viewToolBar = new QToolBar(QStringLiteral("View ToolBar"), this);
-	m_layout->addWidget(m_viewToolBar, 0, 0, 1, 2);
 	m_viewToolBar->addWidget(m_topSliceCheckBox);
 	m_viewToolBar->addWidget(m_topSlider);
 	m_viewToolBar->addAction(m_topSlicePlayAction);
@@ -79,6 +75,7 @@ void ImageView::createToolBar()
 	m_viewToolBar->addWidget(m_frontSliceCheckBox);
 	m_viewToolBar->addWidget(m_frontSlider);
 	m_viewToolBar->addAction(m_frontSlicePlayAction);
+	m_viewToolBar->addAction(m_volumeWidgetAction);
 
 	//m_viewToolBar->addAction(m_colorAction);
 	//m_viewToolBar->addAction(m_markAction);
@@ -86,7 +83,7 @@ void ImageView::createToolBar()
 	m_viewToolBar->addAction(m_zoomInAction);
 	m_viewToolBar->addAction(m_zoomOutAction);
 	m_viewToolBar->addAction(m_resetAction);
-	m_viewToolBar->addAction(m_volumeRenderAction);
+	
 	//create menu on toolbar
 	m_menu = new QMenu(this);
 	m_menuButton = new QToolButton(this);
@@ -100,7 +97,6 @@ void ImageView::createToolBar()
 
 	//create edit tool bar
 	m_editToolBar = new QToolBar(QStringLiteral("Edit ToolBar"), this);
-	m_layout->addWidget(m_editToolBar, 1, 0, 1, 2);
 
 	m_markAction = new QAction(QIcon(":icons/resources/icons/mark.png"),QStringLiteral("Mark"), this);
 	m_markAction->setToolTip(QStringLiteral("Mark"));
@@ -140,24 +136,24 @@ void ImageView::createToolBar()
 	m_editToolBar->addAction(m_markDeletionAction);
 }
 
-void ImageView::createConnections()
+void ImageCanvas::createConnections()
 {
 	//forward slider signals
-	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::topSliceChanged);
-	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::rightSliceChanged);
-	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageView::frontSliceChanged);
+	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageCanvas::topSliceChanged);
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageCanvas::rightSliceChanged);
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageCanvas::frontSliceChanged);
 	//update slice
 	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Top); });
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Right); });
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Front); });
 	//forward selected signals
-	connect(m_topView, &SliceView::sliceSelected, this, &ImageView::topSliceSelected);
-	connect(m_rightView, &SliceView::sliceSelected, this, &ImageView::rightSliceSelected);
-	connect(m_frontView, &SliceView::sliceSelected, this, &ImageView::frontSliceSelected);
+	connect(m_topView, &SliceView::sliceSelected, this, &ImageCanvas::topSliceSelected);
+	connect(m_rightView, &SliceView::sliceSelected, this, &ImageCanvas::rightSliceSelected);
+	connect(m_frontView, &SliceView::sliceSelected, this, &ImageCanvas::frontSliceSelected);
 
-	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
-	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
-	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
+	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark);});
+	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark);});
+	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark);});
 
 	connect(m_topSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateTopSliceActions(); });
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
@@ -201,9 +197,14 @@ void ImageView::createConnections()
 		m_frontView->scale(factor, factor);
 	});
 	connect(m_topView, &SliceView::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
-	connect(m_topView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
-	connect(m_rightView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
-	connect(m_frontView, &SliceView::selectionChanged, this, &ImageView::updateDeleteAction);
+	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
+	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
+	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
+
+	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); updatePen(pen); });
 	connect(m_colorAction, &QAction::triggered, [this](bool enable)
 	{
@@ -254,7 +255,7 @@ void ImageView::createConnections()
 
 }
 
-void ImageView::updateActions()
+void ImageCanvas::updateActions()
 {
 	bool enable = m_sliceModel != nullptr;
 	m_addCategoryAction->setEnabled(enable);
@@ -275,7 +276,7 @@ void ImageView::updateActions()
 	updateFrontSliceActions();
 }
 
-void ImageView::updateDeleteAction()
+void ImageCanvas::updateDeleteAction()
 {
 	Q_ASSERT_X(m_topView || m_rightView || m_frontView,
 		"ImageView::updateDeleteAction", "null pointer");
@@ -284,9 +285,10 @@ void ImageView::updateDeleteAction()
 			|| m_rightView->selectedItemCount()
 			|| m_frontView->selectedItemCount());
 	m_markDeletionAction->setEnabled(enable);
+
 }
 
-void ImageView::updateTopSliceActions()
+void ImageCanvas::updateTopSliceActions()
 {
 	bool enable = m_topSliceCheckBox->isChecked() && m_sliceModel != nullptr;
 	m_topSlicePlayAction->setEnabled(enable);
@@ -294,7 +296,7 @@ void ImageView::updateTopSliceActions()
 	m_topView->setHidden(!enable);
 }
 
-void ImageView::updateFrontSliceActions()
+void ImageCanvas::updateFrontSliceActions()
 {
 	bool enable = m_frontSliceCheckBox->isChecked() && m_sliceModel != nullptr;
 	m_frontSlicePlayAction->setEnabled(enable);
@@ -302,7 +304,7 @@ void ImageView::updateFrontSliceActions()
 	m_frontView->setHidden(!enable);
 }
 
-void ImageView::updateRightSliceActions()
+void ImageCanvas::updateRightSliceActions()
 {
 	bool enable = m_rightSliceCheckBox->isChecked() && m_sliceModel != nullptr;
 	m_rightSlicePlayAction->setEnabled(enable);
@@ -310,13 +312,13 @@ void ImageView::updateRightSliceActions()
 	m_rightView->setHidden(!enable);
 }
 
-void ImageView::installMarkModel(MarkModel* model)
+void ImageCanvas::installMarkModel(MarkModel* model)
 {
 	Q_ASSERT_X(m_sliceModel,
 		"ImageView::updateMarkModel", "null pointer");
 
 	m_markModel = model;
-	connect(m_markModel,&MarkModel::modified,this,&ImageView::markModified);
+	connect(m_markModel,&MarkModel::modified,this,&ImageCanvas::markModified);
 	QVector<QPair<QString, QColor>> cates;
 	if (m_markModel != nullptr) {
 		m_markModel->m_view = this;
@@ -334,7 +336,7 @@ void ImageView::installMarkModel(MarkModel* model)
 
 }
 
-void ImageView::updateSliceModel()
+void ImageCanvas::updateSliceModel()
 {
 	updateSliceCount(SliceType::Top);
 	updateSliceCount(SliceType::Right);
@@ -345,14 +347,14 @@ void ImageView::updateSliceModel()
 	updateSlice(SliceType::Top);
 }
 
-void ImageView::detachMarkModel()
+void ImageCanvas::detachMarkModel()
 {
 	if (m_markModel != nullptr)
 		m_markModel->detachFromView();
 }
 
 
-void ImageView::createContextMenu()
+void ImageCanvas::createContextMenu()
 {
 	m_contextMenu = new QMenu(this);
 	///TODO:: add icons here
@@ -371,9 +373,9 @@ void ImageView::createContextMenu()
 			histViewDlg->show();
 			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//histViewDlg->sliceOpenEvent(m_topSlider->value());
-			connect(this, &ImageView::topSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
-			connect(this, &ImageView::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-			connect(this, &ImageView::topSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+			connect(this, &ImageCanvas::topSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageCanvas::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			connect(this, &ImageCanvas::topSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
 			emit topSliceOpened(m_topSlider->value());
 		}
 		else if (m_menuWidget == m_rightView)
@@ -383,9 +385,9 @@ void ImageView::createContextMenu()
 			histViewDlg->show();
 			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//histViewDlg->sliceOpenEvent(m_rightSlider->value());
-			connect(this, &ImageView::rightSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
-			connect(this, &ImageView::rightSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-			connect(this, &ImageView::rightSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+			connect(this, &ImageCanvas::rightSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageCanvas::rightSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			connect(this, &ImageCanvas::rightSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
 			emit rightSliceOpened(m_rightSlider->value());
 		}
 		else if (m_menuWidget == m_frontView)
@@ -395,13 +397,13 @@ void ImageView::createContextMenu()
 			histViewDlg->show();
 			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//histViewDlg->sliceOpenEvent(m_frontSlider->value());
-			connect(this, &ImageView::frontSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
-			connect(this, &ImageView::frontSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-			connect(this, &ImageView::frontSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+			connect(this, &ImageCanvas::frontSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageCanvas::frontSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			connect(this, &ImageCanvas::frontSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
 			emit frontSliceOpened(m_frontSlider->value());
 		}
 		//connect(this, &ImageView::sliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
-		connect(this, &ImageView::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+		connect(this, &ImageCanvas::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
 	});
 	connect(m_pixelViewDlgAction, &QAction::triggered, [this]()
 	{
@@ -414,7 +416,7 @@ void ImageView::createContextMenu()
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//			pixelViewDlg->setImage(m_sliceModel->topSlice(m_topSlider->value()));
 			connect(m_topView, &SliceView::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
-			connect(this, &ImageView::topSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageCanvas::topSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit topSliceOpened(m_topSlider->value());
 
 		}
@@ -426,7 +428,7 @@ void ImageView::createContextMenu()
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//	pixelViewDlg->setImage(m_sliceModel->rightSlice(m_rightSlider->value()));
 			connect(m_rightView, &SliceView::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
-			connect(this, &ImageView::rightSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageCanvas::rightSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit rightSliceOpened(m_rightSlider->value());
 		}
 		else if (m_menuWidget == m_frontView)
@@ -437,7 +439,7 @@ void ImageView::createContextMenu()
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//	pixelViewDlg->setImage(m_sliceModel->frontSlice(m_frontSlider->value()));
 			connect(m_frontView, &SliceView::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
-			connect(this, &ImageView::frontSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &ImageCanvas::frontSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit frontSliceOpened(m_frontSlider->value());
 		}
 	});
@@ -450,7 +452,23 @@ void ImageView::createContextMenu()
 	m_contextMenu->addAction(m_marksManagerDlgAction);
 }
 
-ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisible, bool frontSliceVisible, AbstractSliceDataModel * model) :
+QIcon ImageCanvas::createColorIcon(const QColor & color)
+{
+	constexpr int iconSize = 64;
+	constexpr int barHeight = 20;
+
+	QPixmap pixmap(iconSize, iconSize + barHeight);
+	pixmap.fill(Qt::transparent);
+	QPainter painter(&pixmap);
+	QPixmap image(":icons/resources/icons/color.png");
+	// Draw icon centred horizontally on button.
+	QRect target(0,0,iconSize, iconSize);
+	painter.fillRect(QRect(0,iconSize,iconSize,barHeight), color);
+	painter.drawPixmap(target, image);
+	return QIcon(pixmap);
+}
+
+ImageCanvas::ImageCanvas(QWidget *parent, bool topSliceVisible, bool rightSliceVisible, bool frontSliceVisible, AbstractSliceDataModel * model) :
 	QWidget(parent),
 	m_markModel(nullptr),
 	m_sliceModel(model)
@@ -466,10 +484,10 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 	m_resetAction = new QAction(QIcon(":icons/resources/icons/reset.png"),QStringLiteral("Reset"), this);
 	m_resetAction->setToolTip(QStringLiteral("Reset"));
 
-	m_layout->setSizeConstraint(QLayout::SetFixedSize);
-	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_rightView, 2, 1, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_frontView, 3, 0, 1, 1, Qt::AlignCenter);
+	m_renderView = new VolumeWidget(nullptr, nullptr, this);
+
+
+
 	//m_layout->addWidget(m_reset, 3, 1, 1, 1, Qt::AlignCenter);
 	//sliders
 	m_topSliceCheckBox = new QCheckBox;
@@ -490,10 +508,17 @@ ImageView::ImageView(QWidget *parent, bool topSliceVisible, bool rightSliceVisib
 
 	m_penSizeCBBox->setCurrentIndex(4);
 	setWindowTitle(QStringLiteral("ImageCanvas"));
+	m_layout->setSizeConstraint(QLayout::SetFixedSize);
+	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_rightView, 2, 1, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_frontView, 3, 0, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_renderView, 0, 3, 4, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_viewToolBar, 0, 0, 1, 2);
+	m_layout->addWidget(m_editToolBar, 1, 0, 1, 2);
 	setLayout(m_layout);
 }
 
-void ImageView::changeSliceHelper(int value, SliceType type)
+void ImageCanvas::changeSliceHelper(int value, SliceType type)
 {
 	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
 	SliceView * view = nullptr;
@@ -521,10 +546,10 @@ void ImageView::changeSliceHelper(int value, SliceType type)
 	view->clearSliceMarks();
 }
 
-inline void ImageView::setTopSliceCountHelper(int value) { m_topSlider->setMaximum(value - 1); }
-inline void ImageView::setRightSliceCountHelper(int value) { m_rightSlider->setMaximum(value - 1); }
-inline void ImageView::setFrontSliceCountHelper(int value) { m_frontSlider->setMaximum(value - 1); }
-int ImageView::currentIndexHelper(SliceType type)
+inline void ImageCanvas::setTopSliceCountHelper(int value) { m_topSlider->setMaximum(value - 1); }
+inline void ImageCanvas::setRightSliceCountHelper(int value) { m_rightSlider->setMaximum(value - 1); }
+inline void ImageCanvas::setFrontSliceCountHelper(int value) { m_frontSlider->setMaximum(value - 1); }
+int ImageCanvas::currentIndexHelper(SliceType type)
 {
 	switch (type)
 	{
@@ -539,14 +564,14 @@ int ImageView::currentIndexHelper(SliceType type)
 	}
 }
 
-MarkModel* ImageView::createMarkModel(ImageView *view, AbstractSliceDataModel * d)
+MarkModel* ImageCanvas::createMarkModel(ImageCanvas *view, AbstractSliceDataModel * d)
 {
 	return new MarkModel(d, view,
 		new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
 		nullptr);
 }
 
-void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
+void ImageCanvas::markAddedHelper(SliceType type, QGraphicsItem * mark)
 {
 	QString cate = m_categoryCBBox->currentText();
 	QVariant categoryColor = m_categoryCBBox->currentData();
@@ -592,7 +617,7 @@ void ImageView::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	m_markModel->addMark(cate, mark);
 }
 
-void ImageView::markDeleteHelper()
+void ImageCanvas::markDeleteHelper()
 {
 	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
 	QList<QGraphicsItem*> items;
@@ -608,7 +633,22 @@ void ImageView::markDeleteHelper()
 	m_markModel->removeMarks(items);
 }
 
-void ImageView::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
+void ImageCanvas::markSingleSelectionHelper()
+{
+	int count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
+	if (count != 1)
+		return;
+	QGraphicsItem * item = nullptr;
+	if (m_topView->selectedItemCount() == 1)
+		item = m_topView->selectedItems()[0];
+	else if (m_rightView->selectedItemCount() == 1)
+		item = m_rightView->selectedItems()[0];
+	else if (m_frontView->selectedItemCount() == 1)
+		item = m_frontView->selectedItems()[0];
+	emit markSeleteced(item);
+}
+
+void ImageCanvas::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
 {
 	Q_ASSERT_X(m_categoryCBBox, "ImageVIew::initCCBoxHelper", "null pointer");
 	m_categoryCBBox->clear();
@@ -616,7 +656,7 @@ void ImageView::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& 
 		m_categoryCBBox->addItem(p.first, QVariant::fromValue(p.second));
 }
 
-void ImageView::addCategoryManagerHelper(const QString & name, const QColor & color)
+void ImageCanvas::addCategoryManagerHelper(const QString & name, const QColor & color)
 {
 	m_categoryCBBox->addItem(name, color);
 	m_categoryCBBox->setCurrentText(name);
@@ -624,7 +664,7 @@ void ImageView::addCategoryManagerHelper(const QString & name, const QColor & co
 
 
 
-SliceView* ImageView::focusOn()
+SliceView* ImageCanvas::focusOn()
 {
 	if (m_topView->hasFocus())
 		return m_topView;
@@ -635,63 +675,65 @@ SliceView* ImageView::focusOn()
 	return nullptr;
 }
 
-int ImageView::topSliceIndex() const { return m_topSlider->value(); }
+int ImageCanvas::topSliceIndex() const { return m_topSlider->value(); }
 
-int ImageView::rightSliceIndex() const { return m_rightSlider->value(); }
+int ImageCanvas::rightSliceIndex() const { return m_rightSlider->value(); }
 
-int ImageView::frontSliceIndex() const { return m_frontSlider->value(); }
+int ImageCanvas::frontSliceIndex() const { return m_frontSlider->value(); }
 
-bool ImageView::isTopSliceEnabled() const
+bool ImageCanvas::isTopSliceEnabled() const
 {
 	return m_topSliceCheckBox->isChecked();
 }
 
-bool ImageView::isRightSliceEnabled() const
+bool ImageCanvas::isRightSliceEnabled() const
 {
 	return m_rightSliceCheckBox->isChecked();
 }
 
-bool ImageView::isFrontSliceEnabled() const
+bool ImageCanvas::isFrontSliceEnabled() const
 {
 	return m_topSliceCheckBox->isChecked();
 }
 
-QPen ImageView::pen() const
+QPen ImageCanvas::pen() const
 {
 	return m_topView->pen();
 }
 
-void ImageView::setPen(const QPen & pen)
+void ImageCanvas::setPen(const QPen & pen)
 {
 	updatePen(pen);
 }
- void ImageView::topSliceEnable(bool enable)
+ void ImageCanvas::topSliceEnable(bool enable)
 {
 	m_topSliceCheckBox->setChecked(enable);
 	updateActions();
 }
 
- void ImageView::rightSliceEnable(bool enable)
+ void ImageCanvas::rightSliceEnable(bool enable)
 {
 	m_rightSliceCheckBox->setChecked(enable);
 	updateActions();
 }
 
- void ImageView::frontSliceEnable(bool enable)
+ void ImageCanvas::frontSliceEnable(bool enable)
 {
 	m_frontSliceCheckBox->setChecked(enable);
 	updateActions();
 }
 
-void ImageView::updatePen(const QPen &pen)
+void ImageCanvas::updatePen(const QPen &pen)
 {
 	m_topView->setPen(pen);
 	m_rightView->setPen(pen);
 	m_frontView->setPen(pen);
+	const auto & c = pen.color();
 	m_penSizeCBBox->setCurrentIndex(pen.width() - 1);
+	m_colorAction->setIcon(createColorIcon(c));
 }
 
-AbstractSliceDataModel* ImageView::takeSliceModel(AbstractSliceDataModel* model)
+AbstractSliceDataModel* ImageCanvas::takeSliceModel(AbstractSliceDataModel* model)
 {
 	auto t = m_sliceModel;
 	m_sliceModel = model;
@@ -701,7 +743,7 @@ AbstractSliceDataModel* ImageView::takeSliceModel(AbstractSliceDataModel* model)
 	updateActions();
 	return t;
 }
-MarkModel* ImageView::takeMarkModel(MarkModel* model, bool * success)noexcept
+MarkModel* ImageCanvas::takeMarkModel(MarkModel* model, bool * success)noexcept
 {
 	//check the model
 	if (m_sliceModel == nullptr)
@@ -738,11 +780,11 @@ MarkModel* ImageView::takeMarkModel(MarkModel* model, bool * success)noexcept
 		*success = true;
 	return t;
 }
-MarkModel * ImageView::markModel()
+MarkModel * ImageCanvas::markModel()
 {
 	return m_markModel;
 }
-void ImageView::setEnabled(bool enable)
+void ImageCanvas::setEnabled(bool enable)
 {
 	m_topSliceCheckBox->setEnabled(enable);
 	m_rightSliceCheckBox->setEnabled(enable);
@@ -771,11 +813,11 @@ void ImageView::setEnabled(bool enable)
 }
 
 
-void ImageView::onTopSlicePlay(bool enable)
+void ImageCanvas::onTopSlicePlay(bool enable)
 {
 	if (enable)
 	{
-		m_topTimerId = startTimer(10);
+		m_topTimerId = startTimer(50);
 		//qDebug() << "onTopSliceTimer" << m_topTimerId;
 		m_topSlicePlayDirection = PlayDirection::Forward;
 	}
@@ -786,11 +828,11 @@ void ImageView::onTopSlicePlay(bool enable)
 	}
 }
 
-void ImageView::onRightSlicePlay(bool enable)
+void ImageCanvas::onRightSlicePlay(bool enable)
 {
 	if (enable)
 	{
-		m_rightTimerId = startTimer(10);
+		m_rightTimerId = startTimer(50);
 		//qDebug() << "onRightSliceTimer" << m_rightTimerId;
 		m_rightSlicePlayDirection = PlayDirection::Forward;
 	}
@@ -801,11 +843,11 @@ void ImageView::onRightSlicePlay(bool enable)
 	}
 }
 
-void ImageView::onFrontSlicePlay(bool enable)
+void ImageCanvas::onFrontSlicePlay(bool enable)
 {
 	if (enable)
 	{
-		m_frontTimerId = startTimer(10);
+		m_frontTimerId = startTimer(50);
 		//qDebug() << "onFrontSliceTimer" << m_frontTimerId;
 		m_frontSlicePlayDirection = PlayDirection::Forward;
 	}
@@ -816,7 +858,7 @@ void ImageView::onFrontSlicePlay(bool enable)
 	}
 }
 
-void ImageView::timerEvent(QTimerEvent* event)
+void ImageCanvas::timerEvent(QTimerEvent* event)
 {
 	int timeId = event->timerId();
 	if (timeId == m_topTimerId)
@@ -888,7 +930,7 @@ void ImageView::timerEvent(QTimerEvent* event)
 	}
 }
 
-void ImageView::contextMenuEvent(QContextMenuEvent* event)
+void ImageCanvas::contextMenuEvent(QContextMenuEvent* event)
 {
 	const QPoint pos = event->pos();
 	if (true == contains(m_topView, m_topView->mapFrom(this, pos)))
@@ -909,7 +951,7 @@ void ImageView::contextMenuEvent(QContextMenuEvent* event)
 	event->accept();
 }
 
-void ImageView::updateSliceCount(SliceType type)
+void ImageCanvas::updateSliceCount(SliceType type)
 {
 	switch (type)
 	{
@@ -927,7 +969,7 @@ void ImageView::updateSliceCount(SliceType type)
 	}
 }
 
-void ImageView::updateSlice(SliceType type)
+void ImageCanvas::updateSlice(SliceType type)
 {
 	//
 	SliceView * view = nullptr;
@@ -968,7 +1010,7 @@ void ImageView::updateSlice(SliceType type)
 	view->setMarks((*list)[index]);
 }
 
-void ImageView::updateMarks(SliceType type)
+void ImageCanvas::updateMarks(SliceType type)
 {
 	Q_ASSERT_X(m_markModel,
 		"ImageView::updateMarks", "null pointer");

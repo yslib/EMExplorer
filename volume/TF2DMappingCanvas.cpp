@@ -24,6 +24,7 @@ TF2DMappingCanvas::TF2DMappingCanvas(ModelData *model, QWidget *parent, QGLWidge
     , dragging(false)
     , scaleFactor(1.f)
 {
+	
 }
 
 TF2DMappingCanvas::~TF2DMappingCanvas() 

@@ -3,6 +3,7 @@
 
 #include "Rendering/Vector.h"
 #include <QGLWidget>
+#include <QOpenGLWidget>
 
 class ModelData;
 class TF2DPrimitive;

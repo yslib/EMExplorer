@@ -10,8 +10,7 @@
 #include "DoubleSlider.h"
 #include "TF1DTextureCanvas.h"
 
-TF1DEditor::TF1DEditor(ModelData *model, QWidget *parent, QGLWidget *shareWidget)
-	: QWidget(parent)
+TF1DEditor::TF1DEditor(ModelData *model, QWidget *parent /*= 0*/, QGLWidget *shareWidget /*= 0*/) : QWidget(parent)
 	, transCanvas(0)
 	, textureCanvas(0)
     , doubleSlider(0)

@@ -494,11 +494,28 @@ bool MRC::readDataFromFileHelper(FILE *fp)
                 for(size_t i =0;i<dataCount;i++){
                     static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>(k*buffer[i]);
                 }
+				m_header.mode = MRC_MODE_BYTE;
             }
-        }else{
-            std::cerr<<"Only float and byte type are supported now.";
-            return false;
+        }else if(MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode){
+			std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
+			const int readCount = fread(buffer.get(), elemSize, dataCount, fp);
+			if (readCount != dataCount) {
+				std::cerr << "Runtime Error: Reading size error." << __LINE__ << std::endl;
+				noError = false;
+			}
+			if (true == noError) {
+				auto dmin = static_cast<MRCInt16>(m_header.dmin);
+				auto dmax = static_cast<MRCInt16>(m_header.dmax);
+				double k = 256.0 / (dmax - dmin);
+				for (size_t i = 0; i < dataCount; i++)
+					static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt16>(k*buffer[i]);
+			}
+			m_header.mode = MRC_MODE_BYTE;
         }
+		else {
+			std::cerr << "Unsupported Formate now.\n";
+			return false;
+		}
     }
 
     return (noError);

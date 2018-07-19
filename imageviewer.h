@@ -1,6 +1,5 @@
 #ifndef IMAGEVIEWER_H
 #define IMAGEVIEWER_H
-//#include <QMainWindow>
 
 #include <QList>
 #include <QWidget>
@@ -35,6 +34,7 @@ class AbstractPlugin;
 class AbstractSliceDataModel;
 class SliceItem;
 class SliceView;
+class VolumeWidget;
 
 class SliceScene :public QGraphicsScene
 {
@@ -46,11 +46,16 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
-class ImageView :public QWidget
+
+class ImageCanvas :public QWidget
 {
 	Q_OBJECT
 public:
-	ImageView(QWidget * parent = nullptr, bool topSliceVisible = true, bool rightSliceVisible = true, bool frontSliceVisible = true, AbstractSliceDataModel * model = nullptr);
+	ImageCanvas(QWidget * parent = nullptr,
+		bool topSliceVisible = true, 
+		bool rightSliceVisible = true,
+		bool frontSliceVisible = true,
+		AbstractSliceDataModel * model = nullptr);
 	int topSliceIndex()const;
 	int rightSliceIndex()const;
 	int frontSliceIndex()const;
@@ -82,7 +87,8 @@ signals:
 	void frontSliceSelected(const QPoint & point);
 	void markModified();
 	void markSaved();
-	public slots:
+	void markSeleteced(QGraphicsItem * item);
+public slots:
 	void setEnabled(bool enable);
 	void onTopSlicePlay(bool enable);
 	void onRightSlicePlay(bool enable);
@@ -99,7 +105,7 @@ private:
 	void createToolBar();
 	void createConnections();
 	void createContextMenu();
-
+	QIcon createColorIcon(const QColor & color);
 	//update helper
 	void updatePen(const QPen & pen);
 	void updateSliceCount(SliceType type);
@@ -112,26 +118,21 @@ private:
 	void updateRightSliceActions();
 	void installMarkModel(MarkModel* model);
 	void updateSliceModel();
-
 	void detachMarkModel();
 	//void detachSliceModel();
-
-
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 	inline void setTopSliceCountHelper(int value);
 	inline void setRightSliceCountHelper(int value);
 	inline void setFrontSliceCountHelper(int value);
-
 	void markAddedHelper(SliceType type, QGraphicsItem * mark);
 	void markDeleteHelper();
+	void markSingleSelectionHelper();
 	void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);
 	void addCategoryManagerHelper(const QString & name, const QColor & color);
-
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
-
 	SliceView * focusOn();
-	static MarkModel * createMarkModel(ImageView * view, AbstractSliceDataModel * d);
+	static MarkModel * createMarkModel(ImageCanvas * view, AbstractSliceDataModel * d);
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
@@ -140,7 +141,8 @@ private:
 	SliceView * m_topView;
 	SliceView * m_rightView;
 	SliceView * m_frontView;
-	
+	VolumeWidget * m_renderView;
+
 	//Tool Bar
 	QToolBar * m_viewToolBar;
 	QToolBar * m_editToolBar;
@@ -151,6 +153,7 @@ private:
 	TitledSliderWithSpinBox * m_rightSlider;
 	QCheckBox * m_frontSliceCheckBox;
 	TitledSliderWithSpinBox * m_frontSlider;
+	QAction * m_volumeWidgetAction;
 
 	//actions on view toolbar
 
@@ -161,7 +164,7 @@ private:
 	QAction *m_topSlicePlayAction;
 	QAction *m_rightSlicePlayAction;
 	QAction *m_frontSlicePlayAction;
-	QAction * m_volumeRenderAction;
+	
 	QToolButton * m_menuButton;
 
 	//menu on view toolbar

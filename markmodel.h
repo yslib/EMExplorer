@@ -14,7 +14,7 @@ QT_BEGIN_NAMESPACE
 class QGraphicsItem;
 QT_END_NAMESPACE
 class QGraphicsItem;
-class ImageView;
+class ImageCanvas;
 class AbstractSliceDataModel;
 class TreeItem;
 class CategoryItem;
@@ -30,7 +30,7 @@ class MarkModel :public QAbstractItemModel
 	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
 	//state member
 	const AbstractSliceDataModel * m_dataModel;
-	const ImageView * m_view;
+	const ImageCanvas * m_view;
 	bool m_dirty;
 
 	//a copy from TreeItem
@@ -61,10 +61,10 @@ class MarkModel :public QAbstractItemModel
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
 	const MarkSliceList & frontSliceVisibleMarks()const { return m_frontSliceVisibleMarks; }
-	MarkModel(AbstractSliceDataModel * dataModel,ImageView * view,TreeItem * root ,QObject * parent = nullptr);
+	MarkModel(AbstractSliceDataModel * dataModel,ImageCanvas * view,TreeItem * root ,QObject * parent = nullptr);
 	enum {MagicNumber = 1827635234};
 
-	friend class ImageView;
+	friend class ImageCanvas;
 signals:
 	void modified();
 	void saved();

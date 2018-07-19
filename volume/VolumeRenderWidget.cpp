@@ -115,14 +115,14 @@ void VolumeRenderWidget::volumeChanged()
 void VolumeRenderWidget::TF1DChanged()
 {
 	if(!TF1DReload && currentShader->requireTF1D())
-		update();
+		updateGL();
 	TF1DReload = true;
 }
 
 void VolumeRenderWidget::TF2DChanged()
 {
 	if(!TF2DReload && currentShader->requireTF2D())
-		update();
+		updateGL();
 	TF2DReload = true;
 }
 
@@ -136,7 +136,7 @@ void VolumeRenderWidget::toggleInteractionMode(bool on)
 		TF1DReload = true;
 	if(currentShader->requireTF2D())
 		TF2DReload = true;
-	update();
+	updateGL();
 }
 
 /*
@@ -146,6 +146,7 @@ void VolumeRenderWidget::setMIPShader()
 {
 	currentShader = shaders[MIPRender::shaderName()];
     glClearColor(0.0, 0.0, 0.0, 1.0);
+	//updateGL();
 	updateGL();
 }
 
@@ -154,6 +155,7 @@ void VolumeRenderWidget::setTF1DShader()
 	shaderType = TF1DLIGHTING;
 	currentShader = shaders[VolumeRenderTF1D::shaderName()];
     glClearColor(1.0, 1.0, 1.0, 1.0);
+	//updateGL();
 	updateGL();
 }
 
@@ -162,6 +164,7 @@ void VolumeRenderWidget::setTF1DLightingShader()
 	shaderType = TF1DLIGHTING;
 	currentShader = shaders[VolumeLightingRenderTF1D::shaderName()];
     glClearColor(1.0, 1.0, 1.0, 1.0);
+	//updateGL();
 	updateGL();
 }
 
@@ -170,6 +173,7 @@ void VolumeRenderWidget::setTF2DLightingShader()
 	shaderType = TF2DLIGHTING;
 	currentShader = shaders[VolumeLightingRenderTF2D::shaderName()];
     glClearColor(1.0, 1.0, 1.0, 1.0);
+	//updateGL();
 	updateGL();
 }
 
@@ -595,6 +599,8 @@ void VolumeRenderWidget::initializeVP()
 /*
  * prepare volume texture
  */
+
+
 void VolumeRenderWidget::prepareVolumeTexture()
 {
 	if(!volumeReload) return;
@@ -623,6 +629,12 @@ void VolumeRenderWidget::prepareVolumeTexture()
 
 	// calculate the gradient data and download 3D Texture Data
 	unsigned char *pData = new unsigned char[xVolume * yVolume * zVolume * 4];
+
+	/***********
+	* TODO:: A frequency new operation here will cause a heavy time-consuming.
+	* One of possible remedies could be replacing it with a memory pool
+	*************/
+
 	glEnable(GL_TEXTURE_3D);
 
 	// update texture - the gradient (x, y, z) and scalar data of the original volume
@@ -701,9 +713,9 @@ void VolumeRenderWidget::projectionMatrix()
 void VolumeRenderWidget::modelMatrix()
 {
 	// Set camera transformation
-	Vector3d& t = cameraTowards;
-	Vector3d& u = cameraUp;
-	Vector3d& r = cameraRight;
+	const Vector3d& t = cameraTowards;
+	const Vector3d& u = cameraUp;
+	const Vector3d& r = cameraRight;
 	GLdouble camera_matrix[16] = { r.x, u.x, -t.x, 0, r.y, u.y, -t.y, 0, r.z, u.z, -t.z, 0, 0, 0, 0, 1 };
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
