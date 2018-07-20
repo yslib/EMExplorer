@@ -185,7 +185,7 @@ void ZoomView::mousePressEvent(QMouseEvent *event)
 				else if (x <= left && y > bottom) {
 					mousePos = QPoint(left, bottom);
 				}
-				else if (x>left & x <= right && y>bottom) {
+				else if (x>left && x <= right && y>bottom) {
 					mousePos = QPoint(x, bottom);
 				}
 				else if (x > right && y > bottom) {

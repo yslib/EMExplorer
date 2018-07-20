@@ -15,6 +15,7 @@ class QOpenGLShaderProgram;
 
 class VolumeWidget:public QOpenGLWidget,protected QOpenGLFunctions
 {
+	Q_OBJECT
 public:
     VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, QWidget * parent = nullptr);
 	void setDataModel(AbstractSliceDataModel * model);
@@ -27,7 +28,9 @@ protected:
 	void paintGL() Q_DECL_OVERRIDE;
 	void mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
-
+//signals:
+//	void markModelChanged();
+//	void dataModelChanged();
 private:
 	MarkModel * m_markModel;
 	AbstractSliceDataModel * m_dataModel;

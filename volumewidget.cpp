@@ -91,13 +91,13 @@ VolumeWidget::VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markM
 	m_markModel(markModel),
 	m_camera(QVector3D(0.f,0.f,5.f))
 {
-	qDebug() << "QOpenGLWidget has been created";
 }
 
 void VolumeWidget::setDataModel(AbstractSliceDataModel * model)
 {
 	m_dataModel = model;
 	updateVolumeData();
+	//emit dataModelChanged();
 	update();
 }
 
@@ -105,6 +105,7 @@ void VolumeWidget::setMarkModel(MarkModel* model)
 {
 	m_markModel = model;
 	updateMarkData();
+	//emit markModelChanged();
 	update();
 }
 
@@ -120,7 +121,6 @@ QSize VolumeWidget::sizeHint() const
 
 void VolumeWidget::initializeGL()
 {
-	qDebug() << "initializedGL has been called";
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
