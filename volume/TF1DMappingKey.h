@@ -46,7 +46,7 @@ public:
 			colorL.setAlpha(static_cast<int>(a*255.f));
 	}
 
-	float getAlphaR() { return colorR.alpha() / 255.f; }
+	float getAlphaR()const { return colorR.alpha() / 255.f; }
 
 	void setSplit(bool split, bool useLeft = true) {
 		if(this->split == split)
@@ -65,7 +65,7 @@ public:
 
 	void setIntensity(float i) { intensity = i; }
 
-	float getIntensity() { return intensity; }
+	float getIntensity()const { return intensity; }
 
 private:
     float  intensity;	///< intensity at which the key is located

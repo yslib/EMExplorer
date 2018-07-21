@@ -59,6 +59,17 @@ QImage MRCDataModel::originalFrontSlice(int index) const
 	}
 	return QImage(imageBuffer.get(), width, slice, QImage::Format_Grayscale8).copy();
 }
+
+unsigned char* MRCDataModel::data()
+{
+	return const_cast<unsigned char*>(constData());
+}
+
+const unsigned char* MRCDataModel::constData() const
+{
+	return reinterpret_cast<unsigned char*>(m_d->data<MRC::MRCInt8>());
+}
+
 inline int MRCDataModel::topSliceCount() const
 {
 	return m_d->slice();

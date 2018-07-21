@@ -32,9 +32,7 @@ inline bool ImageCanvas::contains(const QWidget* widget, const QPoint& pos)
 
 void ImageCanvas::createWidgets()
 {
-
 }
-
 
 void ImageCanvas::createToolBar()
 {
@@ -508,7 +506,7 @@ ImageCanvas::ImageCanvas(QWidget *parent, bool topSliceVisible, bool rightSliceV
 
 	m_penSizeCBBox->setCurrentIndex(4);
 	setWindowTitle(QStringLiteral("ImageCanvas"));
-	m_layout->setSizeConstraint(QLayout::SetFixedSize);
+	//m_layout->setSizeConstraint(QLayout::SetFixedSize);
 	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_rightView, 2, 1, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_frontView, 3, 0, 1, 1, Qt::AlignCenter);

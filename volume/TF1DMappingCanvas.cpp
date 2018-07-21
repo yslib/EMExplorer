@@ -409,7 +409,7 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
         if (dragLineAlphaLeft > 1.f)
             dragLineAlphaLeft = 1.f;
         key->setAlphaR(dragLineAlphaLeft);
-		std::sort(keys.begin(), keys.end(), sortFunction);
+		std::sort(keys.begin(), keys.end(), [](const TF1DMappingKey * a, const TF1DMappingKey * b){ return a->getIntensity() < b->getIntensity(); });
         if (keys.size() > dragLine+1) {
             //right key - when existing
             key = keys[dragLine+1];
@@ -423,7 +423,7 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
             if (dragLineAlphaRight > 1.f)
                 dragLineAlphaRight = 1.f;
             key->setAlphaL(dragLineAlphaRight);
-			std::sort(keys.begin(), keys.end(), sortFunction);
+			std::sort(keys.begin(), keys.end(), [](const TF1DMappingKey * a, const TF1DMappingKey * b) { return a->getIntensity() < b->getIntensity(); });
         }
         update();
         emit changed();
@@ -472,8 +472,7 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
                     key->setIntensity(selectedKey->getIntensity());
             }
         }
-		std::sort(keys.begin(), keys.end(), sortFunction);
-
+		std::sort(keys.begin(), keys.end(), [](const TF1DMappingKey * a, const TF1DMappingKey * b) { return a->getIntensity() < b->getIntensity(); });
         update();
         emit changed();
     }
@@ -783,9 +782,12 @@ void TF1DMappingCanvas::drawMarker(QPainter& paint, const QColor& color, const V
 
 void TF1DMappingCanvas::drawHistogram(QPainter& paint)
 {
+	//qWarning("TF1DMappingCanvas::drawHistogram: This function is disabled now.");
+	return;
+	if (modelData == nullptr)
+		return;
 	Volume *volume = modelData->getVolume();
 	if(!volume) return;
-	return;
 	//if(cache == 0 || cache->rect() != rect()) {
 	{
         delete cache;
@@ -952,7 +954,6 @@ void TF1DMappingCanvas::setThreshold(float l, float u)
     thresholdU = u;
     if (clipThresholds)
         xRange = Vector2f(thresholdL, thresholdU);
-
     update();
 }
 

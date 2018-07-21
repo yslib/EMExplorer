@@ -1,7 +1,7 @@
 #ifndef PROFILEVIEW_H
 #define PROFILEVIEW_H
 
-#include <QWidget>
+#include <QTableView>
 #include <QAbstractTableModel>
 
 //#include <QHash>
@@ -12,14 +12,15 @@ class QComboBox;
 class QListWidget;
 class QGridLayout;
 
-class ProfileView:public QWidget
+
+class ProfileView:public QTableView
 {
 	Q_OBJECT
 public:
 	ProfileView(QWidget* parent = nullptr);
 	QAbstractItemModel* takeModel(QAbstractItemModel* model);
-	void setModel(QAbstractItemModel * model);
-	inline QAbstractItemModel * model()const;
+	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
 signals:
 	void itemSelected(const QString & text);
 	void itemChanged(const QString & text);

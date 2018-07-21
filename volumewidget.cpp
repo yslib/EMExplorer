@@ -97,7 +97,7 @@ void VolumeWidget::setDataModel(AbstractSliceDataModel * model)
 {
 	m_dataModel = model;
 	updateVolumeData();
-	//emit dataModelChanged();
+	emit dataModelChanged();
 	update();
 }
 
@@ -105,7 +105,7 @@ void VolumeWidget::setMarkModel(MarkModel* model)
 {
 	m_markModel = model;
 	updateMarkData();
-	//emit markModelChanged();
+	emit markModelChanged();
 	update();
 }
 
@@ -119,12 +119,16 @@ QSize VolumeWidget::sizeHint() const
 	return QSize(800, 600);
 }
 
+VolumeWidget::~VolumeWidget()
+{
+}
+
 void VolumeWidget::initializeGL()
 {
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
-	m_program = new QOpenGLShaderProgram;
+	m_program.reset(new QOpenGLShaderProgram);
 	m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
 	m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
 	m_program->bindAttributeLocation("vertex", 0);
@@ -161,10 +165,8 @@ void VolumeWidget::resizeGL(int w, int h)
 
 void VolumeWidget::paintGL()
 {
-	qDebug() << "paintGL has been called";
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
-
 	glEnable(GL_CULL_FACE);
 
 	m_world.setToIdentity();

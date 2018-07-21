@@ -15,6 +15,8 @@ class ProfileView;
 class MRC;
 class MarkTreeView;
 class MarkInfoWidget;
+class RenderParameterWidget;
+class TF1DEditor;
 class MainWindow : public QMainWindow
 {
 public:
@@ -39,11 +41,21 @@ private:
 	Q_OBJECT
 	//Widgets
 	ImageCanvas * m_imageView;
+
 	QDockWidget * m_profileViewDockWidget;
 	ProfileView * m_profileView;
+
 	QDockWidget * m_treeViewDockWidget;
 	MarkTreeView * m_treeView;
+
+	QDockWidget * m_markInfoDOckWidget;
 	MarkInfoWidget * m_markInfoWidget;
+
+	QDockWidget * m_renderParameterDockWidget;
+	RenderParameterWidget * m_renderParameterWidget;
+	QDockWidget *m_tfEditorDockWidget;
+	TF1DEditor * m_tfEditorWidget;
+
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;

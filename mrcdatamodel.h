@@ -13,9 +13,12 @@ public:
     QImage originalTopSlice(int index) const Q_DECL_OVERRIDE;
     QImage originalRightSlice(int index) const Q_DECL_OVERRIDE;
     QImage originalFrontSlice(int index) const Q_DECL_OVERRIDE;
+	unsigned char * data() Q_DECL_OVERRIDE;
+	const unsigned char * constData() const Q_DECL_OVERRIDE;
     inline int topSliceCount() const Q_DECL_OVERRIDE;
     inline int rightSliceCount() const Q_DECL_OVERRIDE;
     inline int frontSliceCount() const Q_DECL_OVERRIDE;
+
 
 	
 private:

@@ -68,8 +68,9 @@ public:
 	void rightSliceEnable(bool enable);
 	void frontSliceEnable(bool enable);
 
+	inline VolumeWidget* volumeWidget()const;
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
-	AbstractSliceDataModel * sliceModel()const { return m_sliceModel; }
+	inline AbstractSliceDataModel * sliceModel()const;
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
 signals:
@@ -202,6 +203,9 @@ private:
 	QAction * m_marksManagerDlgAction;
 	QWidget * m_menuWidget;
 };
+
+inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
+inline AbstractSliceDataModel * ImageCanvas::sliceModel()const { return m_sliceModel; }
 
 
 

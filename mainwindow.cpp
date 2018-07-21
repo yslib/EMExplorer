@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QGraphicsItem>			//TODO:: Note: This header is referenced by unknown code
 #include <QDebug>
 
 #include "mainwindow.h"
@@ -16,8 +17,9 @@
 #include "mrcdatamodel.h"
 #include "markmodel.h"
 #include "marktreeview.h"
-#include <QTableWidget>
 #include "markinfowidget.h"
+#include "RenderParameterWidget.h"
+#include "volume/TF1DEditor.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent) :
@@ -29,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	createActions();
 	createMenu();
 	createWidget();
-	createMarkTreeView();
+	//createMarkTreeView();
 	createStatusBar();
 	resize(1650, 1080);
 
@@ -286,6 +288,10 @@ void MainWindow::readSettings()
 
 	readSettingsForDockWidget(m_profileViewDockWidget, &settings);
 	readSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	readSettingsForDockWidget(m_markInfoDOckWidget, &settings);
+	readSettingsForDockWidget(m_renderParameterDockWidget, &settings);
+	readSettingsForDockWidget(m_tfEditorDockWidget, &settings);
+
 	readSettingsForImageView(m_imageView, &settings);
 
 }
@@ -299,35 +305,63 @@ void MainWindow::writeSettings()
 
 	writeSettingsForDockWidget(m_profileViewDockWidget, &settings);
 	writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	writeSettingsForDockWidget(m_markInfoDOckWidget, &settings);
+	writeSettingsForDockWidget(m_renderParameterDockWidget, &settings);
+	writeSettingsForDockWidget(m_tfEditorDockWidget, &settings);
 	writeSettingsForImageView(m_imageView, &settings);
 }
 
 void MainWindow::createWidget()
 {
 	setDockOptions(QMainWindow::AnimatedDocks);
-	m_profileView = new ProfileView(this);
-	m_profileViewDockWidget = new QDockWidget(QStringLiteral("Profile"));
-	m_profileViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	m_profileViewDockWidget->setWidget(m_profileView);
-	addDockWidget(Qt::RightDockWidgetArea, m_profileViewDockWidget);
+	setDockOptions(QMainWindow::AllowNestedDocks);
+	setDockOptions(QMainWindow::AllowTabbedDocks);
 
-	m_markInfoWidget = new MarkInfoWidget(this);
-
-
-	auto dock = new QDockWidget(QStringLiteral("Mark Info"));
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	dock->setWidget(m_markInfoWidget);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
-
-	//m_profileViewDockWidget->installEventFilter(this);
-	//m_profileViewDockWidget->setObjectName(QStringLiteral("profileviewdockwidget"));
-
-	m_viewMenu->addAction(m_profileViewDockWidget->toggleViewAction());
+	//ImageCanvas  centralWidget
 	m_imageView = new ImageCanvas;
 	connect(m_imageView, &ImageCanvas::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
 	connect(m_imageView, &ImageCanvas::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
-	connect(m_imageView, &ImageCanvas::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
 	setCentralWidget(m_imageView);
+
+	//ProfileView
+	m_profileView = new ProfileView(this);
+	m_profileViewDockWidget = new QDockWidget(QStringLiteral("MRC Info"));
+	m_profileViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_profileViewDockWidget->setWidget(m_profileView);
+	addDockWidget(Qt::BottomDockWidgetArea, m_profileViewDockWidget);
+	m_viewMenu->addAction(m_profileViewDockWidget->toggleViewAction());
+	//MarkInfoWIdget
+	m_markInfoWidget = new MarkInfoWidget(this);
+	m_markInfoDOckWidget = new QDockWidget(QStringLiteral("Mark Info"));
+	m_markInfoDOckWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_markInfoDOckWidget->setWidget(m_markInfoWidget);
+	addDockWidget(Qt::BottomDockWidgetArea, m_markInfoDOckWidget);
+	m_viewMenu->addAction(m_markInfoDOckWidget->toggleViewAction());
+	//MarkTreeView
+	m_treeView = new MarkTreeView;
+	m_treeViewDockWidget = new QDockWidget(QStringLiteral("Mark Manager"));
+	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_treeViewDockWidget->setWidget(m_treeView);
+	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+	//RenderParameterWidget
+	m_renderParameterWidget = new RenderParameterWidget(m_imageView->volumeWidget(), this);
+	m_renderParameterDockWidget = new QDockWidget(QStringLiteral("Rendering Parameters"));
+	m_renderParameterDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_renderParameterDockWidget->setWidget(m_renderParameterWidget);
+	addDockWidget(Qt::RightDockWidgetArea, m_renderParameterDockWidget);
+	m_viewMenu->addAction(m_renderParameterDockWidget->toggleViewAction());
+	//TF1DEditor
+	m_tfEditorWidget = new TF1DEditor(nullptr, this);
+	m_tfEditorDockWidget = new QDockWidget(QStringLiteral("Transfer Function"));
+	m_tfEditorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_tfEditorDockWidget->setWidget(m_tfEditorWidget);
+	addDockWidget(Qt::BottomDockWidgetArea, m_tfEditorDockWidget);
+	m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
+
+
+	connect(m_imageView, &ImageCanvas::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
+	
 }
 
 void MainWindow::createMenu()
@@ -336,6 +370,8 @@ void MainWindow::createMenu()
 	m_fileMenu = menuBar()->addMenu(QStringLiteral("File"));
 	m_fileMenu->addAction(m_openAction);
 	m_fileMenu->addAction(m_saveAction);
+	m_fileMenu->addAction(QStringLiteral("Close"),this,&MainWindow::close);
+
 	//View menu
 	m_viewMenu = menuBar()->addMenu(QStringLiteral("View"));
 
@@ -371,12 +407,13 @@ void MainWindow::createStatusBar()
 
 void MainWindow::createMarkTreeView()
 {
-	m_treeView = new MarkTreeView;
-	m_treeViewDockWidget = new QDockWidget(QStringLiteral("MarkManager"));
-	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	m_treeViewDockWidget->setWidget(m_treeView);
-	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
-	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+	//m_treeView = new MarkTreeView;
+	//m_treeViewDockWidget = new QDockWidget(QStringLiteral("MarkManager"));
+	//m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	//m_treeViewDockWidget->setWidget(m_treeView);
+	//addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	//m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+
 
 
 }

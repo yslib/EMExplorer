@@ -18,6 +18,8 @@ class RenderParameterWidget : public QWidget
 	Q_OBJECT
 public:
 	RenderParameterWidget(VolumeWidget * volumeWidget,QWidget *parent = nullptr);
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
+	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
 	~RenderParameterWidget();
 private:
 	void updateDataModel();

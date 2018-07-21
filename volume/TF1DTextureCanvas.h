@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
 
 class ModelData;
 class TF1DMappingCanvas;
@@ -21,9 +22,11 @@ protected:
 	void resizeGL(int width, int height);
     void paintGL();
 
-protected:
+private:
 	ModelData *modelData;		///< model data
 	TF1DMappingCanvas * m_transferFunction;
+	QOpenGLShaderProgram m_bgShader;
+	QOpenGLShaderProgram m_tfShader;
 	unsigned int m_texture;
 };
 

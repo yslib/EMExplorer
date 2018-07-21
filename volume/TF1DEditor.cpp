@@ -1,14 +1,12 @@
-#include <QCheckBox>
 #include <QFileDialog>
 #include <QLayout>
-#include <QMessageBox>
 #include <QSpinBox>
-#include <QSplitter>
 #include <QToolButton>
 #include "TF1DEditor.h"
 #include "TF1DMappingCanvas.h"
 #include "DoubleSlider.h"
 #include "TF1DTextureCanvas.h"
+#include <QDebug>
 
 TF1DEditor::TF1DEditor(ModelData *model, QWidget *parent)
 	: QWidget(parent)
@@ -291,8 +289,12 @@ void TF1DEditor::applyThreshold()
 {
     float min = doubleSlider->getMinValue();
     float max = doubleSlider->getMaxValue();
-    transCanvas->setThreshold(min, max);
 
+    transCanvas->setThreshold(min, max);
+	///////
+	// /
+	textureCanvas->update();
+	///////
     updateTransferFunction();
 }
 

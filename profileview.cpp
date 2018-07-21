@@ -1,55 +1,33 @@
 #include "profileview.h"
-#include <QGridLayout>
+#include <QBoxLayout>
 #include <QListWidget>
 #include <QTableView>
-#include <QGroupBox>
 #include <QDebug>
 #include <QHeaderView>
 
 
-ProfileView::ProfileView(QWidget* parent): QWidget(parent)
+ProfileView::ProfileView(QWidget* parent): QTableView(parent)
 {
-	QGridLayout *layout = new QGridLayout;
-	//m_listWidget = new QListWidget;
-	m_tableView = new QTableView;
-
-	//QGroupBox * listGroup = new QGroupBox;
-	//listGroup->setTitle(QStringLiteral("Explorer"));
-	//QGridLayout * listLayout = new QGridLayout;
-	//listLayout->addWidget(m_listWidget, 0, 0);
-	//listGroup->setLayout(listLayout);
-
-	QGroupBox * tableGroup = new QGroupBox;
-	tableGroup->setTitle(QStringLiteral("Details"));
-	QGridLayout * tableLayout = new QGridLayout;
-	tableLayout->addWidget(m_tableView, 0, 0);
-	tableGroup->setLayout(tableLayout);
-
-	//layout->addWidget(listGroup, 0,0);
-	layout->addWidget(tableGroup, 1, 0);
-	//layout->setRowStretch(0, 3);
-	//layout->setRowStretch(1, 7);
-
-	m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	setLayout(layout);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	setShowGrid(false);
 }
 
-QAbstractItemModel * ProfileView::takeModel(QAbstractItemModel* model)
+QAbstractItemModel * ProfileView::takeModel(QAbstractItemModel* m)
 {
-	auto t = m_tableView->model();
-    m_tableView->setModel(model);
+	auto t = model();
+    setModel(m);
 	return t;
 }
 
-void ProfileView::setModel(QAbstractItemModel * model)
-{
-	m_tableView->setModel(model);
-}
+//void ProfileView::setModel(QAbstractItemModel * model)
+//{
+//	m_tableView->setModel(model);
+//}
 
-QAbstractItemModel* ProfileView::model() const
-{
-	return m_tableView->model();
-}
+//QAbstractItemModel* ProfileView::model() const
+//{
+//	return m_tableView->model();
+//}
 
 MRCInfoTableModel::MRCInfoTableModel(int row,int column,QObject* parent):
 QAbstractTableModel(parent),

@@ -1,9 +1,12 @@
-#include "markinfowidget.h"
-#include <QGridLayout>
-#include <QTableWidget>
+//Qt headers
 #include <QHeaderView>
 #include <QDebug>
+//custom headers
+#include "markinfowidget.h"
+#include "globals.h"
+#include "markitem.h"
 
+//#include "markitem.h"
 
 namespace
 {
@@ -72,14 +75,11 @@ namespace
 }
 
 
-MarkInfoWidget::MarkInfoWidget(QWidget * parent):QWidget(parent)
+MarkInfoWidget::MarkInfoWidget(QWidget * parent):QTableWidget(parent)
 {
-	m_layout = new QGridLayout(this);
-	m_table = new QTableWidget(this);
-	m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	m_table->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	m_layout->addWidget(m_table,0, 0);
-	
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	setShowGrid(false);
 }
 
 void MarkInfoWidget::setMark(QGraphicsItem* item)
@@ -92,14 +92,14 @@ void MarkInfoWidget::setMark(QGraphicsItem* item)
 		return;
 	auto propertyInfo = item->data(MarkProperty::PropertyInfo).value<MarkPropertyInfo>();
 
-	m_table->clearContents();
-	m_table->setColumnCount(2);
-	m_table->setRowCount(propertyInfo.count());
+	clearContents();
+	setColumnCount(2);
+	setRowCount(propertyInfo.count());
 
 	for(int i=0;i<propertyInfo.size();i++)
 	{
 		const auto & p = propertyInfo[i];
-		m_table->setItem(i, 0, new QTableWidgetItem(p.second));
-		m_table->setItem(i, 1, tableViewItem(item->data(p.first),p.first));
+		setItem(i, 0, new QTableWidgetItem(p.second));
+		setItem(i, 1, tableViewItem(item->data(p.first),p.first));
 	}
 }

@@ -20,6 +20,9 @@ public:
 	virtual QImage topSlice(int index)const;
 	virtual QImage rightSlice(int index)const;
 	virtual QImage frontSlice(int index)const;
+	virtual unsigned char * data()=0;
+	virtual const unsigned char * constData()const = 0;
+
 	virtual ~AbstractSliceDataModel();
 private:
 	QVector<QImage> m_modifiedTopSlice;

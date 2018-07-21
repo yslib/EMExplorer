@@ -20,8 +20,6 @@ void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
 	m_menu->exec(event->globalPos());
 }
 
-
-
 void MarkTreeView::createMenu()
 {
 	m_menu = new QMenu(QStringLiteral("MarkTreeView Context Menu"), this);
