@@ -257,7 +257,7 @@ void VolumeRenderingWindow::createDockWindows()
 
 	dock = new QDockWidget(tr("1D Transfer Function"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	editorTF1D = new TF1DEditor(this, dock, renderWidget);
+	editorTF1D = new TF1DEditor(this, dock);
 	dock->setWidget(editorTF1D);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 	viewMenu->addAction(dock->toggleViewAction());	
@@ -267,7 +267,7 @@ void VolumeRenderingWindow::createDockWindows()
 
 	dock = new QDockWidget(tr("Transfer Function 2D"), this);
 	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	editorTF2D = new TF2DEditor(this, dock, renderWidget);
+	editorTF2D = new TF2DEditor(this, dock);
 	dock->setWidget(editorTF2D);
 	dock->setVisible(false);
 	addDockWidget(Qt::RightDockWidgetArea, dock);

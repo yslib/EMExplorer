@@ -11,12 +11,12 @@
 #include "TF2DPrimitive.h"
 #include "TF2DMappingCanvas.h"
 
-TF2DEditor::TF2DEditor(ModelData *model, QWidget* parent, QGLWidget *shareWidget)
+TF2DEditor::TF2DEditor(ModelData *model, QWidget* parent)
     : QWidget(parent)
     , transCanvas(0)
     , maximumIntensity(255)
 {
-	createWidgets(model, shareWidget);
+	createWidgets(model);
     createConnections();
 }
 
@@ -24,7 +24,7 @@ TF2DEditor::~TF2DEditor()
 {
 }
 
-void TF2DEditor::createWidgets(ModelData *model, QGLWidget *shareWidget) 
+void TF2DEditor::createWidgets(ModelData *model) 
 {
 	// Creates the layout with all buttons
     QBoxLayout* buttonLayout = new QHBoxLayout();
@@ -93,7 +93,7 @@ void TF2DEditor::createWidgets(ModelData *model, QGLWidget *shareWidget)
     buttonLayout->addStretch();
 
 	// Creates the layout with mapping canvas
-    transCanvas = new TF2DMappingCanvas(model, 0, shareWidget);
+    transCanvas = new TF2DMappingCanvas(model, 0);
     transCanvas->setMinimumSize(256, 128);
 
 	// Creates the layout with transparency and fuzzines slider and control elements for the histogram

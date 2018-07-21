@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QColorDialog>
@@ -10,10 +9,11 @@
 #include "ModelData.h"
 #include "Volume.h"
 
-extern QGLFormat getQGLFormat();
 
-TF2DMappingCanvas::TF2DMappingCanvas(ModelData *model, QWidget *parent, QGLWidget *shareWidget)
-    : QGLWidget(getQGLFormat(), parent, shareWidget)
+//extern QGLFormat getQGLFormat();
+
+TF2DMappingCanvas::TF2DMappingCanvas(ModelData *model, QWidget *parent)
+    : QOpenGLWidget(parent)
 	, modelData(model)
     , selectedPrimitive(0)
     , showHistogram(false)
@@ -24,7 +24,6 @@ TF2DMappingCanvas::TF2DMappingCanvas(ModelData *model, QWidget *parent, QGLWidge
     , dragging(false)
     , scaleFactor(1.f)
 {
-	
 }
 
 TF2DMappingCanvas::~TF2DMappingCanvas() 
@@ -90,6 +89,9 @@ void TF2DMappingCanvas::save(const char *filename)
 
 void TF2DMappingCanvas::initializeGL() 
 {
+
+	initializeOpenGLFunctions();
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.f, 1.f, 0.f, 1.f, -2.f, 1.f);
@@ -293,7 +295,7 @@ void TF2DMappingCanvas::setHistogramLogarithmic(bool v)
 
 void TF2DMappingCanvas::getTransferFunction(float* transferFunction, size_t width, size_t height, float factor)
 {
-	QGLWidget::makeCurrent();
+	QOpenGLWidget::makeCurrent();
 	
 	// save current viewport, e.g. size of mapping canvas and current drawbuffer
     glPushAttrib(GL_VIEWPORT_BIT);
@@ -444,7 +446,7 @@ void TF2DMappingCanvas::updateHistogramTexture()
 		histogram[i] = static_cast<unsigned char>(Clamp(std::floor(value * 255 * histogramBrightness + 0.5), 0.0, 255.0));
     }
 
-	QGLWidget::makeCurrent();
+	QOpenGLWidget::makeCurrent();
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, histogramTex);

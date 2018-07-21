@@ -785,7 +785,7 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
 {
 	Volume *volume = modelData->getVolume();
 	if(!volume) return;
-
+	return;
 	//if(cache == 0 || cache->rect() != rect()) {
 	{
         delete cache;

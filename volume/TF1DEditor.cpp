@@ -10,13 +10,14 @@
 #include "DoubleSlider.h"
 #include "TF1DTextureCanvas.h"
 
-TF1DEditor::TF1DEditor(ModelData *model, QWidget *parent /*= 0*/, QGLWidget *shareWidget /*= 0*/) : QWidget(parent)
+TF1DEditor::TF1DEditor(ModelData *model, QWidget *parent)
+	: QWidget(parent)
 	, transCanvas(0)
 	, textureCanvas(0)
     , doubleSlider(0)
     , maximumIntensity(255)
 {
-	createWidgets(model, shareWidget);
+	createWidgets(model);
     createConnections();
 }
 
@@ -34,7 +35,7 @@ QSize TF1DEditor::sizeHint() const
 	return QSize(312, 200);
 }
 
-void TF1DEditor::createWidgets(ModelData *model, QGLWidget *shareWidget) 
+void TF1DEditor::createWidgets(ModelData *model) 
 {
 	// Buttons and checkBox for threshold clipping
     QHBoxLayout* hboxButton = new QHBoxLayout();
@@ -95,7 +96,7 @@ void TF1DEditor::createWidgets(ModelData *model, QGLWidget *shareWidget)
     hboxSpin->addSpacing(21);
 
 	// texture canvas
-	textureCanvas = new TF1DTextureCanvas(model, 0, shareWidget);
+	textureCanvas = new TF1DTextureCanvas(model, transCanvas,0);
     textureCanvas->setFixedHeight(15);
     textureCanvas->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
@@ -163,7 +164,7 @@ void TF1DEditor::loadTransferFunction()
 	}
 }
 
-void TF1DEditor::loadTransferFunction(QString fileName)
+void TF1DEditor::loadTransferFunction(const QString & fileName)
 {
 	if (!fileName.isEmpty()) {
 		transCanvas->load(fileName.toLocal8Bit().data());

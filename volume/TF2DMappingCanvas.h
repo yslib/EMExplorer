@@ -4,15 +4,17 @@
 #include "Rendering/Vector.h"
 #include <QGLWidget>
 #include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 
 class ModelData;
 class TF2DPrimitive;
 
-class TF2DMappingCanvas : public QGLWidget
+class TF2DMappingCanvas : public QOpenGLWidget,protected QOpenGLFunctions
 {
-	Q_OBJECT
+    Q_OBJECT
+
 public:
-    TF2DMappingCanvas(ModelData *model, QWidget *parent = 0, QGLWidget *shareWidget = 0);
+    TF2DMappingCanvas(ModelData *model, QWidget *parent = 0);
     ~TF2DMappingCanvas();
 
 	// The central entry point for loading a gradient transfer function.

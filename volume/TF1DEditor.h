@@ -21,7 +21,7 @@ class TF1DEditor : public QWidget {
 
 public:
 	// Standard constructor
-	TF1DEditor(ModelData *model, QWidget *parent = 0, QGLWidget *shareWidget = 0);
+	TF1DEditor(ModelData *model, QWidget *parent = 0);
 	// Standard destructor
 	~TF1DEditor();
 
@@ -30,7 +30,7 @@ public:
 	QSize sizeHint() const override;
 
     // Creates the whole layout of this widget.
-    void createWidgets(ModelData *model, QGLWidget *shareWidget);
+    void createWidgets(ModelData *model);
 
     // Creates the connections for all control elements.
     void createConnections();
@@ -64,7 +64,7 @@ public slots:
     // Slot for a click on load button. Opens a fileDialog and loads the selected
     // file. The gradient widget and the mapping canvas are updated with new transfer function.
     void loadTransferFunction();
-	void loadTransferFunction(QString TFName);
+	void loadTransferFunction(const QString &TFName);
 
     // Slot for a click on save button. Opens a fileDialog and saves the transfer function
     // to the desired file.

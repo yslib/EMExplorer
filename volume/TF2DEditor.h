@@ -2,7 +2,6 @@
 #define TF2DEDITOR_H
 
 #include <QWidget>
-#include <QOpenGLWidget>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
@@ -18,13 +17,13 @@ class TF2DEditor : public QWidget {
     Q_OBJECT
 public:
     // Constructor
-    TF2DEditor(ModelData *model, QWidget* parent = 0, QGLWidget *shareWidget = 0);
+    TF2DEditor(ModelData *model, QWidget* parent = 0);
 
     // Destructor    
     ~TF2DEditor();
 
     // Creates the whole layout for this widget.
-    void createWidgets(ModelData *model, QGLWidget *shareWidget);
+    void createWidgets(ModelData *model);
 
     // Creates the connections for all control elements.
     void createConnections();

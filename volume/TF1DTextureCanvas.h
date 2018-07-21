@@ -2,15 +2,18 @@
 #define TF1DTEXTURECANVAS_H
 
 #include <QGLWidget>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 
 class ModelData;
+class TF1DMappingCanvas;
 
-class TF1DTextureCanvas : public QGLWidget
+class TF1DTextureCanvas : public QOpenGLWidget,protected QOpenGLFunctions
 {
     Q_OBJECT
 
 public:
-    TF1DTextureCanvas(ModelData *model, QWidget *parent = 0, QGLWidget *shareWidget = 0);
+    TF1DTextureCanvas(ModelData *model,TF1DMappingCanvas * tf, QWidget *parent = 0);
     ~TF1DTextureCanvas();
 
 protected:
@@ -20,6 +23,8 @@ protected:
 
 protected:
 	ModelData *modelData;		///< model data
+	TF1DMappingCanvas * m_transferFunction;
+	unsigned int m_texture;
 };
 
 #endif

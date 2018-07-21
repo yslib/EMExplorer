@@ -1,28 +1,38 @@
-#include <GL/glew.h>
+
 #include "TF1DTextureCanvas.h"
+#include "TF1DMappingCanvas.h"
 #include "ModelData.h"
+#include <memory>
 
-QGLFormat getQGLFormat() 
-{
-	QGLFormat format = QGLFormat::defaultFormat();
-	format.setAlpha(true);
-    return format;
-}
 
-TF1DTextureCanvas::TF1DTextureCanvas(ModelData *model, QWidget *parent /*= 0*/, QGLWidget *shareWidget /*= 0*/) : QGLWidget(getQGLFormat(), parent, shareWidget)
-	, modelData(model)
+TF1DTextureCanvas::TF1DTextureCanvas(ModelData *model, TF1DMappingCanvas * tf, QWidget *parent)
+	: QOpenGLWidget(parent)
+	, m_texture(0), modelData(model),m_transferFunction(tf)
 {
 	
 }
 
 TF1DTextureCanvas::~TF1DTextureCanvas()
 {
-
+	glDeleteTextures(1, &m_texture);
 }
 
 void TF1DTextureCanvas::initializeGL()
 {
+	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
+
+	//glBegin();
+
+	//create 1d transfer function texture
+	glEnable(GL_TEXTURE_1D);
+	glGenTextures(1, &m_texture);
+	glBindTexture(GL_TEXTURE_1D, m_texture);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glDisable(GL_TEXTURE_1D);
+
 }
 
 void TF1DTextureCanvas::resizeGL(int width, int height)
@@ -73,8 +83,16 @@ void TF1DTextureCanvas::paintGL()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_TEXTURE_1D);
-	unsigned int texIdx = modelData->getTF1DTextureIdx();
+	//unsigned int texIdx = modelData->getTF1DTextureIdx();
+	unsigned int texIdx = m_texture;
+	const int dimension = 256;
+	std::unique_ptr<float[]> transferFunction(new float[dimension * 4]);
+	m_transferFunction->getTransferFunction(transferFunction.get(), dimension, 1);
+	// download 1D Texture Data
+	glEnable(GL_TEXTURE_1D);
 	glBindTexture(GL_TEXTURE_1D, texIdx);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16, dimension, 0, GL_RGBA, GL_FLOAT, transferFunction.get());
 
     glBegin(GL_QUADS);
         glColor4f(1.f, 1.f, 1.f, 1.f);
