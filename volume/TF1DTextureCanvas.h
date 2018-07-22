@@ -5,9 +5,13 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer> 
 
 class ModelData;
 class TF1DMappingCanvas;
+
+
 
 class TF1DTextureCanvas : public QOpenGLWidget,protected QOpenGLFunctions
 {
@@ -23,11 +27,26 @@ protected:
     void paintGL();
 
 private:
+
 	ModelData *modelData;		///< model data
 	TF1DMappingCanvas * m_transferFunction;
+
+	//Background Primitive
 	QOpenGLShaderProgram m_bgShader;
+	QOpenGLVertexArrayObject m_bgVAO;
+	QOpenGLBuffer m_bgVBO;
+	unsigned int m_bgVertPos;
+	unsigned int m_bgColorPos;
+
+	//Transfer Function Texture
 	QOpenGLShaderProgram m_tfShader;
+	QOpenGLVertexArrayObject m_tfVAO;
+	QOpenGLBuffer m_tfVBO;
+	unsigned int m_tfVertPos;
 	unsigned int m_texture;
+
+	QMatrix4x4 m_othoMat;
+					// 2d drawing
 };
 
 #endif
