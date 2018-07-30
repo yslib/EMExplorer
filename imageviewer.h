@@ -68,7 +68,7 @@ public:
 	void rightSliceEnable(bool enable);
 	void frontSliceEnable(bool enable);
 
-	inline VolumeWidget* volumeWidget()const;
+	//inline VolumeWidget* volumeWidget()const;
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
@@ -142,7 +142,7 @@ private:
 	SliceView * m_topView;
 	SliceView * m_rightView;
 	SliceView * m_frontView;
-	VolumeWidget * m_renderView;
+	//VolumeWidget * m_renderView;
 
 	//Tool Bar
 	QToolBar * m_viewToolBar;
@@ -204,7 +204,7 @@ private:
 	QWidget * m_menuWidget;
 };
 
-inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
+//inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
 inline AbstractSliceDataModel * ImageCanvas::sliceModel()const { return m_sliceModel; }
 
 

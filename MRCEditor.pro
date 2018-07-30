@@ -82,7 +82,8 @@ HEADERS += ./volume/BasicControlWidget.h \
     ./treeitem.h \
     ./volume/Healpix/vec3.h \
     ./volumewidget.h \
-    ./RenderParameterWidget.h
+    ./RenderParameterWidget.h \
+    imageviewcontrolpanel.h
 SOURCES += ./volume/BMPWriter.cpp \
     ./volume/BasicControlWidget.cpp \
     ./volume/ClassificationWidget.cpp \
@@ -128,5 +129,6 @@ SOURCES += ./volume/BMPWriter.cpp \
     ./treeitem.cpp \
     ./volumewidget.cpp \
     ./zoomviwer.cpp \
-    ./RenderParameterWidget.cpp
+    ./RenderParameterWidget.cpp \
+    imageviewcontrolpanel.cpp
 RESOURCES += resources.qrc

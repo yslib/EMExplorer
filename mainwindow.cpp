@@ -19,6 +19,8 @@
 #include "marktreeview.h"
 #include "markinfowidget.h"
 #include "RenderParameterWidget.h"
+#include "imageviewcontrolpanel.h"
+#include "volumewidget.h"
 #include "volume/TF1DEditor.h"
 
 //QSize imageSize(500, 500);
@@ -316,12 +318,35 @@ void MainWindow::createWidget()
 	setDockOptions(QMainWindow::AnimatedDocks);
 	setDockOptions(QMainWindow::AllowNestedDocks);
 	setDockOptions(QMainWindow::AllowTabbedDocks);
+	setDockNestingEnabled(true);
+
+	auto w = takeCentralWidget();
+	if (w)
+		w->deleteLater();
 
 	//ImageCanvas  centralWidget
+	m_imageViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
 	m_imageView = new ImageCanvas;
+	m_imageViewDockWidget->setWidget(m_imageView);
+	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	addDockWidget(Qt::TopDockWidgetArea,m_imageViewDockWidget);
 	connect(m_imageView, &ImageCanvas::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
 	connect(m_imageView, &ImageCanvas::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
-	setCentralWidget(m_imageView);
+
+	//ImageCanvas control widget
+	m_imageViewControlPanelDockWidget = new QDockWidget(QStringLiteral("Image View Control Panel"));
+	m_imageViewControlPanel = new ImageViewControlPanel(nullptr, this);
+	m_imageViewControlPanelDockWidget->setWidget(m_imageViewControlPanel);
+	m_imageViewControlPanelDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	addDockWidget(Qt::RightDockWidgetArea, m_imageViewControlPanelDockWidget);
+	
+
+	m_volumeView = new VolumeWidget(nullptr, nullptr, this);
+	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
+	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_volumeViewDockWidget->setWidget(m_volumeView);
+	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget, Qt::Horizontal);
+	addDockWidget(Qt::TopDockWidgetArea, m_volumeViewDockWidget);
 
 	//ProfileView
 	m_profileView = new ProfileView(this);
@@ -345,7 +370,7 @@ void MainWindow::createWidget()
 	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
 	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 	//RenderParameterWidget
-	m_renderParameterWidget = new RenderParameterWidget(m_imageView->volumeWidget(), this);
+	m_renderParameterWidget = new RenderParameterWidget(m_volumeView, this);
 	m_renderParameterDockWidget = new QDockWidget(QStringLiteral("Rendering Parameters"));
 	m_renderParameterDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_renderParameterDockWidget->setWidget(m_renderParameterWidget);

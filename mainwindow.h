@@ -17,6 +17,8 @@ class MarkTreeView;
 class MarkInfoWidget;
 class RenderParameterWidget;
 class TF1DEditor;
+class VolumeWidget;
+class ImageViewControlPanel;
 class MainWindow : public QMainWindow
 {
 public:
@@ -39,8 +41,18 @@ private slots:
 	void writeSettings();
 private:
 	Q_OBJECT
-	//Widgets
+		//Widgets
+
+	QDockWidget * m_volumeViewDockWidget;
+	VolumeWidget * m_volumeView;
+	QDockWidget * m_renderParameterDockWidget;
+	RenderParameterWidget * m_renderParameterWidget;
+
+	QDockWidget * m_imageViewDockWidget;
 	ImageCanvas * m_imageView;
+
+	QDockWidget * m_imageViewControlPanelDockWidget;
+	ImageViewControlPanel * m_imageViewControlPanel;
 
 	QDockWidget * m_profileViewDockWidget;
 	ProfileView * m_profileView;
@@ -51,11 +63,8 @@ private:
 	QDockWidget * m_markInfoDOckWidget;
 	MarkInfoWidget * m_markInfoWidget;
 
-	QDockWidget * m_renderParameterDockWidget;
-	RenderParameterWidget * m_renderParameterWidget;
 	QDockWidget *m_tfEditorDockWidget;
 	TF1DEditor * m_tfEditorWidget;
-
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;

@@ -58,7 +58,7 @@ void ImageCanvas::createToolBar()
 	m_volumeWidgetAction = new QAction(QStringLiteral("Volume Render"), this);
 	m_volumeWidgetAction->setToolTip(QStringLiteral("Volume Rendering"));
 	m_volumeWidgetAction->setCheckable(true);
-	connect(m_volumeWidgetAction, &QAction::triggered, [this](bool check) {m_renderView->setVisible(check);});
+	//connect(m_volumeWidgetAction, &QAction::triggered, [this](bool check) {m_renderView->setVisible(check);});
 
 	//tool bar
 	m_viewToolBar = new QToolBar(QStringLiteral("View ToolBar"), this);
@@ -111,6 +111,7 @@ void ImageCanvas::createToolBar()
 	m_markDeletionAction->setToolTip(QStringLiteral("Delete Mark"));
 	m_addCategoryAction = new QAction(QIcon(":icons/resources/icons/add.png"),QStringLiteral("Add"), this);
 	m_addCategoryAction->setToolTip(QStringLiteral("Add Category"));
+
 	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
 	m_categoryCBBox = new QComboBox(this);
 	m_penSizeLabel = new QLabel(QStringLiteral("PenSize:"), this);
@@ -482,7 +483,7 @@ ImageCanvas::ImageCanvas(QWidget *parent, bool topSliceVisible, bool rightSliceV
 	m_resetAction = new QAction(QIcon(":icons/resources/icons/reset.png"),QStringLiteral("Reset"), this);
 	m_resetAction->setToolTip(QStringLiteral("Reset"));
 
-	m_renderView = new VolumeWidget(nullptr, nullptr, this);
+	//m_renderView = new VolumeWidget(nullptr, nullptr, this);
 
 
 
@@ -510,7 +511,7 @@ ImageCanvas::ImageCanvas(QWidget *parent, bool topSliceVisible, bool rightSliceV
 	m_layout->addWidget(m_topView, 2, 0, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_rightView, 2, 1, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_frontView, 3, 0, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_renderView, 0, 3, 4, 1, Qt::AlignCenter);
+	//m_layout->addWidget(m_renderView, 0, 3, 4, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_viewToolBar, 0, 0, 1, 2);
 	m_layout->addWidget(m_editToolBar, 1, 0, 1, 2);
 	setLayout(m_layout);
