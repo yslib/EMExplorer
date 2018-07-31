@@ -22,9 +22,12 @@ class ImageViewControlPanel:public QWidget
 	Q_OBJECT
 public:
     ImageViewControlPanel(ImageCanvas * canvas,QWidget * parent = nullptr);
+	void setImageCanvas(ImageCanvas * canvas);
 private:
 
 	void createWidgets();
+	void updateActions();
+	void updateProperty();
 
 	enum class PlayDirection {
 		Forward,
@@ -75,6 +78,8 @@ private:
 	QAction *m_markDeletionAction;
 	QAction *m_addCategoryAction;
 
+
+	friend class ImageCanvas;
 };
 
 #endif // IMAGEVIEWCONTROLPANEL_H

@@ -68,6 +68,14 @@ public:
 	void rightSliceEnable(bool enable);
 	void frontSliceEnable(bool enable);
 
+	void resetZoom();
+	void zoomIn();
+	void zoomOut();
+	void categoryAdded();
+	void colorChanged();
+
+	void enableMark();
+
 	//inline VolumeWidget* volumeWidget()const;
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
@@ -80,12 +88,19 @@ signals:
 	void rightSliceOpened(int index);
 	void rightSliceChanged(int index);
 	void rightSlicePlayStoped(int index);
+
 	void frontSliceOpened(int index);
 	void frontSliceChanged(int index);
 	void frontSlicePlayStoped(int index);
+
+	void dataModelChanged();
+	void markModelChanged();
+
 	void topSliceSelected(const QPoint & point);
 	void rightSliceSelected(const QPoint & point);
 	void frontSliceSelected(const QPoint & point);
+
+
 	void markModified();
 	void markSaved();
 	void markSeleteced(QGraphicsItem * item);
@@ -94,6 +109,7 @@ public slots:
 	void onTopSlicePlay(bool enable);
 	void onRightSlicePlay(bool enable);
 	void onFrontSlicePlay(bool enable);
+
 protected:
 	void timerEvent(QTimerEvent* event) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
@@ -110,7 +126,7 @@ private:
 	//update helper
 	void updatePen(const QPen & pen);
 	void updateSliceCount(SliceType type);
-	void updateSlice(SliceType type);
+	void updateSlice(SliceType type, int index);
 	void updateMarks(SliceType type);
 	void updateActions();
 	void updateDeleteAction();

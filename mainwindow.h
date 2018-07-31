@@ -39,6 +39,7 @@ private slots:
 	void readSettingsForImageView(ImageCanvas * view, QSettings * settings);
 	void readSettings();
 	void writeSettings();
+	void setDefaultLayout();
 private:
 	Q_OBJECT
 		//Widgets

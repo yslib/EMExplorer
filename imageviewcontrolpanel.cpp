@@ -8,12 +8,24 @@
 
 #include "imageviewcontrolpanel.h"
 #include "titledsliderwithspinbox.h"
+#include "imageviewer.h"
+#include "mrcdatamodel.h"
 
 
 
 ImageViewControlPanel::ImageViewControlPanel(ImageCanvas * canvas,QWidget* parent):m_canvas(canvas)
 {
 	createWidgets();
+}
+
+void ImageViewControlPanel::setImageCanvas(ImageCanvas* canvas)
+{
+	//disconnect signals
+	m_canvas = canvas;
+	//connect signals
+	
+
+	updateActions();
 }
 
 void ImageViewControlPanel::createWidgets()
@@ -23,6 +35,7 @@ void ImageViewControlPanel::createWidgets()
 	//slice slider group
 	QGroupBox * group = new QGroupBox(QStringLiteral("Slice Slider"), this);
 	QVBoxLayout * vLayout = new QVBoxLayout;
+	//top slider
 	m_topSliceCheckBox = new QCheckBox;
 	m_topSliceCheckBox->setChecked(true);
 	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
@@ -40,6 +53,7 @@ void ImageViewControlPanel::createWidgets()
 	hLayout->addWidget(toolButton);
 	vLayout->addLayout(hLayout);
 
+	//right slider 
 	m_rightSliceCheckBox = new QCheckBox;
 	m_rightSliceCheckBox->setChecked(true);
 	m_rightSlider = new TitledSliderWithSpinBox(this, tr("Y:"));
@@ -57,7 +71,7 @@ void ImageViewControlPanel::createWidgets()
 	hLayout->addWidget(toolButton);
 	vLayout->addLayout(hLayout);
 
-
+	//front slider
 	m_frontSliceCheckBox = new QCheckBox;
 	m_frontSliceCheckBox->setChecked(true);
 	m_frontSlider = new TitledSliderWithSpinBox(this, tr("X:"));
@@ -184,3 +198,26 @@ void ImageViewControlPanel::createWidgets()
 
 	setLayout(mainLayout);
 }
+
+void ImageViewControlPanel::updateActions()
+{
+	bool enable = (m_canvas != nullptr);
+
+}
+
+void ImageViewControlPanel::updateProperty()
+{
+	Q_ASSERT_X(m_canvas, "ImageViewControlPanel::updateProperty", "canvas pointer is null.");
+	const auto m = m_canvas->sliceModel();
+	Q_ASSERT_X(m, "ImageViewControlPanel::updateProperty", "data model pointer is null.");
+	const int miz = m->topSliceCount();
+	const int miy = m->rightSliceCount();
+	const int mix = m->frontSliceCount();
+
+	m_topSlider->setMaximum(miz - 1);
+	m_rightSlider->setMaximum(miy - 1);
+	m_frontSlider->setMaximum(mix - 1);
+
+}
+
+

@@ -19,8 +19,8 @@ class ProfileView:public QTableView
 public:
 	ProfileView(QWidget* parent = nullptr);
 	QAbstractItemModel* takeModel(QAbstractItemModel* model);
-	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
+	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 100); }
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 100); }
 signals:
 	void itemSelected(const QString & text);
 	void itemChanged(const QString & text);

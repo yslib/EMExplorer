@@ -142,9 +142,9 @@ void ImageCanvas::createConnections()
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageCanvas::rightSliceChanged);
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this, &ImageCanvas::frontSliceChanged);
 	//update slice
-	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Top); });
-	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Right); });
-	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {Q_UNUSED(value); updateSlice(SliceType::Front); });
+	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) { updateSlice(SliceType::Top,value); });
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice(SliceType::Right,value); });
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [=](int value) {updateSlice(SliceType::Front,value); });
 	//forward selected signals
 	connect(m_topView, &SliceView::sliceSelected, this, &ImageCanvas::topSliceSelected);
 	connect(m_rightView, &SliceView::sliceSelected, this, &ImageCanvas::rightSliceSelected);
@@ -158,43 +158,17 @@ void ImageCanvas::createConnections()
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateRightSliceActions(); });
 	connect(m_frontSliceCheckBox, &QCheckBox::toggled, [this](bool toggle) {Q_UNUSED(toggle); updateFrontSliceActions(); });
 
-	connect(m_resetAction, &QAction::triggered, [this](bool enable)
-	{
-		Q_UNUSED(enable);
-		m_topView->resetMatrix();
-		m_rightView->resetMatrix();
-		m_frontView->resetMatrix();
-	});
+
+
+	connect(m_resetAction, &QAction::triggered, this, &ImageCanvas::resetZoom);
 	//view toolbar actions
 	connect(m_topSlicePlayAction, &QAction::triggered, [this](bool enable) {onTopSlicePlay(enable); if (!enable)emit topSlicePlayStoped(m_topSlider->value()); });
 	connect(m_rightSlicePlayAction, &QAction::triggered, [this](bool enable) {onRightSlicePlay(enable); if (!enable)emit rightSlicePlayStoped(m_rightSlider->value()); });
 	connect(m_frontSlicePlayAction, &QAction::triggered, [this](bool enable) {onFrontSlicePlay(enable); if (!enable)emit frontSlicePlayStoped(m_frontSlider->value()); });
-	connect(m_addCategoryAction, &QAction::triggered, [this]()
-	{
-		MarkCategoryDialog dlg(this);
-		connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
-		{
-			addCategoryManagerHelper(name, color);
-			QPen pen = m_topView->pen();
-			pen.setColor(color);
-			updatePen(pen);
-		});
-		dlg.exec();
-	});
-	connect(m_zoomInAction, &QAction::triggered, [this]()
-	{
-		double factor = std::pow(1.125, 1);
-		m_topView->scale(factor, factor);
-		m_rightView->scale(factor, factor);
-		m_frontView->scale(factor, factor);
-	});
-	connect(m_zoomOutAction, &QAction::triggered, [this]()
-	{
-		double factor = std::pow(1.125, -1);
-		m_topView->scale(factor, factor);
-		m_rightView->scale(factor, factor);
-		m_frontView->scale(factor, factor);
-	});
+	connect(m_addCategoryAction, &QAction::triggered, this,&ImageCanvas::categoryAdded);
+
+	connect(m_zoomInAction, &QAction::triggered, this, &ImageCanvas::zoomIn);
+	connect(m_zoomOutAction, &QAction::triggered, this, &ImageCanvas::zoomOut);
 	connect(m_topView, &SliceView::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
 	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
@@ -205,14 +179,8 @@ void ImageCanvas::createConnections()
 	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
 
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); updatePen(pen); });
-	connect(m_colorAction, &QAction::triggered, [this](bool enable)
-	{
-		auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
-		QColor defaultColor = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
-		QPen pen = m_topView->pen();
-		pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color")));
-		updatePen(pen);
-	});
+	connect(m_colorAction, &QAction::triggered, this,&ImageCanvas::colorChanged);
+
 
 	connect(m_markAction, &QAction::triggered, [this](bool enable)
 	{
@@ -341,9 +309,9 @@ void ImageCanvas::updateSliceModel()
 	updateSliceCount(SliceType::Right);
 	updateSliceCount(SliceType::Front);
 
-	updateSlice(SliceType::Front);
-	updateSlice(SliceType::Right);
-	updateSlice(SliceType::Top);
+	updateSlice(SliceType::Front,0);
+	updateSlice(SliceType::Right,0);
+	updateSlice(SliceType::Top,0);
 }
 
 void ImageCanvas::detachMarkModel()
@@ -740,6 +708,7 @@ AbstractSliceDataModel* ImageCanvas::takeSliceModel(AbstractSliceDataModel* mode
 	installMarkModel(createMarkModel(this, m_sliceModel));
 	updateSliceModel();
 	updateActions();
+	emit dataModelChanged();
 	return t;
 }
 MarkModel* ImageCanvas::takeMarkModel(MarkModel* model, bool * success)noexcept
@@ -777,12 +746,59 @@ MarkModel* ImageCanvas::takeMarkModel(MarkModel* model, bool * success)noexcept
 	updateActions();
 	if (success != nullptr)
 		*success = true;
+	emit markModelChanged();
 	return t;
 }
 MarkModel * ImageCanvas::markModel()
 {
 	return m_markModel;
 }
+
+void ImageCanvas::resetZoom()
+{
+	m_topView->resetMatrix();
+	m_rightView->resetMatrix();
+	m_frontView->resetMatrix();
+}
+
+void ImageCanvas::zoomIn()
+{
+	double factor = std::pow(1.125, 1);
+	m_topView->scale(factor, factor);
+	m_rightView->scale(factor, factor);
+	m_frontView->scale(factor, factor);
+}
+
+void ImageCanvas::zoomOut()
+{
+	double factor = std::pow(1.125, -1);
+	m_topView->scale(factor, factor);
+	m_rightView->scale(factor, factor);
+	m_frontView->scale(factor, factor);
+}
+
+void ImageCanvas::categoryAdded()
+{
+	MarkCategoryDialog dlg(this);
+	connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
+	{
+		addCategoryManagerHelper(name, color);
+		QPen pen = m_topView->pen();
+		pen.setColor(color);
+		updatePen(pen);
+	});
+	dlg.exec();
+}
+
+void ImageCanvas::colorChanged()
+{
+	auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
+	QColor defaultColor = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
+	QPen pen = m_topView->pen();
+	pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color")));
+	updatePen(pen);
+}
+
 void ImageCanvas::setEnabled(bool enable)
 {
 	m_topSliceCheckBox->setEnabled(enable);
@@ -968,7 +984,7 @@ void ImageCanvas::updateSliceCount(SliceType type)
 	}
 }
 
-void ImageCanvas::updateSlice(SliceType type)
+void ImageCanvas::updateSlice(SliceType type, int index)
 {
 	//
 	SliceView * view = nullptr;
@@ -1000,7 +1016,6 @@ void ImageCanvas::updateSlice(SliceType type)
 	}
 	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true,
 		"ImageView::updateSlice", "null function");
-	int index = currentIndexHelper(type);
 	view->setImage(sliceGetter(index));
 	view->clearSliceMarks();
 	if (m_markModel == nullptr)
