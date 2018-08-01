@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+enum class SliceType;
 QT_BEGIN_NAMESPACE
 class QLabel;
 class QWheelEvent;
@@ -23,18 +24,35 @@ class ImageViewControlPanel:public QWidget
 public:
     ImageViewControlPanel(ImageCanvas * canvas,QWidget * parent = nullptr);
 	void setImageCanvas(ImageCanvas * canvas);
-private:
+	int sliceIndex(SliceType type)const;
+	void setSliceIndex(SliceType type, int value);
+	int sliceCount(SliceType type)const;
+	void setSliceCount(SliceType type, int count);
+	bool sliceVisible(SliceType type)const;
+	QString currentCategoryName()const;
+	QColor currentCategoryColor()const;
+	int categoryCount()const;
 
+private:
 	void createWidgets();
 	void updateActions();
 	void updateProperty();
+	void connections();
+
+	void setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates);
+	void addCategoryInfoPrivate(const QString & name, const QColor & color);
+	void updateDeleteActionPrivate();
+	void updateSliceActions(SliceType type,bool checked);
+	QIcon createColorIcon(const QColor & color);
+	//private slots:
+	void onCategoryAdded();
+	void colorChanged();
 
 	enum class PlayDirection {
 		Forward,
 		Backward
 	};
 	ImageCanvas * m_canvas;
-
 
 	TitledSliderWithSpinBox * m_topSlider;
 	QCheckBox * m_topSliceCheckBox;
@@ -44,20 +62,19 @@ private:
 	TitledSliderWithSpinBox * m_frontSlider;
 
 	//actions on view toolbar
+	
 
-	QAction *m_zoomInAction;
-	QAction *m_zoomOutAction;
-	QAction * m_resetAction;
+	QToolButton *m_zoomInAction;
+	QToolButton *m_zoomOutAction;
+	QToolButton * m_resetAction;
 
-	QAction *m_topSlicePlayAction;
-	QAction *m_rightSlicePlayAction;
-	QAction *m_frontSlicePlayAction;
+	QToolButton *m_topSlicePlayAction;
+	QToolButton *m_rightSlicePlayAction;
+	QToolButton *m_frontSlicePlayAction;
 
 	QToolButton * m_menuButton;
 
 	//menu on view toolbar
-	QMenu * m_menu;
-	QAction * m_histDlg;
 	PlayDirection m_topSlicePlayDirection;
 	int m_topTimerId;
 	PlayDirection m_rightSlicePlayDirection;
@@ -71,12 +88,12 @@ private:
 	QLabel * m_penSizeLabel;
 	QComboBox* m_penSizeCBBox;
 	//actions on edit toolbar
-	QAction *m_markAction;
-	QAction *m_markSelectionAction;
-	QAction *m_colorAction;
+	QToolButton *m_markAction;
+	QToolButton *m_markSelectionAction;
+	QToolButton *m_colorAction;
 	//QAction *m_markMergeAction;
-	QAction *m_markDeletionAction;
-	QAction *m_addCategoryAction;
+	QToolButton *m_markDeletionAction;
+	QToolButton *m_addCategoryAction;
 
 
 	friend class ImageCanvas;

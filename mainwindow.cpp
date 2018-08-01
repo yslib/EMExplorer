@@ -256,9 +256,9 @@ void MainWindow::writeSettingsForImageView(ImageCanvas * view, QSettings * setti
 		settings = ptr.data();
 	}
 	settings->beginGroup(view->windowTitle());
-	settings->setValue(QStringLiteral("topvisible"), view->isTopSliceEnabled());
-	settings->setValue(QStringLiteral("rightvisible"), view->isRightSliceEnabled());
-	settings->setValue(QStringLiteral("frontvisible"), view->isFrontSliceEnabled());
+	settings->setValue(QStringLiteral("topvisible"), view->topSliceVisible());
+	settings->setValue(QStringLiteral("rightvisible"), view->rightSliceVisible());
+	settings->setValue(QStringLiteral("frontvisible"), view->frontSliceVisible());
 	settings->setValue(QStringLiteral("pen"), view->pen());
 	settings->endGroup();
 }
@@ -271,9 +271,9 @@ void MainWindow::readSettingsForImageView(ImageCanvas * view, QSettings * settin
 		settings = ptr.data();
 	}
 	settings->beginGroup(view->windowTitle());
-	view->topSliceEnable(settings->value(QStringLiteral("topvisible"), true).toBool());
-	view->rightSliceEnable(settings->value(QStringLiteral("rightvisible"), true).toBool());
-	view->frontSliceEnable(settings->value(QStringLiteral("frontvisible"), true).toBool());
+	view->setTopSliceVisible(settings->value(QStringLiteral("topvisible"), true).toBool());
+	view->setRightSliceVisible(settings->value(QStringLiteral("rightvisible"), true).toBool());
+	view->setFrontSliceVisible(settings->value(QStringLiteral("frontvisible"), true).toBool());
 	view->setPen(settings->value(QStringLiteral("pen"), QVariant::fromValue(QPen(Qt::black, 5, Qt::SolidLine))).value<QPen>());
 	settings->endGroup();
 
@@ -350,7 +350,7 @@ void MainWindow::createWidget()
 
 	//ImageCanvas control widget
 	m_imageViewControlPanelDockWidget = new QDockWidget(QStringLiteral("Image View Control Panel"));
-	m_imageViewControlPanel = new ImageViewControlPanel(nullptr, this);
+	m_imageViewControlPanel = new ImageViewControlPanel(m_imageView, this);
 	m_imageViewControlPanelDockWidget->setWidget(m_imageViewControlPanel);
 	m_imageViewControlPanelDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	

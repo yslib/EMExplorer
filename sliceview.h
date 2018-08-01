@@ -32,6 +32,7 @@ public:
 	int selectedItemCount()const;
 	void moveSlice(const QPointF & dir);
 	QSize sizeHint()const override;
+
 protected:
 	void mousePressEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent * event)Q_DECL_OVERRIDE;

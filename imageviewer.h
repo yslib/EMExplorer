@@ -35,6 +35,7 @@ class AbstractSliceDataModel;
 class SliceItem;
 class SliceView;
 class VolumeWidget;
+class ImageViewControlPanel;
 
 class SliceScene :public QGraphicsScene
 {
@@ -56,31 +57,38 @@ public:
 		bool rightSliceVisible = true,
 		bool frontSliceVisible = true,
 		AbstractSliceDataModel * model = nullptr);
-	int topSliceIndex()const;
-	int rightSliceIndex()const;
-	int frontSliceIndex()const;
-	bool isTopSliceEnabled() const;
-	bool isRightSliceEnabled() const;
-	bool isFrontSliceEnabled() const;
+
+	bool topSliceVisible() const;
+	bool rightSliceVisible() const;
+	bool frontSliceVisible() const;
+
 	QPen pen()const;
 	void setPen(const QPen & pen);
-	void topSliceEnable(bool enable);
-	void rightSliceEnable(bool enable);
-	void frontSliceEnable(bool enable);
 
-	void resetZoom();
+	void setTopSliceVisible(bool enable);
+	void setRightSliceVisible(bool enable);
+	void setFrontSliceVisible(bool enable);
+
+	SliceView * topView()const;
+	SliceView * rightView()const;
+	SliceView * frontView()const;
+
+	int currentSliceIndex(SliceType type)const;
+
+
+	void resetZoom(bool check);
 	void zoomIn();
 	void zoomOut();
-	void categoryAdded();
-	void colorChanged();
-
-	void enableMark();
+	//void categoryAdded();
+	//void colorChanged();
+	void setOperation(SliceType type,int opt);
 
 	//inline VolumeWidget* volumeWidget()const;
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
+
 signals:
 	void topSliceOpened(int index);
 	void topSliceChanged(int index);
@@ -122,7 +130,6 @@ private:
 	void createToolBar();
 	void createConnections();
 	void createContextMenu();
-	QIcon createColorIcon(const QColor & color);
 	//update helper
 	void updatePen(const QPen & pen);
 	void updateSliceCount(SliceType type);
@@ -130,17 +137,17 @@ private:
 	void updateMarks(SliceType type);
 	void updateActions();
 	void updateDeleteAction();
-	void updateTopSliceActions();
-	void updateFrontSliceActions();
-	void updateRightSliceActions();
+	void updateTopSliceActions(bool enable);
+	void updateFrontSliceActions(bool check);
+	void updateRightSliceActions(bool check);
 	void installMarkModel(MarkModel* model);
 	void updateSliceModel();
 	void detachMarkModel();
 	//void detachSliceModel();
 	inline bool contains(const QWidget* widget, const QPoint& pos);
-	inline void setTopSliceCountHelper(int value);
-	inline void setRightSliceCountHelper(int value);
-	inline void setFrontSliceCountHelper(int value);
+	//inline void setTopSliceCountHelper(int value);
+	//inline void setRightSliceCountHelper(int value);
+	//inline void setFrontSliceCountHelper(int value);
 	void markAddedHelper(SliceType type, QGraphicsItem * mark);
 	void markDeleteHelper();
 	void markSingleSelectionHelper();
@@ -153,6 +160,7 @@ private:
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
+	ImageViewControlPanel * m_panel;
 	//main layout
 	QGridLayout *m_layout;
 	SliceView * m_topView;
@@ -161,32 +169,33 @@ private:
 	//VolumeWidget * m_renderView;
 
 	//Tool Bar
-	QToolBar * m_viewToolBar;
-	QToolBar * m_editToolBar;
-	//Widgets on view toolbar
-	TitledSliderWithSpinBox * m_topSlider;
-	QCheckBox * m_topSliceCheckBox;
-	QCheckBox * m_rightSliceCheckBox;
-	TitledSliderWithSpinBox * m_rightSlider;
-	QCheckBox * m_frontSliceCheckBox;
-	TitledSliderWithSpinBox * m_frontSlider;
-	QAction * m_volumeWidgetAction;
+	//QToolBar * m_viewToolBar;
+	//QToolBar * m_editToolBar;
+	////Widgets on view toolbar
+	//TitledSliderWithSpinBox * m_topSlider;
+	//QCheckBox * m_topSliceCheckBox;
+	//QCheckBox * m_rightSliceCheckBox;
+	//TitledSliderWithSpinBox * m_rightSlider;
+	//QCheckBox * m_frontSliceCheckBox;
+	//TitledSliderWithSpinBox * m_frontSlider;
+	//QAction * m_volumeWidgetAction;
 
-	//actions on view toolbar
+	////actions on view toolbar
 
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
-	QAction * m_resetAction;
-	
-	QAction *m_topSlicePlayAction;
-	QAction *m_rightSlicePlayAction;
-	QAction *m_frontSlicePlayAction;
-	
-	QToolButton * m_menuButton;
+	//QAction * m_resetAction;
+	//
+	//QAction *m_topSlicePlayAction;
+	//QAction *m_rightSlicePlayAction;
+	//QAction *m_frontSlicePlayAction;
+	//
+	//QToolButton * m_menuButton;
 
-	//menu on view toolbar
-	QMenu * m_menu;
-	QAction * m_histDlg;
+	////menu on view toolbar
+	//QMenu * m_menu;
+
+	//QAction * m_histDlg;
 	PlayDirection m_topSlicePlayDirection;
 	int m_topTimerId;
 	PlayDirection m_rightSlicePlayDirection;
@@ -195,21 +204,18 @@ private:
 	int m_frontTimerId;
 
 	//Widgets on edit toolbar
-	QLabel * m_categoryLabel;
-	QComboBox * m_categoryCBBox;
-
-	QLabel * m_penSizeLabel;
-	QComboBox* m_penSizeCBBox;
+	//QLabel * m_categoryLabel;
+	//QComboBox * m_categoryCBBox;
+	//QLabel * m_penSizeLabel;
+	//QComboBox* m_penSizeCBBox;
 
 	//actions on edit toolbar
-	QAction *m_markAction;
-	QAction *m_markSelectionAction;
-	//QAction *m_moveAction;
-	QAction *m_colorAction;
-	//QAction *m_markMergeAction;
-	QAction *m_markDeletionAction;
-	QAction *m_addCategoryAction;
-	//menu on edit toolbar
+	//QAction *m_markAction;
+	//QAction *m_markSelectionAction;
+	//QAction *m_colorAction;
+	//QAction *m_markDeletionAction;
+	//QAction *m_addCategoryAction;
+
 	//ContextMenu
 	QMenu *m_contextMenu;
 	QAction * m_zoomIn;
@@ -218,10 +224,18 @@ private:
 	QAction * m_pixelViewDlgAction;
 	QAction * m_marksManagerDlgAction;
 	QWidget * m_menuWidget;
+
+
+	friend class ImageViewControlPanel;
 };
 
 //inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
 inline AbstractSliceDataModel * ImageCanvas::sliceModel()const { return m_sliceModel; }
+
+inline SliceView * ImageCanvas::topView()const { return m_topView; }
+inline SliceView * ImageCanvas::rightView()const { return m_rightView; }
+inline SliceView * ImageCanvas::frontView()const { return m_frontView; }
+
 
 
 

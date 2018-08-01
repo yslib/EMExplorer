@@ -126,18 +126,19 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 	if (m_view == nullptr)
 		return;
 	int index = -1;
-	switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
-	{
-	case SliceType::Top:
-		index = m_view->topSliceIndex();
-			break;
-	case SliceType::Right:
-		index = m_view->rightSliceIndex();
-			break;
-	case SliceType::Front:
-		index = m_view->frontSliceIndex();
-			break;
-	}
+	//switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
+	//{
+	//case SliceType::Top:
+	//	index = m_view->topSliceIndex();
+	//		break;
+	//case SliceType::Right:
+	//	index = m_view->rightSliceIndex();
+	//		break;
+	//case SliceType::Front:
+	//	index = m_view->frontSliceIndex();
+	//		break;
+	//}
+	index = m_view->currentSliceIndex(static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()));
 	if (index != mark->data(MarkProperty::SliceIndex).toInt())
 		return;
 	bool visible = mark->data(MarkProperty::VisibleState).toBool();
