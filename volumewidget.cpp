@@ -121,12 +121,14 @@ QSize VolumeWidget::sizeHint() const
 
 VolumeWidget::~VolumeWidget()
 {
+
 }
 
 void VolumeWidget::initializeGL()
 {
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
+	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &VolumeWidget::cleanup);
 
 	m_program.reset(new QOpenGLShaderProgram);
 	m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
@@ -136,6 +138,7 @@ void VolumeWidget::initializeGL()
 
 	m_program->link();
 	m_program->bind();
+
 	m_projMatLoc = m_program->uniformLocation("projMatrix");
 	m_modelViewMatLoc = m_program->uniformLocation("mvMatrix");
 	m_normalMatrixLoc = m_program->uniformLocation("normalMatrix");
@@ -242,4 +245,13 @@ void VolumeWidget::updateVolumeData()
 void VolumeWidget::updateMarkData()
 {
 	return;
+}
+
+void VolumeWidget::cleanup()
+{
+	makeCurrent();
+	//m_program.reset();
+	m_cubeVBO.destroy();
+	m_cubeVAO.destroy();
+	doneCurrent();
 }

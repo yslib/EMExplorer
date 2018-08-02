@@ -48,6 +48,12 @@ signals:
 	void markModelChanged();
 	void dataModelChanged();
 private:
+	void drawCube();
+	void updateVolumeData();
+	void updateMarkData();
+	//evaluate gradients
+	
+	void cleanup();
 	MarkModel * m_markModel;
 	AbstractSliceDataModel * m_dataModel;
 	QMatrix4x4 m_proj;
@@ -61,9 +67,7 @@ private:
 	QScopedPointer<QOpenGLShaderProgram> m_program;
 	QOpenGLBuffer m_cubeVBO;
 	QOpenGLVertexArrayObject m_cubeVAO;
-	void drawCube();
-	void updateVolumeData();
-	void updateMarkData();
+
 };
 
 #endif // VOLUMEWIDGET_H

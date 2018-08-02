@@ -21,18 +21,22 @@ class VolumeWidget;
 class ImageViewControlPanel;
 class MainWindow : public QMainWindow
 {
+	Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-	
+	explicit MainWindow(QWidget *parent = 0);
+	~MainWindow();
 protected:
 	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
-private slots:
-    void open();
+private:
+	void createWidget();
+	void createMenu();
+	void createActions();
+	void createStatusBar();
+	void createMarkTreeView();
+	void open();
 	bool saveMark();
 	void openMark();
-    void saveAs();
-
+	void saveAs();
 	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
 	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
 	void writeSettingsForImageView(ImageCanvas * view, QSettings * settings);
@@ -40,12 +44,16 @@ private slots:
 	void readSettings();
 	void writeSettings();
 	void setDefaultLayout();
-private:
-	Q_OBJECT
-		//Widgets
 
+	AbstractSliceDataModel * replaceSliceModel(AbstractSliceDataModel* model);
+	MarkModel * replaceMarkModel(MarkModel * model);
+	QAbstractTableModel * replaceProfileModel(QAbstractTableModel * model);
+	QAbstractTableModel * setupProfileModel(const MRC & mrc);
+
+	//Widgets
 	QDockWidget * m_volumeViewDockWidget;
 	VolumeWidget * m_volumeView;
+
 	QDockWidget * m_renderParameterDockWidget;
 	RenderParameterWidget * m_renderParameterWidget;
 
@@ -75,18 +83,7 @@ private:
 	QAction * m_openAction;
 	QAction * m_saveAction;
 	QAction * m_openMarkAction;
-
-	void createWidget();
-	void createMenu();
-    void createActions();
-    void createStatusBar();
-	void createMarkTreeView();
-	AbstractSliceDataModel * replaceSliceModel(AbstractSliceDataModel* model);
-	MarkModel * replaceMarkModel( MarkModel * model);
-	QAbstractTableModel * replaceProfileModel(QAbstractTableModel * model);
-	//void setupModels(const MRC & mrc);
-	QAbstractTableModel * setupProfileModel(const MRC & mrc);
-
+	QAction * m_setDefaultLayoutAction;
 };
 
 #endif // MAINWINDOW_H

@@ -7,6 +7,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer> 
+#include <QScopedPointer>
 
 class ModelData;
 class TF1DMappingCanvas;
@@ -27,19 +28,20 @@ protected:
     void paintGL();
 
 private:
+	void cleanup();
 
 	ModelData *modelData;		///< model data
 	TF1DMappingCanvas * m_transferFunction;
 
 	//Background Primitive
-	QOpenGLShaderProgram m_bgShader;
+	QScopedPointer<QOpenGLShaderProgram> m_bgShader;
 	QOpenGLVertexArrayObject m_bgVAO;
 	QOpenGLBuffer m_bgVBO;
 	unsigned int m_bgVertPos;
 	unsigned int m_bgColorPos;
 
 	//Transfer Function Texture
-	QOpenGLShaderProgram m_tfShader;
+	QScopedPointer<QOpenGLShaderProgram> m_tfShader;
 	QOpenGLVertexArrayObject m_tfVAO;
 	QOpenGLBuffer m_tfVBO;
 	unsigned int m_tfVertPos;

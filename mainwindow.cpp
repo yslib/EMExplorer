@@ -414,7 +414,6 @@ void MainWindow::createMenu()
 
 void MainWindow::createActions()
 {
-
 	m_openAction = new QAction(QIcon(":/icons/resources/icons/open.png"), QStringLiteral("Open"), this);
 	m_openAction->setToolTip(QStringLiteral("Open MRC file"));
 	QToolBar * toolBar = addToolBar(QStringLiteral("Tools"));
@@ -432,6 +431,12 @@ void MainWindow::createActions()
 	toolBar->addAction(m_openMarkAction);
 	connect(m_openMarkAction, &QAction::triggered, this, &MainWindow::openMark);
 
+	//set default action
+	m_setDefaultLayoutAction = new QAction(QIcon(""),QStringLiteral("Default Layout"),this);
+	m_setDefaultLayoutAction->setToolTip(QStringLiteral("Default Layout"));
+	
+	toolBar->addAction(m_setDefaultLayoutAction);
+	connect(m_setDefaultLayoutAction, &QAction::triggered, this, &MainWindow::setDefaultLayout);
 }
 
 void MainWindow::createStatusBar()
@@ -496,6 +501,5 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 		//qDebug()<<value;
 		model->setData(model->index(i, 1), value, Qt::DisplayRole);
 	}
-
 	return model;
 }

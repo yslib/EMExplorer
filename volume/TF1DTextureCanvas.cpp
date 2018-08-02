@@ -162,19 +162,19 @@ void TF1DTextureCanvas::initializeGL()
 	
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
+	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &TF1DTextureCanvas::cleanup);
 	//glBegin();
 
 	//create 1d transfer function texture
 	//glEnable(GL_TEXTURE_1D);			//glGetError() == 1280 ?? GL_ERROR_ENUM
-
-	m_tfShader.addShaderFromSourceCode(QOpenGLShader::Vertex, tfVertShader);
-	m_tfShader.addShaderFromSourceCode(QOpenGLShader::Fragment, tfFragShader);
-	m_tfShader.link();
-	m_tfShader.bind();
-	m_tfVertPos = m_tfShader.attributeLocation("vPos");
-	const auto tfTexCoordPos = m_tfShader.attributeLocation("vTexCoords");
-
-	m_tfShader.release();
+	m_tfShader.reset(new QOpenGLShaderProgram);
+	m_tfShader->addShaderFromSourceCode(QOpenGLShader::Vertex, tfVertShader);
+	m_tfShader->addShaderFromSourceCode(QOpenGLShader::Fragment, tfFragShader);
+	m_tfShader->link();
+	m_tfShader->bind();
+	m_tfVertPos = m_tfShader->attributeLocation("vPos");
+	const auto tfTexCoordPos = m_tfShader->attributeLocation("vTexCoords");
+	m_tfShader->release();
 
 	m_tfVAO.create();
 	m_tfVAO.bind();
@@ -198,13 +198,14 @@ void TF1DTextureCanvas::initializeGL()
 	glDisable(GL_TEXTURE_1D);
 
 	//Background Shader initialization
-	m_bgShader.addShaderFromSourceCode(QOpenGLShader::Vertex, bgVertShader);
-	m_bgShader.addShaderFromSourceCode(QOpenGLShader::Fragment, bgFragShader);
-	m_bgShader.link();
-	m_bgShader.bind();
-	m_bgVertPos = m_bgShader.attributeLocation("vPos");
-	m_bgColorPos = m_bgShader.attributeLocation("vColor");
-	m_bgShader.release();
+	m_bgShader.reset(new QOpenGLShaderProgram);
+	m_bgShader->addShaderFromSourceCode(QOpenGLShader::Vertex, bgVertShader);
+	m_bgShader->addShaderFromSourceCode(QOpenGLShader::Fragment, bgFragShader);
+	m_bgShader->link();
+	m_bgShader->bind();
+	m_bgVertPos = m_bgShader->attributeLocation("vPos");
+	m_bgColorPos = m_bgShader->attributeLocation("vColor");
+	m_bgShader->release();
 
 	m_bgVAO.create();
 	m_bgVAO.bind();
@@ -234,13 +235,11 @@ void TF1DTextureCanvas::paintGL()
 {
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-
 	QOpenGLVertexArrayObject::Binder binder(&m_bgVAO);
-	m_bgShader.bind();
-	m_bgShader.setUniformValue("othoMat", m_othoMat);
+	m_bgShader->bind();
+	m_bgShader->setUniformValue("othoMat", m_othoMat);
 	glDrawArrays(GL_QUADS, 0, 80);
-	m_bgShader.release();
-
+	m_bgShader->release();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glEnable(GL_TEXTURE_1D);
@@ -253,14 +252,20 @@ void TF1DTextureCanvas::paintGL()
 	glBindTexture(GL_TEXTURE_1D, m_texture);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16, dimension, 0, GL_RGBA, GL_FLOAT, transferFunction.get());
-
-
 	QOpenGLVertexArrayObject::Binder binder2(&m_tfVAO);
-	m_tfShader.bind();
-	m_tfShader.setUniformValue("othoMat", m_othoMat);
+	m_tfShader->bind();
+	m_tfShader->setUniformValue("othoMat", m_othoMat);
 	glDrawArrays(GL_QUADS, 0, 4);
-	m_tfShader.release();
-
+	m_tfShader->release();
 	glDisable(GL_BLEND);
-	
+}
+
+void TF1DTextureCanvas::cleanup()
+{
+	makeCurrent();
+	m_bgVAO.destroy();
+	m_bgVBO.destroy();
+	m_tfVAO.destroy();
+	m_tfVBO.destroy();
+	doneCurrent();
 }
