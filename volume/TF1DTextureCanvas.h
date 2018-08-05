@@ -8,13 +8,14 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer> 
 #include <QScopedPointer>
+#include <QOpenGLFunctions_3_1>
 
 class ModelData;
 class TF1DMappingCanvas;
 
 
 
-class TF1DTextureCanvas : public QOpenGLWidget,protected QOpenGLFunctions
+class TF1DTextureCanvas : public QOpenGLWidget,protected QOpenGLFunctions_3_1
 {
     Q_OBJECT
 

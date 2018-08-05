@@ -67,6 +67,7 @@ unsigned char* MRCDataModel::data()
 
 const unsigned char* MRCDataModel::constData() const
 {
+	//TODO:: There may be a bug.
 	return reinterpret_cast<unsigned char*>(m_d->data<MRC::MRCInt8>());
 }
 

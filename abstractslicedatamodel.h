@@ -33,6 +33,16 @@ private:
 	QVector<bool> m_modifiedFrontSliceFlags;
 };
 
+/**
+ * \class	SliceDataIdentityTester
+ *
+ * \brief	A slice data identity tester. This class is used 
+ * 			to test whether the slice data model matches the mark data model.
+ *
+ * \author	Ysl
+ * \date	2018.08.03
+ */
+
 class SliceDataIdentityTester
 {
 	int m_topSliceCount;
