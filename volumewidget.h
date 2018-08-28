@@ -12,6 +12,7 @@
 #include "volume/Shaders/shaderdatainterface.h"
 #include <QMutex>
 #include <memory>
+#include <QOpenGLTexture>
 
 class MarkModel;
 class AbstractSliceDataModel;
@@ -72,28 +73,28 @@ public:
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
 					~VolumeWidget();
 public://ShaderDataInterface
-	unsigned int	getVolumeTexIdx()override							{ return m_volumeTextureId; }
+	unsigned int	getVolumeTexIdx()const override 							{ return m_volumeTextureId; }
 	//unsigned int	getMagnitudeTexIdx()override						{ return -1; }
 	// voxel size
-	QVector3D		getVoxelSize()override								{ return m_voxelSize; }
+	QVector3D		getVoxelSize()const override								{ return m_voxelSize; }
 	// ray casting start and end position texture idx
-	unsigned int	getStartPosTexIdx()override							{ return m_startFaceTextureId; }
-	unsigned int	getEndPosTexIdx()override							{ return m_endFaceTextureId; }
+	unsigned int	getStartPosTexIdx()const override							{ return m_startFaceTextureId; }
+	unsigned int	getEndPosTexIdx()const override							{ return m_endFaceTextureId; }
 	// ray casting step
-	float			getRayStep()override								{ return m_rayStep; }
+	float			getRayStep()const override								{ return m_rayStep; }
 	// transfer function idx
-	unsigned int	getTF1DIdx()override								{ return m_tfTextureId; }
+	unsigned int	getTF1DIdx()const override								{ return m_tfTextureId; }
 	// camera parameters
-	QVector3D		getCameraEye()override								{ return m_camera.position(); }
-	QVector3D		getCameraTowards()override							{ return m_camera.front(); }
-	QVector3D		getCameraUp()override								{ return m_camera.up(); }
-	QVector3D		getCameraRight()override							{ return m_camera.right(); }
+	QVector3D		getCameraEye()const override								{ return m_camera.position(); }
+	QVector3D		getCameraTowards()const override							{ return m_camera.front(); }
+	QVector3D		getCameraUp()const override								{ return m_camera.up(); }
+	QVector3D		getCameraRight()const override							{ return m_camera.right(); }
 	// lighting parameters
-	QVector3D		getLightDirection()override							{ return m_lightParameters.ligthDirection; }
-	float			getAmbient()override								{ return m_lightParameters.ambient; }
-	float			getDiffuse()override								{ return m_lightParameters.diffuse; }
-	float			getShininess()override								{ return m_lightParameters.shininess; }
-	float			getSpecular()override								{ return m_lightParameters.specular; }
+	QVector3D		getLightDirection()const override							{ return m_lightParameters.ligthDirection; }
+	float			getAmbient()const override								{ return m_lightParameters.ambient; }
+	float			getDiffuse()const override								{ return m_lightParameters.diffuse; }
+	float			getShininess()const override								{ return m_lightParameters.shininess; }
+	float			getSpecular()const override								{ return m_lightParameters.specular; }
 	// mouse position
 	//unsigned int	getMouseX()override									{ return -1; }
 	//unsigned int	getMouseY()override									{ return -1; }
@@ -130,20 +131,33 @@ private:
 	FocusCamera								m_camera;
 	LightingParameters						m_lightParameters;
 
-	QOpenGLFramebufferObject				m_startFrame;
-	QOpenGLFramebufferObject				m_endFrame;
+	QScopedPointer<QOpenGLFramebufferObject>m_fbo;
 
 
 	ShaderHash								m_shaders;
 	QSharedPointer<ShaderProgram>			m_currentShader;
+
+	QScopedPointer<QOpenGLShaderProgram>	m_positionShader;
+	QOpenGLBuffer							m_positionVBO;
+	QOpenGLBuffer							m_positionEBO;
+	QOpenGLVertexArrayObject				m_positionVAO;
+	
 
 	QVector3D								m_voxelSize;
 	QVector3D								m_volumeBound;
 	float									m_rayStep;
 
 	unsigned int							m_tfTextureId;
+	//QOpenGLTexture						m_tfTexture;
+	QScopedPointer<QOpenGLTexture>			m_tfTexture;
 	unsigned int							m_volumeTextureId;
+	QScopedPointer<QOpenGLTexture>			m_volumeTexture;
 	unsigned int							m_gradientTextureId;
+	QScopedPointer<QOpenGLTexture>			m_gradientTeture;
+
+
+	QOpenGLTexture							*m_testTexture;
+
 	unsigned int							m_startFaceTextureId;
 	unsigned int							m_endFaceTextureId;
 
