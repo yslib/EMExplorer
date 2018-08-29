@@ -96,6 +96,7 @@ void MainWindow::open()
 	auto m = m_imageView->markModel();
 	m->deleteLater();
 	auto t = m_imageView->takeSliceModel(sliceModel);
+	m_volumeView->setDataModel(sliceModel);
 	delete t;
 	m_treeView->setModel(m_imageView->markModel());
 	auto d = m_profileView->takeModel(infoModel);

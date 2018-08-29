@@ -188,7 +188,7 @@ public:
 	QVector3D right()const { return m_right; }
 	QVector3D up()const { return m_up; }
 	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
-	QMatrix4x4 view()
+	QMatrix4x4 view()const
 	{
 		QMatrix4x4 view;
 		view.setToIdentity();

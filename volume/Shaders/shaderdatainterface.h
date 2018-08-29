@@ -33,12 +33,18 @@ public:
 	virtual QVector3D     getCameraUp()const = 0;
 	virtual QVector3D     getCameraRight()const = 0;
 
+	// matrix parameters
+	virtual QMatrix4x4    getViewMatrix()const = 0;
+	virtual QMatrix4x4	  getModelMatrix()const = 0;
+	virtual QMatrix4x4	  getOthoMatrix()const = 0;
+	virtual QMatrix4x4    getPerspMatrix()const = 0;
+
 	// lighting parameters
 	virtual QVector3D     getLightDirection()const = 0;
-	virtual float        getAmbient()const = 0;
-	virtual float        getDiffuse()const = 0;
-	virtual float        getShininess()const = 0;
-	virtual float        getSpecular()const = 0;
+	virtual float         getAmbient()const = 0;
+	virtual float         getDiffuse()const = 0;
+	virtual float         getShininess()const = 0;
+	virtual float         getSpecular()const = 0;
 
 	// mouse position
 	//virtual unsigned int getMouseX() = 0;

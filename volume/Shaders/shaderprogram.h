@@ -15,18 +15,20 @@ private:
 	QOpenGLFunctions m_glfuncs;
 };
 
+
 class PositionShader:public ShaderProgram
 {
 public:
 	PositionShader();
-	virtual void load(const ShaderDataInterface * data)override;
+	void load(const ShaderDataInterface * data)override;
 };
+
 
 class RayCastingShader:public ShaderProgram
 {
 public:
 	RayCastingShader();
-	virtual void load(const ShaderDataInterface * data)override;
+	void load(const ShaderDataInterface * data)override;
 };
 
 

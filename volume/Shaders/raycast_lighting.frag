@@ -25,12 +25,13 @@ uniform float ks;
 //uniform vec3 viewDir;
 uniform vec3 lightdir;
 uniform vec3 halfway;
+in vec2 textureRectCoord;
 
 vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 {
 	vec3 shadedValue=vec3(0,0,0);
 
-	////¼ÆËãÌÝ¶È
+	////è®¡ç®—æ¢¯åº¦
  //	vec3 N;
  //	N.x = (texture3D(texVolume, samplePos+vec3(step,0,0) ).w - texture3D(texVolume, samplePos+vec3(-step,0,0) ).w) - 1.0;
  //	N.y = (texture3D(texVolume, samplePos+vec3(0,step,0) ).w - texture3D(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
@@ -61,8 +62,8 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 
 void main()
 {
-	vec3 rayStart = texture2DRect(texStartPos, gl_TexCoord[0].st).xyz;
-    vec3 rayEnd = texture2DRect(texEndPos, gl_TexCoord[0].st).xyz;
+	vec3 rayStart = texture2DRect(texStartPos, textureRectCoord).xyz;
+    vec3 rayEnd = texture2DRect(texEndPos, textureRectCoord).xyz;
     vec3 start2end = rayEnd - rayStart;
 //    vec4 bg = vec4(0.156863, 0.156863, 0.156863, 1.0);
 	vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
