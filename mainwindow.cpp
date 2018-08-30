@@ -393,6 +393,12 @@ void MainWindow::createWidget()
 	m_tfEditorDockWidget = new QDockWidget(QStringLiteral("Transfer Function"));
 	m_tfEditorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_tfEditorDockWidget->setWidget(m_tfEditorWidget);
+	connect(m_tfEditorWidget, &TF1DEditor::TF1DChanged, [this]()
+	{
+		std::unique_ptr<float[]> funs(new float[256 * 4]);
+		m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
+		m_volumeView->updateTransferFunction(funs.get());
+	});
 	m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
 
 

@@ -4,9 +4,16 @@
 #include <QDebug>
 #include <QOpenGLShaderProgram>
 #include <QMouseEvent>
+#include <iostream>
 #include "volume/Shaders/shaderprogram.h"
-
-
+#define GLERROR(str)									\
+	{													\
+		GLenum err;										\
+		while ((err = glGetError()) != GL_NO_ERROR)		\
+		{												\
+			std::cout<<err<<" "<<str<<std::endl;		\
+		}												\
+	}													\
 
 static const char *vertexShaderSource =
 "#version 150\n"
@@ -346,13 +353,17 @@ VolumeWidget::VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markM
 	m_rayStep(0.05),
 	m_camera(QVector3D(0.f,0.f,5.f)),
 	m_gradCalc(dataModel,markModel),
+#ifdef USE_QT_FRAMEBUFFEROBJECT
 	m_fbo(nullptr),
+	//m_FBO(nullptr),
+#endif
+#ifdef USE_QT_TEXTUREOBJECT
 	m_volumeTexture(nullptr),
+#else
+	m_volumeTextureId(0),
+#endif
 	m_positionEBO(QOpenGLBuffer::IndexBuffer),
 	m_positionVBO(QOpenGLBuffer::VertexBuffer)
-#ifdef TESTCUBE
-	,m_cubeVBO(QOpenGLBuffer::VertexBuffer)
-#endif
 {
 
 }
@@ -397,6 +408,8 @@ void VolumeWidget::initializeGL()
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &VolumeWidget::cleanup);
 
+
+	glEnable(GL_DEPTH_TEST);
 	// initiliazeTextures();
 	// 1D Texture
 	m_tfTexture.reset(new QOpenGLTexture(QOpenGLTexture::Target1D));
@@ -409,62 +422,51 @@ void VolumeWidget::initializeGL()
 	Q_ASSERT_X(m_tfTexture->isCreated(), 
 		"VolumeWidget::initializeGL", "TF texture creating failed.");
 
-	// 3D Texture for volume data (4 components)
+	
 
 	//initilize framebuffer object
-#ifdef TESTCUBE
+#ifndef USE_QT_FRAMEBUFFEROBJECT
 
-	m_program.reset(new QOpenGLShaderProgram);
-	m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-	m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
-	m_program->bindAttributeLocation("vertex", 0);
-	m_program->bindAttributeLocation("normal", 1);
-	m_program->bindAttributeLocation("tex", 2);
-
-	m_program->link();
-	m_program->bind();
-
-	m_projMatLoc = m_program->uniformLocation("projMatrix");
-	m_modelViewMatLoc = m_program->uniformLocation("mvMatrix");
-	m_normalMatrixLoc = m_program->uniformLocation("normalMatrix");
-	m_lightPosLoc = m_program->uniformLocation("lightPos");
-
-	m_cubeVAO.create();
-	QOpenGLVertexArrayObject::Binder cubeVAOBinder(&m_cubeVAO);
-	m_cubeVBO.create();
-	m_cubeVBO.bind();
-	const int vertAndNormBytesCount = cubeVert.count() * 6 * sizeof(float);
-	const int texCoordBytesCount = cubeTexCoord.count() * 2 * sizeof(float);
-	m_cubeVBO.allocate(vertAndNormBytesCount+texCoordBytesCount);
-	//m_cubeVBO.allocate(cubeVert.constData(), 36*6*sizeof(float));
-	m_cubeVBO.write(0, cubeVert.constData(), vertAndNormBytesCount);
-	m_cubeVBO.write(vertAndNormBytesCount, cubeTexCoord.constData(), texCoordBytesCount);
-	//setup vertex attribute
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(3 * sizeof(GLfloat)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(vertAndNormBytesCount));
-	m_cubeVBO.release();
-	m_program->setUniformValue(m_lightPosLoc,QVector3D(0,0,70));
-
-	//m_testTexture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-	m_testTexture = new QOpenGLTexture(QImage("C:\\Users\\ysl\\Desktop\\red.jpg"));
-	m_testTexture->setMinificationFilter(QOpenGLTexture::Nearest);
-	m_testTexture->setMagnificationFilter(QOpenGLTexture::Linear);
-	m_testTexture->setWrapMode(QOpenGLTexture::Repeat);
+	glGenFramebuffers(1, &m_framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 
 
-	//m_testTexture->setMagnificationFilter(QOpenGLTexture::Linear);
-	//m_testTexture->setMagnificationFilter(QOpenGLTexture::Linear);
-	//m_testTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
-	//m_testTexture->setFormat(QOpenGLTexture::RGBA8_UNorm);
-	////qDebug() << m_testTexture->isStorageAllocated();
-	//m_testTexture->setSize(128, 128);
-	//m_testTexture->allocateStorage();
-	//m_testTexture->setData(QImage(":icons/resources/icons/play.png"));
+
+	glEnable(GL_TEXTURE_RECTANGLE_NV);
+	glGenTextures(1, &m_startFaceTextureId);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_startFaceTextureId);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE_NV, m_startFaceTextureId, 0);
+
+	glGenTextures(1, &m_endFaceTextureId);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_endFaceTextureId);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE_NV, m_endFaceTextureId, 0);
+
+	glGenTextures(1, &m_depthTextureId);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_depthTextureId);
+	glDisable(GL_TEXTURE_RECTANGLE_NV);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE_ARB, m_depthTextureId, 0);
+
+#endif
+
+#ifndef USE_QT_TEXTUREOBJECT
+	glEnable(GL_TEXTURE_3D);
+	glGenTextures(1, &m_volumeTextureId);
+	glBindTexture(GL_TEXTURE_3D, m_volumeTextureId);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 #endif
 
 	//initialize position shader
@@ -480,13 +482,8 @@ void VolumeWidget::initializeGL()
 	m_positionVBO.allocate(16 * 3 * sizeof(float));
 	//Q_ASSERT_X(m_positionVBO.isCreated(), "VolumeWidget::updateVolumeData", "VBO is not created");
 	//m_positionVBO.write(0, positionVert, sizeof(positionVert));
-	m_positionVBO.release();
 	//m_positionVBO.allocate(positionVert.constData(), positionVert.count() * 3 * sizeof(float));
 	//setup vertex attribute
-
-	//m_positionEBO.create();
-	//m_positionEBO.bind();
-	//m_positionEBO.allocate(faceIndex, sizeof(faceIndex));
 
 	m_positionShader->bind();
 	glEnableVertexAttribArray(0);
@@ -494,23 +491,27 @@ void VolumeWidget::initializeGL()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(0));	//texture coord
 
+	m_positionEBO.create();
+	m_positionEBO.bind();
+	m_positionEBO.allocate(faceIndex, sizeof(faceIndex));
+
+	m_positionVBO.release();
 	//initilize ray casting shader
 	m_currentShader.reset(new RayCastingShader);
 	m_currentShader->link();
 	Q_ASSERT_X(m_currentShader->isLinked(), "VolumeWidget::initializeGL", "currentShader linking failed.");
 	//intialize ray casting vao and vbo
 	m_currentShader->bind();
+	m_rayCastingTextureVAO.create();
+	QOpenGLVertexArrayObject::Binder binder(&m_rayCastingTextureVAO);
+	m_rayCastingTextureVBO.create();
+	m_rayCastingTextureVBO.bind();
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(0));
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), reinterpret_cast<void*>(2*sizeof(GLfloat)));
-
-	m_rayCastingTextureVAO.create();
-	QOpenGLVertexArrayObject::Binder binder(&m_rayCastingTextureVAO);
-	m_rayCastingTextureVBO.create();
-	m_rayCastingTextureVBO.allocate(8 * sizeof(GLfloat));
+	m_rayCastingTextureVBO.allocate(16 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();
-
 }
 
 void VolumeWidget::resizeGL(int w, int h)
@@ -520,8 +521,30 @@ void VolumeWidget::resizeGL(int w, int h)
 	m_proj.perspective(45.f, aspect, 0.01f, 100.f);
 
 	///TODO :: resize framebuffer
-	m_fbo.reset(new QOpenGLFramebufferObject(w,h,QOpenGLFramebufferObject::Depth));
+
+#ifdef USE_QT_FRAMEBUFFEROBJECT
+	m_fbo.reset(new QOpenGLFramebufferObject(w,h));
 	m_fbo->addColorAttachment(w, h);
+#else
+	glEnable(GL_TEXTURE_RECTANGLE_NV);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_startFaceTextureId);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA32F_ARB, w, h, 0, GL_RGBA, GL_FLOAT, 0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_endFaceTextureId);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA32F_ARB, w, h, 0, GL_RGBA, GL_FLOAT, 0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, m_depthTextureId);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_DEPTH_COMPONENT,w,h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glDisable(GL_TEXTURE_RECTANGLE_NV);
+#endif
+	//if (m_FBO == nullptr) {
+	//	m_FBO.reset( new FramebufferObject());
+	//	m_FBO->Bind();
+	//	m_FBO->AttachTexture(GL_TEXTURE_RECTANGLE_NV, m_startFaceTextureId, GL_COLOR_ATTACHMENT0_EXT);
+	//	m_FBO->AttachTexture(GL_TEXTURE_RECTANGLE_NV, m_endFaceTextureId, GL_COLOR_ATTACHMENT1_EXT);
+	//	m_FBO->AttachTexture(GL_TEXTURE_RECTANGLE_ARB, m_depthTextureId, GL_DEPTH_ATTACHMENT_EXT);
+	//	m_FBO->IsValid();
+	//	FramebufferObject::Disable();
+	//}
+
 
 	//update texture size in ray casting vbo
 
@@ -534,69 +557,63 @@ void VolumeWidget::resizeGL(int w, int h)
 	m_rayCastingTextureVBO.bind();
 	m_rayCastingTextureVBO.write(0, rayCastingVB.constData(), 16 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();
-
 }
 
 void VolumeWidget::paintGL()
 {
+	//if (m_volumeTexture == nullptr)
+	//	return;
+	//Q_ASSERT_X(m_volumeTexture->isCreated(), 
+	//	"VolumeWidget::paintGL", "Volume texture is no created yet.");
+	//Q_ASSERT_X(m_fbo, "VolumeWidget::paintGL", "FBO is invalid.");
 
-#ifdef TESTCUBE
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-
-	QOpenGLVertexArrayObject::Binder binder(&m_cubeVAO);
-	m_program->bind();
-	m_testTexture->bind();
-	m_program->setUniformValue(m_projMatLoc, m_proj);
-	m_program->setUniformValue(m_modelViewMatLoc, m_camera.view()*m_world);
-	m_program->setUniformValue("tex",0);
-	const QMatrix3x3 normalMatrix = m_world.normalMatrix();
-	m_program->setUniformValue(m_normalMatrixLoc, normalMatrix);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	//m_testTexture->release();
-#endif
-	if (m_volumeTexture == nullptr)
-		return;
-
-	Q_ASSERT_X(m_volumeTexture->isCreated(), 
-		"VolumeWidget::paintGL", "Volume texture is no created yet.");
-	Q_ASSERT_X(m_fbo, "VolumeWidget::paintGL", "FBO is invalid.");
 	// Create position FrameBuffer
+	
+#ifdef USE_QT_FRAMEBUFFEROBJECT
 	m_fbo->bind();
+#else
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+#endif
+	//m_FBO->Bind();
 	m_positionShader->load(this);
 	QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
 	// Front
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, faceIndex);
+	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT,0);
 	// Back
-	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
+	glDrawBuffer(GL_COLOR_ATTACHMENT1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDepthFunc(GL_GREATER);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, faceIndex);
+
+	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT,0);
 
 	glDepthFunc(GL_LESS);
 	m_positionShader->release();
+	//m_FBO->IsValid();
+	//FramebufferObject::Disable();
+
+#ifdef USE_QT_FRAMEBUFFEROBJECT
 	m_fbo->release();
-
+#else
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 	//m_fbo->toImage().save("C:\\Users\\ysl\\Desktop\\iii\\image.jpg");
-
-
 	//Ray Casting in shader
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glEnable(GL_TEXTURE_RECTANGLE_NV);
-	//glEnable(GL_TEXTURE_3D);
-	//m_currentShader->load(this);
-	//QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
-	//glDrawArrays(GL_QUADS, 0, 4);
-	//glDisable(GL_TEXTURE_RECTANGLE_NV);
-	//glDisable(GL_TEXTURE_3D);
-	//glDisable(GL_BLEND);
-	//m_currentShader->release();
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_TEXTURE_RECTANGLE_NV);
+	glEnable(GL_TEXTURE_3D);
+	m_currentShader->load(this);
+	QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDisable(GL_TEXTURE_RECTANGLE_NV);
+	glDisable(GL_TEXTURE_3D);
+	glDisable(GL_BLEND);
+	m_currentShader->release();
+	
 }
 
 void VolumeWidget::mousePressEvent(QMouseEvent* event)
@@ -636,7 +653,10 @@ void VolumeWidget::updateTransferFunction(const float * func)
 	//glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16, 256, 0, GL_RGBA, GL_FLOAT, func);
 	//glDisable(GL_TEXTURE_1D);
 	m_tfTexture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::Float32,func);	//Equivalent to GL_RGBA and GL_FLOAT
+	GLERROR("update tf failed");
+	qDebug() << "update Transfer Functions";
 	doneCurrent();
+	update();
 }
 /**
  * \fn	void VolumeWidget::updateVolumeData()
@@ -651,9 +671,9 @@ void VolumeWidget::updateVolumeData()
 {
 	m_gradCalc.setDataModel(m_dataModel);
 	// update volume side length, position vertex vbo
-	const auto z = (float)m_dataModel->topSliceCount();
-	const auto y = (float)m_dataModel->rightSliceCount();
-	const auto x = (float)m_dataModel->frontSliceCount();
+	const auto z = (float)m_dataModel->topSliceCount()*0.01;
+	const auto y = (float)m_dataModel->rightSliceCount()*0.01;
+	const auto x = (float)m_dataModel->frontSliceCount()*0.01;
 
 	static const float xCoord = 1.0, yCoord = 1.0, zCoord = 1.0;
 	float positionVert[] = {
@@ -666,7 +686,9 @@ void VolumeWidget::updateVolumeData()
 		0, yCoord, zCoord , 0,y,z ,
 		xCoord, yCoord, zCoord , x,y,z 
 	};
+	m_positionVBO.bind();
 	m_positionVBO.write(0, positionVert, sizeof(positionVert));
+	m_positionVBO.release();
 	loadDataToTextures();
 }
 
@@ -691,49 +713,7 @@ void VolumeWidget::initializeShaders()
 
 void VolumeWidget::initiliazeTextures()
 {
-	// 1D Texture for transfer function
-	//glEnable(GL_TEXTURE_1D);
-	//glGenTextures(1, &m_tfTextureId);
-	//glBindTexture(GL_TEXTURE_1D, m_tfTextureId);
-	//glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	//glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glDisable(GL_TEXTURE_1D);
-	// 3D Texture for volume data 
-	//glEnable(GL_TEXTURE_3D);
-	//glGenTextures(1, &m_volumeTextureId);
-	//glBindTexture(GL_TEXTURE_3D, m_volumeTextureId);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	// 3D Texture for gradient
-	//glGenTextures(1, &m_gradientTextureId);
-	//glBindTexture(GL_TEXTURE_3D, m_gradientTextureId);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glDisable(GL_TEXTURE_3D);
 
-	// 2D Texture for start position
-	//glEnable(GL_TEXTURE_RECTANGLE_NV);
-	//glGenTextures(1, &m_startFaceTextureId);
-	//glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_startFaceTextureId);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	// 2D Texture for end position 
-	//glGenTextures(1, &m_endFaceTextureId);
-	//glBindTexture(GL_TEXTURE_RECTANGLE_NV, m_endFaceTextureId);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glDisable(GL_TEXTURE_RECTANGLE_NV);
 }
 
 void VolumeWidget::loadDataToTextures()
@@ -746,29 +726,33 @@ void VolumeWidget::loadDataToTextures()
 	qDebug() << "Calculating gradient ended.";
 	const auto d = m_gradCalc.data();
 	const auto z = m_dataModel->topSliceCount();
-	const auto y = m_dataModel->topSliceCount();
-	const auto x = m_dataModel->topSliceCount();
+	const auto y = m_dataModel->rightSliceCount();
+	const auto x = m_dataModel->frontSliceCount();
 	/////////
-	//glEnable(GL_TEXTURE_3D);
-	//glBindTexture(GL_TEXTURE_3D,m_volumeTextureId);
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, x, y, z, 0, GL_RGBA, GL_UNSIGNED_BYTE, d);
-	//glDisable(GL_TEXTURE_3D);
+#ifndef USE_QT_TEXTUREOBJECT
+	glEnable(GL_TEXTURE_3D);
+	glBindTexture(GL_TEXTURE_3D,m_volumeTextureId);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, x, y, z, 0, GL_RGBA, GL_UNSIGNED_BYTE, d);
+	glDisable(GL_TEXTURE_3D);
+#else
+	//GLERROR("####$")
 	m_volumeTexture.reset(new QOpenGLTexture(QOpenGLTexture::Target3D));
-	m_volumeTexture->setSize(x, y, z);
-	m_volumeTexture->setFormat(QOpenGLTexture::RGBA8_UNorm);
 	m_volumeTexture->setMagnificationFilter(QOpenGLTexture::Linear);
 	m_volumeTexture->setMinificationFilter(QOpenGLTexture::Linear);
 	m_volumeTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
+	m_volumeTexture->setSize(x, y, z);
+	m_volumeTexture->setFormat(QOpenGLTexture::RGBA8_UNorm);
+	m_volumeTexture->bind();
 	m_volumeTexture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt8,d);
-	Q_ASSERT_X(m_volumeTexture->isCreated(),
-		"VolumeWidget::loadDataToTextures", "Loading failed.");
+#endif
+	/*Q_ASSERT_X(m_volumeTexture->isCreated(),
+		"VolumeWidget::loadDataToTextures", "Loading failed.");*/
 	//glEnable(GL_TEXTURE_1D);
 	//glBindTexture(GL_TEXTURE_1D, m_tfTextureId);
 	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	//glTexImage1D(GL_TEXTURE_1D,0,GL_RGBA16,256,0,GL_RGBA,GL_FLOAT,nullptr);
 	////////
-
 }
 
 void VolumeWidget::cleanup()
