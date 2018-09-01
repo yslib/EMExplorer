@@ -1,3 +1,4 @@
+#version 330
 #extension GL_ARB_texture_rectangle : enable
 
 // struct LIGHT_SOURCE {
@@ -26,6 +27,7 @@ uniform float ks;
 uniform vec3 lightdir;
 uniform vec3 halfway;
 in vec2 textureRectCoord;
+out vec4 fragColor;
 
 vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 {
@@ -37,8 +39,8 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
  //	N.y = (texture3D(texVolume, samplePos+vec3(0,step,0) ).w - texture3D(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
  //	N.z = (texture3D(texVolume, samplePos+vec3(0,0,step) ).w - texture3D(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
 
-	//vec3 N = texture3D(texGradient, samplePos).xyz;
-	vec3 N = texture3D(texVolume, samplePos).xyz;
+	//vec3 N = texture(texGradient, samplePos).xyz;
+	vec3 N = texture(texVolume, samplePos).xyz;
  	N = N * 2.0 - 1.0;
   	N = -normalize(N);
 
@@ -62,14 +64,19 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 
 void main()
 {
+	
 	vec3 rayStart = texture2DRect(texStartPos, textureRectCoord).xyz;
     vec3 rayEnd = texture2DRect(texEndPos, textureRectCoord).xyz;
+	fragColor = vec4(rayStart,1.0);
+	return;
     vec3 start2end = rayEnd - rayStart;
-//    vec4 bg = vec4(0.156863, 0.156863, 0.156863, 1.0);
+	fragColor = vec4(normalize(rayEnd-rayStart),1.0);
+	return;
+//  vec4 bg = vec4(0.156863, 0.156863, 0.156863, 1.0);
 	vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
 
     if (start2end.x == 0.0 && start2end.y == 0.0 && start2end.z == 0.0) {
-		gl_FragColor = bg; // Background Colors
+		fragColor = bg; // Background Colors
         return;
     }
     vec4 color = vec4(0, 0, 0, 0);
@@ -79,8 +86,8 @@ void main()
     for(int i = 0; i < steps; ++i) {
 
         vec3 samplePoint  = rayStart + direction * step * (float(i) + 0.5);
-        vec4 scalar = texture3D(texVolume, samplePoint).xyzw;
-        vec4 sampledColor = texture1D(texTransfunc, scalar.a);
+        vec4 scalar = texture(texVolume, samplePoint).xyzw;
+        vec4 sampledColor = texture(texTransfunc, scalar.a);
 		sampledColor.rgb = PhongShading(samplePoint, sampledColor.rgb);
 		
         color = color + sampledColor * vec4(sampledColor.aaa, 1.0) * (1.0 - color.a);
@@ -90,5 +97,5 @@ void main()
 	if(color.a == 0.0) discard;
 	color = color + vec4(bg.rgb, 0.0) * (1.0 - color.a);
     color.a = 1.0;
-    gl_FragColor = color;
+    fragColor = color;
 }

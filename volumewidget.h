@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_3_1>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
@@ -217,7 +218,9 @@ private:
 	GradientCalculator						m_gradCalc;
 
 	//for test cube
-
+	QScopedPointer<QOpenGLShaderProgram>    m_cubeShader;
+	QOpenGLVertexArrayObject				m_cubeVAO;
+	QOpenGLBuffer							m_cubeVBO;
 };
 
 

@@ -74,11 +74,13 @@ RayCastingShader::RayCastingShader() :ShaderProgram()
 		"#version 150\n"
 		"#extension GL_ARB_explicit_attrib_location : enable\n"
 		"layout (location = 0 ) in vec2 vertex;\n"
-		"layout (location = 1 ) in vec2 textureRect;\n"
+		"layout (location = 1 ) in vec2 tex;\n"
 		"out vec2 textureRectCoord;\n"
+		"uniform mat4 othoMatrix;\n"
+		"uniform mat4 viewMatrix;\n"
 		"void main() {\n"
-		"	textureRectCoord = textureRect;\n"
-		"   gl_Position = vec4(vertex.x,vertex.y,0.0,1.0);\n"
+		"	textureRectCoord = tex;\n"
+		"   gl_Position = othoMatrix*viewMatrix*vec4(vertex.x,vertex.y,0.0,1.0);\n"
 		"}\n";
 	addShaderFromSourceCode(QOpenGLShader::Vertex, raycastingShaderSource);
 }
@@ -88,11 +90,13 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 	this->bind();
 	QVector3D L = data->getLightDirection();
 	QVector3D H = L - data->getCameraTowards();
-	if (H.lengthSquared() > 1e-10) H.normalize();
+	if (H.length() > 1e-10) H.normalize();
+
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->getVolumeTexIdx());
-	this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE, data->getStartPosTexIdx());
-	this->setUniformSampler("texEndPos", GL_TEXTURE1, GL_TEXTURE_RECTANGLE, data->getEndPosTexIdx());
+	this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE_NV, data->getStartPosTexIdx());
+	this->setUniformSampler("texEndPos", GL_TEXTURE1, GL_TEXTURE_RECTANGLE_NV, data->getEndPosTexIdx());
 	this->setUniformSampler("texTransfunc", GL_TEXTURE2, GL_TEXTURE_1D, data->getTF1DIdx());
+	this->setUniformValue("viewMatrix", data->getViewMatrix());
 	this->setUniformValue("step", data->getRayStep());
 	this->setUniformValue("ka", data->getAmbient());
 	this->setUniformValue("ks", data->getSpecular());
@@ -191,7 +195,7 @@ FramebufferObject::AttachTexture(GLenum texTarget, GLuint texId,
 #ifndef NDEBUG
 	}
 	else {
-		cerr << "FramebufferObject::AttachTexture PERFORMANCE WARNING:\n"
+		std::cerr << "FramebufferObject::AttachTexture PERFORMANCE WARNING:\n"
 			<< "\tRedundant bind of texture (id = " << texId << ").\n"
 			<< "\tHINT : Compile with -DNDEBUG to remove this warning.\n";
 	}
@@ -227,7 +231,7 @@ FramebufferObject::AttachRenderBuffer(GLuint buffId, GLenum attachment)
 #ifndef NDEBUG
 	}
 	else {
-		cerr << "FramebufferObject::AttachRenderBuffer PERFORMANCE WARNING:\n"
+		std::cerr << "FramebufferObject::AttachRenderBuffer PERFORMANCE WARNING:\n"
 			<< "\tRedundant bind of Renderbuffer (id = " << buffId << ")\n"
 			<< "\tHINT : Compile with -DNDEBUG to remove this warning.\n";
 	}
@@ -330,8 +334,10 @@ FramebufferObject::_FramebufferTextureND(GLenum attachment, GLenum texTarget,
 	}
 }
 
+#define NDEBUG
+
 #ifndef NDEBUG
-bool FramebufferObject::IsValid(ostream& ostr)
+bool FramebufferObject::IsValid(std::ostream& ostr)
 {
 	_GuardedBind();
 

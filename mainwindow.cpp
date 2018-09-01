@@ -362,6 +362,7 @@ void MainWindow::createWidget()
 	m_volumeViewDockWidget->setWidget(m_volumeView);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget, Qt::Horizontal);
 	//addDockWidget(Qt::TopDockWidgetArea, m_volumeViewDockWidget);
+	//setCentralWidget(m_volumeView);
 
 	//ProfileView
 	m_profileView = new ProfileView(this);
