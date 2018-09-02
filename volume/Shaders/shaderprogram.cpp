@@ -80,7 +80,7 @@ RayCastingShader::RayCastingShader() :ShaderProgram()
 		"uniform mat4 viewMatrix;\n"
 		"void main() {\n"
 		"	textureRectCoord = tex;\n"
-		"   gl_Position = othoMatrix*viewMatrix*vec4(vertex.x,vertex.y,0.0,1.0);\n"
+		"   gl_Position = othoMatrix*vec4(vertex.x,vertex.y,0.0,1.0);\n"
 		"}\n";
 	addShaderFromSourceCode(QOpenGLShader::Vertex, raycastingShaderSource);
 }
@@ -91,6 +91,14 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 	QVector3D L = data->getLightDirection();
 	QVector3D H = L - data->getCameraTowards();
 	if (H.length() > 1e-10) H.normalize();
+
+	const auto w = data->windowSize().width();
+	const auto h = data->windowSize().height();
+
+	QMatrix4x4 otho;
+	otho.setToIdentity();
+	otho.ortho(0, w,0,h, -10, 100);
+	this->setUniformValue("othoMatrix", otho);
 
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->getVolumeTexIdx());
 	this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE_NV, data->getStartPosTexIdx());

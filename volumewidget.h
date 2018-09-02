@@ -24,10 +24,7 @@ class QOpenGLShaderProgram;
 
 
 
-//#define USE_QT_FRAMEBUFFEROBJECT
 
-
-//#define USE_QT_TEXTUREOBJECT
 
 struct LightingParameters
 {
@@ -57,11 +54,13 @@ class GradientCalculator :public QObject
 	const AbstractSliceDataModel * m_sliceModel;
 	const MarkModel * m_mark;
 	QMutex m_mutex;
+	bool m_ready;
 public:
 	GradientCalculator(const AbstractSliceDataModel * slice, const MarkModel * mark, QObject * parent = nullptr);
 	void setDataModel(const AbstractSliceDataModel * slice);
 	void setMarkModel(const MarkModel * mark);
 	bool ready()const;
+	bool hasData()const;
 	unsigned char * data()const;
 private:
 	void init();
@@ -90,54 +89,26 @@ public:
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
 					~VolumeWidget();
 public://ShaderDataInterface
-	unsigned int	getVolumeTexIdx()const override
-	{
-		//qDebug() << "volume tex id:" << m_volumeTexture->textureId();
-#ifdef USE_QT_TEXTUREOBJECT
-		return m_volumeTexture->textureId();
-#else
-		return m_volumeTextureId;
-#endif
-	}
+	unsigned int	getVolumeTexIdx()const override								{return m_volumeTexture.textureId();}
 	//unsigned int	getMagnitudeTexIdx()override						{ return -1; }
 	// voxel size
 	QVector3D		getVoxelSize()const override								{ return m_voxelSize; }
 	// ray casting start and end position texture idx
-	unsigned int	getStartPosTexIdx()const override
-	{
-#ifdef USE_QT_FRAMEBUFFEROBJECT
-		const auto & v = m_fbo->textures();
-		return v[0];
-#else
-		return m_startFaceTextureId;
-#endif
-	}
-	unsigned int	getEndPosTexIdx()const override
-	{
-#ifdef USE_QT_FRAMEBUFFEROBJECT
-		const auto & v = m_fbo->textures();
-		return v[1];
-#else
-		return m_endFaceTextureId;
-#endif
-	}
+	unsigned int	getStartPosTexIdx()const override							{return m_fbo->textures()[0];}
+	unsigned int	getEndPosTexIdx()const override								{return m_fbo->textures()[1];}
 	// ray casting step
 	float			getRayStep()const override									{ return m_rayStep; }
 	// transfer function idx
-	unsigned int	getTF1DIdx()const override
-	{
-		qDebug() <<"TF tex id:"<< m_tfTexture->textureId();
-		return m_tfTexture->textureId();
-	}
+	unsigned int	getTF1DIdx()const override									{return m_tfTexture.textureId();}
 	// camera parameters
 	QVector3D		getCameraEye()const override								{ return m_camera.position(); }
 	QVector3D		getCameraTowards()const override							{ return m_camera.front(); }
 	QVector3D		getCameraUp()const override									{ return m_camera.up(); }
 	QVector3D		getCameraRight()const override								{ return m_camera.right(); }
 	// matrix
-	QMatrix4x4		getViewMatrix()const override									{ return m_camera.view(); }
+	QMatrix4x4		getViewMatrix()const override								{ return m_camera.view(); }
 	QMatrix4x4		getModelMatrix()const override								{ return m_world; }
-	QMatrix4x4		getOthoMatrix()const override									{ return m_otho; }
+	QMatrix4x4		getOthoMatrix()const override								{ return m_otho; }
 	QMatrix4x4		getPerspMatrix()const override								{ return m_proj; }
 	// lighting parameters
 	QVector3D		getLightDirection()const override							{ return m_lightParameters.lightDirection; }
@@ -149,7 +120,8 @@ public://ShaderDataInterface
 	//unsigned int	getMouseX()override									{ return -1; }
 	//unsigned int	getMouseY()override									{ return -1; }
 	// volume boundary
-	QVector3D		getVolumeBound()override									{ return m_volumeBound; }
+	QVector3D		getVolumeBound()const override									{ return m_volumeBound; }
+	QSize			windowSize()const override										{ return size(); }
 	
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
@@ -160,8 +132,9 @@ protected:
 signals:
 	void			markModelChanged();
 	void			dataModelChanged();
+	void			requireTransferFunction();
 public slots:
-	void updateTransferFunction(const float* func);
+	void updateTransferFunction(const float* func, bool updated);
 private:
 	using ShaderHash = QHash<QString, QSharedPointer<ShaderProgram>>;
 	void			updateVolumeData();
@@ -169,6 +142,7 @@ private:
 	void			initializeShaders();
 	void			initiliazeTextures();
 	void			loadDataToTextures();
+	void			cubeInitilized();
 
 	void			cleanup();
 
@@ -179,45 +153,31 @@ private:
 	QMatrix4x4								m_otho;
 	QMatrix4x4								m_world;
 	FocusCamera								m_camera;		//view matrix in this
+	QVector3D								m_scale;
+	QVector3D								m_trans;
+	QPoint									m_lastPos;
+	QVector3D								m_voxelSize;
+	QVector3D								m_volumeBound;
+	float									m_rayStep;
 	LightingParameters						m_lightParameters;
-#ifdef USE_QT_FRAMEBUFFEROBJECT
+	// FrameBuffer Object
 	QScopedPointer<QOpenGLFramebufferObject>m_fbo;
-#else
-	//QScopedPointer<FramebufferObject>		m_FBO;
-	unsigned int							m_framebuffer;
-	unsigned int							m_startFaceTextureId;
-	unsigned int							m_endFaceTextureId;
-	unsigned int							m_depthTextureId;
-#endif
-	//ShaderHash								m_shaders;
+	// Ray casting
 	QSharedPointer<ShaderProgram>			m_currentShader;
 	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
 	QOpenGLBuffer							m_rayCastingTextureVBO;
-
+	// Front and back face
 	QScopedPointer<ShaderProgram>			m_positionShader;
 	QOpenGLBuffer							m_positionVBO;
 	QOpenGLBuffer							m_positionEBO;
 	QOpenGLVertexArrayObject				m_positionVAO;
-	
-	QVector3D								m_voxelSize;
-	QVector3D								m_volumeBound;
-	float									m_rayStep;
-	//unsigned int							m_tfTextureId;
-	QScopedPointer<QOpenGLTexture>			m_tfTexture;
-#ifdef USE_QT_TEXTUREOBJECT
-	QScopedPointer<QOpenGLTexture>			m_volumeTexture;
-#else
-	unsigned int							m_volumeTextureId;
-#endif
-	//unsigned int							m_gradientTextureId;
-	int										m_projMatLoc;
-	int										m_modelViewMatLoc;
-	int										m_normalMatrixLoc;
-	int										m_lightPosLoc;
-	QPoint									m_lastPos;
+	// Textures
+	QOpenGLTexture							m_tfTexture;
+	QOpenGLTexture							m_volumeTexture;
+	// Gradient
 	GradientCalculator						m_gradCalc;
 
-	//for test cube
+	// Cube
 	QScopedPointer<QOpenGLShaderProgram>    m_cubeShader;
 	QOpenGLVertexArrayObject				m_cubeVAO;
 	QOpenGLBuffer							m_cubeVBO;

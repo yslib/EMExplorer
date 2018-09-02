@@ -67,14 +67,9 @@ void main()
 	
 	vec3 rayStart = texture2DRect(texStartPos, textureRectCoord).xyz;
     vec3 rayEnd = texture2DRect(texEndPos, textureRectCoord).xyz;
-	fragColor = vec4(rayStart,1.0);
-	return;
-    vec3 start2end = rayEnd - rayStart;
-	fragColor = vec4(normalize(rayEnd-rayStart),1.0);
-	return;
-//  vec4 bg = vec4(0.156863, 0.156863, 0.156863, 1.0);
-	vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
 
+    vec3 start2end = rayEnd - rayStart;
+	vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
     if (start2end.x == 0.0 && start2end.y == 0.0 && start2end.z == 0.0) {
 		fragColor = bg; // Background Colors
         return;
@@ -84,12 +79,10 @@ void main()
     float distance = dot(direction, start2end);
     int steps = int(distance / step);
     for(int i = 0; i < steps; ++i) {
-
         vec3 samplePoint  = rayStart + direction * step * (float(i) + 0.5);
         vec4 scalar = texture(texVolume, samplePoint).xyzw;
         vec4 sampledColor = texture(texTransfunc, scalar.a);
 		sampledColor.rgb = PhongShading(samplePoint, sampledColor.rgb);
-		
         color = color + sampledColor * vec4(sampledColor.aaa, 1.0) * (1.0 - color.a);
         if(color.a > 0.99)
             break;

@@ -51,7 +51,8 @@ public:
 	//virtual unsigned int getMouseY() = 0;
 
 	// volume boundary
-	virtual QVector3D     getVolumeBound() = 0;
+	virtual QVector3D     getVolumeBound()const = 0;
+	virtual QSize		  windowSize()const = 0;
 };
 
 
