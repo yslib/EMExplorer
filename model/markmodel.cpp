@@ -231,7 +231,7 @@ m_dirty(false)
 	if (file.isOpen() == false)
 		return;
 	QDataStream in(&file);
-	in.setVersion(QDataStream::Qt_5_10);
+	in.setVersion(QDataStream::Qt_5_9);
 	int magicNumber;
 	in >> magicNumber;
 	if (magicNumber != MagicNumber)
@@ -380,7 +380,7 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		qRegisterMetaTypeStreamOperators<__Internal_Mark_Type_>("QSharedPointer<QGraphicsItem>");
 		qRegisterMetaTypeStreamOperators<__Internal_Categroy_Type_>("QSharedPointer<CategoryItem>");
 		QDataStream stream(&file);
-		stream.setVersion(QDataStream::Qt_5_10);
+		stream.setVersion(QDataStream::Qt_5_9);
 		stream << static_cast<qint32>(MagicNumber);
 		stream << m_identity;
 		stream << m_rootItem;
