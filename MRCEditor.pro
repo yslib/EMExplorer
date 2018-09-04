@@ -12,7 +12,6 @@ DEPENDPATH += .
 
 
 HEADERS +=./widgets/DoubleSlider.h \
-    ./ItemContext.h \
     ./widgets/TF1DEditor.h \
     ./widgets/TF1DMappingCanvas.h \
     ./widgets/TF1DTextureCanvas.h \
@@ -48,9 +47,9 @@ HEADERS +=./widgets/DoubleSlider.h \
     ./model/shaderprogram.h \
     ./algorithm/gradientcalculator.h \
     ./model/raycastingshader.h \
-    ./geometry/Vector.h
+     geometry/mesh.h \
+    geometry/geometry.h
 SOURCES +=./widgets/DoubleSlider.cpp \
-    ./ItemContext.cpp \
     ./widgets/TF1DEditor.cpp \
     ./widgets/TF1DMappingCanvas.cpp \
     ./widgets/TF1DTextureCanvas.cpp \
@@ -81,6 +80,8 @@ SOURCES +=./widgets/DoubleSlider.cpp \
     ./widgets/imageviewcontrolpanel.cpp \
     ./model/shaderprogram.cpp \
     ./algorithm/gradientcalculator.cpp \
-    ./model/raycastingshader.cpp
-    ./geometry/camera.cpp
+    ./model/raycastingshader.cpp \
+    geometry/mesh.cpp
 RESOURCES += resources.qrc
+
+

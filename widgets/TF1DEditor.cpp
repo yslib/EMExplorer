@@ -300,16 +300,16 @@ void TF1DEditor::applyThreshold()
 
 void TF1DEditor::restoreThresholds() 
 {
-	Vector2f thresh = transCanvas->getThresholds();
+	QVector2D thresh = transCanvas->getThresholds();
 
     // set value for doubleSlider
     doubleSlider->blockSignals(true);
-    doubleSlider->setValues(thresh.x, thresh.y);
+    doubleSlider->setValues(thresh.x(), thresh.y());
     doubleSlider->blockSignals(false);
 
     // set value for spinboxes
-    int val_min = static_cast<int>(std::floor(thresh.x * maximumIntensity + 0.5));
-    int val_max = static_cast<int>(std::floor(thresh.y * maximumIntensity + 0.5));
+    int val_min = static_cast<int>(std::floor(thresh.x() * maximumIntensity + 0.5));
+    int val_max = static_cast<int>(std::floor(thresh.y() * maximumIntensity + 0.5));
     lowerThresholdSpin->blockSignals(true);
     upperThresholdSpin->blockSignals(true);
     lowerThresholdSpin->setValue(val_min);
@@ -340,7 +340,7 @@ void TF1DEditor::restoreThresholds()
     }
 
     // propagate threshold to mapping canvas
-    transCanvas->setThreshold(thresh.x, thresh.y);
+    transCanvas->setThreshold(thresh.x(), thresh.y());
 }
 
 void TF1DEditor::repaintAll() 

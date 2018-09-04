@@ -4,8 +4,16 @@
 #include <string>
 #include <vector>
 #include <QWidget>
-#include "geometry/Vector.h"
+#include <QVector2D>
+
 #include "TF1DMappingKey.h"
+
+
+template <class T> inline
+T Clamp(T v, T minv, T maxv)
+{
+	return (v < minv ? minv : (v > maxv ? maxv : v));
+}
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -52,7 +60,7 @@ public:
     void setThreshold(float l, float u);
 
 	// Gets the lower and upper threshold to the given values.
-    Vector2f getThresholds() const;
+    QVector2D getThresholds() const;
 
     // Returns the minimum size of the widget.
     virtual QSize minimumSizeHint() const;
@@ -130,7 +138,7 @@ protected:
     };
 
     // Creates a new key at the given position.
-    void insertNewKey(Vector2f& hit);
+    void insertNewKey(QVector2D& hit);
 
     // Returns the nearest left or the nearest right key of the given key.
     // If no key exists at left or right 0 is returned.
@@ -138,13 +146,13 @@ protected:
 
     // Returns the number of the key that is left to the mouse position when
     // the position lies on the line between 2 keys. Otherwise -1 is returned.
-    int hitLine(const Vector2f& p);
+    int hitLine(const QVector2D& p);
 
     // Paints all keys of the transfer function.
     void paintKeys(QPainter& paint);
 
     // Draws the marker at the keys of the transfer function.
-    void drawMarker(QPainter& paint, const QColor& color, const Vector2f& p, int props = 0);
+    void drawMarker(QPainter& paint, const QColor& color, const QVector2D& p, int props = 0);
 
 	// Draws the histogram
 	void drawHistogram(QPainter& paint);
@@ -162,16 +170,16 @@ protected:
     virtual void showEvent(QShowEvent* event);
 
     // Helper function for calculation of pixel coordinates from relative coordinates.
-    Vector2f wtos(Vector2f p);
+    QVector2D wtos(QVector2D p);
 
     // Helper function for calculation of relative coordinates from pixel coordinates.
-    Vector2f stow(Vector2f p);
+    QVector2D stow(QVector2D p);
 
     // Hides the tooltip that is displayed when a key is dragged.
     void hideCoordinates();
 
     // Displays a tooltip at position pos with given values.
-    void updateCoordinates(QPoint pos, Vector2f values);
+    void updateCoordinates(QPoint pos, QVector2D values);
 
 	// Returns the value to which the input value is being mapped.
     // The procedures handles missing keys and out-of-range values gracefully.
@@ -202,9 +210,9 @@ protected:
     float splitFactor;     ///< offset between splitted keys
     int pointSize;         ///< size of a key of the transfer function
     int minCellSize;       ///< minimum size of a grid cell
-    Vector2f xRange;       ///< range in x direction
-    Vector2f yRange;       ///< range in y direction
-    Vector2f gridSpacing;  ///< width and height of the underlying grid
+    QVector2D xRange;       ///< range in x direction
+    QVector2D yRange;       ///< range in y direction
+    QVector2D gridSpacing;  ///< width and height of the underlying grid
     bool clipThresholds;   ///< is the visible range clipped to threshold area?
     bool noColor;          ///< when true the color of a key can not be changed
 

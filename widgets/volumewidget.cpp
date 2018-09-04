@@ -360,15 +360,15 @@ void VolumeWidget::paintGL()
 	glDisable(GL_BLEND);
 	m_currentShader->release();
 
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//QOpenGLVertexArrayObject::Binder binder3(&m_cubeVAO);
-	//m_cubeShader->bind();
-	//m_cubeShader->setUniformValue("projMatrix",m_proj);
-	//m_cubeShader->setUniformValue("mvMatrix",m_camera.view()*m_world);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
-	//m_cubeShader->release();
-
+	glClear(GL_DEPTH_BUFFER_BIT);
+	QOpenGLVertexArrayObject::Binder binder3(&m_cubeVAO);
+	m_cubeShader->bind();
+	m_cubeShader->setUniformValue("projMatrix", m_proj);
+	m_cubeShader->setUniformValue("mvMatrix", m_camera.view()*m_world);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	m_cubeShader->release();
 }
 
 void VolumeWidget::mousePressEvent(QMouseEvent* event)

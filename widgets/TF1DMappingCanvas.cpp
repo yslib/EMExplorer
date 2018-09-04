@@ -24,8 +24,8 @@ TF1DMappingCanvas::TF1DMappingCanvas(QWidget* parent, bool noColor_,
     , yAxisText(yAxisText_)
 	, cache(0)
 {
-    xRange = Vector2f(0.f, 1.f);
-    yRange = Vector2f(0.f, 1.f);
+    xRange = QVector2D(0.f, 1.f);
+    yRange = QVector2D(0.f, 1.f);
     padding = 12;
     arrowLength = 10;
     arrowWidth = 3;
@@ -100,12 +100,12 @@ void TF1DMappingCanvas::showNoKeyContextMenu(QMouseEvent *event)
 void TF1DMappingCanvas::resizeEvent(QResizeEvent* event) 
 {
     QWidget::resizeEvent(event);
-    gridSpacing = Vector2f(1.0, 1.0);
+    gridSpacing = QVector2D(1.0, 1.0);
     // refine gridSpacing_ as good as possible
-    Vector2f factor = Vector2f(0.1f, 0.2f);
+    QVector2D factor = QVector2D(0.1f, 0.2f);
     for (int k=0; k<2; ++k) {
         for (int component=0; component<2; ++component) {
-            Vector2f cellSize = wtos(gridSpacing) - wtos(Vector2f(0.0, 0.0));
+            QVector2D cellSize = wtos(gridSpacing) - wtos(QVector2D(0.0, 0.0));
             cellSize[component] *= factor[k];
             while (cellSize[component] > minCellSize) {
                 gridSpacing[component] *= factor[k];
@@ -172,23 +172,23 @@ void TF1DMappingCanvas::paintEvent(QPaintEvent* event)
     paint.setPen(QColor(220, 220, 220));
     paint.setRenderHint(QPainter::Antialiasing, false);
 
-    Vector2f pmin = Vector2f(0.f, 0.f);
-    Vector2f pmax = Vector2f(1.f, 1.f);
+    QVector2D pmin = QVector2D(0.f, 0.f);
+    QVector2D pmax = QVector2D(1.f, 1.f);
 
-    for (float f=pmin.x; f<pmax.x+gridSpacing.x*0.5; f+=gridSpacing.x) {
-        Vector2f p = wtos(Vector2f(f, 0.f));
-        Vector2f a = wtos(Vector2f(0.f, 0.f));
-        Vector2f b = wtos(Vector2f(0.f, 1.f));
-        paint.drawLine(QPointF(p.x, a.y),
-                       QPointF(p.x, b.y));
+    for (float f=pmin.x(); f<pmax.x()+gridSpacing.x()*0.5; f+=gridSpacing.x()) {
+        QVector2D p = wtos(QVector2D(f, 0.f));
+        QVector2D a = wtos(QVector2D(0.f, 0.f));
+        QVector2D b = wtos(QVector2D(0.f, 1.f));
+        paint.drawLine(QPointF(p.x(), a.y()),
+                       QPointF(p.x(), b.y()));
     }
 
-    for (float f=pmin.y; f<pmax.y+gridSpacing.y*0.5; f+=gridSpacing.y) {
-        Vector2f p = wtos(Vector2f(0.f, f));
-        Vector2f a = wtos(Vector2f(0.f, 0.f));
-        Vector2f b = wtos(Vector2f(1.f, 0.f));
-        paint.drawLine(QPointF(a.x, p.y),
-                       QPointF(b.x, p.y));
+    for (float f=pmin.y(); f<pmax.y()+gridSpacing.y()*0.5; f+=gridSpacing.y()) {
+        QVector2D p = wtos(QVector2D(0.f, f));
+        QVector2D a = wtos(QVector2D(0.f, 0.f));
+        QVector2D b = wtos(QVector2D(1.f, 0.f));
+        paint.drawLine(QPointF(a.x(), p.y()),
+                       QPointF(b.x(), p.y()));
     }
 
     // draw x and y axes
@@ -202,34 +202,34 @@ void TF1DMappingCanvas::paintEvent(QPaintEvent* event)
     xRange[0] = 0.f;
     xRange[1] = 1.f;
 
-    Vector2f origin = wtos(Vector2f(0.f, 0.f));
-    origin.x = floor(origin.x) + 0.5f;
-    origin.y = floor(origin.y) + 0.5f;
+    QVector2D origin = wtos(QVector2D(0.f, 0.f));
+    origin.setX(floor(origin.x()) + 0.5f);
+    origin.setY(floor(origin.y()) + 0.5f);
 
     paint.setRenderHint(QPainter::Antialiasing, true);
 
-    paint.drawLine(QPointF(padding, origin.y),
-                   QPointF(width() - padding, origin.y));
+    paint.drawLine(QPointF(padding, origin.y()),
+                   QPointF(width() - padding, origin.y()));
 
-    paint.drawLine(QPointF(origin.x, padding),
-                   QPointF(origin.x, height() - padding));
+    paint.drawLine(QPointF(origin.x(), padding),
+                   QPointF(origin.x(), height() - padding));
 
     QPointF arrow[3];
-    arrow[0] = QPointF(origin.x, height() - padding);
-    arrow[1] = QPointF(origin.x + arrowWidth, height() - padding - arrowLength);
-    arrow[2] = QPointF(origin.x - arrowWidth, height() - padding - arrowLength);
+    arrow[0] = QPointF(origin.x(), height() - padding);
+    arrow[1] = QPointF(origin.x() + arrowWidth, height() - padding - arrowLength);
+    arrow[2] = QPointF(origin.x() - arrowWidth, height() - padding - arrowLength);
 
     paint.drawConvexPolygon(arrow, 3);
 
-    arrow[0] = QPointF(width() - padding, origin.y);
-    arrow[1] = QPointF(width() - padding - arrowLength, origin.y - arrowWidth);
-    arrow[2] = QPointF(width() - padding - arrowLength, origin.y + arrowWidth);
+    arrow[0] = QPointF(width() - padding, origin.y());
+    arrow[1] = QPointF(width() - padding - arrowLength, origin.y() - arrowWidth);
+    arrow[2] = QPointF(width() - padding - arrowLength, origin.y() + arrowWidth);
 
     paint.drawConvexPolygon(arrow, 3);
 
     paint.scale(-1.f, 1.f);
     paint.rotate(180.f);
-    paint.drawText(static_cast<int>(width() - 6.2f * padding), static_cast<int>(-1 * (origin.y - 0.8f * padding)), xAxisText);
+    paint.drawText(static_cast<int>(width() - 6.2f * padding), static_cast<int>(-1 * (origin.y() - 0.8f * padding)), xAxisText);
     paint.drawText(static_cast<int>(1.6f * padding), static_cast<int>(-1 * (height() - 1.85f * padding)), yAxisText);
 
     paint.rotate(180.f);
@@ -245,28 +245,28 @@ void TF1DMappingCanvas::paintEvent(QPaintEvent* event)
     pen.setWidthF(1.5f);
     paint.setPen(pen);
 
-    origin = wtos(Vector2f(0.f));
+    origin = wtos(QVector2D(0.f,0.f));
 
-    Vector2f old;
+    QVector2D old;
 	for (size_t i=0; i<keys.size(); ++i) {
         TF1DMappingKey *key = keys[i];
-        Vector2f p = wtos(Vector2f(key->getIntensity(), key->getColorL().alpha() / 255.f));
+        QVector2D p = wtos(QVector2D(key->getIntensity(), key->getColorL().alpha() / 255.f));
         if (i == 0)  {
             if (keys[0]->getIntensity() > 0.f)
-                paint.drawLine(QPointF(wtos(Vector2f(0.f, 0.f)).x, p.y),
-                               QPointF(p.x - 1.f, p.y));
+                paint.drawLine(QPointF(wtos(QVector2D(0.f, 0.f)).x(), p.y()),
+                               QPointF(p.x() - 1.f, p.y()));
         }
         else {
-            paint.drawLine(QPointF(old.x + 1.f, old.y),
-                           QPointF(p.x - 1.f, p.y));
+            paint.drawLine(QPointF(old.x() + 1.f, old.y()),
+                           QPointF(p.x() - 1.f, p.y()));
         }
         old = p;
         if (key->isSplit())
-            old = wtos(Vector2f(key->getIntensity(), key->getColorR().alpha() / 255.f));
+            old = wtos(QVector2D(key->getIntensity(), key->getColorR().alpha() / 255.f));
     }
     if (keys[keys.size() - 1]->getIntensity() < 1.f) {
-        paint.drawLine(QPointF(old.x + 1.f, old.y),
-                       QPointF(wtos(Vector2f(1.f, 0.f)).x, old.y));
+        paint.drawLine(QPointF(old.x() + 1.f, old.y()),
+                       QPointF(wtos(QVector2D(1.f, 0.f)).x(), old.y()));
     }
 
     if (xRange[1] != xRange[0])
@@ -277,18 +277,18 @@ void TF1DMappingCanvas::paintEvent(QPaintEvent* event)
     // grey out threshold area
     paint.setBrush(QBrush(QColor(192, 192, 192, 230), Qt::SolidPattern));
     paint.setPen(Qt::NoPen);
-    Vector2f upperRight = wtos(Vector2f(1.f, 1.f));
-    Vector2f lowerLeft = wtos(Vector2f(0.f, 0.f));
-    int w = static_cast<int>(upperRight.x - lowerLeft.x);
-    int h = static_cast<int>(upperRight.y - lowerLeft.y);
+    QVector2D upperRight = wtos(QVector2D(1.f, 1.f));
+    QVector2D lowerLeft = wtos(QVector2D(0.f, 0.f));
+    int w = static_cast<int>(upperRight.x() - lowerLeft.x());
+    int h = static_cast<int>(upperRight.y() - lowerLeft.y());
 
     if (thresholdL > 0.f) {
-        paint.drawRect(static_cast<int>(origin.x), static_cast<int>(origin.y),
+        paint.drawRect(static_cast<int>(origin.x()), static_cast<int>(origin.y()),
                        static_cast<int>(thresholdL * w + 1), h);
     }
     if (thresholdU < 1.f) {
-        paint.drawRect(static_cast<int>(origin.x + floor(thresholdU * w)),
-                       static_cast<int>(origin.y), static_cast<int>((1 - thresholdU) * w + 1), h);
+        paint.drawRect(static_cast<int>(origin.x() + floor(thresholdU * w)),
+                       static_cast<int>(origin.y()), static_cast<int>((1 - thresholdU) * w + 1), h);
     }
 
     paint.setRenderHint(QPainter::Antialiasing, false);
@@ -310,36 +310,36 @@ void TF1DMappingCanvas::mousePressEvent(QMouseEvent* event)
 
     event->accept();
 
-    dragLine = hitLine(Vector2f(event->x(), event->y()));
+    dragLine = hitLine(QVector2D(event->x(), event->y()));
     if (dragLine >= 0 && event->modifiers() == Qt::ShiftModifier) {
         dragLineStartY = event->y();
         return;
     }
 
-    Vector2f sHit = Vector2f(event->x(), static_cast<float>(height()) - event->y());
-    Vector2f hit = stow(sHit);
+    QVector2D sHit = QVector2D(event->x(), static_cast<float>(height()) - event->y());
+    QVector2D hit = stow(sHit);
 
     // see if a key was selected
     selectedKey = 0;
 	for (size_t i=0; i<keys.size(); ++i) {
         TF1DMappingKey* key = keys[i];
-        Vector2f sp = wtos(Vector2f(key->getIntensity(), key->getColorL().alpha() / 255.0));
-        Vector2f spr = wtos(Vector2f(key->getIntensity(), key->getColorR().alpha() / 255.0));
+        QVector2D sp = wtos(QVector2D(key->getIntensity(), key->getColorL().alpha() / 255.0));
+        QVector2D spr = wtos(QVector2D(key->getIntensity(), key->getColorR().alpha() / 255.0));
         if (key->isSplit()) {
-            if (sHit.x > sp.x - splitFactor * pointSize && sHit.x <= sp.x &&
-                sHit.y > sp.y - pointSize && sHit.y < sp.y + pointSize) {
+            if (sHit.x() > sp.x() - splitFactor * pointSize && sHit.x() <= sp.x() &&
+                sHit.y() > sp.y() - pointSize && sHit.y() < sp.y() + pointSize) {
                 selectedKey = key;
                 selectedLeftPart = true;
             }
-            if (sHit.x >= spr.x && sHit.x < spr.x + splitFactor * pointSize &&
-                sHit.y > spr.y - pointSize && sHit.y < spr.y + pointSize) {
+            if (sHit.x() >= spr.x() && sHit.x() < spr.x() + splitFactor * pointSize &&
+                sHit.y() > spr.y() - pointSize && sHit.y() < spr.y() + pointSize) {
                 selectedKey = key;
                 selectedLeftPart = false;
             }
         }
         else {
-            if (sHit.x > sp.x - pointSize && sHit.x < sp.x + pointSize &&
-                sHit.y > sp.y - pointSize && sHit.y < sp.y + pointSize) {
+            if (sHit.x() > sp.x() - pointSize && sHit.x() < sp.x() + pointSize &&
+                sHit.y() > sp.y() - pointSize && sHit.y() < sp.y() + pointSize) {
                 selectedKey = key;
                 selectedLeftPart = false;
             }
@@ -358,15 +358,15 @@ void TF1DMappingCanvas::mousePressEvent(QMouseEvent* event)
     if (selectedKey != 0 && event->button() == Qt::LeftButton) {
         dragging = true;
         //keep values within valid range
-        hit.x = Clamp(hit.x, 0.f, 1.f);
-		hit.y = Clamp(hit.y, 0.f, 1.f);
+        hit.setX(Clamp(hit.x(), 0.f, 1.f));
+		hit.setY(Clamp(hit.y(), 0.f, 1.f));
         updateCoordinates(event->pos(), hit);
         return;
     }
 
     // no key was selected -> insert new key
-    if (hit.x >= 0.f && hit.x <= 1.f &&
-        hit.y >= 0.f && hit.y <= 1.f &&
+    if (hit.x() >= 0.f && hit.x() <= 1.f &&
+        hit.y() >= 0.f && hit.y() <= 1.f &&
         event->button() == Qt::LeftButton)
     {
         insertNewKey(hit);
@@ -383,10 +383,10 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
     event->accept();
     mousePos = event->pos();
 
-    Vector2f sHit = Vector2f(event->x(), static_cast<float>(height()) - event->y());
-    Vector2f hit = stow(sHit);
+    QVector2D sHit = QVector2D(event->x(), static_cast<float>(height()) - event->y());
+    QVector2D hit = stow(sHit);
 
-    if (!dragging && hitLine(Vector2f(event->x(), event->y())) >= 0 && event->modifiers() == Qt::ShiftModifier)
+    if (!dragging && hitLine(QVector2D(event->x(), event->y())) >= 0 && event->modifiers() == Qt::ShiftModifier)
         setCursor(Qt::SizeVerCursor);
     else
         unsetCursor();
@@ -399,9 +399,9 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
         TF1DMappingKey* key = keys[dragLine];
         if (dragLineAlphaLeft == -1.f)
             dragLineAlphaLeft = key->isSplit() ? key->getAlphaR() : key->getAlphaL();
-        dragLineAlphaLeft = wtos(Vector2f(dragLineAlphaLeft)).y;
+        dragLineAlphaLeft = wtos(QVector2D(dragLineAlphaLeft,0.f)).y();
         dragLineAlphaLeft += delta;
-        dragLineAlphaLeft = stow(Vector2f(dragLineAlphaLeft)).y;
+        dragLineAlphaLeft = stow(QVector2D(dragLineAlphaLeft,0.f)).y();
         if (dragLineAlphaLeft < 0.f)
             dragLineAlphaLeft = 0.f;
         if (dragLineAlphaLeft > 1.f)
@@ -413,9 +413,9 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
             key = keys[dragLine+1];
             if (dragLineAlphaRight == -1.f)
                 dragLineAlphaRight = key->getAlphaL();
-            dragLineAlphaRight = wtos(Vector2f(dragLineAlphaRight)).y;
+            dragLineAlphaRight = wtos(QVector2D(dragLineAlphaRight,0.f)).y();
             dragLineAlphaRight += delta;
-            dragLineAlphaRight = stow(Vector2f(dragLineAlphaRight)).y;
+            dragLineAlphaRight = stow(QVector2D(dragLineAlphaRight,0.f)).y();
             if (dragLineAlphaRight < 0.f)
                 dragLineAlphaRight = 0.f;
             if (dragLineAlphaRight > 1.f)
@@ -433,23 +433,23 @@ void TF1DMappingCanvas::mouseMoveEvent(QMouseEvent* event)
         return;
 
     // keep location within valid texture coord range
-    hit.x = Clamp(hit.x, 0.f, 1.f);
-	hit.y = Clamp(hit.y, 0.f, 1.f);
+    hit.setX(Clamp(hit.x(), 0.f, 1.f));
+	hit.setY(Clamp(hit.y(), 0.f, 1.f));
 
     if (selectedKey != 0) {
         updateCoordinates(event->pos(), hit);
         if (event->modifiers() != Qt::ShiftModifier) {
-            selectedKey->setIntensity(hit.x);
+            selectedKey->setIntensity(hit.x());
         }
         if (event->modifiers() != Qt::ControlModifier) {
             if (selectedKey->isSplit()) {
                 if (selectedLeftPart)
-                    selectedKey->setAlphaL(hit.y);
+                    selectedKey->setAlphaL(hit.y());
                 else
-                    selectedKey->setAlphaR(hit.y);
+                    selectedKey->setAlphaR(hit.y());
             }
             else
-                selectedKey->setAlphaL(hit.y);
+                selectedKey->setAlphaL(hit.y());
         }
         bool selectedFound = false;
         for (size_t i = 0; i < keys.size(); ++i) {
@@ -500,7 +500,7 @@ void TF1DMappingCanvas::mouseDoubleClickEvent(QMouseEvent *event)
 void TF1DMappingCanvas::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Shift && underMouse() &&
-        hitLine(Vector2f(mousePos.x(), mousePos.y())) >= 0 && !dragging)
+        hitLine(QVector2D(mousePos.x(), mousePos.y())) >= 0 && !dragging)
     {
         setCursor(Qt::SizeVerCursor);
     }
@@ -608,9 +608,9 @@ void TF1DMappingCanvas::toggleClipThresholds()
 {
     clipThresholds = !clipThresholds;
     if (clipThresholds)
-        xRange = Vector2f(thresholdL, thresholdU);
+        xRange = QVector2D(thresholdL, thresholdU);
     else
-        xRange = Vector2f(0.f, 1.f);
+        xRange = QVector2D(0.f, 1.f);
 
     //histogramPainter->setxRange(xRange);
 
@@ -635,12 +635,12 @@ void TF1DMappingCanvas::changeCurrentColor()
         changeCurrentColor(newColor);
 }
 
-void TF1DMappingCanvas::insertNewKey(Vector2f& hit) 
+void TF1DMappingCanvas::insertNewKey(QVector2D& hit) 
 {
-    hit.x = Clamp(hit.x, 0.f, 1.f);
-	hit.y = Clamp(hit.y, 0.f, 1.f);
+    hit.setX(Clamp(hit.x(), 0.f, 1.f));
+	hit.setY(Clamp(hit.y(), 0.f, 1.f));
 
-    TF1DMappingKey* key = new TF1DMappingKey(hit.x, Qt::lightGray);
+    TF1DMappingKey* key = new TF1DMappingKey(hit.x(), Qt::lightGray);
 
     // insert key at appropriate location
 	std::vector<TF1DMappingKey *>::iterator keyIterator = keys.begin();
@@ -654,7 +654,7 @@ void TF1DMappingCanvas::insertNewKey(Vector2f& hit)
 
     // interpolate color of inserted key from neighbouring keys
     // (weighted by distance)
-    // the alpha value is determined by hit.y
+    // the alpha value is determined by hit.y()
     QColor keyColor;
     if (!leftKey)
         keyColor = rightKey->getColorL();
@@ -666,7 +666,7 @@ void TF1DMappingCanvas::insertNewKey(Vector2f& hit)
         float distSource = rightSource - leftSource;
         QColor leftColor = leftKey->getColorR();
         QColor rightColor = rightKey->getColorL();
-		float t = (distSource - (hit.x - leftSource)) / distSource;
+		float t = (distSource - (hit.x() - leftSource)) / distSource;
 		keyColor.setRed(leftColor.red() * t + rightColor.red() * (1 - t));
 		keyColor.setGreen(leftColor.green() * t + rightColor.green() * (1 - t));
 		keyColor.setBlue(leftColor.blue() * t + rightColor.blue() * (1 - t));
@@ -674,7 +674,7 @@ void TF1DMappingCanvas::insertNewKey(Vector2f& hit)
     }
     key->setColorL(keyColor);
     //overwrite alpha value with clicked position
-    key->setAlphaL(hit.y);
+    key->setAlphaL(hit.y());
 
     selectedKey = key;
 }
@@ -691,27 +691,27 @@ TF1DMappingKey* TF1DMappingCanvas::getOtherKey(TF1DMappingKey* selectedKey, bool
     return otherKey;
 }
 
-int TF1DMappingCanvas::hitLine(const Vector2f& p) 
+int TF1DMappingCanvas::hitLine(const QVector2D& p) 
 {
     int hit = -1;
-    Vector2f sHit = Vector2f(p.x, static_cast<float>(height()) - p.y);
-    Vector2f old;
+    QVector2D sHit = QVector2D(p.x(), static_cast<float>(height()) - p.y());
+    QVector2D old;
     for (int i=0; i < keys.size(); ++i) {
         TF1DMappingKey* key = keys[i];
-        Vector2f p = wtos(Vector2f(key->getIntensity(), key->getColorL().alpha() / 255.f));
+        QVector2D p = wtos(QVector2D(key->getIntensity(), key->getColorL().alpha() / 255.f));
         if (i > 0) {
-            Vector2f p1 = Vector2f(old.x + 1.f, old.y);
-            Vector2f p2 = Vector2f(p.x - 1.f, p.y);
-            float s = (p2.y - p1.y) / (p2.x - p1.x);
-            int a = static_cast<int>(p1.y + (sHit.x - p1.x) * s);
-            if ((sHit.x >= p1.x+10) && (sHit.x <= p2.x-10) && (abs(static_cast<int>(sHit.y) - a) < 5)) {
+            QVector2D p1 = QVector2D(old.x() + 1.f, old.y());
+            QVector2D p2 = QVector2D(p.x() - 1.f, p.y());
+            float s = (p2.y() - p1.y()) / (p2.x() - p1.x());
+            int a = static_cast<int>(p1.y() + (sHit.x() - p1.x()) * s);
+            if ((sHit.x() >= p1.x()+10) && (sHit.x() <= p2.x()-10) && (abs(static_cast<int>(sHit.y()) - a) < 5)) {
                 hit = i - 1;
             }
         }
 
         old = p;
         if (key->isSplit())
-            old = wtos(Vector2f(key->getIntensity(), key->getColorR().alpha() / 255.f));
+            old = wtos(QVector2D(key->getIntensity(), key->getColorR().alpha() / 255.f));
     }
     return hit;
 }
@@ -720,7 +720,7 @@ void TF1DMappingCanvas::paintKeys(QPainter& paint)
 {
     for (int i=0; i<keys.size(); ++i) {
         TF1DMappingKey *key = keys[i];
-        Vector2f p = wtos(Vector2f(key->getIntensity(), key->getColorL().alpha() / 255.0));
+        QVector2D p = wtos(QVector2D(key->getIntensity(), key->getColorL().alpha() / 255.0));
         int props;
 		QColor color = key->getColorL();
 		color.setAlpha(255);
@@ -731,7 +731,7 @@ void TF1DMappingCanvas::paintKeys(QPainter& paint)
 
             drawMarker(paint, color, p, props);
 
-            p = wtos(Vector2f(key->getIntensity(), key->getColorR().alpha() / 255.0));
+            p = wtos(QVector2D(key->getIntensity(), key->getColorR().alpha() / 255.0));
             props = MARKER_RIGHT;
             if (key == selectedKey && !selectedLeftPart)
                 props |= MARKER_SELECTED;
@@ -749,7 +749,7 @@ void TF1DMappingCanvas::paintKeys(QPainter& paint)
     }
 }
 
-void TF1DMappingCanvas::drawMarker(QPainter& paint, const QColor& color, const Vector2f& p, int props)
+void TF1DMappingCanvas::drawMarker(QPainter& paint, const QColor& color, const QVector2D& p, int props)
 {
     if (noColor)
         paint.setBrush(Qt::transparent);
@@ -762,17 +762,17 @@ void TF1DMappingCanvas::drawMarker(QPainter& paint, const QColor& color, const V
     paint.setPen(pen);
 
     if (props & MARKER_LEFT) {
-        paint.drawPie(QRectF(p.x - splitFactor * pointSize/2, p.y - pointSize/2,
+        paint.drawPie(QRectF(p.x() - splitFactor * pointSize/2, p.y() - pointSize/2,
                              splitFactor * pointSize, pointSize),
                       90 * 16, 180 * 16);
     }
     else if (props & MARKER_RIGHT) {
-        paint.drawPie(QRectF(p.x - splitFactor * pointSize/2, p.y - pointSize/2,
+        paint.drawPie(QRectF(p.x() - splitFactor * pointSize/2, p.y() - pointSize/2,
                              splitFactor * pointSize, pointSize),
                       270 * 16, 180 * 16);
     }
     else {
-        paint.drawEllipse(QRectF(p.x - pointSize/2, p.y - pointSize/2,
+        paint.drawEllipse(QRectF(p.x() - pointSize/2, p.y() - pointSize/2,
                                  pointSize, pointSize));
     }
 }
@@ -820,7 +820,7 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
         double* histogram;
         //
 
-		Vector2f p;
+		QVector2D p;
         QPointF* points = new QPointF[histogramWidth + 2];
         int count = 0;
 
@@ -832,15 +832,15 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
             if (xpos >= xRange[0] && xpos <= xRange[1]) {
 				float value = histogram[x] > 0 ? log(histogram[x]) / logMaxValue : 0;
 				if(value > 1) value = 1;
-                p = wtos(Vector2f(xpos, value * (yRange[1] - yRange[0]) + yRange[0]));
+                p = wtos(QVector2D(xpos, value * (yRange[1] - yRange[0]) + yRange[0]));
 
                 // optimization: if the y-coord has not changed from the two last points
                 // then just update the last point's x-coord to the current one
-                if( (count >= 2 ) && (points[count - 2].ry() == p.y) && (points[count - 1].ry() == p.y) && (count >= 2) ){
-                    points[count - 1].rx() = p.x;
+                if( (count >= 2 ) && (points[count - 2].ry() == p.y()) && (points[count - 1].ry() == p.y()) && (count >= 2) ){
+                    points[count - 1].rx() = p.x();
                 } else {
-                    points[count].rx() = p.x;
-                    points[count].ry() = p.y;
+                    points[count].rx() = p.x();
+                    points[count].ry() = p.y();
                     count++;
                 }
             }
@@ -857,18 +857,18 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
         if (count > 0) {
             // move x coordinate of first and last points to prevent vertical holes caused
             // by clipping
-            points[0].rx() = wtos(Vector2f(xRange[0], 0.f)).x;
+            points[0].rx() = wtos(QVector2D(xRange[0], 0.f)).x();
             if (count < histogramWidth - 2) // only when last point was actually clipped
-				points[count - 1].rx() = wtos(Vector2f(xRange[1], 0.f)).x;
+				points[count - 1].rx() = wtos(QVector2D(xRange[1], 0.f)).x();
 
             // needed for a closed polygon
-            p = wtos(Vector2f(0.f, yRange[0]));
+            p = wtos(QVector2D(0.f, yRange[0]));
             points[count].rx() = points[count - 1].rx();
-            points[count].ry() = p.y;
+            points[count].ry() = p.y();
             count++;
-            p = wtos(Vector2f(0.f, yRange[0]));
+            p = wtos(QVector2D(0.f, yRange[0]));
             points[count].rx() = points[0].rx();
-            points[count].ry() = p.y;
+            points[count].ry() = p.y();
             count++;
 
             paint.drawPolygon(points, count);
@@ -884,24 +884,24 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
                 if (xpos >= xRange[0] && xpos <= xRange[1]) {
                     float value = log(histogram[x]) / logMaxValue;
 					if(value > 1) value = 1;
-                    p = wtos(Vector2f(xpos, value * (yRange[1] - yRange[0]) + yRange[0]));
-                    points[x-histogramWidth+3].rx() = p.x;
-                    points[x-histogramWidth+3].ry() = p.y;
+                    p = wtos(QVector2D(xpos, value * (yRange[1] - yRange[0]) + yRange[0]));
+                    points[x-histogramWidth+3].rx() = p.x();
+                    points[x-histogramWidth+3].ry() = p.y();
                     count++;
                 }
              }
              if (count > 0) {
 				// move x coordinate of last point to prevent vertical holes caused by clipping
-                points[count - 1].rx() = wtos(Vector2f(xRange[1], 0.f)).x;
+                points[count - 1].rx() = wtos(QVector2D(xRange[1], 0.f)).x();
 
                 // needed for a closed polygon
-				p = wtos(Vector2f(0.f, yRange[0]));
+				p = wtos(QVector2D(0.f, yRange[0]));
                 points[count].rx() = points[count - 1].rx();
-                points[count].ry() = p.y;
+                points[count].ry() = p.y();
                 count++;
-                p = wtos(Vector2f(0, yRange[0]));
+                p = wtos(QVector2D(0, yRange[0]));
                 points[count].rx() = points[0].rx();
-                points[count].ry() = p.y;
+                points[count].ry() = p.y();
                 count++;
 
                 paint.drawPolygon(points, 5);
@@ -914,18 +914,18 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
 }
 
 
-Vector2f TF1DMappingCanvas::wtos(Vector2f p) 
+QVector2D TF1DMappingCanvas::wtos(QVector2D p) 
 {
-    float sx = (p.x - xRange[0]) / (xRange[1] - xRange[0]) * (static_cast<float>(width())  - 2 * padding - 1.5 * arrowLength) + padding;
-    float sy = (p.y - yRange[0]) / (yRange[1] - yRange[0]) * (static_cast<float>(height()) - 2 * padding - 1.5 * arrowLength) + padding;
-    return Vector2f(sx, sy);
+    float sx = (p.x() - xRange[0]) / (xRange[1] - xRange[0]) * (static_cast<float>(width())  - 2 * padding - 1.5 * arrowLength) + padding;
+    float sy = (p.y() - yRange[0]) / (yRange[1] - yRange[0]) * (static_cast<float>(height()) - 2 * padding - 1.5 * arrowLength) + padding;
+    return QVector2D(sx, sy);
 }
 
-Vector2f TF1DMappingCanvas::stow(Vector2f p) 
+QVector2D TF1DMappingCanvas::stow(QVector2D p) 
 {
-    float wx = (p.x - padding) / (static_cast<float>(width())  - 2 * padding - 1.5 * arrowLength) * (xRange[1] - xRange[0]) + xRange[0];
-    float wy = (p.y - padding) / (static_cast<float>(height()) - 2 * padding - 1.5 * arrowLength) * (yRange[1] - yRange[0]) + yRange[0];
-    return Vector2f(wx, wy);
+    float wx = (p.x() - padding) / (static_cast<float>(width())  - 2 * padding - 1.5 * arrowLength) * (xRange[1] - xRange[0]) + xRange[0];
+    float wy = (p.y() - padding) / (static_cast<float>(height()) - 2 * padding - 1.5 * arrowLength) * (yRange[1] - yRange[0]) + yRange[0];
+    return QVector2D(wx, wy);
 }
 
 //--------- additional functions ---------//
@@ -961,13 +961,13 @@ void TF1DMappingCanvas::setThreshold(float l, float u)
     thresholdL = l;
     thresholdU = u;
     if (clipThresholds)
-        xRange = Vector2f(thresholdL, thresholdU);
+        xRange = QVector2D(thresholdL, thresholdU);
     update();
 }
 
-Vector2f TF1DMappingCanvas::getThresholds() const
+QVector2D TF1DMappingCanvas::getThresholds() const
 {
-	return Vector2f(thresholdL, thresholdU);
+	return QVector2D(thresholdL, thresholdU);
 }
 
 void TF1DMappingCanvas::hideCoordinates()
@@ -975,12 +975,12 @@ void TF1DMappingCanvas::hideCoordinates()
     QToolTip::hideText();
 }
 
-void TF1DMappingCanvas::updateCoordinates(QPoint pos, Vector2f values)
+void TF1DMappingCanvas::updateCoordinates(QPoint pos, QVector2D values)
 {
     std::ostringstream os;
     os.precision(2);
     os.setf(std::ios::fixed, std::ios::floatfield);
-    os << values.x*255 << " / " << values.y*255.f;
+    os << values.x()*255 << " / " << values.y()*255.f;
     QToolTip::showText(mapToGlobal(pos), QString(os.str().c_str()));
 }
 
