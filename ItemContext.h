@@ -7,8 +7,8 @@
 #include <QAbstractTableModel>
 #include <QtAlgorithms>
 
-#include "mrc.h"
-#include "imageviewer.h"
+#include "model/mrc.h"
+#include "widgets/imageviewer.h"
 
 //class SliceScene;
 enum class SliceType;

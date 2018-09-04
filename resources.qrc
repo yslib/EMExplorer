@@ -15,4 +15,7 @@
         <file>resources/icons/zoom_out.png</file>
         <file>resources/icons/add.png</file>
     </qresource>
+    <qresource prefix="/shaders">
+        <file>resources/shaders/raycast_lighting.frag</file>
+    </qresource>
 </RCC>

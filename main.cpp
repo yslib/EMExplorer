@@ -1,9 +1,15 @@
-#include "mainwindow.h"
+#include "widgets/mainwindow.h"
 
 #include <QApplication>
 #include <QSettings>
 #include <QSurfaceFormat>
 
+
+#include <iostream>
+#include <chrono>
+#include <functional>
+#include <string>
+#include <vector>
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("cadcg");
