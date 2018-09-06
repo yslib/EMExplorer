@@ -16,6 +16,13 @@
         <file>resources/icons/add.png</file>
     </qresource>
     <qresource prefix="/shaders">
-        <file>resources/shaders/raycast_lighting.frag</file>
+        <file>resources/shaders/position_f.glsl</file>
+        <file>resources/shaders/position_v.glsl</file>
+        <file>resources/shaders/slice_shader_f.glsl</file>
+        <file>resources/shaders/slice_shader_v.glsl</file>
+        <file>resources/shaders/raycast_on_the_fly_gradient_f.glsl</file>
+        <file>resources/shaders/raycast_on_the_fly_gradient_v_glsl</file>
+        <file>resources/shaders/raycast_pre_gradient_f.glsl</file>
+        <file>resources/shaders/raycast_pre_gradient_v.glsl</file>
     </qresource>
 </RCC>

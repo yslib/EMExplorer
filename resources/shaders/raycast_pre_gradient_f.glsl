@@ -16,14 +16,13 @@ uniform sampler1D texTransfunc;
 uniform sampler2DRect texStartPos;
 uniform sampler2DRect texEndPos;
 uniform sampler3D texVolume;
-//uniform sampler3D texGradient;
+uniform sampler3D texGradient;
 uniform float step;
 uniform float ka;
 uniform float kd;
 uniform float shininess;
 uniform float ks;
-//uniform vec3 lightPos;
-//uniform vec3 viewDir;
+
 uniform vec3 lightdir;
 uniform vec3 halfway;
 in vec2 textureRectCoord;
@@ -33,14 +32,14 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 {
 	vec3 shadedValue=vec3(0,0,0);
 
-	////计算梯度
+ ////计算梯度
  //	vec3 N;
  //	N.x = (texture3D(texVolume, samplePos+vec3(step,0,0) ).w - texture3D(texVolume, samplePos+vec3(-step,0,0) ).w) - 1.0;
  //	N.y = (texture3D(texVolume, samplePos+vec3(0,step,0) ).w - texture3D(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
  //	N.z = (texture3D(texVolume, samplePos+vec3(0,0,step) ).w - texture3D(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
 
-	//vec3 N = texture(texGradient, samplePos).xyz;
-	vec3 N = texture(texVolume, samplePos).xyz;
+	vec3 N = texture(texGradient, samplePos).xyz;
+	//vec3 N = texture(texVolume, samplePos).xyz;
  	N = N * 2.0 - 1.0;
   	N = -normalize(N);
 
@@ -80,8 +79,9 @@ void main()
     int steps = int(distance / step);
     for(int i = 0; i < steps; ++i) {
         vec3 samplePoint  = rayStart + direction * step * (float(i) + 0.5);
-        vec4 scalar = texture(texVolume, samplePoint).xyzw;
-        vec4 sampledColor = texture(texTransfunc, scalar.a);
+        //vec4 scalar = texture(texVolume, samplePoint).xyzw;
+		vec4 scalar = texture(texVolume,samplePoint);
+        vec4 sampledColor = texture(texTransfunc, scalar.r);
 		sampledColor.rgb = PhongShading(samplePoint, sampledColor.rgb);
         color = color + sampledColor * vec4(sampledColor.aaa, 1.0) * (1.0 - color.a);
         if(color.a > 0.99)

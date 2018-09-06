@@ -10,7 +10,7 @@ class MarkModel;
 class GradientCalculator :public QObject
 {
 	Q_OBJECT
-		std::unique_ptr<unsigned char[]> m_gradient;
+	std::unique_ptr<unsigned char[]> m_gradient;
 	const AbstractSliceDataModel * m_sliceModel;
 	const MarkModel * m_mark;
 	QMutex m_mutex;
@@ -21,7 +21,8 @@ public:
 	void setMarkModel(const MarkModel * mark);
 	bool ready()const;
 	bool hasData()const;
-	unsigned char * data()const;
+	void calcGradent();
+	unsigned char * data3()const;
 private:
 	void init();
 	QVector3D triCubicIntpGrad(const unsigned char * pData, double px, double py, double pz);
@@ -29,7 +30,7 @@ private:
 	inline static double cubicIntpGrad(double v0, double v1, double v2, double v3, double mu);
 	inline static double cubicIntpValue(double v0, double v1, double v2, double v3, double mu);
 	public slots:
-	void calcGradent();
+	
 signals:
 	void finished();
 };

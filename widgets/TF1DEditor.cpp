@@ -25,12 +25,12 @@ TF1DEditor::~TF1DEditor()
 
 QSize TF1DEditor::minimumSizeHint() const
 {
-	return QSize(300, 100);
+	return QSize(300, 250);
 }
 
 QSize TF1DEditor::sizeHint() const
 {
-	return QSize(300, 100);
+	return QSize(300, 250);
 }
 
 void TF1DEditor::createWidgets()

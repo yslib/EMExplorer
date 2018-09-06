@@ -1,5 +1,6 @@
 #include <QOpenGLShaderProgram>
 #include <QMouseEvent>
+#include <QMenu>
 
 #include "volumewidget.h"
 #include "abstract/abstractslicedatamodel.h"
@@ -74,19 +75,6 @@ static const char * positionVertShaderSource =
 "	texCoord = vert;\n"
 "   gl_Position = othoMatrix * viewMatrix * worldMatrix * vert;\n"
 "}\n";
-
-//static const float xCoord = 1.0, yCoord = 1.0, zCoord = 1.0;
-//float positionVert[] = {
-//	0,0,0,
-//	xCoord, 0, 0 ,
-//	0, yCoord, 0 ,
-//	xCoord, yCoord, 0 ,
-//	0, 0, zCoord ,
-//	xCoord, 0, zCoord ,
-//	0, yCoord, zCoord ,
-//	xCoord, yCoord, zCoord
-//};
-
 const static int faceIndex[] = { 1, 3, 7, 5, 0, 4, 6, 2, 2, 6, 7, 3, 0, 1, 5, 4, 4, 5, 7, 6, 0, 2, 3, 1 };
 
 
@@ -102,7 +90,9 @@ float positionVert[] = {
 	xCoord, yCoord, zCoord ,
 };
 
-static QVector<QVector2D> cubeTexCoord = {
+const static int triIndex[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35 };
+
+static QVector<QVector2D> cubeTex = {
 	{ 0.f,0.f },{ 1.0f,0.f },{ 0.f,0.f },
 	{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
 	{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
@@ -117,10 +107,95 @@ static QVector<QVector2D> cubeTexCoord = {
 	{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
 };
 
+static QVector<QVector3D> cubeNor = {
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+};
+
+
+static QVector<QVector3D> cubeVertex =
+{
+	//back
+{ 0.5f, -0.5f, -0.5f },
+{ -0.5f, -0.5f, -0.5f },
+{ 0.5f,  0.5f, -0.5f },
+{ -0.5f,  0.5f, -0.5f } ,
+{ 0.5f,  0.5f, -0.5f } ,
+{ -0.5f, -0.5f, -0.5f } ,
+//front
+{ -0.5f, -0.5f,  0.5f },
+{ 0.5f, -0.5f,  0.5f },
+{ 0.5f,  0.5f,  0.5f },
+{ 0.5f,  0.5f,  0.5f },
+{ -0.5f,  0.5f,  0.5f },
+{ -0.5f, -0.5f,  0.5f },
+//left
+{ -0.5f,  0.5f,  0.5f },
+{ -0.5f,  0.5f, -0.5f },
+{ -0.5f, -0.5f, -0.5f },
+{ -0.5f, -0.5f, -0.5f },
+{ -0.5f, -0.5f,  0.5f },
+{ -0.5f,  0.5f,  0.5f },
+//right
+{ 0.5f,  0.5f, -0.5f },
+{ 0.5f,  0.5f,  0.5f },
+{ 0.5f, -0.5f, -0.5f } ,
+{ 0.5f, -0.5f,  0.5f } ,
+{ 0.5f, -0.5f, -0.5f } ,
+{ 0.5f,  0.5f,  0.5f } ,
+//bottom
+{ -0.5f, -0.5f, -0.5f },
+{ 0.5f, -0.5f, -0.5f },
+{ 0.5f, -0.5f,  0.5f },
+{ 0.5f, -0.5f,  0.5f } ,
+{ -0.5f, -0.5f,  0.5f } ,
+{ -0.5f, -0.5f, -0.5f }  ,
+//up
+{ 0.5f,  0.5f, -0.5f }  ,
+{ -0.5f,  0.5f, -0.5f }  ,
+{ 0.5f,  0.5f,  0.5f }  ,
+{ -0.5f,  0.5f,  0.5f } ,
+{ 0.5f,  0.5f,  0.5f } ,
+{ -0.5f,  0.5f, -0.5f }
+};
+
 static QVector<QVector3D> cubeVert =
 {
 	//back
-
 	{ 0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
 	{ -0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
 	{ 0.5f,  0.5f, -0.5f },{ 0.f,0.f,-1.f },
@@ -163,29 +238,27 @@ static QVector<QVector3D> cubeVert =
 	{ 0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
 	{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
 };
-
-
-
-
-
-
-
-VolumeWidget::VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, QWidget * parent)
+VolumeWidget::VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget,QWidget * parent)
 	:QOpenGLWidget(parent),
-	m_dataModel(dataModel),
 	m_markModel(markModel),
-	m_rayStep(0.02),
+	m_dataModel(dataModel),
+	m_parameterWidget(widget),
 	m_camera(QVector3D(0.f, 0.f, 10.f)),
-	m_trans(0.0, 0.0, 0.0),
+	m_rayStep(0.02),
 	m_scale(1.0, 1.0, 1.0),
-	m_gradCalc(dataModel, markModel),
+	m_trans(0.0, 0.0, 0.0),
 	m_tfTexture(QOpenGLTexture::Target1D),
-	m_volumeTexture(QOpenGLTexture::Target3D),
+	m_gradCalc(dataModel, markModel),
 	m_fbo(nullptr),
-	m_positionEBO(QOpenGLBuffer::IndexBuffer),
-	m_positionVBO(QOpenGLBuffer::VertexBuffer)
+	m_gradientTexture(QOpenGLTexture::Target3D),
+	m_volumeTexture(QOpenGLTexture::Target3D),
+	m_positionVBO(QOpenGLBuffer::VertexBuffer),
+	m_positionEBO(QOpenGLBuffer::IndexBuffer)
 {
-
+	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
+	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
+	connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
+	
 }
 
 void VolumeWidget::setDataModel(AbstractSliceDataModel * model)
@@ -208,12 +281,17 @@ void VolumeWidget::setMarkModel(MarkModel* model)
 
 QSize VolumeWidget::minimumSizeHint() const
 {
-	return QSize(50, 50);
+	return QSize(400, 300);
 }
 
 QSize VolumeWidget::sizeHint() const
 {
 	return QSize(800, 600);
+}
+
+void VolumeWidget::addContextAction(QAction* action)
+{
+	m_contextMenu->addAction(action);
 }
 
 VolumeWidget::~VolumeWidget()
@@ -227,7 +305,6 @@ void VolumeWidget::initializeGL()
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &VolumeWidget::cleanup);
 	glEnable(GL_DEPTH_TEST);
-	;
 	// Initialize Front and back face texture
 	m_positionShader.reset(new PositionShader);
 	m_positionShader->link();
@@ -269,23 +346,18 @@ void VolumeWidget::initializeGL()
 	m_cubeShader->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
 	m_cubeShader->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
 	m_cubeShader->link();
-	m_cubeVAO.create();
-	m_cubeVAO.bind();
-	m_cubeVBO.create();
-	m_cubeVBO.bind();
-	const int c1 = cubeVert.count() * sizeof(float) * 3;
-	const int c2 = cubeTexCoord.count() * sizeof(float) * 2;
-	m_cubeVBO.allocate(c1 + c2);
-	m_cubeVBO.write(0, cubeVert.constData(), c1);
-	m_cubeVBO.write(c1, cubeTexCoord.constData(), c2);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(2 * sizeof(float)));
-	m_cubeVBO.release();
-	m_cubeVAO.release();
+
+
+	//test mesh
+	Transform3 trans;
+	trans.translate(0.5, 0.5, 0.5);
+	m_cube.reset(new TriangleMesh(cubeVertex.constData(), 
+		cubeNor.constData(),
+		cubeTex.constData(), 
+		36, 
+		triIndex, 
+		12, 
+		trans));
 
 	// Default matrix parameters
 	m_scale = QVector3D(1.0, 1.0, 1.0);
@@ -294,6 +366,41 @@ void VolumeWidget::initializeGL()
 	m_world.setToIdentity();
 	m_world.scale(m_scale);
 	m_world.translate(m_trans);
+
+
+	//slice rendering test
+	m_sliceShader.reset(new SliceShader());
+	m_sliceShader->link();
+
+	m_topSliceVAO.create();
+	QOpenGLVertexArrayObject::Binder binder1(&m_topSliceVAO);
+	m_topSliceVBO.create();
+	m_topSliceVBO.bind();
+	m_topSliceVBO.allocate(4 * 3 * sizeof(float) + 4 * 2 * sizeof(float));
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(0));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(3*sizeof(float)));
+
+	m_rightSliceVAO.create();
+	QOpenGLVertexArrayObject::Binder binder2(&m_rightSliceVAO);
+	m_rightSliceVBO.create();
+	m_rightSliceVBO.bind();
+	m_rightSliceVBO.allocate(4 *3* sizeof(float) + 4 *2* sizeof(float));
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(0));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(3 * sizeof(float)));
+
+	m_frontSliceVAO.create();
+	QOpenGLVertexArrayObject::Binder binder3(&m_frontSliceVAO);
+	m_frontSliceVBO.create();
+	m_frontSliceVBO.bind();
+	m_frontSliceVBO.allocate(4 * 3 * sizeof(float) + 4 * 2 * sizeof(float));
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(0));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(3 * sizeof(float)));
 
 	// 3D Volume Texture
 	loadDataToTextures();
@@ -318,7 +425,7 @@ void VolumeWidget::resizeGL(int w, int h)
 	m_fbo->addColorAttachment(w, h);
 
 	// Update texture size in ray casting vbo
-	static QVector<QVector2D> rayCastingVB = { 
+	static QVector<QVector2D> rayCastingVB = {
 		{0.0f,0.0f},
 		{0.0,static_cast<float>(h)},
 		{ static_cast<float>(w),static_cast<float>(h)},
@@ -330,45 +437,135 @@ void VolumeWidget::resizeGL(int w, int h)
 }
 void VolumeWidget::paintGL()
 {
-	m_fbo->bind();
-	m_positionShader->load(this);
-	QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
-	// Draw Front to fbo 
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
-	// Draw Back to fbo 
-	glDrawBuffer(GL_COLOR_ATTACHMENT1);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glDepthFunc(GL_GREATER);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
-	glDepthFunc(GL_LESS);
-	m_positionShader->release();
-	m_fbo->release();
 
-	// Ray casting in shader
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_TEXTURE_RECTANGLE_NV);
-	glEnable(GL_TEXTURE_3D);
-	m_currentShader->load(this);
-	QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
-	glDrawArrays(GL_QUADS, 0, 4);
-	glDisable(GL_TEXTURE_RECTANGLE_NV);
-	glDisable(GL_TEXTURE_3D);
-	glDisable(GL_BLEND);
-	m_currentShader->release();
+	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 
-	glClear(GL_DEPTH_BUFFER_BIT);
-	QOpenGLVertexArrayObject::Binder binder3(&m_cubeVAO);
-	m_cubeShader->bind();
-	m_cubeShader->setUniformValue("projMatrix", m_proj);
-	m_cubeShader->setUniformValue("mvMatrix", m_camera.view()*m_world);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	m_cubeShader->release();
+	auto renderMode = m_parameterWidget->options()->mode;
+
+	if(renderMode == RenderMode::DVR) {
+		m_fbo->bind();
+		m_positionShader->load(this);
+		m_positionShader->setUniformValue("viewMatrix", m_camera.view());
+		QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
+		// Draw Front to fbo 
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
+		// Draw Back to fbo 
+		glDrawBuffer(GL_COLOR_ATTACHMENT1);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDepthFunc(GL_GREATER);
+		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
+		glDepthFunc(GL_LESS);
+		m_positionShader->release();
+		m_fbo->release();
+
+
+		// Ray casting in shader
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_TEXTURE_RECTANGLE_NV);
+		glEnable(GL_TEXTURE_3D);
+		m_currentShader->load(this);
+		QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
+		glDrawArrays(GL_QUADS, 0, 4);
+		glDisable(GL_TEXTURE_RECTANGLE_NV);
+		glDisable(GL_TEXTURE_3D);
+		glDisable(GL_BLEND);
+		m_currentShader->release();
+	}else if(renderMode == (RenderMode::LineMesh & RenderMode::SliceTexture)) {
+		// Update Slice
+		glClear(GL_DEPTH_BUFFER_BIT);
+		if (m_dataModel != nullptr) {
+
+			int nTop = m_dataModel->topSliceCount();
+			int nRight = m_dataModel->rightSliceCount();
+			int nFront = m_dataModel->frontSliceCount();
+
+			//m_topSlice = 75;
+			//m_rightSlice = 75;
+			//m_frontSlice = 75;
+
+			float topCoord = float(m_topSlice) / float(nTop) ;
+			float rightCoord = float(m_rightSlice) / float(nRight) ;
+			float frontCoord = float(m_frontSlice) / float(nFront) ;
+
+			float top[] =
+			{
+				0.0,0.0,topCoord,0.0,0.0 ,
+				1.0,0.0,topCoord,1.0,0.0 ,
+				1.0,1.0,topCoord,1.0,1.0 ,
+				0.0,1.0,topCoord,0.0,1.0 ,
+			};
+			m_topSliceVBO.bind();
+			m_topSliceVBO.write(0, top, sizeof(top));
+			float right[] =
+			{
+				0.0,rightCoord,0.0, 0.0,0.0 ,
+				1.0,rightCoord,0.0, 1.0,0.0 ,
+				1.0,rightCoord,1.0, 1.0,1.0 ,
+				0.0,rightCoord,1.0, 0.0,1.0 ,
+			};
+			m_rightSliceVBO.bind();
+			m_rightSliceVBO.write(0, right, sizeof(right));
+			float front[] =
+			{
+				frontCoord,0.0,0.0, 0.0,0.0 ,
+				frontCoord,1.0,0.0, 1.0,0.0 ,
+				frontCoord,1.0,1.0,1.0,1.0 ,
+				frontCoord,0.0,1.0,0.0,1.0 ,
+			};
+
+			m_frontSliceVBO.bind();
+			m_frontSliceVBO.write(0, front, sizeof(front));
+
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			m_sliceShader->setSliceType(0);
+			m_sliceShader->setSliceIndex(m_topSlice);
+			m_sliceShader->load(this);
+			m_sliceShader->setUniformValue("projMatrix", m_proj);
+			m_sliceShader->setUniformValue("viewMatrix", m_camera.view());
+			m_sliceShader->setUniformValue("worldMatrix", m_world);
+
+			m_topSliceVAO.bind();
+			glDrawArrays(GL_QUADS, 0, 4);
+
+			m_sliceShader->setSliceType(1);
+			m_sliceShader->setSliceIndex(m_rightSlice);
+			m_sliceShader->load(this);
+			m_rightSliceVAO.bind();
+			glDrawArrays(GL_QUADS, 0, 4);
+
+			m_sliceShader->setSliceType(2);
+			m_sliceShader->setSliceIndex(m_frontSlice);
+			m_sliceShader->load(this);
+			m_frontSliceVAO.bind();
+			glDrawArrays(GL_QUADS, 0, 4);
+			m_sliceShader->release();
+
+			//auto shader = static_cast<QScopedPointer<SliceShader>>(m_sliceShader);
+		}
+
+		// Draw Slice
+
+		//glClear(GL_DEPTH_BUFFER_BIT);
+		m_cubeShader->bind();
+		m_cubeShader->setUniformValue("projMatrix", m_proj);
+		m_cubeShader->setUniformValue("mvMatrix", m_camera.view()*m_world);
+		m_cube->render();
+
+		for (auto & m : m_markMeshes)
+			m->render();
+
+		m_cubeShader->release();
+	}
+	
+
+
+
+	
 }
 
 void VolumeWidget::mousePressEvent(QMouseEvent* event)
@@ -399,6 +596,12 @@ void VolumeWidget::mouseMoveEvent(QMouseEvent* event)
 	update();
 }
 
+void VolumeWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+	const auto pos = event->pos();
+	m_contextMenu->exec(this->mapToGlobal(pos));
+}
+
 
 void VolumeWidget::updateTransferFunction(const float * func, bool updated)
 {
@@ -418,13 +621,28 @@ void VolumeWidget::updateTransferFunction(const float * func, bool updated)
 		update();
 }
 
+void VolumeWidget::updateMarkMesh() {
+	//TODO:: update m_markMeshes
+	if (m_markModel == nullptr)
+		return;
+
+}
+
+
+
 void VolumeWidget::updateVolumeData()
 {
 	m_gradCalc.setDataModel(m_dataModel);
 	//// update volume side length, position vertex vbo
-	const auto z = (float)m_dataModel->topSliceCount()*0.01;
-	const auto y = (float)m_dataModel->rightSliceCount()*0.01;
-	const auto x = (float)m_dataModel->frontSliceCount()*0.01;
+	auto z = m_dataModel->topSliceCount();
+	auto y = m_dataModel->rightSliceCount();
+	auto x = m_dataModel->frontSliceCount();
+	m_topSlice = z;
+	m_rightSlice = y;
+	m_frontSlice = x;
+	//z *= 0.01;
+	//y *= 0.01;
+	//x *= 0.01;
 	m_scale = QVector3D(x, y, z);
 	m_scale.normalize();
 	m_trans = QVector3D(0, 0, 0);
@@ -432,6 +650,8 @@ void VolumeWidget::updateVolumeData()
 	m_world.setToIdentity();
 	m_world.scale(m_scale);
 	m_world.translate(m_trans);
+
+	m_sliceShader->setSliceDataModel(m_dataModel);
 
 	loadDataToTextures();
 }
@@ -466,36 +686,62 @@ void VolumeWidget::loadDataToTextures()
 		return;
 	if (m_gradCalc.ready() == false)
 		m_gradCalc.calcGradent();		//Time-consuming
-	const auto d = m_gradCalc.data();
+	const auto d = m_gradCalc.data3();
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
+
 	makeCurrent();
+	m_gradientTexture.destroy();
+	m_gradientTexture.setMagnificationFilter(QOpenGLTexture::Linear);
+	m_gradientTexture.setMinificationFilter(QOpenGLTexture::Linear);
+	m_gradientTexture.setWrapMode(QOpenGLTexture::ClampToEdge);
+	m_gradientTexture.setSize(x, y, z);
+	m_gradientTexture.setFormat(QOpenGLTexture::RGB8_UNorm);
+	m_gradientTexture.allocateStorage();
+	m_gradientTexture.setData(QOpenGLTexture::RGB, QOpenGLTexture::UInt8, d);
+
 	m_volumeTexture.destroy();
 	m_volumeTexture.setMagnificationFilter(QOpenGLTexture::Linear);
 	m_volumeTexture.setMinificationFilter(QOpenGLTexture::Linear);
 	m_volumeTexture.setWrapMode(QOpenGLTexture::ClampToEdge);
 	m_volumeTexture.setSize(x, y, z);
-	m_volumeTexture.setFormat(QOpenGLTexture::RGBA8_UNorm);
+	m_volumeTexture.setFormat(QOpenGLTexture::R16F);
 	m_volumeTexture.allocateStorage();
-	m_volumeTexture.setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt8, d);
+	m_volumeTexture.setData(QOpenGLTexture::Red, QOpenGLTexture::UInt8, m_dataModel->constData());
+
+	//update slice vbo
+
 	doneCurrent();
+}
+
+void VolumeWidget::contextMenuAddedHelper(QWidget* widget) {
+
 }
 
 void VolumeWidget::cleanup()
 {
 	makeCurrent();
-	m_cubeVBO.destroy();
-	m_cubeVAO.destroy();
 	m_positionVAO.destroy();
 	m_positionVBO.destroy();
 	m_positionEBO.destroy();
 	m_rayCastingTextureVAO.destroy();
 	m_rayCastingTextureVBO.destroy();
 
+	m_topSliceVAO.destroy();
+	m_topSliceVBO.destroy();
+	m_rightSliceVAO.destroy();
+	m_rightSliceVBO.destroy();
+	m_frontSliceVAO.destroy();
+	m_frontSliceVBO.destroy();
+
 	m_tfTexture.destroy();
-	m_volumeTexture.destroy();
-	m_fbo->~QOpenGLFramebufferObject();
+	m_gradientTexture.destroy();
+	m_fbo.reset();
+	m_cube.reset();
+
+	for (auto & mesh : m_markMeshes)
+		mesh.reset();
 
 	doneCurrent();
 }

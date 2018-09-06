@@ -74,8 +74,6 @@ public:
 	SliceView * frontView()const;
 
 	int currentSliceIndex(SliceType type)const;
-
-
 	void resetZoom(bool check);
 	void zoomIn();
 	void zoomOut();
@@ -88,6 +86,9 @@ public:
 	inline AbstractSliceDataModel * sliceModel()const;
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
+
+	QSize sizeHint() const Q_DECL_OVERRIDE { return {800,800}; }
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
 
 signals:
 	void topSliceOpened(int index);

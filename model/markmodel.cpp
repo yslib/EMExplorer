@@ -172,7 +172,6 @@ QList<QGraphicsItem*> MarkModel::marks() const
 		Q_ASSERT_X(var.canConvert<__Internal_Mark_Type_>(), 
 			"MarkModel::marks", "convert failed");
 		items << var.value<__Internal_Mark_Type_>().data();
-		
 	}
 	return items;
 }

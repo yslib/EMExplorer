@@ -37,8 +37,9 @@ bool GradientCalculator::hasData() const
 	return m_sliceModel != nullptr;
 }
 
-unsigned char * GradientCalculator::data() const
-{
+
+
+unsigned char* GradientCalculator::data3() const {
 	return m_gradient.get();
 }
 
@@ -50,7 +51,7 @@ void GradientCalculator::init()
 	const int y = m_sliceModel->rightSliceCount();
 	const int x = m_sliceModel->frontSliceCount();
 	QMutexLocker locker(&m_mutex);
-	m_gradient.reset(new unsigned char[x*y*z * 4]);
+	m_gradient.reset(new unsigned char[x*y*z*3]);
 }
 
 QVector3D GradientCalculator::triCubicIntpGrad(const unsigned char* pData, double px, double py, double pz)
@@ -173,6 +174,7 @@ void GradientCalculator::calcGradent()
 	const int ziSize = m_sliceModel->topSliceCount();
 	const int yiSize = m_sliceModel->rightSliceCount();
 	const int xiSize = m_sliceModel->frontSliceCount();
+
 	const auto pOriginalData = m_sliceModel->constData();
 
 	//QMutexLocker locker(&m_mutex);
@@ -185,18 +187,18 @@ void GradientCalculator::calcGradent()
 			for (int k = 0; k < xiSize; ++k) {
 				unsigned int index = i * xiSize * yiSize + j * xiSize + k;
 				// for 16 bit, already convert to 8 bit
-				m_gradient[index * 4 + 3] = pOriginalData[index];
+				//m_gradient[index * 4 + 3] = pOriginalData[index];
 				QVector3D gradient = triCubicIntpGrad(pOriginalData, k, j, i);		// x, y, z
 				if (gradient.lengthSquared() > 1e-10) {
 					gradient.normalize();
-					m_gradient[index * 4 + 0] = (unsigned char)((gradient.x() + 1.0) / 2.0 * 255 + 0.5);
-					m_gradient[index * 4 + 1] = (unsigned char)((gradient.y() + 1.0) / 2.0 * 255 + 0.5);
-					m_gradient[index * 4 + 2] = (unsigned char)((gradient.z() + 1.0) / 2.0 * 255 + 0.5);
+					m_gradient[index * 3 + 0] = (unsigned char)((gradient.x() + 1.0) / 2.0 * 255 + 0.5);
+					m_gradient[index * 3 + 1] = (unsigned char)((gradient.y() + 1.0) / 2.0 * 255 + 0.5);
+					m_gradient[index * 3 + 2] = (unsigned char)((gradient.z() + 1.0) / 2.0 * 255 + 0.5);
 				}
 				else {	// gradient = (0, 0, 0)
-					m_gradient[index * 4 + 0] = 128;
-					m_gradient[index * 4 + 1] = 128;
-					m_gradient[index * 4 + 2] = 128;
+					m_gradient[index * 3 + 0] = 128;
+					m_gradient[index * 3 + 1] = 128;
+					m_gradient[index * 3 + 2] = 128;
 				}
 			}
 		}

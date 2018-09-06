@@ -10,6 +10,7 @@
 #include "imageviewcontrolpanel.h"
 #include "titledsliderwithspinbox.h"
 #include "imageviewer.h"
+#include "volumewidget.h"
 #include "model/mrcdatamodel.h"
 
 #include "sliceview.h"			//enum SliceType
@@ -17,12 +18,12 @@
 #include <QColorDialog>
 
 
-ImageViewControlPanel::ImageViewControlPanel(ImageCanvas * canvas, QWidget* parent) :m_canvas(canvas)
+ImageViewControlPanel::ImageViewControlPanel(ImageCanvas * canvas, QWidget* parent) :m_canvas(canvas), m_volumeWidget(nullptr)
 {
 	createWidgets();
 	updateActions();
 	m_canvas->m_panel = this;
-	if(m_canvas != nullptr)
+	if (m_canvas != nullptr)
 	{
 		connect(m_canvas, &ImageCanvas::dataModelChanged, this, &ImageViewControlPanel::updateProperty);
 	}
@@ -39,7 +40,7 @@ void ImageViewControlPanel::setImageCanvas(ImageCanvas* canvas)
 
 int ImageViewControlPanel::sliceIndex(SliceType type) const
 {
-	switch(type)
+	switch (type)
 	{
 	case SliceType::Top:
 		return m_topSlider->value();
@@ -91,7 +92,7 @@ void ImageViewControlPanel::setSliceCount(SliceType type, int count)
 
 bool ImageViewControlPanel::sliceVisible(SliceType type) const
 {
-	switch(type)
+	switch (type)
 	{
 	case SliceType::Top:
 		return m_topSliceCheckBox->isChecked();
@@ -116,6 +117,7 @@ int ImageViewControlPanel::categoryCount() const
 {
 	return m_categoryCBBox->count();
 }
+
 
 void ImageViewControlPanel::createWidgets()
 {
@@ -177,7 +179,7 @@ void ImageViewControlPanel::createWidgets()
 	//View Group
 	group = new QGroupBox(QStringLiteral("View"), this);
 	hLayout = new QHBoxLayout;
-	
+
 	m_zoomInAction = new QToolButton(this);
 	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
 	m_zoomInAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
@@ -203,8 +205,8 @@ void ImageViewControlPanel::createWidgets()
 	//Mark Group
 	group = new QGroupBox(QStringLiteral("Mark"), this);
 	vLayout = new QVBoxLayout;
-	
-		//Categroy
+
+	//Categroy
 	m_categoryLabel = new QLabel(QStringLiteral("Category:"), this);
 	m_categoryCBBox = new QComboBox(this);
 	m_addCategoryAction = new QToolButton(this);
@@ -217,7 +219,7 @@ void ImageViewControlPanel::createWidgets()
 	hLayout->addWidget(m_categoryCBBox);
 	hLayout->addWidget(m_addCategoryAction);
 	vLayout->addLayout(hLayout);
-		//pen size and color
+	//pen size and color
 	m_penSizeLabel = new QLabel(QStringLiteral("PenSize:"), this);
 	m_penSizeCBBox = new QComboBox(this);
 	for (int i = 1; i <= 30; i++)
@@ -232,7 +234,7 @@ void ImageViewControlPanel::createWidgets()
 	hLayout->addWidget(m_colorAction);
 	vLayout->addLayout(hLayout);
 
-		//Mark pen
+	//Mark pen
 	hLayout = new QHBoxLayout;
 
 	m_markAction = new QToolButton(this);
@@ -242,14 +244,14 @@ void ImageViewControlPanel::createWidgets()
 	m_markAction->setIcon(QIcon(":icons/resources/icons/mark.png"));
 	m_markAction->setCheckable(true);
 	hLayout->addWidget(m_markAction);
-		//selection
+	//selection
 	m_markSelectionAction = new QToolButton(this);
 	m_markSelectionAction->setToolTip(QStringLiteral("Select Mark"));
 	m_markSelectionAction->setCheckable(true);
 	m_markSelectionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	m_markSelectionAction->setIcon(QIcon(":icons/resources/icons/select.png"));
 	hLayout->addWidget(m_markSelectionAction);
-		//deletion
+	//deletion
 	m_markDeletionAction = new QToolButton(this);
 	m_markDeletionAction->setToolTip(QStringLiteral("Delete Mark"));
 	m_markDeletionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
@@ -268,7 +270,7 @@ void ImageViewControlPanel::createWidgets()
 void ImageViewControlPanel::updateActions()
 {
 	bool enable = m_canvas && m_canvas->sliceModel();
-	
+
 }
 
 void ImageViewControlPanel::updateProperty()
@@ -290,25 +292,28 @@ void ImageViewControlPanel::connections()
 {
 	if (m_canvas == nullptr)
 		return;
-	connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) { m_canvas->updateSlice(SliceType::Top, value); });
+	connect(m_topSlider,   &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->updateSlice(SliceType::Top, value); });
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->updateSlice(SliceType::Right, value); });
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->updateSlice(SliceType::Front, value); });
+	connect(m_topSlider,   &TitledSliderWithSpinBox::valueChanged, this,&ImageViewControlPanel::topSliceIndexChanged);
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this,&ImageViewControlPanel::rightSliceIndexChanged);
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this,&ImageViewControlPanel::frontSliceIndexChanged);
 
 	connect(m_topSliceCheckBox, &QCheckBox::toggled, m_canvas, &ImageCanvas::updateTopSliceActions);
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, m_canvas, &ImageCanvas::updateRightSliceActions);
 	connect(m_frontSliceCheckBox, &QCheckBox::toggled, m_canvas, &ImageCanvas::updateFrontSliceActions);
 
-	connect(m_resetAction, &QToolButton::clicked,m_canvas,&ImageCanvas::resetZoom);
+	connect(m_resetAction, &QToolButton::clicked, m_canvas, &ImageCanvas::resetZoom);
 	//view toolbar actions
 	connect(m_topSlicePlayAction, &QToolButton::toggled, [this](bool enable) {m_canvas->onTopSlicePlay(enable); if (!enable)emit m_canvas->topSlicePlayStoped(m_topSlider->value()); });
 	connect(m_rightSlicePlayAction, &QToolButton::toggled, [this](bool enable) {m_canvas->onRightSlicePlay(enable); if (!enable)emit m_canvas->rightSlicePlayStoped(m_rightSlider->value()); });
 	connect(m_frontSlicePlayAction, &QToolButton::toggled, [this](bool enable) {m_canvas->onFrontSlicePlay(enable); if (!enable)emit m_canvas->frontSlicePlayStoped(m_frontSlider->value()); });
-	connect(m_addCategoryAction, &QToolButton::clicked, this,&ImageViewControlPanel::onCategoryAdded);
+	connect(m_addCategoryAction, &QToolButton::clicked, this, &ImageViewControlPanel::onCategoryAdded);
 
 	connect(m_zoomInAction, &QToolButton::clicked, m_canvas, &ImageCanvas::zoomIn);
 	connect(m_zoomOutAction, &QToolButton::clicked, m_canvas, &ImageCanvas::zoomOut);
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_canvas->m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); m_canvas->updatePen(pen); });
-	connect(m_colorAction, &QToolButton::clicked,this, &ImageViewControlPanel::colorChanged);
+	connect(m_colorAction, &QToolButton::clicked, this, &ImageViewControlPanel::colorChanged);
 
 	connect(m_markAction, &QToolButton::toggled, [this](bool enable)
 	{
@@ -365,7 +370,7 @@ void ImageViewControlPanel::addCategoryInfoPrivate(const QString & name, const Q
 
 void ImageViewControlPanel::updateDeleteActionPrivate()
 {
-	const bool enable =m_canvas && m_canvas->markModel()
+	const bool enable = m_canvas && m_canvas->markModel()
 		&& (m_canvas->topView()->selectedItemCount()
 			|| m_canvas->rightView()->selectedItemCount()
 			|| m_canvas->frontView()->selectedItemCount());
@@ -378,8 +383,8 @@ void ImageViewControlPanel::updateSliceActions(SliceType type, bool checked)
 	const auto vp1 = m_canvas->topView();
 	const auto vp2 = m_canvas->rightView();
 	const auto vp3 = m_canvas->frontView();
-	Q_ASSERT_X(vp1 && vp2 && vp3,"ImageViewControlPanel::updateSliceActions","null pointer");
-	switch(type)
+	Q_ASSERT_X(vp1 && vp2 && vp3, "ImageViewControlPanel::updateSliceActions", "null pointer");
+	switch (type)
 	{
 	case SliceType::Top:
 		m_topSlicePlayAction->setEnabled(enable);
@@ -430,7 +435,7 @@ void ImageViewControlPanel::onCategoryAdded()
 
 void ImageViewControlPanel::colorChanged()
 {
-	Q_ASSERT_X(m_canvas,"ImageViewControlPanel::colorChanged", "null pointer");
+	Q_ASSERT_X(m_canvas, "ImageViewControlPanel::colorChanged", "null pointer");
 
 	auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
 	QColor defaultColor = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;

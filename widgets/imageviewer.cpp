@@ -3,17 +3,16 @@
 #include <QMenu>
 #include <QComboBox>
 #include <QMessageBox>
-#include <QDebug>
 
-#include "imageviewer.h"
 #include "globals.h"
 #include "abstract/abstractslicedatamodel.h"
-#include "histogram.h"
-#include "pixelviewer.h"
 #include "model/markmodel.h"
 #include "model/markitem.h"
-#include "sliceview.h"
 #include "model/categoryitem.h"
+#include "histogram.h"
+#include "pixelviewer.h"
+#include "imageviewer.h"
+#include "sliceview.h"
 #include "volumewidget.h"
 #include "imageviewcontrolpanel.h"
 
@@ -261,6 +260,7 @@ ImageCanvas::ImageCanvas(QWidget *parent,
 	createContextMenu();
 	createConnections();
 	updateActions();
+
 	setWindowTitle(QStringLiteral("ImageCanvas"));
 	m_layout->addWidget(m_topView, 0, 0, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignCenter);

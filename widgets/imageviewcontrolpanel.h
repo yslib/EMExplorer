@@ -17,28 +17,38 @@ class QPushButton;
 QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class ImageCanvas;
+class VolumeWidget;
 
 class ImageViewControlPanel:public QWidget
 {
 	Q_OBJECT
 public:
-    ImageViewControlPanel(ImageCanvas * canvas,QWidget * parent = nullptr);
+    ImageViewControlPanel(ImageCanvas * canvas, QWidget * parent = nullptr);
 	void setImageCanvas(ImageCanvas * canvas);
+
 	int sliceIndex(SliceType type)const;
 	void setSliceIndex(SliceType type, int value);
 	int sliceCount(SliceType type)const;
 	void setSliceCount(SliceType type, int count);
 	bool sliceVisible(SliceType type)const;
+
 	QString currentCategoryName()const;
 	QColor currentCategoryColor()const;
 	int categoryCount()const;
+	QSize sizeHint() const Q_DECL_OVERRIDE { return {250,500}; }
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return {250,300}; }
+
+signals:
+	void topSliceIndexChanged(int value);
+	void rightSliceIndexChanged(int value);
+	void frontSliceIndexChanged(int value);
+
 
 private:
 	void createWidgets();
 	void updateActions();
 	void updateProperty();
 	void connections();
-
 	void setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates);
 	void addCategoryInfoPrivate(const QString & name, const QColor & color);
 	void updateDeleteActionPrivate();
@@ -53,25 +63,22 @@ private:
 		Backward
 	};
 	ImageCanvas * m_canvas;
+	VolumeWidget * m_volumeWidget;
 
-	TitledSliderWithSpinBox * m_topSlider;
 	QCheckBox * m_topSliceCheckBox;
+	TitledSliderWithSpinBox * m_topSlider;
 	QCheckBox * m_rightSliceCheckBox;
 	TitledSliderWithSpinBox * m_rightSlider;
 	QCheckBox * m_frontSliceCheckBox;
 	TitledSliderWithSpinBox * m_frontSlider;
 
 	//actions on view toolbar
-	
-
 	QToolButton *m_zoomInAction;
 	QToolButton *m_zoomOutAction;
 	QToolButton * m_resetAction;
-
 	QToolButton *m_topSlicePlayAction;
 	QToolButton *m_rightSlicePlayAction;
 	QToolButton *m_frontSlicePlayAction;
-
 	QToolButton * m_menuButton;
 
 	//menu on view toolbar
@@ -94,7 +101,6 @@ private:
 	//QAction *m_markMergeAction;
 	QToolButton *m_markDeletionAction;
 	QToolButton *m_addCategoryAction;
-
 
 	friend class ImageCanvas;
 };

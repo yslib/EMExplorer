@@ -8,7 +8,6 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QGraphicsItem>			//TODO:: Note: This header is referenced by unknown code
-#include <QDebug>
 
 #include "mainwindow.h"
 #include "model/mrc.h"
@@ -292,6 +291,7 @@ void MainWindow::readSettings()
 	readSettingsForDockWidget(m_profileViewDockWidget, &settings);
 	readSettingsForDockWidget(m_treeViewDockWidget, &settings);
 	readSettingsForDockWidget(m_markInfoDOckWidget, &settings);
+	readSettingsForImageView(m_imageView, &settings);
 	readSettingsForDockWidget(m_renderParameterDockWidget, &settings);
 	readSettingsForDockWidget(m_tfEditorDockWidget, &settings);
 	readSettingsForDockWidget(m_imageViewControlPanelDockWidget, &settings);
@@ -354,9 +354,6 @@ void MainWindow::createWidget()
 	m_imageViewControlPanel = new ImageViewControlPanel(m_imageView, this);
 	m_imageViewControlPanelDockWidget->setWidget(m_imageViewControlPanel);
 	m_imageViewControlPanelDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	
-
-
 	//addDockWidget(Qt::TopDockWidgetArea, m_volumeViewDockWidget);
 
 	// ProfileView
@@ -372,6 +369,7 @@ void MainWindow::createWidget()
 	m_markInfoDOckWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_markInfoDOckWidget->setWidget(m_markInfoWidget);
 	m_viewMenu->addAction(m_markInfoDOckWidget->toggleViewAction());
+
 	// MarkTreeView
 	m_treeView = new MarkTreeView;
 	m_treeViewDockWidget = new QDockWidget(QStringLiteral("Mark Manager"));
@@ -379,25 +377,34 @@ void MainWindow::createWidget()
 	m_treeViewDockWidget->setWidget(m_treeView);
 	// addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
 	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+
 	// RenderParameterWidget
-	m_renderParameterWidget = new RenderParameterWidget(m_volumeView, this);
+	m_renderParameterWidget = new RenderParameterWidget(this);
 	m_renderParameterDockWidget = new QDockWidget(QStringLiteral("Rendering Parameters"));
 	m_renderParameterDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_renderParameterDockWidget->setWidget(m_renderParameterWidget);
+	m_renderParameterDockWidget->setVisible(false);
+	m_renderParameterDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_renderParameterDockWidget->toggleViewAction());
+
 	// TF1DEditor
     m_tfEditorWidget = new TF1DEditor(this);
 	m_tfEditorDockWidget = new QDockWidget(QStringLiteral("Transfer Function"));
 	m_tfEditorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_tfEditorDockWidget->setWidget(m_tfEditorWidget);
+	m_tfEditorDockWidget->setVisible(false);
+	m_tfEditorDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
 
 	// VolumeWidget
-	m_volumeView = new VolumeWidget(nullptr, nullptr, this);
+	m_volumeView = new VolumeWidget(nullptr, nullptr, m_renderParameterWidget,this);
 	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
 	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_volumeViewDockWidget->setWidget(m_volumeView);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget, Qt::Horizontal);
+	m_viewMenu->addAction(m_volumeViewDockWidget->toggleViewAction());
+	m_volumeView->addContextAction(m_tfEditorDockWidget->toggleViewAction());
+	m_volumeView->addContextAction(m_renderParameterDockWidget->toggleViewAction());
 
 	connect(m_tfEditorWidget, &TF1DEditor::TF1DChanged, [this]()
 	{
@@ -412,6 +419,11 @@ void MainWindow::createWidget()
 		m_volumeView->updateTransferFunction(funs.get(), false);
 	});
 	connect(m_imageView, &ImageCanvas::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
+
+
+	connect(m_imageViewControlPanel, &ImageViewControlPanel::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
+	connect(m_imageViewControlPanel, &ImageViewControlPanel::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
+	connect(m_imageViewControlPanel, &ImageViewControlPanel::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
 }
 
 void MainWindow::createMenu()
