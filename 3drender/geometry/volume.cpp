@@ -93,8 +93,8 @@ SliceVolume::SliceVolume(const void* data, int xSize, int ySize, int zSize, cons
 ,m_gradientTexture(QOpenGLTexture::Target3D)
 ,m_volumeTexture(QOpenGLTexture::Target3D)
 ,m_positionVBO(QOpenGLBuffer::VertexBuffer)
-,m_positionEBO(QOpenGLBuffer::IndexBuffer),
-
+,m_positionEBO(QOpenGLBuffer::IndexBuffer)
+,m_gradCalc(nullptr,nullptr,nullptr)
 {
 	initializeGLResources();
 
