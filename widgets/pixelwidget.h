@@ -7,11 +7,11 @@
 
 class QLabel;
 class QLineEdit;
-class PixelViewer:public AbstractPlugin
+class PixelWidget:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    PixelViewer(SliceType type, const QString & name,SliceView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+    PixelWidget(SliceType type, const QString & name,SliceWidget * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
     int getWidth()const;
     int getHeight()const;
 public slots:

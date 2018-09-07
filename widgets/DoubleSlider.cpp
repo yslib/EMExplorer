@@ -5,7 +5,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QWidget>
-#include "DoubleSlider.h"
+#include "doubleslider.h"
 DoubleSlider::DoubleSlider(QWidget* parent):QWidget(parent)
 {
     leftOffset_ = 0;

@@ -27,15 +27,15 @@ QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class ItemContext;
 class MarkModel;
-class HistogramViewer;
-class PixelViewer;
+class HistogramWidget;
+class PixelWidget;
 class MRC;
 class AbstractPlugin;
 class AbstractSliceDataModel;
 class SliceItem;
-class SliceView;
-class VolumeWidget;
-class ImageViewControlPanel;
+class SliceWidget;
+class RenderWidget;
+class SliceToolWidget;
 
 class SliceScene :public QGraphicsScene
 {
@@ -48,11 +48,11 @@ protected:
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
 };
 
-class ImageCanvas :public QWidget
+class SliceEditorWidget :public QWidget
 {
 	Q_OBJECT
 public:
-	ImageCanvas(QWidget * parent = nullptr,
+	SliceEditorWidget(QWidget * parent = nullptr,
 		bool topSliceVisible = true, 
 		bool rightSliceVisible = true,
 		bool frontSliceVisible = true,
@@ -69,9 +69,9 @@ public:
 	void setRightSliceVisible(bool enable);
 	void setFrontSliceVisible(bool enable);
 
-	SliceView * topView()const;
-	SliceView * rightView()const;
-	SliceView * frontView()const;
+	SliceWidget * topView()const;
+	SliceWidget * rightView()const;
+	SliceWidget * frontView()const;
 
 	int currentSliceIndex(SliceType type)const;
 	void resetZoom(bool check);
@@ -156,17 +156,17 @@ private:
 	void addCategoryManagerHelper(const QString & name, const QColor & color);
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
-	SliceView * focusOn();
-	static MarkModel * createMarkModel(ImageCanvas * view, AbstractSliceDataModel * d);
+	SliceWidget * focusOn();
+	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * d);
 	//Data Model
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
-	ImageViewControlPanel * m_panel;
+	SliceToolWidget * m_panel;
 	//main layout
 	QGridLayout *m_layout;
-	SliceView * m_topView;
-	SliceView * m_rightView;
-	SliceView * m_frontView;
+	SliceWidget * m_topView;
+	SliceWidget * m_rightView;
+	SliceWidget * m_frontView;
 	//VolumeWidget * m_renderView;
 
 	//Tool Bar
@@ -227,15 +227,15 @@ private:
 	QWidget * m_menuWidget;
 
 
-	friend class ImageViewControlPanel;
+	friend class SliceToolWidget;
 };
 
 //inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
-inline AbstractSliceDataModel * ImageCanvas::sliceModel()const { return m_sliceModel; }
+inline AbstractSliceDataModel * SliceEditorWidget::sliceModel()const { return m_sliceModel; }
 
-inline SliceView * ImageCanvas::topView()const { return m_topView; }
-inline SliceView * ImageCanvas::rightView()const { return m_rightView; }
-inline SliceView * ImageCanvas::frontView()const { return m_frontView; }
+inline SliceWidget * SliceEditorWidget::topView()const { return m_topView; }
+inline SliceWidget * SliceEditorWidget::rightView()const { return m_rightView; }
+inline SliceWidget * SliceEditorWidget::frontView()const { return m_frontView; }
 
 
 

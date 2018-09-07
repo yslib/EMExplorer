@@ -9,7 +9,7 @@ using AnchorItem = QGraphicsPixmapItem;
 
 
 
-class SliceView :public QGraphicsView
+class SliceWidget :public QGraphicsView
 {
 public:
 	enum Operation
@@ -19,7 +19,7 @@ public:
 		Move = 2,
 		Selection = 4
 	};
-	SliceView(QWidget * parent = nullptr);
+	SliceWidget(QWidget * parent = nullptr);
 	void setMarks(const QList<QGraphicsItem *> & items);
 	public slots:
 	inline void setOperation(int func);
@@ -74,7 +74,7 @@ private:
 	int m_state;
 };
 
-inline void SliceView::setOperation(int state)
+inline void SliceWidget::setOperation(int state)
 {
 	Q_ASSERT_X(state == Operation::Paint || 
 		state == Operation::Move || 
@@ -85,9 +85,9 @@ inline void SliceView::setOperation(int state)
 }
 //inline void SliceView::setColor(const QColor & color) { /*m_color = color;*/ }
 //inline QColor SliceView::color()const { return  QColor(); }
-inline void SliceView::setPen(const QPen & pen){m_pen = pen;}
-inline QPen SliceView::pen()const{return m_pen;}
-inline void SliceView::setNavigationViewEnabled(bool enabled)
+inline void SliceWidget::setPen(const QPen & pen){m_pen = pen;}
+inline QPen SliceWidget::pen()const{return m_pen;}
+inline void SliceWidget::setNavigationViewEnabled(bool enabled)
 {
 	m_paintNavigationView = enabled;
 	update();

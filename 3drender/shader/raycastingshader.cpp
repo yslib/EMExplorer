@@ -1,5 +1,5 @@
 #include "raycastingshader.h"
-#include "abstract/shaderdatainterface.h"
+#include "3drender/shader/shaderdatainterface.h"
 #include "abstract/abstractslicedatamodel.h"
 
 RayCastingShader::RayCastingShader() :ShaderProgram()

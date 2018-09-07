@@ -11,15 +11,15 @@
 
 #include "mainwindow.h"
 #include "model/mrc.h"
-#include "widgets/imageviewer.h"
-#include "widgets/profileview.h"
+#include "widgets/sliceeditorwidget.h"
+#include "widgets/profilewidget.h"
 #include "model/mrcdatamodel.h"
 #include "model/markmodel.h"
-#include "widgets/marktreeview.h"
+#include "widgets/marktreeviewwidget.h"
 #include "widgets/markinfowidget.h"
-#include "widgets/RenderParameterWidget.h"
-#include "widgets/imageviewcontrolpanel.h"
-#include "widgets/volumewidget.h"
+#include "widgets/renderoptionwidget.h"
+#include "widgets/slicetoolwidget.h"
+#include "widgets/renderwidget.h"
 #include "widgets/TF1DEditor.h"
 
 //QSize imageSize(500, 500);
@@ -248,7 +248,7 @@ void MainWindow::readSettingsForDockWidget(QDockWidget* dock, QSettings* setting
 	settings->endGroup();
 }
 
-void MainWindow::writeSettingsForImageView(ImageCanvas * view, QSettings * settings)
+void MainWindow::writeSettingsForImageView(SliceEditorWidget * view, QSettings * settings)
 {
 	if (settings == nullptr)
 	{
@@ -263,7 +263,7 @@ void MainWindow::writeSettingsForImageView(ImageCanvas * view, QSettings * setti
 	settings->endGroup();
 }
 
-void MainWindow::readSettingsForImageView(ImageCanvas * view, QSettings * settings)
+void MainWindow::readSettingsForImageView(SliceEditorWidget * view, QSettings * settings)
 {
 	if (settings == nullptr)
 	{
@@ -343,21 +343,21 @@ void MainWindow::createWidget()
 
 	//ImageCanvas  centralWidget
 	m_imageViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
-	m_imageView = new ImageCanvas;
+	m_imageView = new SliceEditorWidget;
 	m_imageViewDockWidget->setWidget(m_imageView);
 	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	connect(m_imageView, &ImageCanvas::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
-	connect(m_imageView, &ImageCanvas::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
+	connect(m_imageView, &SliceEditorWidget::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
+	connect(m_imageView, &SliceEditorWidget::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
 
 	//ImageCanvas control widget
 	m_imageViewControlPanelDockWidget = new QDockWidget(QStringLiteral("Image View Control Panel"));
-	m_imageViewControlPanel = new ImageViewControlPanel(m_imageView, this);
+	m_imageViewControlPanel = new SliceToolWidget(m_imageView, this);
 	m_imageViewControlPanelDockWidget->setWidget(m_imageViewControlPanel);
 	m_imageViewControlPanelDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	//addDockWidget(Qt::TopDockWidgetArea, m_volumeViewDockWidget);
 
 	// ProfileView
-	m_profileView = new ProfileView(this);
+	m_profileView = new ProfileWidget(this);
 	m_profileViewDockWidget = new QDockWidget(QStringLiteral("MRC Info"));
 	m_profileViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_profileViewDockWidget->setWidget(m_profileView);
@@ -371,7 +371,7 @@ void MainWindow::createWidget()
 	m_viewMenu->addAction(m_markInfoDOckWidget->toggleViewAction());
 
 	// MarkTreeView
-	m_treeView = new MarkTreeView;
+	m_treeView = new MarkManagerWidget;
 	m_treeViewDockWidget = new QDockWidget(QStringLiteral("Mark Manager"));
 	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_treeViewDockWidget->setWidget(m_treeView);
@@ -397,7 +397,7 @@ void MainWindow::createWidget()
 	m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
 
 	// VolumeWidget
-	m_volumeView = new VolumeWidget(nullptr, nullptr, m_renderParameterWidget,this);
+	m_volumeView = new RenderWidget(nullptr, nullptr, m_renderParameterWidget,this);
 	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
 	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_volumeViewDockWidget->setWidget(m_volumeView);
@@ -412,18 +412,18 @@ void MainWindow::createWidget()
 		m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
 		m_volumeView->updateTransferFunction(funs.get(),true);
 	});
-	connect(m_volumeView, &VolumeWidget::requireTransferFunction, [this]()
+	connect(m_volumeView, &RenderWidget::requireTransferFunction, [this]()
 	{
 		std::unique_ptr<float[]> funs(new float[256 * 4]);
 		m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
 		m_volumeView->updateTransferFunction(funs.get(), false);
 	});
-	connect(m_imageView, &ImageCanvas::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
+	connect(m_imageView, &SliceEditorWidget::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
 
 
-	connect(m_imageViewControlPanel, &ImageViewControlPanel::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
-	connect(m_imageViewControlPanel, &ImageViewControlPanel::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
-	connect(m_imageViewControlPanel, &ImageViewControlPanel::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
+	connect(m_imageViewControlPanel, &SliceToolWidget::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
+	connect(m_imageViewControlPanel, &SliceToolWidget::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
+	connect(m_imageViewControlPanel, &SliceToolWidget::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
 }
 
 void MainWindow::createMenu()

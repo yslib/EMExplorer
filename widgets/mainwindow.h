@@ -9,16 +9,16 @@ class QAbstractTableModel;
 class QAction;
 class QSettings;
 QT_END_NAMESPACE
-class ImageCanvas;
+class SliceEditorWidget;
 class MarkModel;
-class ProfileView;
+class ProfileWidget;
 class MRC;
-class MarkTreeView;
+class MarkManagerWidget;
 class MarkInfoWidget;
 class RenderParameterWidget;
 class TF1DEditor;
-class VolumeWidget;
-class ImageViewControlPanel;
+class RenderWidget;
+class SliceToolWidget;
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -39,8 +39,8 @@ private:
 	void saveAs();
 	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
 	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
-	void writeSettingsForImageView(ImageCanvas * view, QSettings * settings);
-	void readSettingsForImageView(ImageCanvas * view, QSettings * settings);
+	void writeSettingsForImageView(SliceEditorWidget * view, QSettings * settings);
+	void readSettingsForImageView(SliceEditorWidget * view, QSettings * settings);
 	void readSettings();
 	void writeSettings();
 	void setDefaultLayout();
@@ -52,22 +52,22 @@ private:
 
 	//Widgets
 	QDockWidget * m_volumeViewDockWidget;
-	VolumeWidget * m_volumeView;
+	RenderWidget * m_volumeView;
 
 	QDockWidget * m_renderParameterDockWidget;
 	RenderParameterWidget * m_renderParameterWidget;
 
 	QDockWidget * m_imageViewDockWidget;
-	ImageCanvas * m_imageView;
+	SliceEditorWidget * m_imageView;
 
 	QDockWidget * m_imageViewControlPanelDockWidget;
-	ImageViewControlPanel * m_imageViewControlPanel;
+	SliceToolWidget * m_imageViewControlPanel;
 
 	QDockWidget * m_profileViewDockWidget;
-	ProfileView * m_profileView;
+	ProfileWidget * m_profileView;
 
 	QDockWidget * m_treeViewDockWidget;
-	MarkTreeView * m_treeView;
+	MarkManagerWidget * m_treeView;
 
 	QDockWidget * m_markInfoDOckWidget;
 	MarkInfoWidget * m_markInfoWidget;

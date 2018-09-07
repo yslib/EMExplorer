@@ -6,10 +6,10 @@
 class QAction;
 class QMenu;
 
-class MarkTreeView:public QTreeView
+class MarkManagerWidget:public QTreeView
 {
 public:
-    MarkTreeView(QWidget * parent = nullptr);
+    MarkManagerWidget(QWidget * parent = nullptr);
 	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
 	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
 protected:

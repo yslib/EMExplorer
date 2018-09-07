@@ -2,11 +2,11 @@
 #include <QMouseEvent>
 #include <QMenu>
 
-#include "volumewidget.h"
+#include "renderwidget.h"
 #include "abstract/abstractslicedatamodel.h"
 #include "model/markmodel.h"
-#include "model/shaderprogram.h"
-#include "model/raycastingshader.h"
+#include "3drender/shader/shaderprogram.h"
+#include "3drender/shader/raycastingshader.h"
 
 #define GLERROR(str)									\
 	{													\
@@ -238,7 +238,7 @@ static QVector<QVector3D> cubeVert =
 	{ 0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
 	{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
 };
-VolumeWidget::VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget,QWidget * parent)
+RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget,QWidget * parent)
 	:QOpenGLWidget(parent),
 	m_markModel(markModel),
 	m_dataModel(dataModel),
@@ -261,7 +261,7 @@ VolumeWidget::VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markM
 	
 }
 
-void VolumeWidget::setDataModel(AbstractSliceDataModel * model)
+void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 {
 	m_dataModel = model;
 	updateVolumeData();
@@ -269,7 +269,7 @@ void VolumeWidget::setDataModel(AbstractSliceDataModel * model)
 	update();
 }
 
-void VolumeWidget::setMarkModel(MarkModel* model)
+void RenderWidget::setMarkModel(MarkModel* model)
 {
 	m_markModel = model;
 	updateMarkData();
@@ -279,31 +279,31 @@ void VolumeWidget::setMarkModel(MarkModel* model)
 
 //ShaderDataInterface
 
-QSize VolumeWidget::minimumSizeHint() const
+QSize RenderWidget::minimumSizeHint() const
 {
 	return QSize(400, 300);
 }
 
-QSize VolumeWidget::sizeHint() const
+QSize RenderWidget::sizeHint() const
 {
 	return QSize(800, 600);
 }
 
-void VolumeWidget::addContextAction(QAction* action)
+void RenderWidget::addContextAction(QAction* action)
 {
 	m_contextMenu->addAction(action);
 }
 
-VolumeWidget::~VolumeWidget()
+RenderWidget::~RenderWidget()
 {
 
 }
 
-void VolumeWidget::initializeGL()
+void RenderWidget::initializeGL()
 {
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
-	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &VolumeWidget::cleanup);
+	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glEnable(GL_DEPTH_TEST);
 	// Initialize Front and back face texture
 	m_positionShader.reset(new PositionShader);
@@ -411,7 +411,7 @@ void VolumeWidget::initializeGL()
 
 //#define EXPORT_FBO_IMG
 
-void VolumeWidget::resizeGL(int w, int h)
+void RenderWidget::resizeGL(int w, int h)
 {
 	// Update projection matrices
 	double aspect = GLfloat(w) / h;
@@ -435,7 +435,7 @@ void VolumeWidget::resizeGL(int w, int h)
 	m_rayCastingTextureVBO.write(0, rayCastingVB.constData(), rayCastingVB.count() * 2 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();
 }
-void VolumeWidget::paintGL()
+void RenderWidget::paintGL()
 {
 
 	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
@@ -568,12 +568,12 @@ void VolumeWidget::paintGL()
 	
 }
 
-void VolumeWidget::mousePressEvent(QMouseEvent* event)
+void RenderWidget::mousePressEvent(QMouseEvent* event)
 {
 	m_lastPos = event->pos();
 	update();
 }
-void VolumeWidget::mouseMoveEvent(QMouseEvent* event)
+void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	const auto & p = event->pos();
 	float dx = p.x() - m_lastPos.x();
@@ -596,14 +596,14 @@ void VolumeWidget::mouseMoveEvent(QMouseEvent* event)
 	update();
 }
 
-void VolumeWidget::contextMenuEvent(QContextMenuEvent* event)
+void RenderWidget::contextMenuEvent(QContextMenuEvent* event)
 {
 	const auto pos = event->pos();
 	m_contextMenu->exec(this->mapToGlobal(pos));
 }
 
 
-void VolumeWidget::updateTransferFunction(const float * func, bool updated)
+void RenderWidget::updateTransferFunction(const float * func, bool updated)
 {
 	makeCurrent();
 	if (m_tfTexture.isCreated() == false)
@@ -621,7 +621,7 @@ void VolumeWidget::updateTransferFunction(const float * func, bool updated)
 		update();
 }
 
-void VolumeWidget::updateMarkMesh() {
+void RenderWidget::updateMarkMesh() {
 	//TODO:: update m_markMeshes
 	if (m_markModel == nullptr)
 		return;
@@ -630,7 +630,7 @@ void VolumeWidget::updateMarkMesh() {
 
 
 
-void VolumeWidget::updateVolumeData()
+void RenderWidget::updateVolumeData()
 {
 	m_gradCalc.setDataModel(m_dataModel);
 	//// update volume side length, position vertex vbo
@@ -665,22 +665,22 @@ void VolumeWidget::updateVolumeData()
  * \date	2018.07.19
  */
 
-void VolumeWidget::updateMarkData()
+void RenderWidget::updateMarkData()
 {
 	return;
 }
 
-void VolumeWidget::initializeShaders()
+void RenderWidget::initializeShaders()
 {
 
 }
 
-void VolumeWidget::initiliazeTextures()
+void RenderWidget::initiliazeTextures()
 {
 
 }
 
-void VolumeWidget::loadDataToTextures()
+void RenderWidget::loadDataToTextures()
 {
 	if (m_gradCalc.hasData() == false)
 		return;
@@ -715,11 +715,11 @@ void VolumeWidget::loadDataToTextures()
 	doneCurrent();
 }
 
-void VolumeWidget::contextMenuAddedHelper(QWidget* widget) {
+void RenderWidget::contextMenuAddedHelper(QWidget* widget) {
 
 }
 
-void VolumeWidget::cleanup()
+void RenderWidget::cleanup()
 {
 	makeCurrent();
 	m_positionVAO.destroy();

@@ -6,11 +6,11 @@
 #include <QSlider>
 #include <QLayout>
 
-class ZoomView:public QWidget
+class ZoomWidget:public QWidget
 {
 	Q_OBJECT
 public:
-    ZoomView(QWidget* parent = nullptr);
+    ZoomWidget(QWidget* parent = nullptr);
     void setImage(const QImage & image,const QRect & region = QRect());
     void clearImage();
 
@@ -21,7 +21,7 @@ public:
 	double zoomFactor() const { return m_zoomFactor; }
 	void setMinZoomFactor(qreal minFactor);
 	double minZoomFactor() const { return m_minZoomFactor; }
-	virtual ~ZoomView();
+	virtual ~ZoomWidget();
 protected:
     void paintEvent(QPaintEvent *event)override;
     void mousePressEvent(QMouseEvent *event)override;

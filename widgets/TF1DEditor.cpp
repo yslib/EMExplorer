@@ -4,7 +4,7 @@
 #include <QToolButton>
 #include "TF1DEditor.h"
 #include "TF1DMappingCanvas.h"
-#include "DoubleSlider.h"
+#include "doubleslider.h"
 #include "TF1DTextureCanvas.h"
 #include <QDebug>
 

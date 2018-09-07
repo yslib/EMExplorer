@@ -1,5 +1,5 @@
 #include "markmodel.h"
-#include "widgets/imageviewer.h"
+#include "widgets/sliceeditorwidget.h"
 #include "globals.h"
 #include "abstract/abstractslicedatamodel.h"
 #include "markitem.h"
@@ -147,8 +147,8 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 }
 void MarkModel::detachFromView()
 {
-	disconnect(this, &MarkModel::modified, m_view, &ImageCanvas::markModified);
-	disconnect(this, &MarkModel::saved, m_view, &ImageCanvas::markSaved);
+	disconnect(this, &MarkModel::modified, m_view, &SliceEditorWidget::markModified);
+	disconnect(this, &MarkModel::saved, m_view, &SliceEditorWidget::markSaved);
 	m_view = nullptr;
 	m_dataModel = nullptr;
 }
@@ -206,7 +206,7 @@ void MarkModel::initSliceMarkContainerHelper()
 }
 
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
-	ImageCanvas * view,
+	SliceEditorWidget * view,
 	TreeItem * root,
 	QObject * parent) :
 	QAbstractItemModel(parent),

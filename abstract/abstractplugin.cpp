@@ -1,11 +1,11 @@
 #include "abstractplugin.h"
 #include "model/sliceitem.h"
-#include "widgets/sliceview.h"
+#include "widgets/slicewidget.h"
 #include "abstractslicedatamodel.h"
 
 AbstractPlugin::AbstractPlugin(SliceType type,
 	const QString & name,
-	SliceView * view,
+	SliceWidget * view,
 	AbstractSliceDataModel * model,
 	QWidget * parent):
 QWidget(parent),
@@ -63,7 +63,7 @@ QImage AbstractPlugin::originalImage(int index)
 	}
 	return QImage();
 }
-SliceView * AbstractPlugin::view()
+SliceWidget * AbstractPlugin::view()
 {
 	return m_view;
 }

@@ -1,12 +1,12 @@
 #include <QWheelEvent>
 #include <QDebug>
 
-#include "sliceview.h"
+#include "slicewidget.h"
 #include "globals.h"
 #include "model/sliceitem.h"
 #include "model/markitem.h"
 
-SliceView::SliceView(QWidget *parent) :QGraphicsView(parent),
+SliceWidget::SliceWidget(QWidget *parent) :QGraphicsView(parent),
 m_scaleFactor(0.5),
 m_currentPaintingSlice(nullptr),
 m_paint(false),
@@ -20,7 +20,7 @@ m_paintNavigationView(false)
 {
 	setScene(new QGraphicsScene(this));
 	scale(m_scaleFactor, m_scaleFactor);
-	connect(scene(), &QGraphicsScene::selectionChanged, this, &SliceView::selectionChanged);
+	connect(scene(), &QGraphicsScene::selectionChanged, this, &SliceWidget::selectionChanged);
 	setTransformationAnchor(QGraphicsView::NoAnchor);
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -31,11 +31,11 @@ m_paintNavigationView(false)
 	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
-void SliceView::setMarks(const QList<QGraphicsItem*>& items)
+void SliceWidget::setMarks(const QList<QGraphicsItem*>& items)
 {
 	set_mark_helper_(items);
 }
-void SliceView::wheelEvent(QWheelEvent *event) {
+void SliceWidget::wheelEvent(QWheelEvent *event) {
 	//double numDegrees = -event->delta() / 8.0;
 	//double numSteps = numDegrees / 15.0;
 	//double factor = std::pow(1.125, numSteps);
@@ -43,19 +43,19 @@ void SliceView::wheelEvent(QWheelEvent *event) {
 	//QGraphicsView::wheelEvent(event);
 	event->accept();
 }
-void SliceView::focusInEvent(QFocusEvent* event)
+void SliceWidget::focusInEvent(QFocusEvent* event)
 {
 	Q_UNUSED(event);
 	setStyleSheet(QStringLiteral("border:1px solid red"));
 }
 
-void SliceView::focusOutEvent(QFocusEvent* event)
+void SliceWidget::focusOutEvent(QFocusEvent* event)
 {
 	Q_UNUSED(event);
 	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
-void SliceView::paintEvent(QPaintEvent* event)
+void SliceWidget::paintEvent(QPaintEvent* event)
 {
 	QGraphicsView::paintEvent(event);
 
@@ -89,7 +89,7 @@ void SliceView::paintEvent(QPaintEvent* event)
 	p2.end();
 }
 
-void SliceView::mousePressEvent(QMouseEvent *event)
+void SliceWidget::mousePressEvent(QMouseEvent *event)
 {
 	if (m_state == None)
 		return;
@@ -155,7 +155,7 @@ void SliceView::mousePressEvent(QMouseEvent *event)
 	QGraphicsView::mousePressEvent(event);
 }
 
-void SliceView::mouseMoveEvent(QMouseEvent *event)
+void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if (m_state == None)
 		return;
@@ -204,7 +204,7 @@ void SliceView::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
-void SliceView::mouseReleaseEvent(QMouseEvent *event)
+void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (m_state == None)
 		return;
@@ -227,7 +227,7 @@ void SliceView::mouseReleaseEvent(QMouseEvent *event)
 	}
 	QGraphicsView::mouseReleaseEvent(event);
 }
-void SliceView::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
+void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
 	if (sliceItem == nullptr)
 	{
@@ -254,7 +254,7 @@ void SliceView::setImageHelper(const QPoint& pos, const QImage& inImage, SliceIt
 	*outImage = inImage;
 }
 
-QRect SliceView::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect)
+QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect)
 {
 	const int w = 0.2*width(), h = 0.2*height();
 	const int W = width(), H = height();
@@ -278,12 +278,12 @@ QRect SliceView::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect
 	return QRect(0, H - h, w, h);
 }
 
-QGraphicsItem * SliceView::createMarkItem()
+QGraphicsItem * SliceWidget::createMarkItem()
 {
 	return nullptr;
 }
 
-QPixmap SliceView::createAnchorItemPixmap(const QString & fileName)
+QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 {
 	int length = 12;
 	QRect target(0, 0, length, length);
@@ -306,7 +306,7 @@ QPixmap SliceView::createAnchorItemPixmap(const QString & fileName)
 }
 
 inline
-void SliceView::set_mark_helper_(
+void SliceWidget::set_mark_helper_(
 	const QList<QGraphicsItem*>& items)
 {
 	foreach(QGraphicsItem * item, items)
@@ -317,7 +317,7 @@ void SliceView::set_mark_helper_(
 
 }
 inline
-void SliceView::clear_slice_marks_helper_(SliceItem * slice)
+void SliceWidget::clear_slice_marks_helper_(SliceItem * slice)
 {
 	if (slice == nullptr)
 	{
@@ -330,7 +330,7 @@ void SliceView::clear_slice_marks_helper_(SliceItem * slice)
 		item->setVisible(false);
 	}
 }
-void SliceView::setImage(const QImage& image)
+void SliceWidget::setImage(const QImage& image)
 {
 	//set_image_helper(image);
 	QSize size = image.size();
@@ -338,27 +338,27 @@ void SliceView::setImage(const QImage& image)
 	setImageHelper(pos, image, m_slice, &m_image);
 }
 
-void SliceView::clearSliceMarks()
+void SliceWidget::clearSliceMarks()
 {
 	clear_slice_marks_helper_(m_slice);
 }
 
-QList<QGraphicsItem*> SliceView::selectedItems() const
+QList<QGraphicsItem*> SliceWidget::selectedItems() const
 {
 	return scene()->selectedItems();
 }
 
-int SliceView::selectedItemCount() const
+int SliceWidget::selectedItemCount() const
 {
 	return scene()->selectedItems().size();
 }
 
-void SliceView::moveSlice(const QPointF& dir)
+void SliceWidget::moveSlice(const QPointF& dir)
 {
 	m_slice->moveBy(dir.x(), dir.y());
 }
 
-QSize SliceView::sizeHint() const
+QSize SliceWidget::sizeHint() const
 {
 	return m_image.size()*0.45;
 }

@@ -11,77 +11,83 @@ DEFINES += _UNICODE WIN64 QT_DEPRECATED_WARNINGS QT_CHARTS_LIB QT_OPENGL_LIB QT_
 DEPENDPATH += .
 
 
-HEADERS +=./widgets/DoubleSlider.h \
+QMAKE_CXXFLAGS+= -openmp
+QMAKE_LFLAGS+= -openmp
+
+
+HEADERS +=./widgets/doubleslider.h \
     ./widgets/TF1DEditor.h \
     ./widgets/TF1DMappingCanvas.h \
     ./widgets/TF1DTextureCanvas.h \
     ./abstract/abstractplugin.h \
-    ./widgets/histogram.h \
-    ./widgets/imageviewer.h \
+    ./widgets/histogramwidget.h \
+    ./widgets/sliceeditorwidget.h \
     ./widgets/mainwindow.h \
     ./widgets/markcategorydialog.h \
     ./widgets/markinfowidget.h \
     ./model/markmodel.h \
-    ./widgets/mrcfileinfoviewer.h \
-    ./widgets/pixelviewer.h \
-    ./widgets/profileview.h \
-    ./widgets/sliceview.h \
+    ./widgets/fileinfowidget.h \
+    ./widgets/pixelwidget.h \
+    ./widgets/profilewidget.h \
+    ./widgets/slicewidget.h \
     ./widgets/titledsliderwithspinbox.h \
-    ./widgets/zoomviwer.h \
+    ./widgets/zoomwidget.h \
     ./algorithm/CImg.h \
     ./widgets/TF1DMappingKey.h \
     ./abstract/abstractslicedatamodel.h \
-    ./geometry/camera.h \
+    ./3drender/geometry/camera.h \
     ./model/categoryitem.h \
     ./globals.h \
     ./model/markitem.h \
-    ./widgets/marktreeview.h \
+    ./widgets/marktreeviewwidget.h \
     ./model/mrc.h \
     ./model/mrcdatamodel.h \
     ./model/sliceitem.h \
     ./model/treeitem.h \
-    ./widgets/volumewidget.h \
-    ./widgets/RenderParameterWidget.h \
-    ./widgets/imageviewcontrolpanel.h \
-    ./abstract/shaderdatainterface.h \
-    ./model/shaderprogram.h \
+    ./widgets/renderwidget.h \
+    ./widgets/renderoptionwidget.h \
+    ./widgets/slicetoolwidget.h \
+    ./3drender/shader/shaderdatainterface.h \
+    ./3drender/shader/shaderprogram.h \
     ./algorithm/gradientcalculator.h \
-    ./model/raycastingshader.h \
-     geometry/mesh.h \
-    geometry/geometry.h
-SOURCES +=./widgets/DoubleSlider.cpp \
+    ./3drender/shader/raycastingshader.h \
+    ./3drender/geometry/mesh.h \
+    ./3drender/geometry/geometry.h \
+    ./3drender/geometry/volume.h
+SOURCES +=./widgets/doubleslider.cpp \
     ./widgets/TF1DEditor.cpp \
     ./widgets/TF1DMappingCanvas.cpp \
     ./widgets/TF1DTextureCanvas.cpp \
     ./abstract/abstractplugin.cpp \
     ./abstract/abstractslicedatamodel.cpp \
     ./model/categoryitem.cpp \
-    ./widgets/histogram.cpp \
-    ./widgets/imageviewer.cpp \
+    ./widgets/histogramwidget.cpp \
+    ./widgets/sliceeditorwidget.cpp \
     ./main.cpp \
     ./widgets/mainwindow.cpp \
     ./widgets/markcategray.cpp \
     ./widgets/markinfowidget.cpp \
     ./model/markitem.cpp \
     ./model/markmodel.cpp \
-    ./widgets/marktreeview.cpp \
+    ./widgets/marktreeviewwidget.cpp \
     ./model/mrc.cpp \
     ./model/mrcdatamodel.cpp \
-    ./widgets/mrcfileinfoviewer.cpp \
-    ./widgets/pixelviewer.cpp \
-    ./widgets/profileview.cpp \
+    ./widgets/fileinfowidget.cpp \
+    ./widgets/pixelwidget.cpp \
+    ./widgets/profilewidget.cpp \
     ./model/sliceitem.cpp \
-    ./widgets/sliceview.cpp \
+    ./widgets/slicewidget.cpp \
     ./widgets/titledsliderwithspinbox.cpp \
     ./model/treeitem.cpp \
-    ./widgets/volumewidget.cpp \
-    ./widgets/zoomviwer.cpp \
-    ./widgets/RenderParameterWidget.cpp \
-    ./widgets/imageviewcontrolpanel.cpp \
-    ./model/shaderprogram.cpp \
+    ./widgets/renderwidget.cpp \
+    ./widgets/zoomwidget.cpp \
+    ./widgets/renderoptionwidget.cpp \
+    ./widgets/slicetoolwidget.cpp \
     ./algorithm/gradientcalculator.cpp \
-    ./model/raycastingshader.cpp \
-    geometry/mesh.cpp
+    ./3drender/shader/shaderprogram.cpp \
+    ./3drender/shader/raycastingshader.cpp \
+    ./3drender/geometry/mesh.cpp \
+    ./3drender/geometry/volume.cpp
 RESOURCES += resources.qrc
 
 

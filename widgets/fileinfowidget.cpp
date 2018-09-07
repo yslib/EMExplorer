@@ -1,4 +1,4 @@
-#include "mrcfileinfoviewer.h"
+#include "fileinfowidget.h"
 #include "model/mrc.h"
 #include <QDebug>
 MRCFileInfoViewer::MRCFileInfoViewer(QWidget *parent)noexcept:QWidget(parent) {

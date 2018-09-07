@@ -1,7 +1,7 @@
 #ifndef RAYCASTINGSHADER_H
 #define RAYCASTINGSHADER_H
 
-#include "model/shaderprogram.h"
+#include "3drender/shader/shaderprogram.h"
 
 
 class AbstractSliceDataModel;

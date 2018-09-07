@@ -16,15 +16,15 @@ class QComboBox;
 class QPushButton;
 QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
-class ImageCanvas;
-class VolumeWidget;
+class SliceEditorWidget;
+class RenderWidget;
 
-class ImageViewControlPanel:public QWidget
+class SliceToolWidget:public QWidget
 {
 	Q_OBJECT
 public:
-    ImageViewControlPanel(ImageCanvas * canvas, QWidget * parent = nullptr);
-	void setImageCanvas(ImageCanvas * canvas);
+    SliceToolWidget(SliceEditorWidget * canvas, QWidget * parent = nullptr);
+	void setImageCanvas(SliceEditorWidget * canvas);
 
 	int sliceIndex(SliceType type)const;
 	void setSliceIndex(SliceType type, int value);
@@ -62,8 +62,8 @@ private:
 		Forward,
 		Backward
 	};
-	ImageCanvas * m_canvas;
-	VolumeWidget * m_volumeWidget;
+	SliceEditorWidget * m_canvas;
+	RenderWidget * m_volumeWidget;
 
 	QCheckBox * m_topSliceCheckBox;
 	TitledSliderWithSpinBox * m_topSlider;
@@ -102,7 +102,7 @@ private:
 	QToolButton *m_markDeletionAction;
 	QToolButton *m_addCategoryAction;
 
-	friend class ImageCanvas;
+	friend class SliceEditorWidget;
 };
 
 #endif // IMAGEVIEWCONTROLPANEL_H

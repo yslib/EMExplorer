@@ -6,14 +6,14 @@
 #include <QScopedPointer>
 #include <QOpenGLFramebufferObject>
 
-#include "geometry/camera.h"
-#include "abstract/shaderdatainterface.h"
-#include "model/shaderprogram.h"
+#include "3drender/geometry/camera.h"
+#include "3drender/shader/shaderdatainterface.h"
+#include "3drender/shader/shaderprogram.h"
 #include "algorithm/gradientcalculator.h"
-#include "geometry/mesh.h"
+#include "3drender/geometry/mesh.h"
 
 #include <QOpenGLTexture>
-#include "model/raycastingshader.h"
+#include "3drender/shader/raycastingshader.h"
 
 
 class MarkModel;
@@ -22,25 +22,25 @@ class ShaderProgram;
 class QOpenGLShaderProgram;
 class QMenu;
 
-#include "renderparameterwidget.h"
+#include "renderoptionwidget.h"
 
 
 //#define TESTCUBE
 
-class VolumeWidget:public QOpenGLWidget,
+class RenderWidget:public QOpenGLWidget,
 				   public ShaderDataInterface,
 				   protected QOpenGLFunctions_3_1
 {
 	Q_OBJECT
 public:
-					VolumeWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget,QWidget * parent = nullptr);
+					RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget,QWidget * parent = nullptr);
 	void			setDataModel(AbstractSliceDataModel * model);
 	void			setMarkModel(MarkModel * model);
 
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
 	void			addContextAction(QAction* action);
-					~VolumeWidget();
+					~RenderWidget();
 public://ShaderDataInterface
 	unsigned int	volumeTexId()const override								{ return m_volumeTexture.textureId();}
 	QVector3D		voxelSize()const override								{ return m_voxelSize; }

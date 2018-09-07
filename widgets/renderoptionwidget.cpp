@@ -1,11 +1,11 @@
-#include "RenderParameterWidget.h"
+#include "renderoptionwidget.h"
 
 #include <QGroupBox>
 #include <QBoxLayout>
 #include <QComboBox>
 #include <QLabel>
 #include <QSpinBox>
-#include "volumewidget.h"
+#include "renderwidget.h"
 
 
 RenderParameterWidget::RenderParameterWidget(QWidget* parent)

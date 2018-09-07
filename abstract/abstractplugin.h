@@ -6,11 +6,11 @@
 enum class SliceType;
 class SliceItem;
 class AbstractSliceDataModel;
-class SliceView;
+class SliceWidget;
 class AbstractPlugin:public QWidget
 {
 public:
-    AbstractPlugin(SliceType type,const QString & name,SliceView * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+    AbstractPlugin(SliceType type,const QString & name,SliceWidget * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
 	virtual  ~AbstractPlugin(){}
 protected slots:
 	virtual void sliceChanged(int index);
@@ -21,16 +21,16 @@ protected slots:
 protected:
 	SliceItem * sliceItem();
 	QImage originalImage(int index);
-	SliceView * view();
+	SliceWidget * view();
 	QString sliceName()const;
 private:
 	Q_OBJECT
 	AbstractSliceDataModel * m_model;
-	SliceView *m_view;
+	SliceWidget *m_view;
 	SliceType m_type;
 	QString m_sliceName;
 
-	friend class ImageCanvas;
+	friend class SliceEditorWidget;
 };
 
 #endif // ABSTRACTPLUGIN_H

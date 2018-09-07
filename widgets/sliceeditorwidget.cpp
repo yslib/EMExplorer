@@ -9,22 +9,22 @@
 #include "model/markmodel.h"
 #include "model/markitem.h"
 #include "model/categoryitem.h"
-#include "histogram.h"
-#include "pixelviewer.h"
-#include "imageviewer.h"
-#include "sliceview.h"
-#include "volumewidget.h"
-#include "imageviewcontrolpanel.h"
+#include "histogramwidget.h"
+#include "pixelwidget.h"
+#include "sliceeditorwidget.h"
+#include "slicewidget.h"
+#include "renderwidget.h"
+#include "slicetoolwidget.h"
 
-inline bool ImageCanvas::contains(const QWidget* widget, const QPoint& pos)
+inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos)
 {
 	return (widget->rect()).contains(pos);
 }
-void ImageCanvas::createWidgets()
+void SliceEditorWidget::createWidgets()
 {
 }
 
-void ImageCanvas::createToolBar()
+void SliceEditorWidget::createToolBar()
 {
 	m_zoomInAction = new QAction(QIcon(":icons/resources/icons/zoom_in.png"),QStringLiteral("Zoom In"), this);
 	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
@@ -32,32 +32,32 @@ void ImageCanvas::createToolBar()
 	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
 }
 
-void ImageCanvas::createConnections()
+void SliceEditorWidget::createConnections()
 {
 	//forward selected signals
-	connect(m_topView, &SliceView::sliceSelected, this, &ImageCanvas::topSliceSelected);
-	connect(m_rightView, &SliceView::sliceSelected, this, &ImageCanvas::rightSliceSelected);
-	connect(m_frontView, &SliceView::sliceSelected, this, &ImageCanvas::frontSliceSelected);
+	connect(m_topView, &SliceWidget::sliceSelected, this, &SliceEditorWidget::topSliceSelected);
+	connect(m_rightView, &SliceWidget::sliceSelected, this, &SliceEditorWidget::rightSliceSelected);
+	connect(m_frontView, &SliceWidget::sliceSelected, this, &SliceEditorWidget::frontSliceSelected);
 
-	connect(m_topView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
-	connect(m_rightView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
-	connect(m_frontView, &SliceView::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
+	connect(m_topView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
+	connect(m_rightView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
+	connect(m_frontView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
 
-	connect(m_topView, &SliceView::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
+	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 
-	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
-	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
-	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::updateDeleteAction);
+	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
+	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
+	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
 
-	connect(m_topView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
-	connect(m_rightView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
-	connect(m_frontView, &SliceView::selectionChanged, this, &ImageCanvas::markSingleSelectionHelper);
+	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
+	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
+	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 
-	connect(m_zoomInAction, &QAction::triggered, this, &ImageCanvas::zoomIn);
-	connect(m_zoomOutAction, &QAction::triggered, this, &ImageCanvas::zoomOut);
+	connect(m_zoomInAction, &QAction::triggered, this, &SliceEditorWidget::zoomIn);
+	connect(m_zoomOutAction, &QAction::triggered, this, &SliceEditorWidget::zoomOut);
 }
 
-void ImageCanvas::updateActions()
+void SliceEditorWidget::updateActions()
 {
 	bool enable = m_sliceModel != nullptr;
 	updateDeleteAction();
@@ -69,37 +69,37 @@ void ImageCanvas::updateActions()
 	updateFrontSliceActions(frontVis);
 }
 
-void ImageCanvas::updateDeleteAction()
+void SliceEditorWidget::updateDeleteAction()
 {
 	if (m_panel == nullptr)return;
 	m_panel->updateDeleteActionPrivate();
 }
 
-void ImageCanvas::updateTopSliceActions(bool check)
+void SliceEditorWidget::updateTopSliceActions(bool check)
 {
 	bool enable = check && m_sliceModel != nullptr;
 	m_topView->setHidden(!enable);
 }
 
-void ImageCanvas::updateFrontSliceActions(bool check)
+void SliceEditorWidget::updateFrontSliceActions(bool check)
 {
 	bool enable = check && m_sliceModel != nullptr;
 	m_frontView->setHidden(!enable);
 }
 
-void ImageCanvas::updateRightSliceActions(bool check)
+void SliceEditorWidget::updateRightSliceActions(bool check)
 {
 	bool enable = check && m_sliceModel != nullptr;
 	m_rightView->setHidden(!enable);
 }
 
-void ImageCanvas::installMarkModel(MarkModel* model)
+void SliceEditorWidget::installMarkModel(MarkModel* model)
 {
 	Q_ASSERT_X(m_sliceModel,
 		"ImageView::updateMarkModel", "null pointer");
 
 	m_markModel = model;
-	connect(m_markModel,&MarkModel::modified,this,&ImageCanvas::markModified);
+	connect(m_markModel,&MarkModel::modified,this,&SliceEditorWidget::markModified);
 	QVector<QPair<QString, QColor>> cates;
 	if (m_markModel != nullptr) {
 		m_markModel->m_view = this;
@@ -117,7 +117,7 @@ void ImageCanvas::installMarkModel(MarkModel* model)
 
 }
 
-void ImageCanvas::updateSliceModel()
+void SliceEditorWidget::updateSliceModel()
 {
 	updateSliceCount(SliceType::Top);
 	updateSliceCount(SliceType::Right);
@@ -128,14 +128,14 @@ void ImageCanvas::updateSliceModel()
 	updateSlice(SliceType::Top,0);
 }
 
-void ImageCanvas::detachMarkModel()
+void SliceEditorWidget::detachMarkModel()
 {
 	if (m_markModel != nullptr)
 		m_markModel->detachFromView();
 }
 
 
-void ImageCanvas::createContextMenu()
+void SliceEditorWidget::createContextMenu()
 {
 	m_contextMenu = new QMenu(this);
 	///TODO:: add icons here
@@ -152,78 +152,78 @@ void ImageCanvas::createContextMenu()
 		AbstractPlugin * histViewDlg;
 		if (m_menuWidget == m_topView)
 		{
-			histViewDlg = new HistogramViewer(SliceType::Top, QStringLiteral("Top Slice Histogram"), m_topView, m_sliceModel, this);
+			histViewDlg = new HistogramWidget(SliceType::Top, QStringLiteral("Top Slice Histogram"), m_topView, m_sliceModel, this);
 			histViewDlg->setWindowFlag(Qt::Window);
 			histViewDlg->show();
 			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//histViewDlg->sliceOpenEvent(m_topSlider->value());
-			connect(this, &ImageCanvas::topSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
-			connect(this, &ImageCanvas::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-			connect(this, &ImageCanvas::topSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+			connect(this, &SliceEditorWidget::topSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &SliceEditorWidget::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			connect(this, &SliceEditorWidget::topSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
 			emit topSliceOpened(currentSliceIndex(SliceType::Top));
 		}
 		else if (m_menuWidget == m_rightView)
 		{
-			histViewDlg = new HistogramViewer(SliceType::Right, QStringLiteral("Right Slice Histogram"), m_rightView, m_sliceModel, this);
+			histViewDlg = new HistogramWidget(SliceType::Right, QStringLiteral("Right Slice Histogram"), m_rightView, m_sliceModel, this);
 			histViewDlg->setWindowFlag(Qt::Window);
 			histViewDlg->show();
 			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//histViewDlg->sliceOpenEvent(m_rightSlider->value());
-			connect(this, &ImageCanvas::rightSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
-			connect(this, &ImageCanvas::rightSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-			connect(this, &ImageCanvas::rightSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+			connect(this, &SliceEditorWidget::rightSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &SliceEditorWidget::rightSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			connect(this, &SliceEditorWidget::rightSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
 			emit rightSliceOpened(currentSliceIndex(SliceType::Right));
 		}
 		else if (m_menuWidget == m_frontView)
 		{
-			histViewDlg = new HistogramViewer(SliceType::Front, QStringLiteral("Front Slice Histogram"), m_frontView, m_sliceModel, this);
+			histViewDlg = new HistogramWidget(SliceType::Front, QStringLiteral("Front Slice Histogram"), m_frontView, m_sliceModel, this);
 			histViewDlg->setWindowFlag(Qt::Window);
 			histViewDlg->show();
 			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//histViewDlg->sliceOpenEvent(m_frontSlider->value());
-			connect(this, &ImageCanvas::frontSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
-			connect(this, &ImageCanvas::frontSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-			connect(this, &ImageCanvas::frontSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
+			connect(this, &SliceEditorWidget::frontSliceOpened, histViewDlg, &AbstractPlugin::sliceOpened);
+			connect(this, &SliceEditorWidget::frontSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+			connect(this, &SliceEditorWidget::frontSliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
 			emit frontSliceOpened(currentSliceIndex(SliceType::Front));
 		}
 		//connect(this, &ImageView::sliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
-		connect(this, &ImageCanvas::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
+		connect(this, &SliceEditorWidget::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
 	});
 	connect(m_pixelViewDlgAction, &QAction::triggered, [this]()
 	{
-		PixelViewer * pixelViewDlg;
+		PixelWidget * pixelViewDlg;
 		if (m_menuWidget == m_topView)
 		{
-			pixelViewDlg = new PixelViewer(SliceType::Top, QStringLiteral("Top Slice Pixel View"), m_topView, m_sliceModel, this);
+			pixelViewDlg = new PixelWidget(SliceType::Top, QStringLiteral("Top Slice Pixel View"), m_topView, m_sliceModel, this);
 			pixelViewDlg->setWindowFlag(Qt::Window);
 			pixelViewDlg->show();
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//			pixelViewDlg->setImage(m_sliceModel->topSlice(m_topSlider->value()));
-			connect(m_topView, &SliceView::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
-			connect(this, &ImageCanvas::topSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
+			connect(m_topView, &SliceWidget::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+			connect(this, &SliceEditorWidget::topSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit topSliceOpened(currentSliceIndex(SliceType::Top));
 
 		}
 		else if (m_menuWidget == m_rightView)
 		{
-			pixelViewDlg = new PixelViewer(SliceType::Right, QStringLiteral("Right Slice Pixel View"), m_rightView, m_sliceModel, this);
+			pixelViewDlg = new PixelWidget(SliceType::Right, QStringLiteral("Right Slice Pixel View"), m_rightView, m_sliceModel, this);
 			pixelViewDlg->setWindowFlag(Qt::Window);
 			pixelViewDlg->show();
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//	pixelViewDlg->setImage(m_sliceModel->rightSlice(m_rightSlider->value()));
-			connect(m_rightView, &SliceView::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
-			connect(this, &ImageCanvas::rightSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
+			connect(m_rightView, &SliceWidget::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+			connect(this, &SliceEditorWidget::rightSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit rightSliceOpened(currentSliceIndex(SliceType::Right));
 		}
 		else if (m_menuWidget == m_frontView)
 		{
-			pixelViewDlg = new PixelViewer(SliceType::Front, QStringLiteral("Front Slice Pixel View"), m_frontView, m_sliceModel, this);
+			pixelViewDlg = new PixelWidget(SliceType::Front, QStringLiteral("Front Slice Pixel View"), m_frontView, m_sliceModel, this);
 			pixelViewDlg->setWindowFlag(Qt::Window);
 			pixelViewDlg->show();
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//	pixelViewDlg->setImage(m_sliceModel->frontSlice(m_frontSlider->value()));
-			connect(m_frontView, &SliceView::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
-			connect(this, &ImageCanvas::frontSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
+			connect(m_frontView, &SliceWidget::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+			connect(this, &SliceEditorWidget::frontSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit frontSliceOpened(currentSliceIndex(SliceType::Front));
 		}
 	});
@@ -236,7 +236,7 @@ void ImageCanvas::createContextMenu()
 	m_contextMenu->addAction(m_marksManagerDlgAction);
 }
 
-ImageCanvas::ImageCanvas(QWidget *parent, 
+SliceEditorWidget::SliceEditorWidget(QWidget *parent, 
 	bool topSliceVisible,
 	bool rightSliceVisible,
 	bool frontSliceVisible, 
@@ -247,9 +247,9 @@ ImageCanvas::ImageCanvas(QWidget *parent,
 	m_panel(nullptr)
 {
 	m_layout = new QGridLayout;
-	m_topView = new SliceView(this);
-	m_rightView = new SliceView(this);
-	m_frontView = new SliceView(this);
+	m_topView = new SliceWidget(this);
+	m_rightView = new SliceWidget(this);
+	m_frontView = new SliceWidget(this);
 
 	m_topView->setNavigationViewEnabled(true);
 	m_rightView->setNavigationViewEnabled(false);
@@ -268,10 +268,10 @@ ImageCanvas::ImageCanvas(QWidget *parent,
 	setLayout(m_layout);
 }
 
-void ImageCanvas::changeSliceHelper(int value, SliceType type)
+void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
 {
 	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
-	SliceView * view = nullptr;
+	SliceWidget * view = nullptr;
 	std::function<QImage(int)> sliceGetter;
 	//TODO:: 
 	switch (type)
@@ -297,19 +297,19 @@ void ImageCanvas::changeSliceHelper(int value, SliceType type)
 }
 
 
-int ImageCanvas::currentIndexHelper(SliceType type)
+int SliceEditorWidget::currentIndexHelper(SliceType type)
 {
 	return currentSliceIndex(type);
 }
 
-MarkModel* ImageCanvas::createMarkModel(ImageCanvas *view, AbstractSliceDataModel * d)
+MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractSliceDataModel * d)
 {
 	return new MarkModel(d, view,
 		new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
 		nullptr);
 }
 
-void ImageCanvas::markAddedHelper(SliceType type, QGraphicsItem * mark)
+void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 {
 	Q_ASSERT_X(m_panel, "ImageCanvas::markAddedHelper", "null pointer");
 	QString cate = m_panel->currentCategoryName();
@@ -353,7 +353,7 @@ void ImageCanvas::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	m_markModel->addMark(cate, mark);
 }
 
-void ImageCanvas::markDeleteHelper()
+void SliceEditorWidget::markDeleteHelper()
 {
 	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
 	QList<QGraphicsItem*> items;
@@ -369,7 +369,7 @@ void ImageCanvas::markDeleteHelper()
 	m_markModel->removeMarks(items);
 }
 
-void ImageCanvas::markSingleSelectionHelper()
+void SliceEditorWidget::markSingleSelectionHelper()
 {
 	int count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
 	if (count != 1)
@@ -384,19 +384,19 @@ void ImageCanvas::markSingleSelectionHelper()
 	emit markSeleteced(item);
 }
 
-void ImageCanvas::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
+void SliceEditorWidget::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
 {
 	if (m_panel == nullptr)return;
 	m_panel->setCategoryInfoPrivate(cates);
 }
 
-void ImageCanvas::addCategoryManagerHelper(const QString & name, const QColor & color)
+void SliceEditorWidget::addCategoryManagerHelper(const QString & name, const QColor & color)
 {
 	if (m_panel == nullptr)return;
 	m_panel->addCategoryInfoPrivate(name, color);
 }
 
-SliceView* ImageCanvas::focusOn()
+SliceWidget* SliceEditorWidget::focusOn()
 {
 	if (m_topView->hasFocus())
 		return m_topView;
@@ -406,49 +406,49 @@ SliceView* ImageCanvas::focusOn()
 		return m_frontView;
 	return nullptr;
 }
-bool ImageCanvas::topSliceVisible() const
+bool SliceEditorWidget::topSliceVisible() const
 {
 	return m_topView->isHidden();
 }
-bool ImageCanvas::rightSliceVisible() const
+bool SliceEditorWidget::rightSliceVisible() const
 {
 	return m_rightView->isHidden();
 }
-bool ImageCanvas::frontSliceVisible() const
+bool SliceEditorWidget::frontSliceVisible() const
 {
 	return m_frontView->isHidden();
 }
-QPen ImageCanvas::pen() const
+QPen SliceEditorWidget::pen() const
 {
 	return m_topView->pen();
 }
-void ImageCanvas::setPen(const QPen & pen)
+void SliceEditorWidget::setPen(const QPen & pen)
 {
 	updatePen(pen);
 }
- void ImageCanvas::setTopSliceVisible(bool enable)
+ void SliceEditorWidget::setTopSliceVisible(bool enable)
 {
 	 m_topView->setVisible(enable);
 	updateActions();
 }
- void ImageCanvas::setRightSliceVisible(bool enable)
+ void SliceEditorWidget::setRightSliceVisible(bool enable)
 {
 	m_rightView->setVisible(enable);
 	updateActions();
 }
- void ImageCanvas::setFrontSliceVisible(bool enable)
+ void SliceEditorWidget::setFrontSliceVisible(bool enable)
 {
 	m_frontView->setVisible(enable);
 	updateActions();
 }
-void ImageCanvas::updatePen(const QPen &pen)
+void SliceEditorWidget::updatePen(const QPen &pen)
 {
 	m_topView->setPen(pen);
 	m_rightView->setPen(pen);
 	m_frontView->setPen(pen);
 }
 
-AbstractSliceDataModel* ImageCanvas::takeSliceModel(AbstractSliceDataModel* model)
+AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel* model)
 {
 	auto t = m_sliceModel;
 	m_sliceModel = model;
@@ -459,7 +459,7 @@ AbstractSliceDataModel* ImageCanvas::takeSliceModel(AbstractSliceDataModel* mode
 	emit dataModelChanged();
 	return t;
 }
-MarkModel* ImageCanvas::takeMarkModel(MarkModel* model, bool * success)noexcept
+MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noexcept
 {
 	//check the model
 	if (m_sliceModel == nullptr)
@@ -497,12 +497,12 @@ MarkModel* ImageCanvas::takeMarkModel(MarkModel* model, bool * success)noexcept
 	emit markModelChanged();
 	return t;
 }
-MarkModel * ImageCanvas::markModel()
+MarkModel * SliceEditorWidget::markModel()
 {
 	return m_markModel;
 }
 
-int ImageCanvas::currentSliceIndex(SliceType type) const
+int SliceEditorWidget::currentSliceIndex(SliceType type) const
 {
 	//static int topSliceIndex;
 	//static int rightSliceIndex;
@@ -524,14 +524,14 @@ int ImageCanvas::currentSliceIndex(SliceType type) const
 	}
 }
 
-void ImageCanvas::resetZoom(bool check)
+void SliceEditorWidget::resetZoom(bool check)
 {
 	m_topView->resetMatrix();
 	m_rightView->resetMatrix();
 	m_frontView->resetMatrix();
 }
 
-void ImageCanvas::zoomIn()
+void SliceEditorWidget::zoomIn()
 {
 	double factor = std::pow(1.125, 1);
 	m_topView->scale(factor, factor);
@@ -539,7 +539,7 @@ void ImageCanvas::zoomIn()
 	m_frontView->scale(factor, factor);
 }
 
-void ImageCanvas::zoomOut()
+void SliceEditorWidget::zoomOut()
 {
 	double factor = std::pow(1.125, -1);
 	m_topView->scale(factor, factor);
@@ -547,7 +547,7 @@ void ImageCanvas::zoomOut()
 	m_frontView->scale(factor, factor);
 }
 
-void ImageCanvas::setOperation(SliceType type, int opt)
+void SliceEditorWidget::setOperation(SliceType type, int opt)
 {
 	switch(type)
 	{
@@ -562,7 +562,7 @@ void ImageCanvas::setOperation(SliceType type, int opt)
 		break;
 	}
 }
-void ImageCanvas::setEnabled(bool enable)
+void SliceEditorWidget::setEnabled(bool enable)
 {
 	m_topView->setEnabled(enable);
 	m_rightView->setEnabled(enable);
@@ -571,7 +571,7 @@ void ImageCanvas::setEnabled(bool enable)
 }
 
 
-void ImageCanvas::onTopSlicePlay(bool enable)
+void SliceEditorWidget::onTopSlicePlay(bool enable)
 {
 	if (enable)
 	{
@@ -585,7 +585,7 @@ void ImageCanvas::onTopSlicePlay(bool enable)
 	}
 }
 
-void ImageCanvas::onRightSlicePlay(bool enable)
+void SliceEditorWidget::onRightSlicePlay(bool enable)
 {
 	if (enable)
 	{
@@ -599,7 +599,7 @@ void ImageCanvas::onRightSlicePlay(bool enable)
 		m_rightTimerId = 0;
 	}
 }
-void ImageCanvas::onFrontSlicePlay(bool enable)
+void SliceEditorWidget::onFrontSlicePlay(bool enable)
 {
 	if (enable)
 	{
@@ -613,7 +613,7 @@ void ImageCanvas::onFrontSlicePlay(bool enable)
 		m_frontTimerId = 0;
 	}
 }
-void ImageCanvas::timerEvent(QTimerEvent* event)
+void SliceEditorWidget::timerEvent(QTimerEvent* event)
 {
 	Q_ASSERT_X(m_panel, "ImageCanvas::timerEvent", "null pointer");
 	Q_ASSERT_X(m_sliceModel, "ImageCanvas::timerEvent", "null pointer");
@@ -690,7 +690,7 @@ void ImageCanvas::timerEvent(QTimerEvent* event)
 	}
 }
 
-void ImageCanvas::contextMenuEvent(QContextMenuEvent* event)
+void SliceEditorWidget::contextMenuEvent(QContextMenuEvent* event)
 {
 	const QPoint pos = event->pos();
 	if (true == contains(m_topView, m_topView->mapFrom(this, pos)))
@@ -711,7 +711,7 @@ void ImageCanvas::contextMenuEvent(QContextMenuEvent* event)
 	event->accept();
 }
 
-void ImageCanvas::updateSliceCount(SliceType type)
+void SliceEditorWidget::updateSliceCount(SliceType type)
 {
 	Q_ASSERT_X(m_panel, "ImageCanvas::updateSliceCount", "null pointer");
 	int count = -1;
@@ -732,10 +732,10 @@ void ImageCanvas::updateSliceCount(SliceType type)
 	m_panel->setSliceCount(type, count-1);
 }
 
-void ImageCanvas::updateSlice(SliceType type, int index)
+void SliceEditorWidget::updateSlice(SliceType type, int index)
 {
 	//
-	SliceView * view = nullptr;
+	SliceWidget * view = nullptr;
 	std::function<QImage(int)> sliceGetter;
 	const MarkModel::MarkSliceList * list = nullptr;
 	switch (type)
@@ -772,7 +772,7 @@ void ImageCanvas::updateSlice(SliceType type, int index)
 	view->setMarks((*list)[index]);
 }
 
-void ImageCanvas::updateMarks(SliceType type)
+void SliceEditorWidget::updateMarks(SliceType type)
 {
 	Q_ASSERT_X(m_markModel,"ImageCanvas::updateMarks", "mark model null pointer");
 	Q_ASSERT_X(m_panel, "ImageCanvas::updateMarks", "panel null pointer");

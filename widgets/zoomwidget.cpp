@@ -1,7 +1,7 @@
-#include "zoomviwer.h"
+#include "zoomwidget.h"
 #include <QDebug>
 
-ZoomView::ZoomView(QWidget * parent) :QWidget(parent), 
+ZoomWidget::ZoomWidget(QWidget * parent) :QWidget(parent), 
 m_originalHeight{ 0 }, 
 m_originalWidth{ 0 }, 
 m_thumbnail{ QImage() },
@@ -20,7 +20,7 @@ m_imageRect{}
 /// \brief 
 /// \param image image to be displayed
 /// \param region the region of the image to be zoomed
-void ZoomView::setImage(const QImage & image, const QRect & region)
+void ZoomWidget::setImage(const QImage & image, const QRect & region)
 {
 	m_originalWidth = image.width();
 	m_originalHeight = image.height();
@@ -45,7 +45,7 @@ void ZoomView::setImage(const QImage & image, const QRect & region)
 	updateGeometry();
 }
 
-void ZoomView::clearImage()
+void ZoomWidget::clearImage()
 {
 	m_zoomRect = QRectF();
 	m_originalHeight = 0;
@@ -58,7 +58,7 @@ void ZoomView::clearImage()
 	updateGeometry();
 }
 
-QRectF ZoomView::zoomRegion() const
+QRectF ZoomWidget::zoomRegion() const
 {
 	if (m_thumbnail.width() == 0 || m_thumbnail.height() == 0)
 		return QRectF();
@@ -71,7 +71,7 @@ QRectF ZoomView::zoomRegion() const
     return QRectF(QPointF(topX, topY), QSizeF(w, h));
 }
 
-void ZoomView::setZoomRegion(const QRect &region)
+void ZoomWidget::setZoomRegion(const QRect &region)
 {
     QRectF rect = _regionToRect(region);
     m_zoomRect = rect;
@@ -80,7 +80,7 @@ void ZoomView::setZoomRegion(const QRect &region)
     updateGeometry();
 }
 
-QPointF ZoomView::zoomPosition() const
+QPointF ZoomWidget::zoomPosition() const
 {
 	QRectF rect = zoomRegion();
 	return QPointF(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
@@ -102,7 +102,7 @@ QPointF ZoomView::zoomPosition() const
 //    updateGeometry();
 //}
 
-void ZoomView::setMinZoomFactor(qreal minFactor)
+void ZoomWidget::setMinZoomFactor(qreal minFactor)
 {
 	if (minFactor < 0.001)
 		minFactor = 0.001;
@@ -121,12 +121,12 @@ void ZoomView::setMinZoomFactor(qreal minFactor)
     }
 }
 
-ZoomView::~ZoomView()
+ZoomWidget::~ZoomWidget()
 {
 
 }
 
-void ZoomView::paintEvent(QPaintEvent *event)
+void ZoomWidget::paintEvent(QPaintEvent *event)
 {
 	
 	QImage background(size(), QImage::Format_ARGB32_Premultiplied);
@@ -152,7 +152,7 @@ void ZoomView::paintEvent(QPaintEvent *event)
 	widgetPainter.drawImage(0, 0, background);
 }
 
-void ZoomView::mousePressEvent(QMouseEvent *event)
+void ZoomWidget::mousePressEvent(QMouseEvent *event)
 {	
 	if (event->button() == Qt::LeftButton) {
 		QPoint mousePos = event->pos();
@@ -207,7 +207,7 @@ void ZoomView::mousePressEvent(QMouseEvent *event)
 	
 }
 
-void ZoomView::wheelEvent(QWheelEvent * event)
+void ZoomWidget::wheelEvent(QWheelEvent * event)
 {
 	//qDebug() << "Wheel Event";
 	if (event->orientation() == Qt::Horizontal) {
@@ -253,7 +253,7 @@ void ZoomView::wheelEvent(QWheelEvent * event)
     }
 }
 
-void ZoomView::_setZoomRect(qreal factor, const QPointF & leftTopPos)
+void ZoomWidget::_setZoomRect(qreal factor, const QPointF & leftTopPos)
 {
     if(leftTopPos != QPointF()){
         m_zoomRect.setTopLeft(leftTopPos);
@@ -264,7 +264,7 @@ void ZoomView::_setZoomRect(qreal factor, const QPointF & leftTopPos)
     m_zoomRect.setHeight(height*factor);
 }
 
-QRectF ZoomView::_regionToRect(const QRect &region)
+QRectF ZoomWidget::_regionToRect(const QRect &region)
 {
     //Check the region whether satisfies the zoom factor
     //and make a valid region

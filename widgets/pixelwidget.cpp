@@ -1,10 +1,10 @@
-#include "pixelviewer.h"
+#include "pixelwidget.h"
 
 #include <QLineEdit>
 #include <QDebug>
 #include <QLabel>
 
-PixelViewer::PixelViewer(SliceType type, const QString & name, SliceView * view, AbstractSliceDataModel * model, QWidget * parent) :
+PixelWidget::PixelWidget(SliceType type, const QString & name, SliceWidget * view, AbstractSliceDataModel * model, QWidget * parent) :
 	AbstractPlugin(type, name, view, model, parent)
 {
 	m_cornerLabel.reset(new QLabel(this), &QObject::deleteLater);
@@ -17,45 +17,45 @@ PixelViewer::PixelViewer(SliceType type, const QString & name, SliceView * view,
 	resize(360, 150);
 }
 
-void PixelViewer::setWidth(int width)
+void PixelWidget::setWidth(int width)
 {
 	Q_UNUSED(width);
 }
 
-void PixelViewer::setHeight(int height)
+void PixelWidget::setHeight(int height)
 {
 	Q_UNUSED(height);
 }
 
-void PixelViewer::setImage(const QImage &image)
+void PixelWidget::setImage(const QImage &image)
 {
 	m_image = image;
 	changeValue(m_image, m_pos);
 }
 
 
-void PixelViewer::setPosition(const QPoint &p)
+void PixelWidget::setPosition(const QPoint &p)
 {
 	m_pos = p;
 	changeValue(m_image, m_pos);
 }
 
-void PixelViewer::sliceSelected(const QPoint& pos)
+void PixelWidget::sliceSelected(const QPoint& pos)
 {
 	setPosition(pos);
 }
-void PixelViewer::resizeEvent(QResizeEvent* event)
+void PixelWidget::resizeEvent(QResizeEvent* event)
 {
 	Q_UNUSED(event);
 	changeLayout(size());
 }
 
-void PixelViewer::sliceOpened(int index)
+void PixelWidget::sliceOpened(int index)
 {
 	setImage(originalImage(index));
 }
 
-void PixelViewer::changeLayout(QSize areaSize)
+void PixelWidget::changeLayout(QSize areaSize)
 {
 	calcCount(areaSize);
 
@@ -113,7 +113,7 @@ void PixelViewer::changeLayout(QSize areaSize)
 /*
  * This function will update the image grayscale value at the new position
 */
-void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
+void PixelWidget::changeValue(const QImage &image, const QPoint &pos)
 {
 	if (image.isNull())
 		return;
@@ -195,7 +195,7 @@ void PixelViewer::changeValue(const QImage &image, const QPoint &pos)
 	}
 }
 
-void PixelViewer::calcCount(QSize areaSize)
+void PixelWidget::calcCount(QSize areaSize)
 {
 	QSize size = areaSize;
 	QSize pixelHolderSize = QSize(s_width + s_left + s_right, s_height + s_top + s_bottom);
@@ -205,7 +205,7 @@ void PixelViewer::calcCount(QSize areaSize)
 	if (m_height < 0)m_height = 0;
 }
 
-void PixelViewer::setWidget(QWidget * widget, int xpos, int ypos)
+void PixelWidget::setWidget(QWidget * widget, int xpos, int ypos)
 {
 	int width = widget->size().width();
 	int height = widget->size().height();

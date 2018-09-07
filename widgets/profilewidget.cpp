@@ -1,4 +1,4 @@
-#include "profileview.h"
+#include "profilewidget.h"
 #include <QBoxLayout>
 #include <QListWidget>
 #include <QTableView>
@@ -6,13 +6,13 @@
 #include <QHeaderView>
 
 
-ProfileView::ProfileView(QWidget* parent): QTableView(parent)
+ProfileWidget::ProfileWidget(QWidget* parent): QTableView(parent)
 {
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	setShowGrid(false);
 }
 
-QAbstractItemModel * ProfileView::takeModel(QAbstractItemModel* m)
+QAbstractItemModel * ProfileWidget::takeModel(QAbstractItemModel* m)
 {
 	auto t = model();
     setModel(m);

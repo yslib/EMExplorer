@@ -13,11 +13,11 @@ class QListWidget;
 class QGridLayout;
 
 
-class ProfileView:public QTableView
+class ProfileWidget:public QTableView
 {
 	Q_OBJECT
 public:
-	ProfileView(QWidget* parent = nullptr);
+	ProfileWidget(QWidget* parent = nullptr);
 	QAbstractItemModel* takeModel(QAbstractItemModel* model);
 	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 100); }
 	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 100); }

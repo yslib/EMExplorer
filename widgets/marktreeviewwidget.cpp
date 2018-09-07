@@ -1,11 +1,11 @@
-#include "marktreeview.h"
+#include "marktreeviewwidget.h"
 #include <QAction>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QDebug>
 #include "model/treeitem.h"
 
-MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
+MarkManagerWidget::MarkManagerWidget(QWidget * parent) :QTreeView(parent)
 {
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -13,31 +13,31 @@ MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
 	createMenu();
 }
 
-void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
+void MarkManagerWidget::contextMenuEvent(QContextMenuEvent* event)
 {
 	updateAction();
 	///TODO:: need to check if the click position is propert to open a context menu
 	m_menu->exec(event->globalPos());
 }
 
-void MarkTreeView::createMenu()
+void MarkManagerWidget::createMenu()
 {
 	m_menu = new QMenu(QStringLiteral("MarkTreeView Context Menu"), this);
 	m_menu->addAction(m_markDeleteAction);
 	m_menu->addAction(m_markRenameAction);
 }
 
-void MarkTreeView::createAction()
+void MarkManagerWidget::createAction()
 {
 	m_markDeleteAction = new QAction(QStringLiteral("Delete"), this);
 	m_markRenameAction = new QAction(QStringLiteral("Rename"), this);
 
-	connect(m_markDeleteAction, &QAction::triggered, this, &MarkTreeView::onDeleteAction);
-	connect(m_markRenameAction, &QAction::triggered, this, &MarkTreeView::onRenameAction);
+	connect(m_markDeleteAction, &QAction::triggered, this, &MarkManagerWidget::onDeleteAction);
+	connect(m_markRenameAction, &QAction::triggered, this, &MarkManagerWidget::onRenameAction);
 
 }
 
-void MarkTreeView::updateAction()
+void MarkManagerWidget::updateAction()
 {
 	m_renameItem = QModelIndex();
 	m_deleteItems.clear();
@@ -79,7 +79,7 @@ void MarkTreeView::updateAction()
 	m_markRenameAction->setEnabled(renameEnable);
 }
 
-void MarkTreeView::onDeleteAction()
+void MarkManagerWidget::onDeleteAction()
 {
 	foreach(const auto & index,m_deleteItems)
 	{
@@ -89,7 +89,7 @@ void MarkTreeView::onDeleteAction()
 	}
 }
 
-void MarkTreeView::onRenameAction()
+void MarkManagerWidget::onRenameAction()
 {
 	if (m_renameItem.isValid() == false)
 		return;
