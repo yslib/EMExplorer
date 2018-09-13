@@ -17,4 +17,6 @@ private:
 	QOpenGLFunctions m_glfuncs;
 };
 
+
+
 #endif // SHADERPROGRAM_H

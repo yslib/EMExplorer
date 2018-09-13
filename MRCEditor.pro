@@ -53,7 +53,9 @@ HEADERS +=./widgets/doubleslider.h \
     ./3drender/shader/raycastingshader.h \
     ./3drender/geometry/mesh.h \
     ./3drender/geometry/geometry.h \
-    ./3drender/geometry/volume.h
+    ./3drender/geometry/volume.h \
+    3drender/geometry/slicevolume.h \
+    3drender/geometry/renderobject.h
 SOURCES +=./widgets/doubleslider.cpp \
     ./widgets/TF1DEditor.cpp \
     ./widgets/TF1DMappingCanvas.cpp \
@@ -87,7 +89,9 @@ SOURCES +=./widgets/doubleslider.cpp \
     ./3drender/shader/shaderprogram.cpp \
     ./3drender/shader/raycastingshader.cpp \
     ./3drender/geometry/mesh.cpp \
-    ./3drender/geometry/volume.cpp
+    ./3drender/geometry/volume.cpp \
+    3drender/geometry/slicevolume.cpp \
+    3drender/geometry/renderobject.cpp
 RESOURCES += resources.qrc
 
 

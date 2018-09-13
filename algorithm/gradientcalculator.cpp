@@ -3,28 +3,29 @@
 #include "model/markmodel.h"
 
 #include <QVector3D>
+#include <iostream>
 
 
+GradientCalculator::GradientCalculator(QObject* parent):QObject(parent),m_ready(false) {}
 
-GradientCalculator::GradientCalculator(const AbstractSliceDataModel * slice, const MarkModel * mark, QObject * parent)
+GradientCalculator::GradientCalculator(const unsigned char * data,int x,int y,int z, QObject * parent)
 	:QObject(parent),
-	m_sliceModel(slice),
-	m_mark(mark),
-	m_ready(false)
+	m_ready(false),
+	m_d(data,x,y,z)
 {
+
 }
 
-void GradientCalculator::setDataModel(const AbstractSliceDataModel* slice)
-{
-	if (m_sliceModel == slice)
+
+void GradientCalculator::setData(const unsigned char* data, int xSize, int ySize, int zSize) {
+
+	if (m_d.d == data)
 		return;
-	m_sliceModel = slice;
+	m_d.d = data;
+	m_d.x = xSize;
+	m_d.y = ySize;
+	m_d.z = zSize;
 	m_ready = false;
-}
-
-void GradientCalculator::setMarkModel(const MarkModel* mark)
-{
-	//TODO::
 }
 
 bool GradientCalculator::ready() const
@@ -34,26 +35,12 @@ bool GradientCalculator::ready() const
 
 bool GradientCalculator::hasData() const
 {
-	return m_sliceModel != nullptr;
+	return m_d.d != nullptr;
 }
-
-
 
 unsigned char* GradientCalculator::data3() const {
 	return m_gradient.get();
 }
-
-void GradientCalculator::init()
-{
-	if (hasData() == false)
-		return;
-	const int z = m_sliceModel->topSliceCount();
-	const int y = m_sliceModel->rightSliceCount();
-	const int x = m_sliceModel->frontSliceCount();
-	QMutexLocker locker(&m_mutex);
-	m_gradient.reset(new unsigned char[x*y*z*3]);
-}
-
 QVector3D GradientCalculator::triCubicIntpGrad(const unsigned char* pData, double px, double py, double pz)
 {
 	double ulo, vlo, wlo;
@@ -130,9 +117,10 @@ QVector3D GradientCalculator::triCubicIntpGrad(const unsigned char* pData, doubl
 
 double GradientCalculator::value(const unsigned char* pData, double x, double y, double z) const
 {
-	const int xiSize = m_sliceModel->topSliceCount();
-	const int yiSize = m_sliceModel->rightSliceCount();
-	const int ziSize = m_sliceModel->frontSliceCount();
+	const int xiSize = m_d.x;
+	const int yiSize = m_d.y;
+	const int ziSize = m_d.z;
+
 	x = std::max(std::min(x + 0.5, xiSize - 1.0), 0.0);
 	y = std::max(std::min(y + 0.5, yiSize - 1.0), 0.0);
 	z = std::max(std::min(z + 0.5, ziSize - 1.0), 0.0);
@@ -168,18 +156,21 @@ double GradientCalculator::cubicIntpValue(double v0, double v1, double v2, doubl
 
 void GradientCalculator::calcGradent()
 {
-	if (hasData() == false)
+	if (hasData() == false)			//No data for computing
 		return;
-	init();
-	const int ziSize = m_sliceModel->topSliceCount();
-	const int yiSize = m_sliceModel->rightSliceCount();
-	const int xiSize = m_sliceModel->frontSliceCount();
+	if (m_ready == true)			//Has compute
+		return;
+	m_gradient.reset(new unsigned char[m_d.x*m_d.y*m_d.z*3]);
+	if (m_gradient == nullptr)
+		return;						//Memery allocated faild
 
-	const auto pOriginalData = m_sliceModel->constData();
+	const int ziSize = m_d.z;
+	const int yiSize = m_d.y;
+	const int xiSize = m_d.x;
+	const auto pOriginalData = m_d.d;
 
 	//QMutexLocker locker(&m_mutex);
-	if (m_gradient == nullptr)
-		return;
+
 	// calculate gradient and the normalized direction
 #pragma omp parallel for
 	for (int i = 0; i < ziSize; ++i) {

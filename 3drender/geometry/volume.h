@@ -1,24 +1,16 @@
 #ifndef VOLUME_H
 #define VOLUME_H
 
-#include <QOpenGLBuffer>
-#include <QOpenGLFunctions_3_1>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLFramebufferObject>
-
 #include <memory>
-#include <QScopedPointer>
-#include "3drender/shader/raycastingshader.h"
-#include <QOpenGLTexture>
-#include "algorithm/gradientcalculator.h"
 
 
 struct VolumeFormat;
-class ShaderProgram;
 
 
+// Enum Type
 enum VoxelType { UInt8, Float32 };
 enum VoxelFormat { Grayscale, RGB, RGBA };
+
 
 struct VolumeFormat {
 	VoxelFormat fmt;
@@ -26,12 +18,14 @@ struct VolumeFormat {
 	VolumeFormat() :fmt(Grayscale), type(UInt8) {}
 };
 
-;
+
+// Volume Class
+
 
 class Volume
 {
 	VolumeFormat m_fmt;
-	std::unique_ptr<void> m_data;
+	std::unique_ptr<unsigned char> m_data;
 	int m_xSize, m_ySize, m_zSize;
 public:
 	Volume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat & fmt = VolumeFormat());
@@ -52,56 +46,19 @@ inline Volume::~Volume() {}
 
 
 
-
 class GPUVolume :public Volume
 {
 public:
+	GPUVolume():Volume(nullptr,0,0,0){}
 	GPUVolume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat & fmt = VolumeFormat());
 	virtual bool initializeGLResources() = 0;
-	virtual void destoryGLResources();
-	virtual bool render();
+	virtual void destoryGLResources()=0;
+	virtual bool render()=0;
 	virtual ~GPUVolume(){}
 };
 
 
-class SliceVolume:public GPUVolume,protected QOpenGLFunctions_3_1
-{
 
-	QScopedPointer<PositionShader>			m_positionShader;
-	QOpenGLBuffer							m_positionVBO;
-	QOpenGLBuffer							m_positionEBO;
-	QOpenGLVertexArrayObject				m_positionVAO;
-	QScopedPointer<QOpenGLFramebufferObject>m_fbo;
-
-	QSharedPointer<RayCastingShader>		m_currentShader;
-	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
-	QOpenGLBuffer							m_rayCastingTextureVBO;
-
-	QScopedPointer<SliceShader>			    m_sliceShader;
-	QOpenGLBuffer							m_topSliceVBO;
-	QOpenGLVertexArrayObject				m_topSliceVAO;
-	QOpenGLBuffer							m_rightSliceVBO;
-	QOpenGLVertexArrayObject				m_rightSliceVAO;
-	QOpenGLBuffer							m_frontSliceVBO;
-	QOpenGLVertexArrayObject				m_frontSliceVAO;
-
-	QOpenGLTexture							m_gradientTexture;
-	QOpenGLTexture							m_volumeTexture;
-
-	GradientCalculator						m_gradCalc;
-
-	int										m_topSlice;
-	int										m_rightSlice;
-	int										m_frontSlice;
-	void loadVolumeData();
-
-public:
-	SliceVolume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat & fmt = VolumeFormat());
-	bool initializeGLResources() override;
-	void destoryGLResources() override;
-	bool render()override;
-
-};
 
 
 #endif // VOLUME_H
