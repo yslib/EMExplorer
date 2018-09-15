@@ -1,9 +1,6 @@
 #ifndef SLICEVOLUME_H
 #define SLICEVOLUME_H
 
-#include <QObject>
-#include <QOpenGLFunctions_3_1>
-
 #include "volume.h"
 #include "3drender/shader/shaderdatainterface.h"
 #include "3drender/shader/raycastingshader.h"
@@ -14,15 +11,12 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLTexture>
 
-
-
-
 // Forward Declaration
 class AbstractSliceDataModel;
 class RenderWidget;
 
 
-class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface, protected QOpenGLFunctions_3_1
+class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 {
 	Q_OBJECT
 
@@ -37,22 +31,14 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface,
 	QOpenGLBuffer							m_rayCastingTextureVBO;
 
 	QScopedPointer<SliceShader>			    m_sliceShader;
-	QOpenGLBuffer							m_topSliceVBO;
-	QOpenGLVertexArrayObject				m_topSliceVAO;
-	QOpenGLBuffer							m_rightSliceVBO;
-	QOpenGLVertexArrayObject				m_rightSliceVAO;
-	QOpenGLBuffer							m_frontSliceVBO;
-	QOpenGLVertexArrayObject				m_frontSliceVAO;
-
+	QOpenGLBuffer							m_axisAlignedSliceVBO;
+	QOpenGLVertexArrayObject				m_axisAlignedSliceVAO;
 	QOpenGLTexture							m_gradientTexture;
 	QOpenGLTexture							m_volumeTexture;
-
 	GradientCalculator						m_gradCalc;
-
 	int										m_topSlice;
 	int										m_rightSlice;
 	int										m_frontSlice;
-
 	RenderWidget							*m_renderer;
 	bool									m_sliceMode;
 
@@ -84,13 +70,12 @@ public://ShaderDataInterface
 	float specular() const override;
 	QVector3D volumeBound() const override;
 	QSize windowSize() const override;
-
-
 public:
 	SliceVolume(const AbstractSliceDataModel * data, const VolumeFormat & fmt = VolumeFormat(), RenderWidget * renderer = nullptr);
 	void setRenderWidget(RenderWidget * widget);
 	bool initializeGLResources() override;
 	void destoryGLResources() override;
+
 	bool render()override;
 	void sliceMode(bool enable);
 	private slots:
@@ -98,6 +83,7 @@ public:
 };
 
 inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
+
 
 
 #endif // SLICEVOLUME_H

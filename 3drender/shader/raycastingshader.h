@@ -26,15 +26,10 @@ public:
 };
 
 class SliceShader:public ShaderProgram {
-	const AbstractSliceDataModel * m_dataModel;
-	int m_sliceType;
-	int m_sliceIndex;
+
 public:
 	SliceShader();
 	void load(const ShaderDataInterface * data)override;
-	void setSliceDataModel(const AbstractSliceDataModel * model);
-	void setSliceType(int type);
-	void setSliceIndex(int index);
 };
 
 

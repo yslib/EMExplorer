@@ -27,14 +27,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markM
 	m_parameterWidget(widget),
 	m_camera(QVector3D(0.f, 0.f, 10.f)),
 	m_rayStep(0.02),
-	m_scale(1.0, 1.0, 1.0),
-	m_trans(0.0, 0.0, 0.0),
 	m_tfTexture(QOpenGLTexture::Target1D)
-//	m_fbo(nullptr),
-//	m_gradientTexture(QOpenGLTexture::Target3D),
-//	m_volumeTexture(QOpenGLTexture::Target3D),
-//	m_positionVBO(QOpenGLBuffer::VertexBuffer),
-//	m_positionEBO(QOpenGLBuffer::IndexBuffer)
 {
 	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
 	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
@@ -109,7 +102,6 @@ void RenderWidget::resizeGL(int w, int h)
 }
 void RenderWidget::paintGL()
 {
-
 	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 
 	auto renderMode = m_parameterWidget->options()->mode;
@@ -195,24 +187,20 @@ void RenderWidget::updateVolumeData()
 	auto y = m_dataModel->rightSliceCount();
 	auto x = m_dataModel->frontSliceCount();
 
-	m_scale = QVector3D(x, y, z);
+	QVector3D m_scale = QVector3D(x, y, z);
 	m_scale.normalize();
-	m_trans = QVector3D(0, 0, 0);
+	QVector3D m_trans = QVector3D(0, 0, 0);
 	m_trans -= m_scale / 2;
 	m_world.setToIdentity();
 	m_world.scale(m_scale);
 	m_world.translate(m_trans);
 
 
-
-
-	std::cout << "Initiliaze SliceVolume";
 	m_volume.reset(new SliceVolume(m_dataModel, VolumeFormat(), this));
 
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();
-	qDebug() << "RenderWidget::updateVolumeData";
 }
 
 /**

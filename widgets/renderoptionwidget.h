@@ -28,6 +28,9 @@ struct RenderOptions {
 	float specular;
 	float diffuse;
 	float shininess;
+	float xSpacing;
+	float ySpacing;
+	float zSpacing;
 	QVector3D lightDirection;
 	RenderMode mode;
 	RenderOptions() :
@@ -36,6 +39,9 @@ struct RenderOptions {
 		, diffuse(0.5)
 		, shininess(40.00)
 		, lightDirection(0, -1, 0)
+		, xSpacing(1.0)
+		, ySpacing(1.0)
+		, zSpacing(1.0)
 	,mode(RenderMode::DVR)
 	{}
 };
@@ -63,7 +69,13 @@ private:
 
 	QGroupBox *m_volumeInfoGroup;
 	QLabel    *m_volumeSizeLabel;
+
 	QLabel    *m_volumeSpacingLabel;
+
+	QDoubleSpinBox *m_xSpacingSpinBox;
+	QDoubleSpinBox *m_ySpacingSpinBox;
+	QDoubleSpinBox *m_zSpacingSpinBox;
+
 	QGroupBox *m_lightingGroup;
 	QLabel    *m_ambientLabel;
 	QLabel    *m_diffuseLabel;

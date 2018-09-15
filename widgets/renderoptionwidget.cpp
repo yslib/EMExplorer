@@ -15,17 +15,50 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	//volume info
 	m_volumeInfoGroup = new QGroupBox(QStringLiteral("Volume Info"));
 	QVBoxLayout * vLayout = new QVBoxLayout;
-	m_volumeSizeLabel = new QLabel(QStringLiteral("Slice Size"));
+	//m_volumeSizeLabel = new QLabel(QStringLiteral("Slice Size"));
 	m_volumeSpacingLabel = new QLabel(QStringLiteral("Spacing"));
-	vLayout->addWidget(m_volumeSizeLabel);
-	vLayout->addWidget(m_volumeSpacingLabel);
+	m_xSpacingSpinBox = new QDoubleSpinBox(this);
+	m_xSpacingSpinBox->setRange(0.1, 10.0);
+	m_xSpacingSpinBox->setSingleStep(0.1);
+	m_xSpacingSpinBox->setValue(1.0);
+
+	connect(m_xSpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {
+		m_renderOptions->xSpacing = value;
+		emit optionsChanged();
+	});
+
+	m_ySpacingSpinBox = new QDoubleSpinBox(this);
+	m_ySpacingSpinBox->setRange(0.1, 10.0);
+	m_ySpacingSpinBox->setSingleStep(0.1);
+	m_ySpacingSpinBox->setValue(1.0);
+
+	connect(m_ySpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {
+		m_renderOptions->ySpacing = value;
+		emit optionsChanged();
+	});
+	m_zSpacingSpinBox = new QDoubleSpinBox(this);
+	m_zSpacingSpinBox->setRange(0.1, 10.0);
+	m_zSpacingSpinBox->setSingleStep(0.1);
+	m_zSpacingSpinBox->setValue(1.0);
+	connect(m_zSpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {
+		m_renderOptions->zSpacing = value;
+		emit optionsChanged();
+	});
+	QHBoxLayout * hLayout = new QHBoxLayout;
+	//vLayout->addWidget(m_volumeSizeLabel);
+	//vLayout->addWidget(m_volumeSpacingLabel);
+	hLayout->addWidget(m_volumeSpacingLabel);
+	hLayout->addWidget(m_xSpacingSpinBox);
+	hLayout->addWidget(m_ySpacingSpinBox);
+	hLayout->addWidget(m_zSpacingSpinBox);
+	vLayout->addLayout(hLayout);
 	m_volumeInfoGroup->setLayout(vLayout);
 
 	//lighting parameter
 	m_lightingGroup = new QGroupBox(QStringLiteral("Lighting Parameters"));
 	vLayout = new QVBoxLayout;
 	// ambient
-	QHBoxLayout * hLayout = new QHBoxLayout;
+	hLayout = new QHBoxLayout;
 	m_ambientLabel = new QLabel(QStringLiteral("ambient"));
 	m_ambientSpinBox = new QDoubleSpinBox;
 	m_ambientSpinBox->setRange(0, 1.0);
@@ -123,23 +156,4 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	vLayout->addWidget(m_renderOptionGroup);
 	vLayout->addStretch();
 	setLayout(vLayout);
-
-
-
 }
-
-
-
-//void RenderParameterWidget::connectWith(VolumeWidget* widget) {
-//	if (widget == nullptr)return;
-//	connect(widget, &VolumeWidget::markModelChanged, this, &RenderParameterWidget::updateMarkModel);
-//	connect(widget, &VolumeWidget::dataModelChanged, this, &RenderParameterWidget::updateDataModel);
-//
-//}
-//void RenderParameterWidget::disconnectWith(VolumeWidget* widget) {
-//	if (widget == nullptr) return;
-//	disconnect(widget, &VolumeWidget::markModelChanged, this, &RenderParameterWidget::updateMarkModel);
-//	disconnect(widget, &VolumeWidget::dataModelChanged, this, &RenderParameterWidget::updateDataModel);
-//
-//}
-

@@ -106,7 +106,7 @@ QMatrix4x4 SliceVolume::viewMatrix() const {
 }
 QMatrix4x4 SliceVolume::worldMatrix() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::worldMatrix", "null pointer");
-	return m_renderer->m_world;
+	return transform();
 }
 QMatrix4x4 SliceVolume::othoMatrix() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::othoMatrix", "null pointer");
@@ -158,6 +158,22 @@ SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const VolumeFormat
 	, m_renderer(renderer)
 	, m_dataModel(data)
 {
+
+	auto z = m_dataModel->topSliceCount();
+	auto y = m_dataModel->rightSliceCount();
+	auto x = m_dataModel->frontSliceCount();
+
+	QVector3D scale = QVector3D(x, y, z);
+	scale.normalize();
+	QVector3D trans = QVector3D(0, 0, 0);
+	trans -= scale / 2;
+	QMatrix4x4 world;
+	world.setToIdentity();
+	world.scale(scale);
+	world.translate(trans);
+
+	setTransform(world);
+
 	setRenderWidget(renderer);
 }
 
@@ -171,8 +187,13 @@ void SliceVolume::setRenderWidget(RenderWidget* widget) {
 
 bool SliceVolume::initializeGLResources() {
 
-	if (initializeOpenGLFunctions() == false)
+	//if (initializeOpenGLFunctions() == false)
+	//	return false;
+
+	auto glfuncs = m_renderer->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+	if (glfuncs == nullptr)
 		return false;
+
 	// Initialize Front and back face texture
 	m_positionShader.reset(new PositionShader);
 	m_positionShader->link();
@@ -183,10 +204,10 @@ bool SliceVolume::initializeGLResources() {
 	m_positionVBO.create();
 	m_positionVBO.bind();
 	m_positionVBO.allocate(positionVert, sizeof(positionVert));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<void*>(0));	//vertex
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<void*>(0));	//texture coord
+	glfuncs->glEnableVertexAttribArray(0);
+	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<void*>(0));	//vertex
+	glfuncs->glEnableVertexAttribArray(1);
+	glfuncs->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), reinterpret_cast<void*>(0));	//texture coord
 	m_positionShader->bind();
 	m_positionEBO.create();
 	m_positionEBO.bind();
@@ -203,45 +224,22 @@ bool SliceVolume::initializeGLResources() {
 	m_rayCastingTextureVBO.bind();
 	m_currentShader->bind();
 	m_rayCastingTextureVBO.allocate(8 * sizeof(GLfloat));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+	glfuncs->glEnableVertexAttribArray(0);
+	glfuncs->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+	glfuncs->glEnableVertexAttribArray(1);
+	glfuncs->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
 	m_rayCastingTextureVBO.release();
 
 	m_sliceShader.reset(new SliceShader());
-	m_sliceShader->setSliceDataModel(m_dataModel);
 	m_sliceShader->link();
 
-	m_topSliceVAO.create();
-	QOpenGLVertexArrayObject::Binder binder1(&m_topSliceVAO);
-	m_topSliceVBO.create();
-	m_topSliceVBO.bind();
-	m_topSliceVBO.allocate(4 * 3 * sizeof(float) + 4 * 2 * sizeof(float));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(3 * sizeof(float)));
-
-	m_rightSliceVAO.create();
-	QOpenGLVertexArrayObject::Binder binder2(&m_rightSliceVAO);
-	m_rightSliceVBO.create();
-	m_rightSliceVBO.bind();
-	m_rightSliceVBO.allocate(4 * 3 * sizeof(float) + 4 * 2 * sizeof(float));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(3 * sizeof(float)));
-
-	m_frontSliceVAO.create();
-	QOpenGLVertexArrayObject::Binder binder3(&m_frontSliceVAO);
-	m_frontSliceVBO.create();
-	m_frontSliceVBO.bind();
-	m_frontSliceVBO.allocate(4 * 3 * sizeof(float) + 4 * 2 * sizeof(float));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(QVector3D) + sizeof(QVector2D), reinterpret_cast<void*>(3 * sizeof(float)));
+	m_axisAlignedSliceVAO.create();
+	QOpenGLVertexArrayObject::Binder binder1(&m_axisAlignedSliceVAO);
+	m_axisAlignedSliceVBO.create();
+	m_axisAlignedSliceVBO.bind();
+	m_axisAlignedSliceVBO.allocate(4 * 3 * sizeof(float));
+	glfuncs->glEnableVertexAttribArray(0);
+	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
 
 	//load volume data and gradient
 	loadDataAndGradientToTexture();
@@ -252,16 +250,15 @@ void SliceVolume::destoryGLResources()
 	m_positionVAO.destroy();
 	m_positionVBO.destroy();
 	m_positionEBO.destroy();
+
 	m_rayCastingTextureVAO.destroy();
 	m_rayCastingTextureVBO.destroy();
 
-	m_topSliceVAO.destroy();
-	m_topSliceVBO.destroy();
-	m_rightSliceVAO.destroy();
-	m_rightSliceVBO.destroy();
-	m_frontSliceVAO.destroy();
-	m_frontSliceVBO.destroy();
+	m_axisAlignedSliceVAO.destroy();
+	m_axisAlignedSliceVBO.destroy();
+
 	m_gradientTexture.destroy();
+
 	m_fbo.reset();
 }
 
@@ -269,66 +266,53 @@ bool SliceVolume::render() {
 	if (m_renderer == nullptr || m_fbo == nullptr)
 		return false;
 
+	auto glfuncs = m_renderer->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+	if (glfuncs == nullptr)
+		return false;
+
 	if (m_sliceMode == true) {
-		glClear(GL_DEPTH_BUFFER_BIT);
+		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 
 		float topCoord = float(m_renderer->m_topSlice) / float(m_dataModel->topSliceCount());
 		float rightCoord = float(m_renderer->m_rightSlice) / float(m_dataModel->rightSliceCount());
 		float frontCoord = float(m_renderer->m_frontSlice) / float(m_dataModel->frontSliceCount());
 
-
-		float top[] =
-		{
-			0.0,0.0,topCoord,0.0,0.0 ,
-			1.0,0.0,topCoord,1.0,0.0 ,
-			1.0,1.0,topCoord,1.0,1.0 ,
-			0.0,1.0,topCoord,0.0,1.0 ,
-		};
-		m_topSliceVBO.bind();
-		m_topSliceVBO.write(0, top, sizeof(top));
-		float right[] =
-		{
-			0.0,rightCoord,0.0, 0.0,0.0 ,
-			1.0,rightCoord,0.0, 1.0,0.0 ,
-			1.0,rightCoord,1.0, 1.0,1.0 ,
-			0.0,rightCoord,1.0, 0.0,1.0 ,
-		};
-		m_rightSliceVBO.bind();
-		m_rightSliceVBO.write(0, right, sizeof(right));
-		float front[] =
-		{
-			frontCoord,0.0,0.0, 0.0,0.0 ,
-			frontCoord,1.0,0.0, 1.0,0.0 ,
-			frontCoord,1.0,1.0,1.0,1.0 ,
-			frontCoord,0.0,1.0,0.0,1.0 ,
-		};
-
-		m_frontSliceVBO.bind();
-		m_frontSliceVBO.write(0, front, sizeof(front));
-
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		m_sliceShader->setSliceType(0);
-		m_sliceShader->setSliceIndex(m_renderer->m_topSlice);
 		m_sliceShader->load(this);
 		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj);
 		m_sliceShader->setUniformValue("viewMatrix", m_renderer->m_camera.view());
 		m_sliceShader->setUniformValue("worldMatrix", m_renderer->m_world);
-
-		m_topSliceVAO.bind();
-		glDrawArrays(GL_QUADS, 0, 4);
-
-		m_sliceShader->setSliceType(1);
-		m_sliceShader->setSliceIndex(m_renderer->m_rightSlice);
-		m_sliceShader->load(this);
-		m_rightSliceVAO.bind();
-		glDrawArrays(GL_QUADS, 0, 4);
-
-		m_sliceShader->setSliceType(2);
-		m_sliceShader->setSliceIndex(m_renderer->m_frontSlice);
-		m_sliceShader->load(this);
-		m_frontSliceVAO.bind();
-		glDrawArrays(GL_QUADS, 0, 4);
+		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
+		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		m_axisAlignedSliceVAO.bind();
+		float top[] =
+		{
+			0.0,0.0,topCoord,
+			1.0,0.0,topCoord,
+			1.0,1.0,topCoord,
+			0.0,1.0,topCoord,
+		};
+		m_axisAlignedSliceVBO.bind();
+		m_axisAlignedSliceVBO.write(0, top, sizeof(top));
+		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+	
+		float right[] =
+		{
+			0.0,rightCoord,0.0, 
+			1.0,rightCoord,0.0,
+			1.0,rightCoord,1.0,
+			0.0,rightCoord,1.0,
+		};
+		m_axisAlignedSliceVBO.write(0, right, sizeof(right));
+		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		float front[] =
+		{
+			frontCoord,0.0,0.0,
+			frontCoord,1.0,0.0,
+			frontCoord,1.0,1.0,
+			frontCoord,0.0,1.0,
+		};
+		m_axisAlignedSliceVBO.write(0, front, sizeof(front));
+		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 		m_sliceShader->release();
 
 	}
@@ -338,45 +322,48 @@ bool SliceVolume::render() {
 		m_positionShader->load(this);
 		QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
 		// Draw Front to fbo 
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
+		glfuncs->glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		
+		glfuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glfuncs->glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
 		// Draw Back to fbo 
-		glDrawBuffer(GL_COLOR_ATTACHMENT1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glDepthFunc(GL_GREATER);
-		glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
-		glDepthFunc(GL_LESS);
+		glfuncs->glDrawBuffer(GL_COLOR_ATTACHMENT1);
+		glfuncs->glClear(GL_COLOR_BUFFER_BIT);
+		glfuncs->glDepthFunc(GL_GREATER);
+		glfuncs->glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
+		glfuncs->glDepthFunc(GL_LESS);
 		m_positionShader->release();
 		m_fbo->release();
 
 		// Ray casting in shader
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_TEXTURE_RECTANGLE_NV);
-		glEnable(GL_TEXTURE_3D);
+		glfuncs->glEnable(GL_BLEND);
+		glfuncs->glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
+		glfuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glfuncs->glEnable(GL_TEXTURE_RECTANGLE_NV);
+		glfuncs->glEnable(GL_TEXTURE_3D);
 		m_currentShader->load(this);
 		QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
-		glDrawArrays(GL_QUADS, 0, 4);
-		glDisable(GL_TEXTURE_RECTANGLE_NV);
-		glDisable(GL_TEXTURE_3D);
-		glDisable(GL_BLEND);
+		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		glfuncs->glDisable(GL_TEXTURE_RECTANGLE_NV);
+		glfuncs->glDisable(GL_TEXTURE_3D);
+		glfuncs->glDisable(GL_BLEND);
 		m_currentShader->release();
 	}
 	return true;
 }
 
 void SliceVolume::windowSizeChanged(int w, int h) {
+
 	m_fbo.reset(new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB));
 	m_fbo->addColorAttachment(w, h);
 
 	static QVector<QVector2D> rayCastingVB = {
 		{ 0.0f,0.0f },
-	{ 0.0,static_cast<float>(h) },
-	{ static_cast<float>(w),static_cast<float>(h) },
-	{ static_cast<float>(w),0.0 }
+		{ 0.0,static_cast<float>(h) },
+		{ static_cast<float>(w),static_cast<float>(h) },
+		{ static_cast<float>(w),0.0 }
 	};
+
 	m_rayCastingTextureVBO.bind();
 	m_rayCastingTextureVBO.write(0, rayCastingVB.constData(), rayCastingVB.count() * 2 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();

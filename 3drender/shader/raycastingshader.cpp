@@ -99,12 +99,6 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 	this->setUniformValue("halfway", (float)H.x(), (float)H.y(), (float)H.z());
 }
 
-//
-//void RayCastingShader::loadIllumination(float ka,float ks,float kd,float shininess) {
-//
-//}
-
-
 PositionShader::PositionShader() :ShaderProgram()
 {
 	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/position_v.glsl");
@@ -120,37 +114,15 @@ void PositionShader::load(const ShaderDataInterface* data)
 	this->setUniformValue("viewMatrix", data->viewMatrix());
 }
 
-SliceShader::SliceShader() :m_sliceType(0),m_sliceIndex(0),m_dataModel(nullptr){
+SliceShader::SliceShader() {
 	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/slice_shader_v.glsl");
 	addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/slice_shader_f.glsl");
 	link();
 }
 void SliceShader::load(const ShaderDataInterface* data) {
-	if (m_dataModel == nullptr)
-		return;
 	this->bind();
-	this->setUniformValue("sliceType", m_sliceType);
-	int count = 1;
-	if(m_sliceType == 0) {
-		count = m_dataModel->topSliceCount();
-	}else if(m_sliceType == 1) {
-		count = m_dataModel->rightSliceCount();
-	}else if(m_sliceType == 2) {
-		count = m_dataModel->frontSliceCount();
-	}
-	this->setUniformValue("sliceIndex",m_sliceIndex);
-	this->setUniformValue("sliceCount", count);
 	this->setUniformSampler("volume", GL_TEXTURE0, GL_TEXTURE_3D, data->volumeTexId());
-}
-
-void SliceShader::setSliceDataModel(const AbstractSliceDataModel* model) {
-	m_dataModel = model;
-}
-
-void SliceShader::setSliceType(int type) {
-	m_sliceType = type;
-}
-
-void SliceShader::setSliceIndex(int index) {
-	m_sliceIndex = index;
+	this->setUniformValue("projMatrix", data->perspMatrix());
+	this->setUniformValue("viewMatrix", data->viewMatrix());
+	this->setUniformValue("worldMatrix", data->worldMatrix());
 }

@@ -49,6 +49,7 @@ int SliceToolWidget::sliceIndex(SliceType type) const
 	case SliceType::Front:
 		return m_frontSlider->value();
 	}
+	return -1;
 }
 
 void SliceToolWidget::setSliceIndex(SliceType type, int value)
@@ -75,6 +76,7 @@ int SliceToolWidget::sliceCount(SliceType type) const
 	case SliceType::Front:
 		return m_frontSlider->maximum();
 	}
+	return 0;
 }
 
 void SliceToolWidget::setSliceCount(SliceType type, int count)
@@ -82,11 +84,11 @@ void SliceToolWidget::setSliceCount(SliceType type, int count)
 	switch (type)
 	{
 	case SliceType::Top:
-		return m_topSlider->setMaximum(count);
+		 m_topSlider->setMaximum(count);
 	case SliceType::Right:
-		return m_rightSlider->setMaximum(count);
+		 m_rightSlider->setMaximum(count);
 	case SliceType::Front:
-		return m_frontSlider->setMaximum(count);
+		 m_frontSlider->setMaximum(count);
 	}
 }
 
@@ -101,6 +103,7 @@ bool SliceToolWidget::sliceVisible(SliceType type) const
 	case SliceType::Front:
 		return m_frontSliceCheckBox->isChecked();
 	}
+	return false;
 }
 
 QString SliceToolWidget::currentCategoryName() const
