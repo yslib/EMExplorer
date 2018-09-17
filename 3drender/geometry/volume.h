@@ -8,6 +8,22 @@
 struct VolumeFormat;
 
 
+class RenderableObject {
+	QMatrix4x4 m_trans;
+public:
+	virtual bool render() = 0;
+	void setTransform(const QMatrix4x4 & trans);
+	QMatrix4x4 transform()const;
+	virtual ~RenderableObject() = 0;
+};
+
+class GPURenderObject:public RenderableObject {
+public:
+	virtual bool initializeGLResources() = 0;
+	virtual void destoryGLResources() = 0;
+};
+
+
 // Enum Type
 enum VoxelType { UInt8, Float32 };
 enum VoxelFormat { Grayscale, RGB, RGBA };
@@ -21,6 +37,7 @@ struct VolumeFormat {
 
 
 // Volume Class
+
 
 
 class Volume

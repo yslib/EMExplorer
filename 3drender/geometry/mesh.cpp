@@ -175,8 +175,7 @@ m_created(false),
 m_ebo(QOpenGLBuffer::IndexBuffer)
 {
 
-	if (m_glfuncs.initializeOpenGLFunctions() == false)
-		return;
+
 
 	m_vertices.reset(new Point3f[nVertex]);
 	for(int i=0;i<nVertex;i++)  m_vertices[i] = trans * vertices[i];
@@ -196,6 +195,13 @@ m_ebo(QOpenGLBuffer::IndexBuffer)
 	}
 
 
+	
+}
+
+bool TriangleMesh::initializeGLResources()
+{
+	if (m_glfuncs.initializeOpenGLFunctions() == false)
+		return false;
 	m_vao.create();
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);
 	m_vbo.create();
@@ -203,16 +209,19 @@ m_ebo(QOpenGLBuffer::IndexBuffer)
 	int  vertexBytes = m_nVertex * sizeof(Point3f);
 	int  indexBytes = m_nTriangles * 3 * sizeof(int);
 
+	int normalBytes = m_nVertex * sizeof(Vector3f);
+	int textureBytes = m_nVertex * sizeof(Point2f);
+
 	m_vbo.allocate(vertexBytes + normalBytes + textureBytes);
 	m_vbo.write(0, m_vertices.get(), vertexBytes);
 	m_vbo.write(vertexBytes, m_normals.get(), normalBytes);
-	m_vbo.write(vertexBytes+normalBytes, m_textures.get(), textureBytes);
+	m_vbo.write(vertexBytes + normalBytes, m_textures.get(), textureBytes);
 	m_glfuncs.glEnableVertexAttribArray(0);
-	m_glfuncs.glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Point3f), reinterpret_cast<void*>(0));
+	m_glfuncs.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), reinterpret_cast<void*>(0));
 	m_glfuncs.glEnableVertexAttribArray(1);
-	m_glfuncs.glVertexAttribPointer(1, 3, GL_FLOAT,GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
+	m_glfuncs.glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
 	m_glfuncs.glEnableVertexAttribArray(2);
-	m_glfuncs.glVertexAttribPointer(2, 2, GL_FLOAT,GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes+normalBytes));
+	m_glfuncs.glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
 
 	m_ebo.create();
 	m_ebo.bind();
@@ -220,11 +229,19 @@ m_ebo(QOpenGLBuffer::IndexBuffer)
 	m_vbo.release();
 	//Note ::Don't unbind the ebo before unbinding vao
 	m_created = true;
+
+	return true;
 }
 
-void TriangleMesh::setPolyMode(bool enable) {
-	m_poly = enable;
+void TriangleMesh::destoryGLResources()
+{
+	m_vao.destroy();
+	m_vbo.destroy();
+	m_ebo.destroy();
+
 }
+
+
 
 void TriangleMesh::render(){
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);

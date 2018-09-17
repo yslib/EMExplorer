@@ -2,6 +2,7 @@
 
 #include <QGroupBox>
 #include <QBoxLayout>
+#include <QListView>
 #include <QComboBox>
 #include <QLabel>
 #include <QSpinBox>
@@ -149,11 +150,23 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	vLayout->addLayout(hLayout);
 	m_renderOptionGroup->setLayout(vLayout);
 
+	m_markListGroup = new QGroupBox(QStringLiteral("Mark List"));
+
+	m_markListView = new QListView(this);
+	vLayout = new QVBoxLayout;
+	vLayout->addWidget(m_markListView);
+	m_markListGroup->setLayout(vLayout);
 
 	vLayout = new QVBoxLayout;
 	vLayout->addWidget(m_volumeInfoGroup);
 	vLayout->addWidget(m_lightingGroup);
 	vLayout->addWidget(m_renderOptionGroup);
+	vLayout->addWidget(m_markListGroup);
 	vLayout->addStretch();
 	setLayout(vLayout);
+}
+
+void RenderParameterWidget::setMarkModel(QAbstractItemModel* model) 
+{
+	m_markListView->setModel(model);
 }

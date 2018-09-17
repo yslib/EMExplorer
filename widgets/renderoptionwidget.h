@@ -3,6 +3,8 @@
 #include <QWidget>
 #include <QVector3D>
 
+class QAbstractItemModel;
+class MarkModel;
 QT_BEGIN_NAMESPACE
 class QGroupBox;
 class QLabel;
@@ -10,6 +12,8 @@ class QDoubleSpinBox;
 class QCheckBox;
 class QPushButton;
 class QComboBox;
+class QListWidget;
+class QListView;
 QT_END_NAMESPACE
 
 
@@ -56,6 +60,7 @@ public:
 	QSize sizeHint() const Q_DECL_OVERRIDE { return { 250,500 }; }
 	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 250,300 }; }
 	const RenderOptions * options()const { return m_renderOptions.data(); }
+	void setMarkModel(QAbstractItemModel * model);
 	~RenderParameterWidget(){}
 signals:
 	emit void optionsChanged();
@@ -63,13 +68,11 @@ private:
 	//void connectWith(VolumeWidget * widget);
 	//void disconnectWith(VolumeWidget * widget);
 
-	QScopedPointer<RenderOptions>					    m_renderOptions;
 
-	QSharedPointer<RenderOptions>						m_options;
+	QScopedPointer<RenderOptions>					    m_renderOptions;
 
 	QGroupBox *m_volumeInfoGroup;
 	QLabel    *m_volumeSizeLabel;
-
 	QLabel    *m_volumeSpacingLabel;
 
 	QDoubleSpinBox *m_xSpacingSpinBox;
@@ -88,4 +91,8 @@ private:
 	QGroupBox *m_renderOptionGroup;
 	QLabel *m_renderTypeLabel;
 	QComboBox *m_renderTypeCCBox;
+
+	QGroupBox *m_markListGroup;
+	QListView * m_markListView;
+
 };

@@ -85,6 +85,9 @@ void RenderWidget::initializeGL()
 
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
+
+	for (auto & item : m_markMeshes)
+		item->initializeGLResources();
 }
 
 //#define EXPORT_FBO_IMG
@@ -113,6 +116,10 @@ void RenderWidget::paintGL()
 			m_volume->sliceMode(true);
 		m_volume->render();
 	}
+
+	for (auto & mesh : m_markMeshes)
+		mesh.reset();
+
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent* event)
@@ -177,6 +184,13 @@ void RenderWidget::updateMarkMesh() {
 }
 
 
+void RenderWidget::updateMarkMeshVisibility(const QModelIndex & begin, const QModelIndex& end, const QVector<int>& roles) 
+{
+	auto p = static_cast<TreeItem*>(begin.internalPointer());
+	if (p == nullptr)
+		return;
+
+}
 
 void RenderWidget::updateVolumeData()
 {
@@ -214,7 +228,16 @@ void RenderWidget::updateVolumeData()
 
 void RenderWidget::updateMarkData()
 {
-	return;
+	if(m_parameterWidget != nullptr) 
+	{
+		m_parameterWidget->setMarkModel(m_markModel);
+	}
+	if(m_markModel != nullptr) 
+	{
+		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::updateMarkMeshVisibility);
+	}
+	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::updateMarkMeshVisibility);
+
 }
 
 void RenderWidget::initializeShaders()
@@ -242,8 +265,8 @@ void RenderWidget::cleanup()
 
 	m_volume->destoryGLResources();
 
-	//for (auto & mesh : m_markMeshes)
-	//	mesh.reset();
+	for (auto & mesh : m_markMeshes)
+		mesh.reset();
 
 	doneCurrent();
 }

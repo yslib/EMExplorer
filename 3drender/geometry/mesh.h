@@ -39,20 +39,33 @@ public:
 		int nTriangles,
 		const Transform3 & trans)noexcept;
 
-	bool isCreated()const { return m_created; }
+	bool initializeGLResources();
+
+	void destoryGLResources();
+
+	bool isCreated()const;
+
 	void setPolyMode(bool enable);
 
-	const Point3f * vertexArray()const{return m_vertices.get();}
+	const Point3f * vertexArray()const;
 
-	int vertexCount()const{return m_nVertex;}
+	int vertexCount()const;
 
-	const int * indexArray()const{return m_vertexIndices.data();}
+	const int * indexArray()const;
 
-	int indexCount()const{return m_nTriangles;}
+	int indexCount()const;
 
-	const Vector3f *normalArray()const {return m_normals.get();}
+	const Vector3f *normalArray()const;
 
 	void render();
 };
+
+inline bool TriangleMesh::isCreated()const { return m_created; }
+inline void TriangleMesh::setPolyMode(bool enable) {m_poly = enable;}
+inline const Point3f * TriangleMesh::vertexArray()const { return m_vertices.get(); }
+inline int TriangleMesh::vertexCount()const { return m_nVertex; }
+inline const int * TriangleMesh::indexArray()const { return m_vertexIndices.data(); }
+inline int TriangleMesh::indexCount()const { return m_nTriangles*3; }
+inline const Vector3f * TriangleMesh::normalArray()const { return m_normals.get();}
 
 #endif // MESH_H

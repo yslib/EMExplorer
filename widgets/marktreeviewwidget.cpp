@@ -58,7 +58,7 @@ void MarkManagerWidget::updateAction()
 		if(d->type() == TreeItemType::Category)
 		{
 			parents.insert(d);
-			m_deleteItems.append(item);
+			m_deleteItems.insert(item);
 		}
 	}
 	foreach(const auto & item,indexes)
@@ -71,7 +71,7 @@ void MarkManagerWidget::updateAction()
 		if (d->type() == TreeItemType::Mark)
 		{
 			if (parents.find(d->parentItem()) == parents.end())
-				m_deleteItems.append(item);
+				m_deleteItems.insert(item);
 		}
 			
 	}
@@ -81,6 +81,14 @@ void MarkManagerWidget::updateAction()
 
 void MarkManagerWidget::onDeleteAction()
 {
+	// Pre-Processing: remove items whose parent has already been the list
+	foreach(const auto & index,m_deleteItems) {
+		auto it = m_deleteItems.find(index.parent());
+		if(it != m_deleteItems.end()) {
+			m_deleteItems.erase(it);
+		}
+	}
+
 	foreach(const auto & index,m_deleteItems)
 	{
 		const auto m = model();
@@ -93,7 +101,7 @@ void MarkManagerWidget::onRenameAction()
 {
 	if (m_renameItem.isValid() == false)
 		return;
-
+	//TODO::
 }
 
 

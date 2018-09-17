@@ -5,6 +5,7 @@
 
 class QAction;
 class QMenu;
+class TreeItem;
 
 class MarkManagerWidget:public QTreeView
 {
@@ -20,7 +21,7 @@ private:
 	QAction * m_markRenameAction;
 	//QAction * m_markUnionAction;
 	QModelIndex m_renameItem;
-	QList<QModelIndex> m_deleteItems;
+	QSet<QModelIndex> m_deleteItems;
 
 	void createMenu();
 	void createAction();

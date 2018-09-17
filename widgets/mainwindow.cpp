@@ -96,6 +96,7 @@ void MainWindow::open()
 	m->deleteLater();
 	auto t = m_imageView->takeSliceModel(sliceModel);
 	m_volumeView->setDataModel(sliceModel);
+	m_volumeView->setMarkModel(m_imageView->markModel());		//Add at 2018.09.17
 	delete t;
 	m_treeView->setModel(m_imageView->markModel());
 	auto d = m_profileView->takeModel(infoModel);
@@ -148,6 +149,8 @@ void MainWindow::openMark()
 
 			auto t = m_imageView->takeMarkModel(newModel, &success);
 			m_treeView->setModel(newModel);
+			//add mark model to 3d renderwidget
+			m_volumeView->setMarkModel(newModel);	//Add at 2018.09.17
 			t->deleteLater();
 			if (success == false)
 			{
@@ -180,6 +183,7 @@ void MainWindow::openMark()
 			bool success;
 			auto t = m_imageView->takeMarkModel(newModel, &success);
 			m_treeView->setModel(newModel);
+			m_volumeView->setMarkModel(newModel);		//Add at 2018.09.17
 			t->deleteLater();
 			if (success == false)
 			{
