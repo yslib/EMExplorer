@@ -8,6 +8,9 @@
 #include "3drender/shader/shaderprogram.h"
 #include "3drender/shader/raycastingshader.h"
 #include "3drender/geometry/slicevolume.h"
+#include "algorithm/triangulate.h"
+#include "globals.h"
+#include "model/markitem.h"
 
 #define GLERROR(str)									\
 	{													\
@@ -32,6 +35,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markM
 	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
 	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
 	connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
+	connect(widget, &RenderParameterWidget::markUpdated,this,&RenderWidget::updateMark);
 }
 
 void RenderWidget::setDataModel(AbstractSliceDataModel * model)
@@ -117,8 +121,9 @@ void RenderWidget::paintGL()
 		m_volume->render();
 	}
 
-	for (auto & mesh : m_markMeshes)
-		mesh.reset();
+	for (auto & mesh : m_markMeshes) {
+		mesh->render();
+	}
 
 }
 
@@ -184,12 +189,31 @@ void RenderWidget::updateMarkMesh() {
 }
 
 
-void RenderWidget::updateMarkMeshVisibility(const QModelIndex & begin, const QModelIndex& end, const QVector<int>& roles) 
-{
-	auto p = static_cast<TreeItem*>(begin.internalPointer());
-	if (p == nullptr)
-		return;
 
+void RenderWidget::updateMark() {
+	qDebug() << "RenderWidget::updateMark";
+	if(m_markModel == nullptr) {
+		qDebug() << "Mark Model is empty";
+		return;
+	}
+	m_markMeshes.clear();
+
+	const auto cates = m_markModel->categoryText();
+	Transform3 trans;
+	trans.setToIdentity();
+
+	for(const auto & c:cates) {
+		const auto mesh = m_markModel->markMesh(c);
+		Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
+		const auto v = mesh->vertices();
+		const auto idx = mesh->indices();
+		const auto nV = mesh->vertexCount();
+		const auto nT = mesh->triangleCount();
+
+		auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v, nullptr, nullptr, nV, idx, nT, trans));
+		ptr->setPolyMode(true);
+		m_markMeshes.push_back(ptr);
+	}
 }
 
 void RenderWidget::updateVolumeData()
@@ -228,29 +252,9 @@ void RenderWidget::updateVolumeData()
 
 void RenderWidget::updateMarkData()
 {
-	if(m_parameterWidget != nullptr) 
-	{
-		m_parameterWidget->setMarkModel(m_markModel);
-	}
-	if(m_markModel != nullptr) 
-	{
-		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::updateMarkMeshVisibility);
-	}
-	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::updateMarkMeshVisibility);
 
+	//triangulate mark to mesh
 }
-
-void RenderWidget::initializeShaders()
-{
-
-}
-
-void RenderWidget::initiliazeTextures()
-{
-
-}
-
-
 
 void RenderWidget::contextMenuAddedHelper(QWidget* widget) {
 
@@ -259,8 +263,6 @@ void RenderWidget::contextMenuAddedHelper(QWidget* widget) {
 void RenderWidget::cleanup()
 {
 	makeCurrent();
-
-
 	m_tfTexture.destroy();
 
 	m_volume->destoryGLResources();

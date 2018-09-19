@@ -14,6 +14,7 @@ class QPushButton;
 class QComboBox;
 class QListWidget;
 class QListView;
+class QPushButton;
 QT_END_NAMESPACE
 
 
@@ -63,7 +64,8 @@ public:
 	void setMarkModel(QAbstractItemModel * model);
 	~RenderParameterWidget(){}
 signals:
-	emit void optionsChanged();
+	void optionsChanged();
+	void markUpdated();
 private:
 	//void connectWith(VolumeWidget * widget);
 	//void disconnectWith(VolumeWidget * widget);
@@ -94,5 +96,8 @@ private:
 
 	QGroupBox *m_markListGroup;
 	QListView * m_markListView;
+
+	QGroupBox *m_meshGroup;
+	QPushButton * m_meshUpdateButton;
 
 };

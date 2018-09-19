@@ -1,4 +1,5 @@
 #include "renderoptionwidget.h"
+#include "renderwidget.h"
 
 #include <QGroupBox>
 #include <QBoxLayout>
@@ -6,7 +7,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QSpinBox>
-#include "renderwidget.h"
+#include <QPushButton>
 
 
 RenderParameterWidget::RenderParameterWidget(QWidget* parent)
@@ -65,9 +66,6 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	m_ambientSpinBox->setRange(0, 1.0);
 	m_ambientSpinBox->setValue(m_renderOptions->ambient);
 	m_ambientSpinBox->setSingleStep(0.01);
-	//
-	//TODO:: connect with related update function in volumeWidget
-	// 
 	connect(m_ambientSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {m_renderOptions->ambient = value; emit optionsChanged(); });
 
 
@@ -82,9 +80,6 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	m_diffuseSpinBox->setRange(0, 1.0);
 	m_diffuseSpinBox->setValue(m_renderOptions->diffuse);
 	m_diffuseSpinBox->setSingleStep(0.01);
-	//
-	// TODO::connect with realted update function in volumeWidget
-	// 
 	connect(m_ambientSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {m_renderOptions->diffuse = value; emit optionsChanged(); });
 	hLayout->addWidget(m_diffuseLabel);
 	hLayout->addWidget(m_diffuseSpinBox);
@@ -98,9 +93,6 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	m_shininessSpinBox->setRange(0, 100);
 	m_shininessSpinBox->setValue(m_renderOptions->shininess);
 	m_shininessSpinBox->setSingleStep(1);
-	//
-	//TODO::connect with related update function in volumeWidget
-	//
 	connect(m_shininessSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {m_renderOptions->shininess = value; emit optionsChanged(); });
 	hLayout->addWidget(m_shininessLabel);
 	hLayout->addWidget(m_shininessSpinBox);
@@ -113,9 +105,6 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	m_specularSpinBox->setRange(0, 1.0);
 	m_specularSpinBox->setValue(m_renderOptions->specular);
 	m_specularSpinBox->setSingleStep(0.01);
-	//
-	// TODO::connect with related update function in volumeWidget
-	// 
 	connect(m_specularSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {m_renderOptions->specular = value; emit optionsChanged(); });
 	hLayout->addWidget(m_specularLabel);
 	hLayout->addWidget(m_specularSpinBox);
@@ -131,7 +120,6 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	m_renderTypeCCBox->addItem(QStringLiteral("DVR"));
 	m_renderTypeCCBox->addItem(QStringLiteral("Mark FillMesh with Slice"));
 	m_renderTypeCCBox->addItem(QStringLiteral("Mark LineMesh with Slice"));
-	
 
 	connect(m_renderTypeCCBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [this](const QString & text) {
 		if(text == QStringLiteral("DVR")) {
@@ -149,19 +137,29 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	hLayout->addWidget(m_renderTypeCCBox);
 	vLayout->addLayout(hLayout);
 	m_renderOptionGroup->setLayout(vLayout);
-
 	m_markListGroup = new QGroupBox(QStringLiteral("Mark List"));
-
 	m_markListView = new QListView(this);
 	vLayout = new QVBoxLayout;
 	vLayout->addWidget(m_markListView);
 	m_markListGroup->setLayout(vLayout);
+
+
+	m_meshGroup = new QGroupBox(QStringLiteral("Mesh"));
+	m_meshUpdateButton = new QPushButton(QStringLiteral("Update Mesh"));
+	connect(m_meshUpdateButton, &QPushButton::clicked, this,&RenderParameterWidget::markUpdated);
+	vLayout = new QVBoxLayout;
+	vLayout->addWidget(m_meshUpdateButton);
+	m_meshGroup->setLayout(vLayout);
+
+	/// Add New Widget above
+
 
 	vLayout = new QVBoxLayout;
 	vLayout->addWidget(m_volumeInfoGroup);
 	vLayout->addWidget(m_lightingGroup);
 	vLayout->addWidget(m_renderOptionGroup);
 	vLayout->addWidget(m_markListGroup);
+	vLayout->addWidget(m_meshGroup);
 	vLayout->addStretch();
 	setLayout(vLayout);
 }

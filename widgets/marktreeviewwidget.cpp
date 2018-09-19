@@ -3,7 +3,17 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QDebug>
+
 #include "model/treeitem.h"
+#include "model/markmodel.h"
+#include "model/markitem.h"
+#include "algorithm/triangulate.h"
+
+#include <QGraphicsItem>
+#include "globals.h"
+
+
+#include <iostream>
 
 MarkManagerWidget::MarkManagerWidget(QWidget * parent) :QTreeView(parent)
 {
@@ -34,9 +44,19 @@ void MarkManagerWidget::createAction()
 
 	connect(m_markDeleteAction, &QAction::triggered, this, &MarkManagerWidget::onDeleteAction);
 	connect(m_markRenameAction, &QAction::triggered, this, &MarkManagerWidget::onRenameAction);
-
 }
 
+
+
+
+/**
+ * \brief This function will be call at every time the context menu is run
+ *		  First, It will check the number of the selected items in the model 
+ *		  to determine whether the actions should be enabled.
+ *		  1) Rename action would be enabled only if there is one selected item.
+ *		  2) Delete action would be enabled if at least one item be selected.
+ *		  
+ */
 void MarkManagerWidget::updateAction()
 {
 	m_renameItem = QModelIndex();
@@ -59,6 +79,9 @@ void MarkManagerWidget::updateAction()
 		{
 			parents.insert(d);
 			m_deleteItems.insert(item);
+
+
+
 		}
 	}
 	foreach(const auto & item,indexes)
@@ -75,12 +98,15 @@ void MarkManagerWidget::updateAction()
 		}
 			
 	}
+
 	m_markDeleteAction->setEnabled(deletionEnable);
 	m_markRenameAction->setEnabled(renameEnable);
 }
 
 void MarkManagerWidget::onDeleteAction()
 {
+	std::cout << "Delete Action";
+
 	// Pre-Processing: remove items whose parent has already been the list
 	foreach(const auto & index,m_deleteItems) {
 		auto it = m_deleteItems.find(index.parent());
@@ -103,5 +129,7 @@ void MarkManagerWidget::onRenameAction()
 		return;
 	//TODO::
 }
+
+
 
 

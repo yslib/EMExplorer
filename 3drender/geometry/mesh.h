@@ -31,12 +31,12 @@ class TriangleMesh {
 	bool m_poly;
 
 public:
-	TriangleMesh(const Point3f * vertices,
-		const Vector3f * normals,
-		const Point2f * textures,
-		int nVertex,
-		const int * vertexIndices,
-		int nTriangles,
+	TriangleMesh(const Point3f * vertices,		// Vertex array
+		const Vector3f * normals,				// Normal vector array
+		const Point2f * textures,				// Texture coordinates array
+		int nVertex,							// The number of vertex the triangle mesh has
+		const int * vertexIndices,				// Vertex index array
+		int nTriangles,							// The number of triangle the mesh has
 		const Transform3 & trans)noexcept;
 
 	bool initializeGLResources();

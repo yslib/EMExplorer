@@ -174,11 +174,8 @@ m_nTriangles(nTriangles),
 m_created(false),
 m_ebo(QOpenGLBuffer::IndexBuffer)
 {
-
-
-
 	m_vertices.reset(new Point3f[nVertex]);
-	for(int i=0;i<nVertex;i++)  m_vertices[i] = trans * vertices[i];
+	for(int i=0;i<nVertex;i++)  m_vertices[i] = trans * vertices[i];	//Wrong??
 
 	int  normalBytes = 0;
 	int textureBytes = 0;
@@ -189,13 +186,9 @@ m_ebo(QOpenGLBuffer::IndexBuffer)
 	}
 	if(textures != nullptr) {
 		textureBytes = m_nVertex * sizeof(Point2f);
-
 		m_textures.reset(new Point2f[nVertex]);
 		std::memcpy(m_textures.get(), textures,nVertex * sizeof(Point2f));
 	}
-
-
-	
 }
 
 bool TriangleMesh::initializeGLResources()
@@ -238,7 +231,6 @@ void TriangleMesh::destoryGLResources()
 	m_vao.destroy();
 	m_vbo.destroy();
 	m_ebo.destroy();
-
 }
 
 

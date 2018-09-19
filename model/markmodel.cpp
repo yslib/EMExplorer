@@ -9,6 +9,7 @@
 #include <QScopedPointer>
 #include <QPainter>
 #include "categoryitem.h"
+#include "algorithm/triangulate.h"
 
 /*
 *New data Model
@@ -56,7 +57,11 @@ QModelIndex MarkModel::modelIndexHelper(const QModelIndex& root, const QString& 
 }
 QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 {
-	int c = rowCount();
+	/*
+	 * This can be implement by a hash table, which is more efficient.
+	 */
+
+	int c = rowCount();	//children number of root. It's category				
 	for (int i = 0; i < c; i++)
 	{
 		auto id = index(i, 0);
@@ -145,6 +150,31 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 	mark->setVisible(visible);
 	setDirty();
 }
+bool MarkModel::updateMeshMarkHelper(const QString& cate)
+{
+	QList<StrokeMarkItem*> meshMark;
+	auto oldMark = MarkModel::marks(cate);
+	for (const auto om : oldMark) {
+		if (om->type() == ItemTypes::StrokeMark) {					// Manually RTTI
+			meshMark << static_cast<StrokeMarkItem*>(om);
+		}
+	}
+	auto item = getItemHelper(categoryIndexHelper(cate));
+
+	auto tri = new Triangulate(meshMark);
+	if (tri == nullptr)
+		return false;
+
+	bool success = tri->triangulate();
+	if (item->columnCount() <= 1)
+	{
+		bool success = item->insertColumns(0, 1);			//Insert one more column
+		if (success == false)
+			return false;
+	}
+	item->setData(1, QVariant::fromValue(QSharedPointer<Triangulate>(tri)));
+	return success;
+}
 void MarkModel::detachFromView()
 {
 	disconnect(this, &MarkModel::modified, m_view, &SliceEditorWidget::markModified);
@@ -194,6 +224,42 @@ QList<QSharedPointer<CategoryItem>> MarkModel::categoryItems() const
 	foreach(const auto & var,data)
 		list<<var.value<__Internal_Categroy_Type_>();
 	return list;
+}
+
+QSharedPointer<CategoryItem> MarkModel::categoryItem(const QString & cate) const
+{
+	const auto i = categoryIndexHelper(cate);
+	auto item = static_cast<TreeItem*>(i.internalPointer());
+	if(item == nullptr)
+		return QSharedPointer<CategoryItem>();
+	Q_ASSERT_X(item->data(0).canConvert<QSharedPointer<CategoryItem>>(), "MarkModel::categoryItem", "convert failed");
+	return item->data(0).value<QSharedPointer<CategoryItem>>();
+}
+
+
+/*
+ * 
+ */
+/**
+ * \brief Note: This function is for testing now, Because it will perform a 
+ *				time-consuming update process every time when it is called.
+ * \param cate 
+ * \return 
+ */
+const Triangulate * MarkModel::markMesh(const QString & cate)
+{
+	updateMeshMarkHelper(cate);			// update every time
+	//Maybe there should be a dirty bit to indicate whether the mesh should be updated. 
+	const auto item = getItemHelper(categoryIndexHelper(cate));
+	if (item == nullptr)
+		return nullptr;
+	const auto & var = item->data(1);			//Mesh should be stored at column 1 of the category node
+	if(var.canConvert<QSharedPointer<Triangulate>>() == true) {
+		//Mesh has been existed
+		//Should be updated?
+		return var.value<QSharedPointer<Triangulate>>().data();
+	}
+	return nullptr;
 }
 
 void MarkModel::initSliceMarkContainerHelper()
@@ -286,10 +352,14 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 	auto item = getItemHelper(i);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::addMark", "insert error");
+
+
 	int n = 0;
 	QList<TreeItem*> list;
 	for (auto m : marks)
 	{
+
+
 		QVector<QVariant> d;
 		m->setData(MarkProperty::Name,category + QString("#%1").arg(r + n++));
 		addMarkInSliceHelper(m);
@@ -297,8 +367,10 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 		list.append(new TreeItem(d, TreeItemType::Mark, nullptr));
 	}
 	item->insertChildren(r, list);		//insert marks at the end
+
 	endInsertRows();
 	setDirty();
+
 }
 
 QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
@@ -308,7 +380,7 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
 	auto item = getItemHelper(id);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::addMark", "insert error");
-	Q_ASSERT_X(item->type() == TreeItemType::Mark,
+	Q_ASSERT_X(item->type() == TreeItemType::Category,			//There should be TreeItemType::Category ???
 		"MarkModel::marks", "type error");
 	QList<QGraphicsItem*> res;
 	for (int i = 0; i < r; i++)
@@ -540,7 +612,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 {
 	if (role == Qt::CheckStateRole && index.column() == 0)
 	{
-		TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+		const auto item = static_cast<TreeItem*>(index.internalPointer());
 		QVariant d = item->data(index.column());
 		switch (item->type())
 		{
@@ -562,7 +634,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 			Q_ASSERT_X(d.canConvert<__Internal_Mark_Type_>(),
 				"MarkModel::setData", "convert failure");
 			auto mark = d.value<__Internal_Mark_Type_>();
-			bool vis = value == Qt::Checked;
+			const auto vis = (value == Qt::Checked);
 			mark->setData(MarkProperty::VisibleState, vis);
 			updateMarkVisibleHelper(mark);		//set dirty
 			emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});

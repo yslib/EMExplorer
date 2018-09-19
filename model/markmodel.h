@@ -7,6 +7,8 @@
 
 #include "model/treeitem.h"
 #include "abstract/abstractslicedatamodel.h"
+#include "algorithm/Triangulate.h"
+#include <QGraphicsItem>
 
 //#include <QDataStream>
 
@@ -20,8 +22,20 @@ class TreeItem;
 class CategoryItem;
 
 
+/*
+ * Data storage specification:
+ * 1) Category name is stored at 0 column
+ * 2) Mark Item is stored at 0 column
+ * 3) Mark Mesh is stored at 1 column of Category node 
+ */
+
 class MarkModel :public QAbstractItemModel
 {
+
+	enum {
+		MeshRole = Qt::ItemDataRole::UserRole + 1
+	};
+
 	typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
 	typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
 	typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
@@ -51,9 +65,13 @@ class MarkModel :public QAbstractItemModel
 	void addMarkInSliceHelper(QGraphicsItem * mark);				//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);
 	void updateMarkVisibleHelper(__Internal_Mark_Type_& mark);			//set dirty
+	bool updateMeshMarkHelper(const QString& cate);
 	void detachFromView();
 
+
 	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
+
+
 	void initSliceMarkContainerHelper();
 	void createContextMenu();
 
@@ -61,6 +79,7 @@ class MarkModel :public QAbstractItemModel
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
 	const MarkSliceList & frontSliceVisibleMarks()const { return m_frontSliceVisibleMarks; }
+
 	MarkModel(AbstractSliceDataModel * dataModel,SliceEditorWidget * view,TreeItem * root ,QObject * parent = nullptr);
 	enum {MagicNumber = 1827635234};
 
@@ -103,16 +122,18 @@ public:
 	QList<QGraphicsItem*> marks()const;			//This is time-consuming operation
 	QStringList categoryText()const;
 	QList<QSharedPointer<CategoryItem>> categoryItems()const;
+	QSharedPointer<CategoryItem> categoryItem(const QString & cate)const;
+	const Triangulate * markMesh(const QString & cate);
 
 	bool removeMark(QGraphicsItem* mark);			//set dirty
 	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
 	inline int markCount(const QString & category)const;
-
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
-
 	inline void setDirty();
 	inline bool dirty()const;
 	inline void resetDirty();
+
+	friend class MarkManagerWidget;
 };
 
 

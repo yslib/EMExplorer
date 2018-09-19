@@ -59,15 +59,11 @@ public slots:
 	void			setRightSlice(int value) { m_rightSlice = value; update(); }
 	void			setFrontSlice(int value) { m_frontSlice = value; update(); }
 private slots:
-	void updateMarkMeshVisibility(const QModelIndex& begin,const QModelIndex& end,const QVector<int> & roles);
-
+	void updateMark();
 private:
 	using ShaderHash = QHash<QString, QSharedPointer<ShaderProgram>>;
 	void			updateVolumeData();
 	void			updateMarkData();
-	void			initializeShaders();
-	void			initiliazeTextures();
-	void			cubeInitilized();
 	void			contextMenuAddedHelper(QWidget * widget);
 	void			cleanup();
 
@@ -99,6 +95,8 @@ private:
 	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
 
 	QScopedPointer<SliceVolume>				m_volume;
+
+
 
 	friend class RenderParameterWidget;
 	friend class SliceVolume;

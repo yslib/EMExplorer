@@ -1,12 +1,12 @@
 #ifndef TRIANGULATE_H
 #define TRIANGULATE_H
 
-#include <QPolygon>
 #include <QPolygonF>
 #include <QVector3D>
 
 
 class StrokeMarkItem;
+class QGraphicsItem;
 
 class Triangulate
 {
@@ -14,25 +14,39 @@ class Triangulate
 	QVector<QVector<int>>	   m_levelIndices;
 	QVector<int>               m_resultIndices;
 	double					   m_spacing;
+	int						   m_vertexCount;
+	int						   m_triangleCount;
+	bool					   m_ready;
 public:
-	Triangulate(const QVector<StrokeMarkItem*> marks);
-	const float * vertices()const;
+	Triangulate();
+	Triangulate(const QList<StrokeMarkItem *> marks);
+	const QVector3D * vertices()const;
 	const int * indices()const;
+	int vertexCount()const;
+	int triangleCount()const;
+	bool isReady()const;
 	bool triangulate();
 private:
-	void initVertex(const QVector<StrokeMarkItem*> & marks);
+	void initVertex(const QList<StrokeMarkItem*>& marks);
 	void subdivisionTriangle(int vi, const int * others,int size);
 	void triangulateTetragonum(int vi1, int vi2, int vi3, int vi4);
 	void translateVertex(int vi,QVector<int> & others);
 	const int * properPointer(const QVector<int> & vec, int startIndex, int length, int * buffer);
-
 };
 
-inline const float * Triangulate::vertices()const { return reinterpret_cast<const float*>(m_allVertices.constData()); }
-inline const int * Triangulate::indices()const {
+inline const QVector3D * Triangulate::vertices()const { return (m_allVertices.constData()); }
+inline const int * Triangulate::indices()const 
+{
 	Q_ASSERT_X(m_resultIndices.size() % 3 == 0, "Triangulate::indices", "Not a triangle mesh.");
+	Q_ASSERT_X(m_resultIndices.size() == m_triangleCount * 3, "Triangulate::indices", "Triangle Number Error");
 	return m_resultIndices.constData();
 }
+inline int Triangulate::vertexCount() const {return  m_vertexCount;}
+inline int Triangulate::triangleCount() const {return m_triangleCount;}
+inline bool Triangulate::isReady() const {return m_ready;}
+
+Q_DECLARE_METATYPE(Triangulate);			//
+Q_DECLARE_METATYPE(QSharedPointer<Triangulate>);
 
 
 inline auto & tanslateVector(const QVector<QPointF> & vec, int start, int index) {

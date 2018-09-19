@@ -46,15 +46,16 @@ namespace MarkProperty
 {
 	enum Property
 	{
-		Color,
-		CategoryColor,
-		Name,
-		CategoryName,
-		SliceIndex,
-		SliceType,
-		VisibleState,
-		Length,
-		PropertyInfo
+		Color,					//Mark Color
+		CategoryColor,			//color of category the mark belongs to
+		Name,					//Mark name
+		CategoryName,			//Name of category the mark belongs to
+		SliceIndex,				//Index of slice the mark belongs to
+		SliceType,				//Type of the slice the mark belongs to
+		VisibleState,			//Visibility of the mark
+		Length,					//Length of the mark
+		PropertyInfo,			//Info of the mark
+		Mesh					//Mesh of the mark
 	};
 }
 
