@@ -46,53 +46,43 @@ void triangulate(const QVector<QPoint>& upper, const QVector<QPoint>& lower,floa
 
 bool Triangulate::triangulate() {
 	const auto nSlice = m_levelIndices.size();
-	Q_ASSERT_X(nSlice >= 2, "Triangulate::triangulate", "unadquate slices");
-	//if(nSlice < 2) return false;
-
+	Q_ASSERT_X(nSlice >= 2, "Triangulate::triangulate", "nSlice >= 2");
+	if(nSlice < 2) return false;
 	for(int s = 0 ;s<nSlice-1;s++) {
-		auto & firstVI = m_levelIndices[s];
-		auto & secondVI = m_levelIndices[s + 1];
-		auto nFirst = firstVI.size();
-		auto nSecond = secondVI.size();
-
+		auto * firstVI = &m_levelIndices[s];
+		auto * secondVI = &m_levelIndices[s + 1];
+		auto nFirst = firstVI->size();
+		auto nSecond = secondVI->size();
 		Q_ASSERT_X(nFirst > 0, "Triangulate::triangulate", "nFrist > 0");
 		Q_ASSERT_X(nSecond > 0, "Triangulate::triangulate", "nSecond > 0");
-
-
 		if(nFirst > nSecond) {
-			secondVI = firstVI;
-			firstVI = m_levelIndices[s + 1];
-			nSecond = nFirst;
+			secondVI = &m_levelIndices[s];
+			firstVI = &m_levelIndices[s + 1];
+			nSecond = m_levelIndices[s].size();
 			nFirst = m_levelIndices[s + 1].size();
 		}
-
 		//The numbers of vertex of two adjacent slice should not be 1 at the same time.
 		Q_ASSERT_X(nFirst != 1 && nSecond != 1, "Triangulate::triangulate", "nFirst != 1 && nSecond != 1");
 		const auto p = ((nSecond - 1) / static_cast<double>(nFirst));		
-
-		translateVertex(firstVI[0], secondVI);
-
+		translateVertex((*firstVI)[0], *secondVI);
 		auto j = 0.0;
 		for(auto i = 0 ;i < nFirst ;i++){
 			Q_ASSERT_X(j <= nSecond, "Triangulate::triangulate", "j <= nSencond failed");
 			const auto beginIndex = static_cast<int>(std::ceil(j)), endIndex = static_cast<int>(std::floor(j + p));
 			const auto num = endIndex - beginIndex + 1;
 			const auto nextBeginIndex = static_cast<int>(std::ceil(j + p));
-
-			std::cout << j << " " << j + p << " " << beginIndex << " " << endIndex << " " << nextBeginIndex << std::endl;
 			Q_ASSERT_X(beginIndex < nSecond, "Triangulate::triangulate", "beginIndex < nSecond");
 			Q_ASSERT_X(endIndex< nSecond, "Triangulate::triangulate", "endIndex < nSecond");
-			subdivisionTriangle(firstVI[i], secondVI.constData() + beginIndex, num);
+			subdivisionTriangle((*firstVI)[i], secondVI->constData() + beginIndex, num);
 			if (i == nFirst - 1) {		// Do clothing
-				triangulateTetragonum(firstVI[i], *(secondVI.constData() + endIndex), *(secondVI.constData()), firstVI[0]);
+				triangulateTetragonum((*firstVI)[i], *(secondVI->constData() + endIndex), *(secondVI->constData()), (*firstVI)[0]);
 			}
 			else {
-				triangulateTetragonum(firstVI[i], *(secondVI.constData() + endIndex), *(secondVI.constData() + nextBeginIndex), firstVI[i + 1]);
+				triangulateTetragonum((*firstVI)[i], *(secondVI->constData() + endIndex), *(secondVI->constData() + nextBeginIndex), (*firstVI)[i + 1]);
 			}
 			j += p;		//Segment advance
 		}
 	}
-
 	return (m_ready = true);
 }
 
@@ -105,8 +95,12 @@ void Triangulate::initVertex(const QList<StrokeMarkItem*>& marks) {
 	m_triangleCount = 0;
 	m_ready = false;
 
+	auto copyMarks = marks;
+	std::sort(copyMarks.begin(), copyMarks.end(), [](const StrokeMarkItem* m1, const StrokeMarkItem *m2) {
+		return m1->data(MarkProperty::SliceIndex).value<int>() < m2->data(MarkProperty::SliceIndex).value<int>();
+	});
 	for(int i=0;i<markCount;i++) {
-		const auto & poly = marks[i]->polygon();
+		const auto & poly = copyMarks[i]->polygon();
 		const auto n = poly.size();
 		m_levelIndices[i].resize(n);
 		for(int j=0;j<n;j++) {
@@ -115,6 +109,7 @@ void Triangulate::initVertex(const QList<StrokeMarkItem*>& marks) {
 		}
 		m_vertexCount += n;
 	}
+
 	m_resultIndices.clear();
 }
 

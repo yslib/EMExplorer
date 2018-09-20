@@ -12,6 +12,10 @@
 #include "globals.h"
 #include "model/markitem.h"
 
+
+
+
+
 #define GLERROR(str)									\
 	{													\
 		GLenum err;										\
@@ -201,6 +205,7 @@ void RenderWidget::updateMark() {
 	const auto cates = m_markModel->categoryText();
 	Transform3 trans;
 	trans.setToIdentity();
+	trans.scale(0.001, 0.001, 0.001);
 
 	for(const auto & c:cates) {
 		const auto mesh = m_markModel->markMesh(c);
@@ -212,6 +217,9 @@ void RenderWidget::updateMark() {
 
 		auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v, nullptr, nullptr, nV, idx, nT, trans));
 		ptr->setPolyMode(true);
+		makeCurrent();
+		ptr->initializeGLResources();
+		doneCurrent();
 		m_markMeshes.push_back(ptr);
 	}
 }
@@ -232,10 +240,7 @@ void RenderWidget::updateVolumeData()
 	m_world.setToIdentity();
 	m_world.scale(m_scale);
 	m_world.translate(m_trans);
-
-
 	m_volume.reset(new SliceVolume(m_dataModel, VolumeFormat(), this));
-
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();

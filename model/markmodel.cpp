@@ -4,7 +4,6 @@
 #include "abstract/abstractslicedatamodel.h"
 #include "markitem.h"
 #include "model/treeitem.h"
-#include <QStyleOptionGraphicsItem>
 #include <QStyledItemDelegate>
 #include <QScopedPointer>
 #include <QPainter>
@@ -168,10 +167,11 @@ bool MarkModel::updateMeshMarkHelper(const QString& cate)
 	bool success = tri->triangulate();
 	if (item->columnCount() <= 1)
 	{
-		bool success = item->insertColumns(0, 1);			//Insert one more column
+		bool success = item->insertColumns(item->columnCount(), 1);			//Insert one more column
 		if (success == false)
 			return false;
 	}
+
 	item->setData(1, QVariant::fromValue(QSharedPointer<Triangulate>(tri)));
 	return success;
 }
@@ -692,7 +692,6 @@ bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
 	TreeItem * item = getItemHelper(parent);
 	bool success = true;
-
 	beginRemoveRows(parent, row, row + count - 1);
 	success = item->removeChildren(row, count);
 	endRemoveRows();

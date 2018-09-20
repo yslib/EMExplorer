@@ -2,12 +2,9 @@
 #define MARKMODEL_H
 
 #include <QAbstractItemModel>
-#include <QSharedPointer>
-#include <QColor>
 
 #include "model/treeitem.h"
 #include "abstract/abstractslicedatamodel.h"
-#include "algorithm/Triangulate.h"
 #include <QGraphicsItem>
 
 //#include <QDataStream>
@@ -20,6 +17,7 @@ class SliceEditorWidget;
 class AbstractSliceDataModel;
 class TreeItem;
 class CategoryItem;
+class Triangulate;
 
 
 /*

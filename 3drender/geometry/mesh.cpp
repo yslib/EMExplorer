@@ -202,8 +202,8 @@ bool TriangleMesh::initializeGLResources()
 	int  vertexBytes = m_nVertex * sizeof(Point3f);
 	int  indexBytes = m_nTriangles * 3 * sizeof(int);
 
-	int normalBytes = m_nVertex * sizeof(Vector3f);
-	int textureBytes = m_nVertex * sizeof(Point2f);
+	int normalBytes = m_normals != nullptr? m_nVertex * sizeof(Vector3f):0;
+	int textureBytes = m_textures != nullptr?m_nVertex * sizeof(Point2f):0;
 
 	m_vbo.allocate(vertexBytes + normalBytes + textureBytes);
 	m_vbo.write(0, m_vertices.get(), vertexBytes);
@@ -211,10 +211,14 @@ bool TriangleMesh::initializeGLResources()
 	m_vbo.write(vertexBytes + normalBytes, m_textures.get(), textureBytes);
 	m_glfuncs.glEnableVertexAttribArray(0);
 	m_glfuncs.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), reinterpret_cast<void*>(0));
-	m_glfuncs.glEnableVertexAttribArray(1);
-	m_glfuncs.glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
-	m_glfuncs.glEnableVertexAttribArray(2);
-	m_glfuncs.glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
+	if(normalBytes != 0) {
+		m_glfuncs.glEnableVertexAttribArray(1);
+		m_glfuncs.glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
+	}else if(textureBytes != 0){
+		m_glfuncs.glEnableVertexAttribArray(2);
+		m_glfuncs.glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
+	}
+
 
 	m_ebo.create();
 	m_ebo.bind();
