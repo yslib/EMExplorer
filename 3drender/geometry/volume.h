@@ -69,9 +69,9 @@ class GPUVolume :public Volume
 	QMatrix4x4 m_trans;
 public:
 	GPUVolume() :Volume(nullptr, 0, 0, 0) { m_trans.setToIdentity(); }
-	GPUVolume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat & fmt = VolumeFormat());
+	GPUVolume(const void * data, int xSize, int ySize, int zSize,const QMatrix4x4 &trans,const VolumeFormat & fmt = VolumeFormat());
 	virtual bool initializeGLResources() = 0;
-	virtual void destoryGLResources()=0;
+	virtual void destroyGLResources()=0;
 	void setTransform(const QMatrix4x4 & trans);
 	QMatrix4x4 transform()const;
 	virtual bool render()=0;

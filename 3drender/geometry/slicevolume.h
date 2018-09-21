@@ -19,17 +19,14 @@ class RenderWidget;
 class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 {
 	Q_OBJECT
-
 	QScopedPointer<PositionShader>			m_positionShader;
 	QOpenGLBuffer							m_positionVBO;
 	QOpenGLBuffer							m_positionEBO;
 	QOpenGLVertexArrayObject				m_positionVAO;
 	QScopedPointer<QOpenGLFramebufferObject>m_fbo;
-
 	QSharedPointer<RayCastingShader>		m_currentShader;
 	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
 	QOpenGLBuffer							m_rayCastingTextureVBO;
-
 	QScopedPointer<SliceShader>			    m_sliceShader;
 	QOpenGLBuffer							m_axisAlignedSliceVBO;
 	QOpenGLVertexArrayObject				m_axisAlignedSliceVAO;
@@ -41,11 +38,8 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	int										m_frontSlice;
 	RenderWidget							*m_renderer;
 	bool									m_sliceMode;
-
 	void loadDataAndGradientToTexture();
-
 	const AbstractSliceDataModel*					m_dataModel;
-
 
 public://ShaderDataInterface
 	unsigned int volumeTexId() const override;
@@ -71,10 +65,13 @@ public://ShaderDataInterface
 	QVector3D volumeBound() const override;
 	QSize windowSize() const override;
 public:
-	SliceVolume(const AbstractSliceDataModel * data, const VolumeFormat & fmt = VolumeFormat(), RenderWidget * renderer = nullptr);
+	SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans,
+		const VolumeFormat & fmt = VolumeFormat(),
+		RenderWidget * renderer = nullptr);
+
 	void setRenderWidget(RenderWidget * widget);
 	bool initializeGLResources() override;
-	void destoryGLResources() override;
+	void destroyGLResources() override;
 
 	bool render()override;
 	void sliceMode(bool enable);

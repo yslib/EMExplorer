@@ -1,9 +1,8 @@
 #include "mesh.h"
-
+#include "widgets/renderwidget.h"
+#include "widgets/renderoptionwidget.h"
 
 const static int faceIndex[] = { 1, 3, 7, 5, 0, 4, 6, 2, 2, 6, 7, 3, 0, 1, 5, 4, 4, 5, 7, 6, 0, 2, 3, 1 };
-
-
 static const float xCoord = 1.0, yCoord = 1.0, zCoord = 1.0;
 static float positionVert[] = {
 	0,0,0,
@@ -16,162 +15,29 @@ static float positionVert[] = {
 	xCoord, yCoord, zCoord ,
 };
 
-const static int triIndex[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35 };
-
-static QVector<QVector2D> cubeTex = {
-	{ 0.f,0.f },{ 1.0f,0.f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-};
-
-static QVector<QVector3D> cubeNor = {
-	{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-};
 
 
-static QVector<QVector3D> cubeVertex =
-{
-	//back
-	{ 0.5f, -0.5f, -0.5f },
-{ -0.5f, -0.5f, -0.5f },
-{ 0.5f,  0.5f, -0.5f },
-{ -0.5f,  0.5f, -0.5f } ,
-{ 0.5f,  0.5f, -0.5f } ,
-{ -0.5f, -0.5f, -0.5f } ,
-//front
-{ -0.5f, -0.5f,  0.5f },
-{ 0.5f, -0.5f,  0.5f },
-{ 0.5f,  0.5f,  0.5f },
-{ 0.5f,  0.5f,  0.5f },
-{ -0.5f,  0.5f,  0.5f },
-{ -0.5f, -0.5f,  0.5f },
-//left
-{ -0.5f,  0.5f,  0.5f },
-{ -0.5f,  0.5f, -0.5f },
-{ -0.5f, -0.5f, -0.5f },
-{ -0.5f, -0.5f, -0.5f },
-{ -0.5f, -0.5f,  0.5f },
-{ -0.5f,  0.5f,  0.5f },
-//right
-{ 0.5f,  0.5f, -0.5f },
-{ 0.5f,  0.5f,  0.5f },
-{ 0.5f, -0.5f, -0.5f } ,
-{ 0.5f, -0.5f,  0.5f } ,
-{ 0.5f, -0.5f, -0.5f } ,
-{ 0.5f,  0.5f,  0.5f } ,
-//bottom
-{ -0.5f, -0.5f, -0.5f },
-{ 0.5f, -0.5f, -0.5f },
-{ 0.5f, -0.5f,  0.5f },
-{ 0.5f, -0.5f,  0.5f } ,
-{ -0.5f, -0.5f,  0.5f } ,
-{ -0.5f, -0.5f, -0.5f }  ,
-//up
-{ 0.5f,  0.5f, -0.5f }  ,
-{ -0.5f,  0.5f, -0.5f }  ,
-{ 0.5f,  0.5f,  0.5f }  ,
-{ -0.5f,  0.5f,  0.5f } ,
-{ 0.5f,  0.5f,  0.5f } ,
-{ -0.5f,  0.5f, -0.5f }
-};
-
-static QVector<QVector3D> cubeVert =
-{
-	//back
-	{ 0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
-{ -0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
-{ 0.5f,  0.5f, -0.5f },{ 0.f,0.f,-1.f },
-{ -0.5f,  0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
-{ 0.5f,  0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
-{ -0.5f, -0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
-//front
-{ -0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ 0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ 0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ 0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ -0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ -0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
-//left
-{ -0.5f,  0.5f,  0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f,  0.5f, -0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f, -0.5f, -0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f, -0.5f, -0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f, -0.5f,  0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f,  0.5f,  0.5f },{ -1.0f,0.f,0.f },
-//right
-{ 0.5f,  0.5f, -0.5f },{ 1.0f,0.f,0.f },
-{ 0.5f,  0.5f,  0.5f },{ 1.0f,0.f,0.f },
-{ 0.5f, -0.5f, -0.5f } ,{ 1.0f,0.f,0.f },
-{ 0.5f, -0.5f,  0.5f } ,{ 1.0f,0.f,0.f },
-{ 0.5f, -0.5f, -0.5f } ,{ 1.0f,0.f,0.f },
-{ 0.5f,  0.5f,  0.5f } ,{ 1.0f,0.f,0.f },
-//bottom
-{ -0.5f, -0.5f, -0.5f },{ 0.f,-1.f,0.f },
-{ 0.5f, -0.5f, -0.5f },{ 0.f,-1.f,0.f },
-{ 0.5f, -0.5f,  0.5f },{ 0.f,-1.f,0.f },
-{ 0.5f, -0.5f,  0.5f } ,{ 0.f,-1.f,0.f },
-{ -0.5f, -0.5f,  0.5f } ,{ 0.f,-1.f,0.f },
-{ -0.5f, -0.5f, -0.5f }  ,{ 0.f,-1.f,0.f },
-//up
-{ 0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
-{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
-{ 0.5f,  0.5f,  0.5f }  ,{ 0.f,1.f,0.f },
-{ -0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
-{ 0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
-{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
-};
-
+void TriangleMesh::updateShader() {
+	m_shader->bind();
+	const auto option = m_renderer->m_parameterWidget->options();
+	QMatrix4x4 world;
+	world.setToIdentity();
+	m_shader->setUniformValue("viewMatrix", m_renderer->camera().view());
+	m_shader->setUniformValue("projMatrix", m_renderer->m_proj);
+	m_shader->setUniformValue("modelMatrix", world);
+	m_shader->setUniformValue("normalMatrix", m_renderer->m_world.normalMatrix());
+	m_shader->setUniformValue("lightPos",m_renderer->camera().position());
+	m_shader->setUniformValue("viewPos", m_renderer->camera().position());
+	m_shader->setUniformValue("objectColor", QVector3D(0.3,0.6,0.9));
+}
 
 TriangleMesh::TriangleMesh(const Point3f* vertices, const Vector3f* normals, const Point2f* textures, int nVertex,
-	const int* vertexIndices, int nTriangles, const Transform3& trans) noexcept:
+	const int* vertexIndices, int nTriangles, const Transform3& trans,RenderWidget * renderer) noexcept:
 m_nVertex(nVertex),
 m_vertexIndices(vertexIndices, vertexIndices + 3 * nTriangles),
 m_nTriangles(nTriangles),
 m_created(false),
+m_renderer(renderer),
 m_ebo(QOpenGLBuffer::IndexBuffer)
 {
 	m_vertices.reset(new Point3f[nVertex]);
@@ -193,8 +59,20 @@ m_ebo(QOpenGLBuffer::IndexBuffer)
 
 bool TriangleMesh::initializeGLResources()
 {
-	if (m_glfuncs.initializeOpenGLFunctions() == false)
+	if (m_renderer == nullptr)
 		return false;
+	const auto glfuncs = m_renderer->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+	if (glfuncs == nullptr)
+		return false;
+
+	m_shader.reset(new QOpenGLShaderProgram);
+	m_shader->create();
+	//m_shader->bind();
+	m_shader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/mesh_shader_v.glsl");
+	m_shader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/mesh_shader_f.glsl");
+	m_shader->link();
+
+
 	m_vao.create();
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);
 	m_vbo.create();
@@ -209,16 +87,15 @@ bool TriangleMesh::initializeGLResources()
 	m_vbo.write(0, m_vertices.get(), vertexBytes);
 	m_vbo.write(vertexBytes, m_normals.get(), normalBytes);
 	m_vbo.write(vertexBytes + normalBytes, m_textures.get(), textureBytes);
-	m_glfuncs.glEnableVertexAttribArray(0);
-	m_glfuncs.glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), reinterpret_cast<void*>(0));
+	glfuncs->glEnableVertexAttribArray(0);
+	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), reinterpret_cast<void*>(0));
 	if(normalBytes != 0) {
-		m_glfuncs.glEnableVertexAttribArray(1);
-		m_glfuncs.glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
+		glfuncs->glEnableVertexAttribArray(1);
+		glfuncs->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
 	}else if(textureBytes != 0){
-		m_glfuncs.glEnableVertexAttribArray(2);
-		m_glfuncs.glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
+		glfuncs->glEnableVertexAttribArray(2);
+		glfuncs->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
 	}
-
 
 	m_ebo.create();
 	m_ebo.bind();
@@ -226,7 +103,6 @@ bool TriangleMesh::initializeGLResources()
 	m_vbo.release();
 	//Note ::Don't unbind the ebo before unbinding vao
 	m_created = true;
-
 	return true;
 }
 
@@ -235,14 +111,17 @@ void TriangleMesh::destoryGLResources()
 	m_vao.destroy();
 	m_vbo.destroy();
 	m_ebo.destroy();
+	m_shader.reset(nullptr);
 }
 
-
-
-void TriangleMesh::render(){
+bool TriangleMesh::render(){
+	if (m_renderer == nullptr)
+		return false;
+	const auto glfuncs = m_renderer->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+	if (glfuncs == nullptr)
+		return false;
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);
-		m_glfuncs.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		m_glfuncs.glDrawElements(GL_TRIANGLES, m_nTriangles * 3, GL_UNSIGNED_INT, 0);
-		m_glfuncs.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+		//glfuncs->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glfuncs->glDrawElements(GL_TRIANGLES, m_nTriangles * 3, GL_UNSIGNED_INT, 0);
+		//glfuncs->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

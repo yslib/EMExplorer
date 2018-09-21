@@ -99,6 +99,7 @@ private:
 
 
 	friend class RenderParameterWidget;
+	friend class TriangleMesh;
 	friend class SliceVolume;
 };
 

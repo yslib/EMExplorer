@@ -15,6 +15,16 @@ static float positionVert[] = {
 	0, yCoord, zCoord ,
 	xCoord, yCoord, zCoord ,
 };
+//static float positionVert[] = {
+//	-0.5,-0.5,-0.5,
+//	0.5, 1.0, 1.0 ,
+//	0, yCoord, 0 ,
+//	xCoord, yCoord, 0 ,
+//	0, 0, zCoord ,
+//	xCoord, 0, zCoord ,
+//	0, yCoord, zCoord ,
+//	xCoord, yCoord, zCoord ,
+//};
 
 
 void SliceVolume::loadDataAndGradientToTexture() {
@@ -28,9 +38,7 @@ void SliceVolume::loadDataAndGradientToTexture() {
 	const auto z = zLength();
 	const auto y = yLength();
 	const auto x = xLength();
-
 	//auto fmt = format();
-	std::cout << "SliceVolume::loadDataAndGradientToTexture" << std::endl;
 
 	m_gradientTexture.destroy();
 	m_gradientTexture.setMagnificationFilter(QOpenGLTexture::Linear);
@@ -53,7 +61,6 @@ void SliceVolume::loadDataAndGradientToTexture() {
 	m_volumeTexture.allocateStorage();
 	m_volumeTexture.setData(QOpenGLTexture::Red, QOpenGLTexture::UInt8, data());
 
-	std::cout << "SliceVolume::loadDataAndGradientToTexture--2" << std::endl;
 }
 
 unsigned SliceVolume::volumeTexId() const {
@@ -146,33 +153,32 @@ QSize SliceVolume::windowSize() const {
 	return m_renderer->size();
 }
 
-SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const VolumeFormat& fmt, RenderWidget * renderer) :
-	GPUVolume(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount(), fmt)
+SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
+	GPUVolume(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount(), trans,fmt)
 	, m_fbo(nullptr)
 	, m_gradientTexture(QOpenGLTexture::Target3D)
-	, m_volumeTexture(QOpenGLTexture::Target3D)
 	, m_positionVBO(QOpenGLBuffer::VertexBuffer)
+	, m_volumeTexture(QOpenGLTexture::Target3D)
 	, m_positionEBO(QOpenGLBuffer::IndexBuffer)
 	, m_gradCalc(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount())
-	, m_sliceMode(false)
 	, m_renderer(renderer)
+	, m_sliceMode(false)
 	, m_dataModel(data)
 {
 
-	auto z = m_dataModel->topSliceCount();
-	auto y = m_dataModel->rightSliceCount();
-	auto x = m_dataModel->frontSliceCount();
+	//const auto z = m_dataModel->topSliceCount();
+	//const auto y = m_dataModel->rightSliceCount();
+	//const auto x = m_dataModel->frontSliceCount();
 
-	QVector3D scale = QVector3D(x, y, z);
-	scale.normalize();
-	QVector3D trans = QVector3D(0, 0, 0);
-	trans -= scale / 2;
-	QMatrix4x4 world;
-	world.setToIdentity();
-	world.scale(scale);
-	world.translate(trans);
-
-	setTransform(world);
+	//QVector3D scale = QVector3D(x, y, z);
+	//scale.normalize();
+	//QVector3D trans = QVector3D(0, 0, 0);
+	//trans -= scale / 2;
+	//QMatrix4x4 world;
+	//world.setToIdentity();
+	//world.scale(scale);
+	//world.translate(trans);
+	//setTransform(world);
 
 	setRenderWidget(renderer);
 }
@@ -187,9 +193,9 @@ void SliceVolume::setRenderWidget(RenderWidget* widget) {
 
 bool SliceVolume::initializeGLResources() {
 
-	//if (initializeOpenGLFunctions() == false)
-	//	return false;
 
+	if (m_renderer == nullptr)
+		return false;
 	auto glfuncs = m_renderer->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 	if (glfuncs == nullptr)
 		return false;
@@ -245,7 +251,7 @@ bool SliceVolume::initializeGLResources() {
 	loadDataAndGradientToTexture();
 }
 
-void SliceVolume::destoryGLResources()
+void SliceVolume::destroyGLResources()
 {
 	m_positionVAO.destroy();
 	m_positionVBO.destroy();

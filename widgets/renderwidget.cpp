@@ -1,20 +1,164 @@
 #include <QOpenGLShaderProgram>
-#include <QMouseEvent>
 #include <QMenu>
 
 #include "renderwidget.h"
 #include "abstract/abstractslicedatamodel.h"
 #include "model/markmodel.h"
 #include "3drender/shader/shaderprogram.h"
-#include "3drender/shader/raycastingshader.h"
 #include "3drender/geometry/slicevolume.h"
 #include "algorithm/triangulate.h"
 #include "globals.h"
 #include "model/markitem.h"
 
 
+const static int triIndex[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35 };
+
+static QVector<QVector2D> cubeTex = {
+	{ 0.f,0.f },{ 1.0f,0.f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
+};
+
+static QVector<QVector3D> cubeNor = {
+	{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,-1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ 0.f,0.f,1.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ -1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 1.0f,0.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,-1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+{ 0.f,1.f,0.f },
+};
 
 
+static QVector<QVector3D> cubeVertex =
+{
+	//back
+	{ 0.5f, -0.5f, -0.5f },
+{ -0.5f, -0.5f, -0.5f },
+{ 0.5f,  0.5f, -0.5f },
+{ -0.5f,  0.5f, -0.5f } ,
+{ 0.5f,  0.5f, -0.5f } ,
+{ -0.5f, -0.5f, -0.5f } ,
+//front
+{ -0.5f, -0.5f,  0.5f },
+{ 0.5f, -0.5f,  0.5f },
+{ 0.5f,  0.5f,  0.5f },
+{ 0.5f,  0.5f,  0.5f },
+{ -0.5f,  0.5f,  0.5f },
+{ -0.5f, -0.5f,  0.5f },
+//left
+{ -0.5f,  0.5f,  0.5f },
+{ -0.5f,  0.5f, -0.5f },
+{ -0.5f, -0.5f, -0.5f },
+{ -0.5f, -0.5f, -0.5f },
+{ -0.5f, -0.5f,  0.5f },
+{ -0.5f,  0.5f,  0.5f },
+//right
+{ 0.5f,  0.5f, -0.5f },
+{ 0.5f,  0.5f,  0.5f },
+{ 0.5f, -0.5f, -0.5f } ,
+{ 0.5f, -0.5f,  0.5f } ,
+{ 0.5f, -0.5f, -0.5f } ,
+{ 0.5f,  0.5f,  0.5f } ,
+//bottom
+{ -0.5f, -0.5f, -0.5f },
+{ 0.5f, -0.5f, -0.5f },
+{ 0.5f, -0.5f,  0.5f },
+{ 0.5f, -0.5f,  0.5f } ,
+{ -0.5f, -0.5f,  0.5f } ,
+{ -0.5f, -0.5f, -0.5f }  ,
+//up
+{ 0.5f,  0.5f, -0.5f }  ,
+{ -0.5f,  0.5f, -0.5f }  ,
+{ 0.5f,  0.5f,  0.5f }  ,
+{ -0.5f,  0.5f,  0.5f } ,
+{ 0.5f,  0.5f,  0.5f } ,
+{ -0.5f,  0.5f, -0.5f }
+};
+
+static QVector<QVector3D> cubeVert =
+{
+	//back
+	{ 0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
+{ -0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
+{ 0.5f,  0.5f, -0.5f },{ 0.f,0.f,-1.f },
+{ -0.5f,  0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
+{ 0.5f,  0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
+{ -0.5f, -0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
+//front
+{ -0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
+{ 0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
+{ 0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
+{ 0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
+{ -0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
+{ -0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
+//left
+{ -0.5f,  0.5f,  0.5f },{ -1.0f,0.f,0.f },
+{ -0.5f,  0.5f, -0.5f },{ -1.0f,0.f,0.f },
+{ -0.5f, -0.5f, -0.5f },{ -1.0f,0.f,0.f },
+{ -0.5f, -0.5f, -0.5f },{ -1.0f,0.f,0.f },
+{ -0.5f, -0.5f,  0.5f },{ -1.0f,0.f,0.f },
+{ -0.5f,  0.5f,  0.5f },{ -1.0f,0.f,0.f },
+//right
+{ 0.5f,  0.5f, -0.5f },{ 1.0f,0.f,0.f },
+{ 0.5f,  0.5f,  0.5f },{ 1.0f,0.f,0.f },
+{ 0.5f, -0.5f, -0.5f } ,{ 1.0f,0.f,0.f },
+{ 0.5f, -0.5f,  0.5f } ,{ 1.0f,0.f,0.f },
+{ 0.5f, -0.5f, -0.5f } ,{ 1.0f,0.f,0.f },
+{ 0.5f,  0.5f,  0.5f } ,{ 1.0f,0.f,0.f },
+//bottom
+{ -0.5f, -0.5f, -0.5f },{ 0.f,-1.f,0.f },
+{ 0.5f, -0.5f, -0.5f },{ 0.f,-1.f,0.f },
+{ 0.5f, -0.5f,  0.5f },{ 0.f,-1.f,0.f },
+{ 0.5f, -0.5f,  0.5f } ,{ 0.f,-1.f,0.f },
+{ -0.5f, -0.5f,  0.5f } ,{ 0.f,-1.f,0.f },
+{ -0.5f, -0.5f, -0.5f }  ,{ 0.f,-1.f,0.f },
+//up
+{ 0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
+{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
+{ 0.5f,  0.5f,  0.5f }  ,{ 0.f,1.f,0.f },
+{ -0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
+{ 0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
+{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
+};
 
 #define GLERROR(str)									\
 	{													\
@@ -25,9 +169,10 @@
 		}												\
 	}													\
 
-
-
-RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget, QWidget * parent)
+RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
+	MarkModel * markModel,
+	RenderParameterWidget * widget, 
+	QWidget * parent)
 	:QOpenGLWidget(parent),
 	m_markModel(markModel),
 	m_dataModel(dataModel),
@@ -86,13 +231,13 @@ void RenderWidget::initializeGL()
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glEnable(GL_DEPTH_TEST);
-	
-
 	// Update transfer functions
 	emit requireTransferFunction();
-
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
+
+	
+
 
 	for (auto & item : m_markMeshes)
 		item->initializeGLResources();
@@ -114,9 +259,7 @@ void RenderWidget::resizeGL(int w, int h)
 void RenderWidget::paintGL()
 {
 	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
-
-	auto renderMode = m_parameterWidget->options()->mode;
-
+	const auto renderMode = m_parameterWidget->options()->mode;
 	if(m_volume != nullptr) {
 		if(renderMode == RenderMode::DVR)
 			m_volume->sliceMode(false);
@@ -125,10 +268,12 @@ void RenderWidget::paintGL()
 		m_volume->render();
 	}
 
+	
 	for (auto & mesh : m_markMeshes) {
+		mesh->updateShader();
+		//glClear(GL_DEPTH_BUFFER_BIT);
 		mesh->render();
 	}
-
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent* event)
@@ -189,23 +334,29 @@ void RenderWidget::updateMarkMesh() {
 	//TODO:: update m_markMeshes
 	if (m_markModel == nullptr)
 		return;
-
 }
-
-
 
 void RenderWidget::updateMark() {
 	qDebug() << "RenderWidget::updateMark";
-	if(m_markModel == nullptr) {
-		qDebug() << "Mark Model is empty";
+	if(m_markModel == nullptr || m_dataModel == nullptr) {
+
 		return;
 	}
 	m_markMeshes.clear();
 
 	const auto cates = m_markModel->categoryText();
-	Transform3 trans;
+
+	makeCurrent();
+	//auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(cubeVertex.constData(), cubeNor.constData(), cubeTex.constData(), 36, triIndex, 12, m_world, this));
+	//ptr->initializeGLResources();
+	//m_markMeshes.push_back(ptr);
+	const auto z = m_dataModel->topSliceCount();
+	const auto y = m_dataModel->rightSliceCount();
+	const auto x = m_dataModel->frontSliceCount();
+	QMatrix4x4 trans;
 	trans.setToIdentity();
-	trans.scale(0.001, 0.001, 0.001);
+	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
+
 
 	for(const auto & c:cates) {
 		const auto mesh = m_markModel->markMesh(c);
@@ -214,14 +365,21 @@ void RenderWidget::updateMark() {
 		const auto idx = mesh->indices();
 		const auto nV = mesh->vertexCount();
 		const auto nT = mesh->triangleCount();
-
-		auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v, nullptr, nullptr, nV, idx, nT, trans));
-		ptr->setPolyMode(true);
-		makeCurrent();
+		const auto n = mesh->normals();
+		//TODO::calculate normal vector
+		auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v, 
+			n,
+			nullptr,
+			nV,
+			idx,
+			nT, 
+			m_world*trans,
+			this));
+		//ptr->setPolyMode(true);
 		ptr->initializeGLResources();
-		doneCurrent();
 		m_markMeshes.push_back(ptr);
 	}
+	doneCurrent();
 }
 
 void RenderWidget::updateVolumeData()
@@ -229,18 +387,16 @@ void RenderWidget::updateVolumeData()
 	if (m_dataModel == nullptr)
 		return;
 
-	auto z = m_dataModel->topSliceCount();
-	auto y = m_dataModel->rightSliceCount();
-	auto x = m_dataModel->frontSliceCount();
+	const auto z = m_dataModel->topSliceCount();
+	const auto y = m_dataModel->rightSliceCount();
+	const auto x = m_dataModel->frontSliceCount();
 
 	QVector3D m_scale = QVector3D(x, y, z);
 	m_scale.normalize();
-	QVector3D m_trans = QVector3D(0, 0, 0);
-	m_trans -= m_scale / 2;
 	m_world.setToIdentity();
 	m_world.scale(m_scale);
-	m_world.translate(m_trans);
-	m_volume.reset(new SliceVolume(m_dataModel, VolumeFormat(), this));
+
+	m_volume.reset(new SliceVolume(m_dataModel, m_world,VolumeFormat(), this));
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();
@@ -269,9 +425,7 @@ void RenderWidget::cleanup()
 {
 	makeCurrent();
 	m_tfTexture.destroy();
-
-	m_volume->destoryGLResources();
-
+	m_volume->destroyGLResources();
 	for (auto & mesh : m_markMeshes)
 		mesh.reset();
 
