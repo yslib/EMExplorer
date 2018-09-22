@@ -18,17 +18,17 @@ static float positionVert[] = {
 
 
 void TriangleMesh::updateShader() {
-	m_shader->bind();
-	const auto option = m_renderer->m_parameterWidget->options();
-	QMatrix4x4 world;
-	world.setToIdentity();
-	m_shader->setUniformValue("viewMatrix", m_renderer->camera().view());
-	m_shader->setUniformValue("projMatrix", m_renderer->m_proj);
-	m_shader->setUniformValue("modelMatrix", world);
-	m_shader->setUniformValue("normalMatrix", m_renderer->m_world.normalMatrix());
-	m_shader->setUniformValue("lightPos",m_renderer->camera().position());
-	m_shader->setUniformValue("viewPos", m_renderer->camera().position());
-	m_shader->setUniformValue("objectColor", QVector3D(0.3,0.6,0.9));
+	//m_shader->bind();
+	//const auto option = m_renderer->m_parameterWidget->options();
+	//QMatrix4x4 world;
+	//world.setToIdentity();
+	//m_shader->setUniformValue("viewMatrix", m_renderer->camera().view());
+	//m_shader->setUniformValue("projMatrix", m_renderer->m_proj);
+	//m_shader->setUniformValue("modelMatrix", world);
+	//m_shader->setUniformValue("normalMatrix", m_renderer->m_world.normalMatrix());
+	//m_shader->setUniformValue("lightPos",m_renderer->camera().position());
+	//m_shader->setUniformValue("viewPos", m_renderer->camera().position());
+	//m_shader->setUniformValue("objectColor", QVector3D(0.3,0.6,0.9));
 }
 
 TriangleMesh::TriangleMesh(const Point3f* vertices, const Vector3f* normals, const Point2f* textures, int nVertex,
@@ -46,9 +46,14 @@ m_ebo(QOpenGLBuffer::IndexBuffer)
 	int  normalBytes = 0;
 	int textureBytes = 0;
 	if(normals != nullptr) {
+		const auto nm = trans.normalMatrix();
 		normalBytes = m_nVertex * sizeof(Vector3f);
 		m_normals.reset(new Vector3f[nVertex]);
-		for (int i = 0; i < nVertex; i++)m_normals[i] = trans * normals[i];
+		for (int i = 0; i < nVertex; i++) {
+			//m_normals[i] = trans * normals[i];
+			const auto x = normals[i].x(), y = normals[i].y(), z = normals[i].z();
+			m_normals[i] = QVector3D(x*nm(0,0) + y*nm(0,1)+z*nm(0,2),x*nm(1,0)+y*nm(1,1)+z*nm(1,2),x*nm(2,0)+y*nm(2,1)+z*nm(2,2)).normalized();
+		}
 	}
 	if(textures != nullptr) {
 		textureBytes = m_nVertex * sizeof(Point2f);
@@ -65,23 +70,15 @@ bool TriangleMesh::initializeGLResources()
 	if (glfuncs == nullptr)
 		return false;
 
-	m_shader.reset(new QOpenGLShaderProgram);
-	m_shader->create();
-	//m_shader->bind();
-	m_shader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/mesh_shader_v.glsl");
-	m_shader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/mesh_shader_f.glsl");
-	m_shader->link();
-
-
 	m_vao.create();
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);
 	m_vbo.create();
 	m_vbo.bind();
-	int  vertexBytes = m_nVertex * sizeof(Point3f);
-	int  indexBytes = m_nTriangles * 3 * sizeof(int);
+	const int  vertexBytes = m_nVertex * sizeof(Point3f);
+	const int  indexBytes = m_nTriangles * 3 * sizeof(int);
 
-	int normalBytes = m_normals != nullptr? m_nVertex * sizeof(Vector3f):0;
-	int textureBytes = m_textures != nullptr?m_nVertex * sizeof(Point2f):0;
+	const int normalBytes = m_normals != nullptr? m_nVertex * sizeof(Vector3f):0;
+	const int textureBytes = m_textures != nullptr?m_nVertex * sizeof(Point2f):0;
 
 	m_vbo.allocate(vertexBytes + normalBytes + textureBytes);
 	m_vbo.write(0, m_vertices.get(), vertexBytes);
@@ -111,7 +108,6 @@ void TriangleMesh::destoryGLResources()
 	m_vao.destroy();
 	m_vbo.destroy();
 	m_ebo.destroy();
-	m_shader.reset(nullptr);
 }
 
 bool TriangleMesh::render(){

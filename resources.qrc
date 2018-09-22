@@ -26,5 +26,7 @@
         <file>resources/shaders/raycast_pre_gradient_v.glsl</file>
         <file>resources/shaders/mesh_shader_f.glsl</file>
         <file>resources/shaders/mesh_shader_v.glsl</file>
+        <file>resources/shaders/pick_shader_f.glsl</file>
+        <file>resources/shaders/pick_shader_v.glsl</file>
     </qresource>
 </RCC>

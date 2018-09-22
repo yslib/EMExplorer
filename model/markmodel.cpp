@@ -75,11 +75,11 @@ QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 	}
 	return QModelIndex();
 }
-QModelIndex MarkModel::categoryAddHelper(const QString& category)
+QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor& color)
 {
 	int c = rowCount();
 	beginInsertRows(QModelIndex(), c, c);
-	QVector<QVariant> d{ QVariant::fromValue(__Internal_Categroy_Type_{new CategoryItem(category)}) };
+	QVector<QVariant> d{ QVariant::fromValue(__Internal_Categroy_Type_{new CategoryItem(category,color)}) };
 	auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
 	m_rootItem->appendChild(p);
 	endInsertRows();
@@ -344,7 +344,7 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 	auto i = categoryIndexHelper(category);
 	if (i.isValid() == false)
 	{
-		i = categoryAddHelper(category);
+		i = categoryAddHelper(category,Qt::black);
 	}
 	int r = rowCount(i);
 	int c = marks.size();
@@ -358,8 +358,6 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 	QList<TreeItem*> list;
 	for (auto m : marks)
 	{
-
-
 		QVector<QVariant> d;
 		m->setData(MarkProperty::Name,category + QString("#%1").arg(r + n++));
 		addMarkInSliceHelper(m);

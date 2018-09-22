@@ -1,4 +1,5 @@
 #include <QOpenGLShaderProgram>
+#include <QOpenGLFramebufferObject>
 #include <QMenu>
 
 #include "renderwidget.h"
@@ -179,8 +180,11 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_parameterWidget(widget),
 	m_camera(QVector3D(0.f, 0.f, 10.f)),
 	m_rayStep(0.02),
-	m_tfTexture(QOpenGLTexture::Target1D)
+	m_tfTexture(QOpenGLTexture::Target1D),
+	m_volume(nullptr),
+	m_selectMode(false)
 {
+	m_selectMode = true;
 	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
 	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
 	connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
@@ -227,20 +231,42 @@ RenderWidget::~RenderWidget()
 
 void RenderWidget::initializeGL()
 {
-	initializeOpenGLFunctions();
+	if(initializeOpenGLFunctions() == false) {
+		qFatal("initializeOpenGLFunctions failed");
+		return;
+	}
 	glClearColor(1.0, 1.0, 1.0, 1.0);
+
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glEnable(GL_DEPTH_TEST);
+
 	// Update transfer functions
 	emit requireTransferFunction();
+
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
 
-	
-
-
 	for (auto & item : m_markMeshes)
 		item->initializeGLResources();
+	// mesh shader
+	makeCurrent();
+	m_meshShader.create();
+	m_meshShader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/mesh_shader_v.glsl");
+	m_meshShader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/mesh_shader_f.glsl");
+	if(m_meshShader.link() == false) {
+		qFatal("Mesh shader is not linked.");
+		return;
+	}
+	// pick shader
+	m_selectShader.create();
+	m_selectShader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/pick_shader_v.glsl");
+	m_selectShader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/pick_shader_f.glsl");
+	if(m_selectShader.link() == false) {
+		qFatal("Select shader is not linked.");
+		return;
+	}
+	doneCurrent();
+
 }
 
 //#define EXPORT_FBO_IMG
@@ -248,11 +274,13 @@ void RenderWidget::initializeGL()
 void RenderWidget::resizeGL(int w, int h)
 {
 	// Update projection matrices
-	double aspect = GLfloat(w) / h;
+	const double aspect = GLfloat(w) / h;
 	m_proj.setToIdentity();
 	m_otho.setToIdentity();
 	m_otho.ortho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
 	m_proj.perspective(45.f, aspect, 0.01f, 100.f);
+
+	m_pickFBO.reset(new QOpenGLFramebufferObject(w,h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB));
 
 	emit windowResized(w, h);
 }
@@ -260,6 +288,7 @@ void RenderWidget::paintGL()
 {
 	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 	const auto renderMode = m_parameterWidget->options()->mode;
+
 	if(m_volume != nullptr) {
 		if(renderMode == RenderMode::DVR)
 			m_volume->sliceMode(false);
@@ -268,23 +297,67 @@ void RenderWidget::paintGL()
 		m_volume->render();
 	}
 
-	
-	for (auto & mesh : m_markMeshes) {
-		mesh->updateShader();
-		//glClear(GL_DEPTH_BUFFER_BIT);
-		mesh->render();
+	if(renderMode != RenderMode::DVR) {
+
+		const auto viewMatrix = camera().view();
+		const auto cameraPos = camera().position();
+		QMatrix4x4 world;
+		world.setToIdentity();
+
+		if(m_startSelect ==  true) {
+			m_pickFBO->bind();
+			//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+			m_selectShader.bind();
+			m_selectShader.setUniformValue("viewMatrix", viewMatrix);
+			m_selectShader.setUniformValue("projMatrix", m_proj);
+			m_selectShader.setUniformValue("modelMatrix", world);
+			for(int i=0;i<m_markMeshes.size();i++) {
+				const auto color = idToColor(i);
+				m_selectShader.setUniformValue("pickColor", color);
+				//m_selectShader.setUniformValue("pickColor", color);
+				m_markMeshes[i]->render();
+			}
+			m_selectShader.release();
+			m_pickFBO->toImage().save("C:\\Users\\ysl\\Desktop\\fb\\pickfbo.jpg");
+			m_pickFBO->release();
+
+		}
+
+		m_meshShader.bind();
+		m_meshShader.setUniformValue("viewMatrix", viewMatrix);
+		m_meshShader.setUniformValue("projMatrix", m_proj);
+		m_meshShader.setUniformValue("modelMatrix", world);
+		m_meshShader.setUniformValue("normalMatrix", world.normalMatrix());
+		m_meshShader.setUniformValue("lightPos", cameraPos);
+		m_meshShader.setUniformValue("viewPos", cameraPos); 
+		
+		for(int i=0;i<m_markMeshes.size();i++) {
+			QColor color = m_markColor[i];
+			if(i == m_selectedId) {
+				color = m_markColor[i].lighter(150);
+			}
+			m_meshShader.setUniformValue("objectColor", color);
+			m_markMeshes[i]->render();
+		}
+
+		m_meshShader.release();
+
 	}
+
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent* event)
 {
 	m_lastPos = event->pos();
-	update();
+
+
 }
 
 void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	const auto & p = event->pos();
+	// Update Camera
 	float dx = p.x() - m_lastPos.x();
 	float dy = m_lastPos.y() - p.y();
 	if ((event->buttons() &Qt::LeftButton) && (event->buttons() & Qt::RightButton))
@@ -302,6 +375,25 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 		m_camera.movement(direction, 0.01);
 	}
 	m_lastPos = p;
+	//
+
+	update();
+
+}
+
+void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
+
+	if (m_selectMode == true) {
+		m_startSelect = true;
+		repaint();
+
+		const auto & p = event->pos();
+		m_selectedId = selectMesh(p.x(), p.y());
+		m_startSelect = false;
+		qDebug() << m_selectedId;
+		repaint();
+		
+	}
 	update();
 }
 
@@ -339,7 +431,6 @@ void RenderWidget::updateMarkMesh() {
 void RenderWidget::updateMark() {
 	qDebug() << "RenderWidget::updateMark";
 	if(m_markModel == nullptr || m_dataModel == nullptr) {
-
 		return;
 	}
 	m_markMeshes.clear();
@@ -357,16 +448,24 @@ void RenderWidget::updateMark() {
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
 
+	
 
 	for(const auto & c:cates) {
 		const auto mesh = m_markModel->markMesh(c);
+
+		/**
+		 *This is a low efficient operation because color of category could not be retrieved
+		 *  directly by category item, which is not stored color when created.
+		 *  TODO:: The issue would be addressed soon.
+		*/
+		const QColor color = m_markModel->marks(c)[0]->data(MarkProperty::CategoryColor).value<QColor>();		//Temporarily
+
 		Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
 		const auto v = mesh->vertices();
 		const auto idx = mesh->indices();
 		const auto nV = mesh->vertexCount();
 		const auto nT = mesh->triangleCount();
 		const auto n = mesh->normals();
-		//TODO::calculate normal vector
 		auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v, 
 			n,
 			nullptr,
@@ -378,6 +477,8 @@ void RenderWidget::updateMark() {
 		//ptr->setPolyMode(true);
 		ptr->initializeGLResources();
 		m_markMeshes.push_back(ptr);
+		m_markColor.push_back(color);
+		qDebug() << "Mesh Color:" << color;
 	}
 	doneCurrent();
 }
@@ -417,17 +518,33 @@ void RenderWidget::updateMarkData()
 	//triangulate mark to mesh
 }
 
-void RenderWidget::contextMenuAddedHelper(QWidget* widget) {
-
+int RenderWidget::selectMesh(int x, int y)
+{
+	makeCurrent();
+	m_pickFBO->bind();
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	unsigned char color[4];
+	glReadPixels(x,size().height()-y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+	const auto id = colorToId(QColor(color[0],color[1],color[2]));
+	m_pickFBO->release();
+	doneCurrent();
+	return id;
 }
+
 
 void RenderWidget::cleanup()
 {
 	makeCurrent();
+
 	m_tfTexture.destroy();
-	m_volume->destroyGLResources();
+	if(m_volume != nullptr)
+		m_volume->destroyGLResources();
+
 	for (auto & mesh : m_markMeshes)
-		mesh.reset();
+		mesh->destoryGLResources();
+
+	m_meshShader.destroyed();
+	m_selectShader.destroyed();
 
 	doneCurrent();
 }

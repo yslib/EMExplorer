@@ -264,7 +264,7 @@ void SliceVolume::destroyGLResources()
 	m_axisAlignedSliceVBO.destroy();
 
 	m_gradientTexture.destroy();
-
+	m_volumeTexture.destroy();
 	m_fbo.reset();
 }
 
@@ -323,7 +323,6 @@ bool SliceVolume::render() {
 
 	}
 	else {
-		std::cout << m_fbo << std::endl;
 		m_fbo->bind();
 		m_positionShader->load(this);
 		QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
@@ -362,14 +361,12 @@ void SliceVolume::windowSizeChanged(int w, int h) {
 
 	m_fbo.reset(new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB));
 	m_fbo->addColorAttachment(w, h);
-
 	static QVector<QVector2D> rayCastingVB = {
 		{ 0.0f,0.0f },
 		{ 0.0,static_cast<float>(h) },
 		{ static_cast<float>(w),static_cast<float>(h) },
 		{ static_cast<float>(w),0.0 }
 	};
-
 	m_rayCastingTextureVBO.bind();
 	m_rayCastingTextureVBO.write(0, rayCastingVB.constData(), rayCastingVB.count() * 2 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();

@@ -432,6 +432,8 @@ void SliceToolWidget::onCategoryAdded()
 		QPen pen = m_canvas->m_topView->pen();
 		pen.setColor(color);
 		m_canvas->updatePen(pen);
+		///TODO:: This color need to be add categoryItem
+
 	});
 	dlg.exec();
 }

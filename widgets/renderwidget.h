@@ -4,6 +4,7 @@
 #include <QOpenGLWidget>
 #include <QList>
 #include <QScopedPointer>
+#include <QOpenGLFunctions_3_3_Core>
 
 #include "3drender/geometry/camera.h"
 #include "3drender/shader/shaderprogram.h"
@@ -26,7 +27,7 @@ class QMenu;
 //#define TESTCUBE
 
 class RenderWidget:public QOpenGLWidget,
-				   protected QOpenGLFunctions_3_1
+				   protected QOpenGLFunctions_3_3_Core
 {
 	Q_OBJECT
 public:
@@ -45,6 +46,7 @@ protected:
 	void			paintGL() Q_DECL_OVERRIDE;
 	void			mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+	void			mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			contextMenuEvent(QContextMenuEvent * event)Q_DECL_OVERRIDE;
 signals:
 	void			markModelChanged();
@@ -61,11 +63,16 @@ public slots:
 private slots:
 	void updateMark();
 private:
-	using ShaderHash = QHash<QString, QSharedPointer<ShaderProgram>>;
-	void			updateVolumeData();
-	void			updateMarkData();
-	void			contextMenuAddedHelper(QWidget * widget);
-	void			cleanup();
+	void									updateVolumeData();
+	void									updateMarkData();
+
+
+	static QColor							idToColor(int id);
+	static int								colorToId(const QColor & color);
+	int										selectMesh(int x,int y);		//(x,y) coordinates on screen
+
+
+	void									cleanup();
 
 	MarkModel								*m_markModel;
 	AbstractSliceDataModel					*m_dataModel;
@@ -76,7 +83,6 @@ private:
 	QMatrix4x4								m_proj;
 	QMatrix4x4								m_otho;
 	QMatrix4x4								m_world;
-
 	FocusCamera								m_camera;		//view matrix in this
 
 	QPoint									m_lastPos;
@@ -93,15 +99,35 @@ private:
 	//Mark Mesh
 
 	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
+	QList<QColor>							m_markColor;
+	int										m_selectedId;
+	
+	QOpenGLShaderProgram					m_meshShader;
 
 	QScopedPointer<SliceVolume>				m_volume;
 
 
+	QOpenGLShaderProgram					m_selectShader;
+	QScopedPointer<QOpenGLFramebufferObject>m_pickFBO;
+	bool									m_selectMode;
+	bool									m_startSelect;
 
 	friend class RenderParameterWidget;
 	friend class TriangleMesh;
 	friend class SliceVolume;
 };
+
+inline QColor RenderWidget::idToColor(int id) 
+{
+	return { (id & 0x000000FF) >> 0, (id & 0x0000FF00) >> 8, (id & 0x00FF0000) >> 16 };		//255^3 objects
+}
+
+inline int RenderWidget::colorToId(const QColor& color) 
+{
+	return color.red() + color.green() * 255 + color.blue() * 255 * 255;
+}
+
+
 
 
 #endif // VOLUMEWIDGET_H

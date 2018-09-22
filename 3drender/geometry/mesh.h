@@ -28,7 +28,8 @@ class TriangleMesh{
 	std::vector<int> m_vertexIndices;
 	int m_nTriangles;
 
-	QScopedPointer<QOpenGLShaderProgram> m_shader;
+	//QScopedPointer<QOpenGLShaderProgram> m_shader;
+
 	QOpenGLBuffer m_vbo;
 	QOpenGLBuffer m_ebo;
 	QOpenGLVertexArrayObject m_vao;

@@ -58,7 +58,7 @@ class MarkModel :public QAbstractItemModel
 	TreeItem* getItemHelper(const QModelIndex& index) const;
 	QModelIndex modelIndexHelper(const QModelIndex& root, const QString& display)const;
 	QModelIndex categoryIndexHelper(const QString& category)const;
-	QModelIndex categoryAddHelper(const QString& category);		//set dirty
+	QModelIndex categoryAddHelper(const QString& category, const QColor& color);		//set dirty
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);				//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);
