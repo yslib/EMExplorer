@@ -34,7 +34,6 @@ public:
 		, selectedObjectId(-1)
 		, enablePickingMode(true)
 		, enableStartPicking(false) {
-		
 	}
 	int topSliceIndex;
 	int rightSliceIndex;

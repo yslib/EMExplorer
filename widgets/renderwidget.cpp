@@ -498,12 +498,8 @@ void RenderWidget::updateVolumeData()
 
 	d->volumeNormalTransform.setToIdentity();		//Transform size from (1,1,1) to (x/N,y/N,z/N)
 	d->volumeNormalTransform.scale(m_scale);
-
-	//m_world.setToIdentity();
-	//m_world.scale(m_scale);
 	QMatrix4x4 I;
 	I.setToIdentity();
-
 	m_volume.reset(new SliceVolume(m_dataModel,I,VolumeFormat(), this));
 	makeCurrent();
 	m_volume->initializeGLResources();
