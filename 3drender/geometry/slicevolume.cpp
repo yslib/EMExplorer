@@ -113,7 +113,7 @@ QMatrix4x4 SliceVolume::viewMatrix() const {
 }
 QMatrix4x4 SliceVolume::worldMatrix() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::worldMatrix", "null pointer");
-	return transform();
+	return transform()*m_normalizeTransform;
 }
 QMatrix4x4 SliceVolume::othoMatrix() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::othoMatrix", "null pointer");
@@ -166,14 +166,15 @@ SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 &
 	, m_dataModel(data)
 {
 
-	//const auto z = m_dataModel->topSliceCount();
-	//const auto y = m_dataModel->rightSliceCount();
-	//const auto x = m_dataModel->frontSliceCount();
+	const auto z = m_dataModel->topSliceCount();
+	const auto y = m_dataModel->rightSliceCount();
+	const auto x = m_dataModel->frontSliceCount();
 
-	//QVector3D scale = QVector3D(x, y, z);
-	//scale.normalize();
-	//QVector3D trans = QVector3D(0, 0, 0);
-	//trans -= scale / 2;
+	QVector3D scale = QVector3D(x, y, z);
+	scale.normalize();
+	m_normalizeTransform.setToIdentity();
+	m_normalizeTransform.scale(scale);
+
 	//QMatrix4x4 world;
 	//world.setToIdentity();
 	//world.scale(scale);
@@ -249,6 +250,8 @@ bool SliceVolume::initializeGLResources() {
 
 	//load volume data and gradient
 	loadDataAndGradientToTexture();
+
+	return (true);
 }
 
 void SliceVolume::destroyGLResources()
@@ -279,14 +282,14 @@ bool SliceVolume::render() {
 	if (m_sliceMode == true) {
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 
-		float topCoord = float(m_renderer->m_topSlice) / float(m_dataModel->topSliceCount());
-		float rightCoord = float(m_renderer->m_rightSlice) / float(m_dataModel->rightSliceCount());
-		float frontCoord = float(m_renderer->m_frontSlice) / float(m_dataModel->frontSliceCount());
+		float topCoord = float(m_renderer->d_ptr->topSliceIndex) / float(m_dataModel->topSliceCount());
+		float rightCoord = float(m_renderer->d_ptr->rightSliceIndex) / float(m_dataModel->rightSliceCount());
+		float frontCoord = float(m_renderer->d_ptr->frontSliceIndex) / float(m_dataModel->frontSliceCount());
 
 		m_sliceShader->load(this);
 		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj);
 		m_sliceShader->setUniformValue("viewMatrix", m_renderer->m_camera.view());
-		m_sliceShader->setUniformValue("worldMatrix", m_renderer->m_world);
+		m_sliceShader->setUniformValue("worldMatrix", transform()*m_normalizeTransform);
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 		m_axisAlignedSliceVAO.bind();

@@ -170,6 +170,11 @@ static QVector<QVector3D> cubeVert =
 		}												\
 	}													\
 
+
+
+
+
+
 RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	MarkModel * markModel,
 	RenderParameterWidget * widget, 
@@ -182,9 +187,8 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_rayStep(0.02),
 	m_tfTexture(QOpenGLTexture::Target1D),
 	m_volume(nullptr),
-	m_selectMode(false)
+	d_ptr(new RenderWidgetPrivate(this))
 {
-	m_selectMode = true;
 	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
 	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
 	connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
@@ -226,7 +230,8 @@ void RenderWidget::addContextAction(QAction* action)
 
 RenderWidget::~RenderWidget()
 {
-
+	Q_D(RenderWidget);
+	delete d;
 }
 
 void RenderWidget::initializeGL()
@@ -236,6 +241,7 @@ void RenderWidget::initializeGL()
 		return;
 	}
 	glClearColor(1.0, 1.0, 1.0, 1.0);
+	//glEnable(GL_CULL_FACE);
 
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glEnable(GL_DEPTH_TEST);
@@ -288,12 +294,25 @@ void RenderWidget::paintGL()
 {
 	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 	const auto renderMode = m_parameterWidget->options()->mode;
+	Q_D(RenderWidget);
+	//
+	const auto xs = m_parameterWidget->options()->xSpacing;
+	const auto ys = m_parameterWidget->options()->ySpacing;
+	const auto zs = m_parameterWidget->options()->zSpacing;
+
+	QMatrix4x4 world;
+	world.setToIdentity();
+	world.scale(xs, ys, zs);
+
+	//
+	m_camera.setCenter(d->volumeNormalTransform*world*QVector3D(0.5,0.5,0.5));
 
 	if(m_volume != nullptr) {
 		if(renderMode == RenderMode::DVR)
 			m_volume->sliceMode(false);
 		else
 			m_volume->sliceMode(true);
+		m_volume->setTransform(world);
 		m_volume->render();
 	}
 
@@ -301,12 +320,10 @@ void RenderWidget::paintGL()
 
 		const auto viewMatrix = camera().view();
 		const auto cameraPos = camera().position();
-		QMatrix4x4 world;
-		world.setToIdentity();
 
-		if(m_startSelect ==  true) {
+
+		if(d->enableStartPicking ==  true) {
 			m_pickFBO->bind();
-			//glDrawBuffer(GL_COLOR_ATTACHMENT0);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			m_selectShader.bind();
 			m_selectShader.setUniformValue("viewMatrix", viewMatrix);
@@ -315,13 +332,11 @@ void RenderWidget::paintGL()
 			for(int i=0;i<m_markMeshes.size();i++) {
 				const auto color = idToColor(i);
 				m_selectShader.setUniformValue("pickColor", color);
-				//m_selectShader.setUniformValue("pickColor", color);
 				m_markMeshes[i]->render();
 			}
 			m_selectShader.release();
-			m_pickFBO->toImage().save("C:\\Users\\ysl\\Desktop\\fb\\pickfbo.jpg");
+			//m_pickFBO->toImage().save("C:\\Users\\ysl\\Desktop\\fb\\pickfbo.jpg");
 			m_pickFBO->release();
-
 		}
 
 		m_meshShader.bind();
@@ -334,7 +349,7 @@ void RenderWidget::paintGL()
 		
 		for(int i=0;i<m_markMeshes.size();i++) {
 			QColor color = m_markColor[i];
-			if(i == m_selectedId) {
+			if(i == d->selectedObjectId) {
 				color = m_markColor[i].lighter(150);
 			}
 			m_meshShader.setUniformValue("objectColor", color);
@@ -349,21 +364,21 @@ void RenderWidget::paintGL()
 
 void RenderWidget::mousePressEvent(QMouseEvent* event)
 {
-	m_lastPos = event->pos();
-
-
+	Q_D(RenderWidget);
+	d->lastMousePos = event->pos();
 }
 
 void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 {
+	Q_D(RenderWidget);
 	const auto & p = event->pos();
 	// Update Camera
-	float dx = p.x() - m_lastPos.x();
-	float dy = m_lastPos.y() - p.y();
-	if ((event->buttons() &Qt::LeftButton) && (event->buttons() & Qt::RightButton))
+	float dx = p.x() - d->lastMousePos.x();
+	float dy = d->lastMousePos.y() - p.y();
+	if ((event->buttons() & Qt::LeftButton) && (event->buttons() & Qt::RightButton))
 	{
-		auto direction = m_camera.up()*dy + m_camera.right()*dx;
-		m_camera.movement(direction, 0.01);
+		const auto direction = m_camera.up()*dy + m_camera.right()*dx;
+		m_camera.movement(direction, 0.002);
 	}
 	else if (event->buttons() & Qt::LeftButton)
 	{
@@ -371,28 +386,23 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 	else if (event->buttons() == Qt::RightButton)
 	{
-		auto direction = m_camera.front()*dy;
+		const auto direction = m_camera.front()*dy;
 		m_camera.movement(direction, 0.01);
 	}
-	m_lastPos = p;
+	d->lastMousePos = p;
 	//
-
 	update();
-
 }
 
 void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
-
-	if (m_selectMode == true) {
-		m_startSelect = true;
+	Q_D(RenderWidget);
+	if (d->enablePickingMode == true) {
+		d->enableStartPicking = true;
 		repaint();
-
 		const auto & p = event->pos();
-		m_selectedId = selectMesh(p.x(), p.y());
-		m_startSelect = false;
-		qDebug() << m_selectedId;
+		d->selectedObjectId = selectMesh(p.x(), p.y());
+		d->enableStartPicking = false;
 		repaint();
-		
 	}
 	update();
 }
@@ -402,7 +412,6 @@ void RenderWidget::contextMenuEvent(QContextMenuEvent* event)
 	const auto pos = event->pos();
 	m_contextMenu->exec(this->mapToGlobal(pos));
 }
-
 
 void RenderWidget::updateTransferFunction(const float * func, bool updated)
 {
@@ -429,18 +438,15 @@ void RenderWidget::updateMarkMesh() {
 }
 
 void RenderWidget::updateMark() {
-	qDebug() << "RenderWidget::updateMark";
 	if(m_markModel == nullptr || m_dataModel == nullptr) {
 		return;
 	}
+	Q_D(RenderWidget);
+
 	m_markMeshes.clear();
-
 	const auto cates = m_markModel->categoryText();
-
 	makeCurrent();
-	//auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(cubeVertex.constData(), cubeNor.constData(), cubeTex.constData(), 36, triIndex, 12, m_world, this));
-	//ptr->initializeGLResources();
-	//m_markMeshes.push_back(ptr);
+
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
@@ -448,11 +454,8 @@ void RenderWidget::updateMark() {
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
 
-	
-
 	for(const auto & c:cates) {
 		const auto mesh = m_markModel->markMesh(c);
-
 		/**
 		 *This is a low efficient operation because color of category could not be retrieved
 		 *  directly by category item, which is not stored color when created.
@@ -472,13 +475,11 @@ void RenderWidget::updateMark() {
 			nV,
 			idx,
 			nT, 
-			m_world*trans,
+			d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
 			this));
-		//ptr->setPolyMode(true);
 		ptr->initializeGLResources();
 		m_markMeshes.push_back(ptr);
 		m_markColor.push_back(color);
-		qDebug() << "Mesh Color:" << color;
 	}
 	doneCurrent();
 }
@@ -487,17 +488,23 @@ void RenderWidget::updateVolumeData()
 {
 	if (m_dataModel == nullptr)
 		return;
-
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
+	Q_D(RenderWidget);
 
 	QVector3D m_scale = QVector3D(x, y, z);
 	m_scale.normalize();
-	m_world.setToIdentity();
-	m_world.scale(m_scale);
 
-	m_volume.reset(new SliceVolume(m_dataModel, m_world,VolumeFormat(), this));
+	d->volumeNormalTransform.setToIdentity();		//Transform size from (1,1,1) to (x/N,y/N,z/N)
+	d->volumeNormalTransform.scale(m_scale);
+
+	//m_world.setToIdentity();
+	//m_world.scale(m_scale);
+	QMatrix4x4 I;
+	I.setToIdentity();
+
+	m_volume.reset(new SliceVolume(m_dataModel,I,VolumeFormat(), this));
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();

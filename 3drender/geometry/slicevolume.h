@@ -36,10 +36,12 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	int										m_topSlice;
 	int										m_rightSlice;
 	int										m_frontSlice;
-	RenderWidget							*m_renderer;
+	QMatrix4x4								m_normalizeTransform;
+
 	bool									m_sliceMode;
 	void loadDataAndGradientToTexture();
-	const AbstractSliceDataModel*					m_dataModel;
+	const AbstractSliceDataModel*			m_dataModel;
+	RenderWidget							*m_renderer;
 
 public://ShaderDataInterface
 	unsigned int volumeTexId() const override;
@@ -72,14 +74,15 @@ public:
 	void setRenderWidget(RenderWidget * widget);
 	bool initializeGLResources() override;
 	void destroyGLResources() override;
-
 	bool render()override;
+
 	void sliceMode(bool enable);
 	private slots:
 	void windowSizeChanged(int w, int h);
 };
 
 inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
+
 
 
 

@@ -162,7 +162,6 @@ public:
 	QVector3D m_up;
 	QVector3D m_right;
 	QVector3D m_worldUp;
-
 	QVector3D m_center;
 
 	// Camera options
@@ -197,6 +196,12 @@ public:
 	}
 	QVector3D position()const { return m_position; }
 
+	void setCenter(const QVector3D & center) {
+		m_front = (center - m_position);
+		m_right = QVector3D::crossProduct(m_front, m_worldUp);
+		m_up = QVector3D::crossProduct(m_right, m_front);
+	}
+
 	void movement(const QVector3D & direction, float deltaTime)
 	{
 		auto velocity = m_movementSpeed * direction*deltaTime;
@@ -223,11 +228,8 @@ public:
 			m_zoom = 45.0f;
 	}
 private:
-	void initVectors()
-	{
-		
-	}
-	void updateCameraVectors(const QVector3D& axis, const QVector3D& center, double theta)
+
+	void updateCameraVectors(const QVector3D & axis, const QVector3D& center, double theta)
 	{
 		QMatrix4x4 rotation;
 		rotation.setToIdentity();

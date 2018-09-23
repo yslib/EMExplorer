@@ -23,8 +23,30 @@ class QMenu;
 
 #include "renderoptionwidget.h"
 
+class RenderWidgetPrivate {
+	Q_DECLARE_PUBLIC(RenderWidget);
+	RenderWidget * const q_ptr;
+public:
+	RenderWidgetPrivate(RenderWidget * outer) :q_ptr(outer),
+		topSliceIndex(0)
+		, rightSliceIndex(0)
+		, frontSliceIndex(0)
+		, selectedObjectId(-1)
+		, enablePickingMode(true)
+		, enableStartPicking(false) {
+		
+	}
+	int topSliceIndex;
+	int rightSliceIndex;
+	int frontSliceIndex;
+	int selectedObjectId;
+	bool enablePickingMode;
+	bool enableStartPicking;
+	QPoint lastMousePos;
+	QMatrix4x4 volumeNormalTransform;
+};
+//class RenderWidgetPrivate;
 
-//#define TESTCUBE
 
 class RenderWidget:public QOpenGLWidget,
 				   protected QOpenGLFunctions_3_3_Core
@@ -53,64 +75,51 @@ signals:
 	void			dataModelChanged();
 	void			requireTransferFunction();
 	void		    windowResized(int w, int h);
-
 public slots:
 	void			updateTransferFunction(const float* func, bool updated);
 	void			updateMarkMesh();
-	void			setTopSlice(int value)	 { m_topSlice = value; update(); }
-	void			setRightSlice(int value) { m_rightSlice = value; update(); }
-	void			setFrontSlice(int value) { m_frontSlice = value; update(); }
+	void			setTopSlice(int value)   { Q_D(RenderWidget);d->topSliceIndex = value;update();}
+	void			setRightSlice(int value) { Q_D(RenderWidget);d->rightSliceIndex = value; update(); }
+	void			setFrontSlice(int value) { Q_D(RenderWidget);d->frontSliceIndex = value; update(); }
 private slots:
-	void updateMark();
+	void			updateMark();
 private:
+	RenderWidgetPrivate* const d_ptr;
+	Q_DECLARE_PRIVATE(RenderWidget);
+
 	void									updateVolumeData();
 	void									updateMarkData();
-
-
 	static QColor							idToColor(int id);
 	static int								colorToId(const QColor & color);
 	int										selectMesh(int x,int y);		//(x,y) coordinates on screen
-
-
 	void									cleanup();
 
 	MarkModel								*m_markModel;
 	AbstractSliceDataModel					*m_dataModel;
 	RenderParameterWidget					*m_parameterWidget;
-
 	RenderOptions*							m_options;
 
 	QMatrix4x4								m_proj;
 	QMatrix4x4								m_otho;
-	QMatrix4x4								m_world;
 	FocusCamera								m_camera;		//view matrix in this
 
-	QPoint									m_lastPos;
 	QVector3D								m_voxelSize;
 	QVector3D								m_volumeBound;
 	float									m_rayStep;
-
 	// Textures
 	QOpenGLTexture							m_tfTexture;
-	int										m_topSlice;
-	int										m_rightSlice;
-	int										m_frontSlice;
 	QMenu									*m_contextMenu;
 	//Mark Mesh
 
 	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
 	QList<QColor>							m_markColor;
-	int										m_selectedId;
 	
 	QOpenGLShaderProgram					m_meshShader;
 
 	QScopedPointer<SliceVolume>				m_volume;
-
-
 	QOpenGLShaderProgram					m_selectShader;
 	QScopedPointer<QOpenGLFramebufferObject>m_pickFBO;
-	bool									m_selectMode;
-	bool									m_startSelect;
+
 
 	friend class RenderParameterWidget;
 	friend class TriangleMesh;
@@ -126,8 +135,4 @@ inline int RenderWidget::colorToId(const QColor& color)
 {
 	return color.red() + color.green() * 255 + color.blue() * 255 * 255;
 }
-
-
-
-
 #endif // VOLUMEWIDGET_H
