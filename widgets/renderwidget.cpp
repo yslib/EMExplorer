@@ -248,12 +248,12 @@ void RenderWidget::initializeGL()
 
 	// Update transfer functions
 	emit requireTransferFunction();
-
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
 
 	for (auto & item : m_markMeshes)
 		item->initializeGLResources();
+
 	// mesh shader
 	makeCurrent();
 	m_meshShader.create();
@@ -538,7 +538,7 @@ int RenderWidget::selectMesh(int x, int y)
 void RenderWidget::cleanup()
 {
 	makeCurrent();
-
+	qDebug() << "cleanup called";
 	m_tfTexture.destroy();
 	if(m_volume != nullptr)
 		m_volume->destroyGLResources();

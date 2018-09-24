@@ -8,6 +8,7 @@ class QStandardItemModel;
 class QAbstractTableModel;
 class QAction;
 class QSettings;
+class QScrollArea;
 QT_END_NAMESPACE
 class SliceEditorWidget;
 class MarkModel;
@@ -56,6 +57,7 @@ private:
 
 	QDockWidget * m_renderParameterDockWidget;
 	RenderParameterWidget * m_renderParameterWidget;
+	QScrollArea *m_parameterScrollArea;
 
 	QDockWidget * m_imageViewDockWidget;
 	SliceEditorWidget * m_imageView;

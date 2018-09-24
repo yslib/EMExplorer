@@ -7,7 +7,7 @@
 #include <QSettings>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QGraphicsItem>			//TODO:: Note: This header is referenced by unknown code
+#include <QScrollArea>
 
 #include "mainwindow.h"
 #include "model/mrc.h"
@@ -384,9 +384,11 @@ void MainWindow::createWidget()
 
 	// RenderParameterWidget
 	m_renderParameterWidget = new RenderParameterWidget(this);
+	m_parameterScrollArea = new QScrollArea(this);
+	m_parameterScrollArea->setWidget(m_renderParameterWidget);
 	m_renderParameterDockWidget = new QDockWidget(QStringLiteral("Rendering Parameters"));
 	m_renderParameterDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	m_renderParameterDockWidget->setWidget(m_renderParameterWidget);
+	m_renderParameterDockWidget->setWidget(m_parameterScrollArea);
 	m_renderParameterDockWidget->setVisible(false);
 	m_renderParameterDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_renderParameterDockWidget->toggleViewAction());

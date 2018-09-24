@@ -59,7 +59,7 @@ class RenderParameterWidget : public QWidget
 public:
 	RenderParameterWidget(QWidget *parent = nullptr);
 	QSize sizeHint() const Q_DECL_OVERRIDE { return { 250,500 }; }
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 250,300 }; }
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 250,500 }; }
 	const RenderOptions * options()const { return m_renderOptions.data(); }
 	void setMarkModel(QAbstractItemModel * model);
 	~RenderParameterWidget(){}
@@ -69,7 +69,6 @@ signals:
 private:
 	//void connectWith(VolumeWidget * widget);
 	//void disconnectWith(VolumeWidget * widget);
-
 
 	QScopedPointer<RenderOptions>					    m_renderOptions;
 
@@ -99,5 +98,11 @@ private:
 
 	QGroupBox *m_meshGroup;
 	QPushButton * m_meshUpdateButton;
+
+	QGroupBox * m_sliceNormalGroup;
+	QLabel * m_rComponentLabel;
+	QLabel * m_thetaComponentLabel;
+	QLabel * m_phiComponentLabel;
+
 
 };
