@@ -18,6 +18,7 @@ class AbstractSliceDataModel;
 class TreeItem;
 class CategoryItem;
 class Triangulate;
+class StrokeMarkItem;
 
 
 /*
@@ -68,10 +69,9 @@ class MarkModel :public QAbstractItemModel
 
 
 	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
-
-
 	void initSliceMarkContainerHelper();
 	void createContextMenu();
+	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
 
 	//Functions used by ImageView
 	const MarkSliceList & topSliceVisibleMarks()const { return m_topSliceVisibleMarks; }
@@ -121,7 +121,7 @@ public:
 	QStringList categoryText()const;
 	QList<QSharedPointer<CategoryItem>> categoryItems()const;
 	QSharedPointer<CategoryItem> categoryItem(const QString & cate)const;
-	const Triangulate * markMesh(const QString & cate);
+	QVector<QSharedPointer<Triangulate>> markMesh(const QString& cate);
 
 	bool removeMark(QGraphicsItem* mark);			//set dirty
 	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty

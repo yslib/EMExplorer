@@ -160,11 +160,7 @@ bool MarkModel::updateMeshMarkHelper(const QString& cate)
 	}
 	auto item = getItemHelper(categoryIndexHelper(cate));
 
-	auto tri = new Triangulate(meshMark);
-	if (tri == nullptr)
-		return false;
 
-	bool success = tri->triangulate();
 	if (item->columnCount() <= 1)
 	{
 		bool success = item->insertColumns(item->columnCount(), 1);			//Insert one more column
@@ -172,8 +168,18 @@ bool MarkModel::updateMeshMarkHelper(const QString& cate)
 			return false;
 	}
 
-	item->setData(1, QVariant::fromValue(QSharedPointer<Triangulate>(tri)));
-	return success;
+	auto meshes = refactorMarks(meshMark);
+	QVector<QSharedPointer<Triangulate>> tris;
+	for(const auto m:meshes) {
+		tris.push_back(QSharedPointer<Triangulate>(new Triangulate(m)));
+		tris.back()->triangulate();
+	}
+	//auto tri = new Triangulate(meshMark);
+	//if (tri == nullptr)
+	//	return false;
+	//bool success = tri->triangulate();
+	item->setData(1,QVariant::fromValue(tris));
+	return true;
 }
 void MarkModel::detachFromView()
 {
@@ -246,20 +252,20 @@ QSharedPointer<CategoryItem> MarkModel::categoryItem(const QString & cate) const
  * \param cate 
  * \return 
  */
-const Triangulate * MarkModel::markMesh(const QString & cate)
+QVector<QSharedPointer<Triangulate>> MarkModel::markMesh(const QString& cate)
 {
 	updateMeshMarkHelper(cate);			// update every time
 	//Maybe there should be a dirty bit to indicate whether the mesh should be updated. 
 	const auto item = getItemHelper(categoryIndexHelper(cate));
 	if (item == nullptr)
-		return nullptr;
+		return QVector<QSharedPointer<Triangulate>>();
 	const auto & var = item->data(1);			//Mesh should be stored at column 1 of the category node
-	if(var.canConvert<QSharedPointer<Triangulate>>() == true) {
+	if(var.canConvert<QVector<QSharedPointer<Triangulate>>>() == true) {
 		//Mesh has been existed
 		//Should be updated?
-		return var.value<QSharedPointer<Triangulate>>().data();
+		return var.value<QVector<QSharedPointer<Triangulate>>>();
 	}
-	return nullptr;
+	return QVector<QSharedPointer<Triangulate>>();
 }
 
 void MarkModel::initSliceMarkContainerHelper()
@@ -269,6 +275,53 @@ void MarkModel::initSliceMarkContainerHelper()
 	m_topSliceVisibleMarks.resize(m_identity.topSliceCount());
 	m_rightSliceVisibleMarks.resize(m_identity.rightSliceCount());
 	m_frontSliceVisibleMarks.resize(m_identity.frontSliceCount());
+}
+
+QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> & marks)
+{
+	/* TODO::
+	 * QList<QGraphicsItem*> marks has not been sorted so far. Maybe it can be sorted 
+	 * when item is inserted at once so as to get a better performance here.
+	 */
+	std::sort(marks.begin(), marks.end(), [](const QGraphicsItem * it1,const QGraphicsItem * it2)->bool 
+	{
+		Q_ASSERT_X(it1->data(MarkProperty::SliceIndex).canConvert<int>(),"MarkModel::refactorMarks","it1 failed");
+		Q_ASSERT_X(it2->data(MarkProperty::SliceIndex).canConvert<int>(),"MarkModel::refactorMarks","it2 failed");
+		return it1->data(MarkProperty::SliceIndex).value<int>() < it2->data(MarkProperty::SliceIndex).value<int>();
+	});
+
+	/*
+	 * After sorting by slice index. We need to add each mark item to corresponding mesh according to 
+	 * the maximum intersected area between bounding box of the mark item and the newest representative 
+	 * bounding box of the mesh.
+	 */
+
+	QVector<QList<StrokeMarkItem*>> meshes;
+	QVector<QRectF> bounds;
+	for(const auto item :marks) {
+		auto meshIndex = -1;
+		auto minIntersectArea = std::numeric_limits<double>::max();
+		const auto r = item->boundingRect();		// Rectangle of current mark
+		for(auto i=0;i<bounds.size();i++) {
+			if(bounds[i].intersects(r) == true) {
+				const auto intersectedRect = bounds[i].intersected(r);
+				const auto intersectedArea = intersectedRect.width()*intersectedRect.height();
+				if(minIntersectArea > intersectedArea) {
+					minIntersectArea = intersectedArea;
+					meshIndex = i;
+				}
+			}
+		}
+		if(meshIndex != -1) {			// Add into a existed mesh
+			bounds[meshIndex] = r;		// Update Rectangle
+			meshes[meshIndex].push_back(item);
+			
+		}else {							// Create a new mesh
+			bounds.push_back(r);
+			meshes.push_back(QList<StrokeMarkItem*>{item});
+		}
+	}
+	return meshes;
 }
 
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,

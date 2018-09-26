@@ -64,6 +64,7 @@ inline bool Triangulate::needNormal()const { return m_needNormals;}
 
 Q_DECLARE_METATYPE(Triangulate);			//
 Q_DECLARE_METATYPE(QSharedPointer<Triangulate>);
+Q_DECLARE_METATYPE(QVector<QSharedPointer<Triangulate>>);
 
 
 inline auto & tanslateVector(const QVector<QPointF> & vec, int start, int index) {

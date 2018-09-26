@@ -460,31 +460,34 @@ void RenderWidget::updateMark() {
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
 
 	for(const auto & c:cates) {
-		const auto mesh = m_markModel->markMesh(c);
+		const auto meshes = m_markModel->markMesh(c);
 		/**
 		 *This is a low efficient operation because color of category could not be retrieved
 		 *  directly by category item, which is not stored color when created.
 		 *  TODO:: The issue would be addressed soon.
 		*/
 		const QColor color = m_markModel->marks(c)[0]->data(MarkProperty::CategoryColor).value<QColor>();		//Temporarily
+		for(const auto & mesh:meshes) {
 
-		Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
-		const auto v = mesh->vertices();
-		const auto idx = mesh->indices();
-		const auto nV = mesh->vertexCount();
-		const auto nT = mesh->triangleCount();
-		const auto n = mesh->normals();
-		auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v, 
-			n,
-			nullptr,
-			nV,
-			idx,
-			nT, 
-			d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
-			this));
-		ptr->initializeGLResources();
-		m_markMeshes.push_back(ptr);
-		m_markColor.push_back(color);
+			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
+			const auto v = mesh->vertices();
+			const auto idx = mesh->indices();
+			const auto nV = mesh->vertexCount();
+			const auto nT = mesh->triangleCount();
+			const auto n = mesh->normals();
+			auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v,
+				n,
+				nullptr,
+				nV,
+				idx,
+				nT,
+				d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
+				this));
+			ptr->initializeGLResources();
+			m_markMeshes.push_back(ptr);
+			m_markColor.push_back(color);
+		}
+		
 	}
 	doneCurrent();
 }
