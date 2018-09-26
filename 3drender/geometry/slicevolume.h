@@ -30,6 +30,8 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	QScopedPointer<SliceShader>			    m_sliceShader;
 	QOpenGLBuffer							m_axisAlignedSliceVBO;
 	QOpenGLVertexArrayObject				m_axisAlignedSliceVAO;
+
+
 	QOpenGLTexture							m_gradientTexture;
 	QOpenGLTexture							m_volumeTexture;
 	GradientCalculator						m_gradCalc;
@@ -37,6 +39,7 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	int										m_rightSlice;
 	int										m_frontSlice;
 	QMatrix4x4								m_normalizeTransform;
+	double									m_A, m_B, m_C, m_D;
 
 	bool									m_sliceMode;
 	void loadDataAndGradientToTexture();
@@ -77,11 +80,32 @@ public:
 	bool render()override;
 
 	void sliceMode(bool enable);
-	private slots:
+	void setSliceSphereCoord(const QVector3D & coord);
+private slots:
 	void windowSizeChanged(int w, int h);
+private:
+	static QVector<QVector3D> sliceCoord(double A,double B,double C,double D);
+	static bool isInRange(double v) { return v >= 0 && v <= 1; }
+	static int getSign(double v) { if (v >= 0)return 1;  if (v < 0)return -1; }
+	static double clamp(double v, double a, double b) { if (v < a)return a; if (v > b)return b; return v; }
 };
 
 inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
+
+inline void SliceVolume::setSliceSphereCoord(const QVector3D & coord)
+{
+	const auto r = coord.x();
+	const auto theta = coord.y();
+	const auto phi = coord.z();
+	const auto sinPhi = std::sin(qDegreesToRadians(phi));
+	const auto x = r * sinPhi * std::sin(qDegreesToRadians(theta)) + 0.5;
+	const auto y = r* sinPhi * std::cos(qDegreesToRadians(theta))+0.5;
+	const auto z = r * std::cos(qDegreesToRadians(phi))+0.5;
+	m_A = x-0.5;
+	m_B = y -0.5;
+	m_C = z -0.5;
+	m_D = -x * (m_A) - y * ( m_B) - z * (m_C);
+}
 
 
 

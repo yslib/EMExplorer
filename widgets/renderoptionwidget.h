@@ -9,12 +9,14 @@ QT_BEGIN_NAMESPACE
 class QGroupBox;
 class QLabel;
 class QDoubleSpinBox;
+class QSlider;
 class QCheckBox;
 class QPushButton;
 class QComboBox;
 class QListWidget;
 class QListView;
 class QPushButton;
+class QLineEdit;
 QT_END_NAMESPACE
 
 
@@ -38,6 +40,7 @@ struct RenderOptions {
 	float zSpacing;
 	QVector3D lightDirection;
 	RenderMode mode;
+	QVector3D sliceNormal;
 	RenderOptions() :
 		ambient(1.0)
 		, specular(0.75)
@@ -47,6 +50,7 @@ struct RenderOptions {
 		, xSpacing(1.0)
 		, ySpacing(1.0)
 		, zSpacing(1.0)
+		, sliceNormal(0,0,0)
 	,mode(RenderMode::DVR)
 	{}
 };
@@ -66,6 +70,10 @@ public:
 signals:
 	void optionsChanged();
 	void markUpdated();
+private slots:
+	void radialSliderChanged(int value);
+	void thetaSliderChanged(int value);
+	void phiSliderChanged(int value);
 private:
 	//void connectWith(VolumeWidget * widget);
 	//void disconnectWith(VolumeWidget * widget);
@@ -99,10 +107,15 @@ private:
 	QGroupBox *m_meshGroup;
 	QPushButton * m_meshUpdateButton;
 
-	QGroupBox * m_sliceNormalGroup;
-	QLabel * m_rComponentLabel;
-	QLabel * m_thetaComponentLabel;
-	QLabel * m_phiComponentLabel;
-
+	QGroupBox * m_sliceGroup;
+	QLabel * m_radLabel;
+	QSlider* m_radSlider;
+	QLabel *m_radValueLabel;
+	QLabel * m_thetaLabel;
+	QSlider* m_thetaSlider;
+	QLabel *m_thetaValueLabel;
+	QLabel * m_phiLabel;
+	QSlider* m_phiSlider;
+	QLabel *m_phiValueLabel;
 
 };

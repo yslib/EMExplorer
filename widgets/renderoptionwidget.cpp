@@ -8,6 +8,8 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QSlider>
+#include <QLineEdit>
 
 
 RenderParameterWidget::RenderParameterWidget(QWidget* parent)
@@ -151,8 +153,41 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	vLayout->addWidget(m_meshUpdateButton);
 	m_meshGroup->setLayout(vLayout);
 
-	/// Add New Widget above
+	m_sliceGroup = new QGroupBox(QStringLiteral("Slice"));
+	m_radLabel = new QLabel(QStringLiteral("R:"));
+	m_radSlider = new QSlider(Qt::Horizontal);
+	m_radSlider->setMinimum(0);
+	m_radSlider->setMaximum(100);
+	connect(m_radSlider, &QSlider::valueChanged, this, &RenderParameterWidget::radialSliderChanged);
+	m_radValueLabel = new QLabel;
+	m_radValueLabel->setText(QStringLiteral("0.00"));
+	m_thetaLabel = new QLabel(QStringLiteral("Theta:"));
+	m_thetaSlider = new QSlider(Qt::Horizontal);
+	m_thetaSlider->setMinimum(0);
+	m_thetaSlider->setMaximum(360);
+	connect(m_thetaSlider, &QSlider::valueChanged, this, &RenderParameterWidget::thetaSliderChanged);
+	m_thetaValueLabel = new QLabel;
+	m_thetaValueLabel->setText(QStringLiteral("0"));
+	m_phiLabel = new QLabel(QStringLiteral("Phi:"));
+	m_phiSlider = new QSlider(Qt::Horizontal);
+	m_phiSlider->setMinimum(-90);
+	m_phiSlider->setMaximum(90);
+	connect(m_phiSlider, &QSlider::valueChanged, this, &RenderParameterWidget::phiSliderChanged);
+	m_phiValueLabel = new QLabel;
+	m_phiValueLabel->setText(QStringLiteral("0"));
+	auto gridLayout = new QGridLayout;
+	gridLayout->addWidget(m_radLabel,0, 0);
+	gridLayout->addWidget(m_radSlider, 0, 1);
+	gridLayout->addWidget(m_radValueLabel, 0, 2);
+	gridLayout->addWidget(m_thetaLabel, 1, 0);
+	gridLayout->addWidget(m_thetaSlider, 1, 1);
+	gridLayout->addWidget(m_thetaValueLabel, 1, 2);
+	gridLayout->addWidget(m_phiLabel, 2, 0);
+	gridLayout->addWidget(m_phiSlider, 2, 1);
+	gridLayout->addWidget(m_phiValueLabel, 2, 2);
+	m_sliceGroup->setLayout(gridLayout);
 
+	/// Add New Widget above
 
 	vLayout = new QVBoxLayout;
 	vLayout->addWidget(m_volumeInfoGroup);
@@ -160,6 +195,7 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 	vLayout->addWidget(m_renderOptionGroup);
 	vLayout->addWidget(m_markListGroup);
 	vLayout->addWidget(m_meshGroup);
+	vLayout->addWidget(m_sliceGroup);
 	vLayout->addStretch();
 	setLayout(vLayout);
 }
@@ -167,4 +203,28 @@ RenderParameterWidget::RenderParameterWidget(QWidget* parent)
 void RenderParameterWidget::setMarkModel(QAbstractItemModel* model) 
 {
 	m_markListView->setModel(model);
+}
+
+void RenderParameterWidget::radialSliderChanged(int value) {
+	const auto rad = value * 0.01;
+	m_radValueLabel->setText(QString::number(rad,'f',2));
+	m_renderOptions->sliceNormal.setX(rad);
+	emit optionsChanged();
+}
+
+void RenderParameterWidget::thetaSliderChanged(int value)
+{
+	const auto theta = static_cast<double>(value);
+	m_thetaValueLabel->setText(QString::number(theta, 'f',0));
+	m_renderOptions->sliceNormal.setY(theta);
+	emit optionsChanged();
+}
+
+
+void RenderParameterWidget::phiSliderChanged(int value)
+{
+	const auto phi = static_cast<double>(value);
+	m_phiValueLabel->setText(QString::number(phi, 'f', 0));
+	m_renderOptions->sliceNormal.setZ(phi);
+	emit optionsChanged();
 }

@@ -2,6 +2,7 @@
 
 #include "slicevolume.h"
 #include "abstract/abstractslicedatamodel.h"
+#include "qmath.h"
 
 const static int faceIndex[] = { 1, 3, 7, 5, 0, 4, 6, 2, 2, 6, 7, 3, 0, 1, 5, 4, 4, 5, 7, 6, 0, 2, 3, 1 };
 static const float xCoord = 1.0, yCoord = 1.0, zCoord = 1.0;
@@ -154,7 +155,7 @@ QSize SliceVolume::windowSize() const {
 }
 
 SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
-	GPUVolume(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount(), trans,fmt)
+	GPUVolume(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount(), trans, fmt)
 	, m_fbo(nullptr)
 	, m_gradientTexture(QOpenGLTexture::Target3D)
 	, m_positionVBO(QOpenGLBuffer::VertexBuffer)
@@ -244,7 +245,7 @@ bool SliceVolume::initializeGLResources() {
 	QOpenGLVertexArrayObject::Binder binder1(&m_axisAlignedSliceVAO);
 	m_axisAlignedSliceVBO.create();
 	m_axisAlignedSliceVBO.bind();
-	m_axisAlignedSliceVBO.allocate(4 * 3 * sizeof(float));
+	m_axisAlignedSliceVBO.allocate(6 * 3 * sizeof(float));
 	glfuncs->glEnableVertexAttribArray(0);
 	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
 
@@ -303,10 +304,10 @@ bool SliceVolume::render() {
 		m_axisAlignedSliceVBO.bind();
 		m_axisAlignedSliceVBO.write(0, top, sizeof(top));
 		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
-	
+
 		float right[] =
 		{
-			0.0,rightCoord,0.0, 
+			0.0,rightCoord,0.0,
 			1.0,rightCoord,0.0,
 			1.0,rightCoord,1.0,
 			0.0,rightCoord,1.0,
@@ -322,6 +323,11 @@ bool SliceVolume::render() {
 		};
 		m_axisAlignedSliceVBO.write(0, front, sizeof(front));
 		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+
+		const auto sliceCoords = sliceCoord(m_A, m_B, m_C, m_D);
+		m_axisAlignedSliceVBO.write(0, sliceCoords.constData(), sizeof(QVector3D)*sliceCoords.size());
+		glfuncs->glDrawArrays(GL_TRIANGLE_FAN, 0, sliceCoords.size());
+
 		m_sliceShader->release();
 
 	}
@@ -331,7 +337,7 @@ bool SliceVolume::render() {
 		QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
 		// Draw Front to fbo 
 		glfuncs->glDrawBuffer(GL_COLOR_ATTACHMENT0);
-		
+
 		glfuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfuncs->glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
 		// Draw Back to fbo 
@@ -374,3 +380,72 @@ void SliceVolume::windowSizeChanged(int w, int h) {
 	m_rayCastingTextureVBO.write(0, rayCastingVB.constData(), rayCastingVB.count() * 2 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();
 }
+
+QVector<QVector3D> SliceVolume::sliceCoord(double A, double B, double C, double D) {
+	QVector<QVector3D> coords;
+	const auto v1 = float(-(D / C));
+	const auto v2 = float(-(D + A) / C);
+	const auto v3 = float(-(D + B) / C);
+	const auto v4 = float(-(D + A + B) / C);
+	const auto v5 = float(-(D) / A);
+	const auto v6 = float(-(B + D) / A);
+	const auto v7 = float(-(C + D) / A);
+	const auto v8 = float(-(B + C + D) / A);
+	const auto v9 = float(-(D) / B);
+	const auto v10 = float(-(D + A) / B);
+	const auto v11 = float(-(D + C) / B);
+	const auto v12 = float(-(D + A + C) / B);
+	//qDebug("%f %f %f %f %f %f %f %f %f %f %f %f\n",v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12);
+	if (isInRange(v1))
+		coords.push_back({ 0,0,v1 });
+	if (isInRange(v2))
+		coords.push_back({ 1,0,v2 });
+	if (isInRange(v3))
+		coords.push_back({ 0,1,v3 });
+	if (isInRange(v4))
+		coords.push_back({ 1,1,v4 });
+	if (isInRange(v5))
+		coords.push_back({ v5, 0,0 });
+	if (isInRange(v6))
+		coords.push_back({ v6 ,1,0 });
+	if (isInRange(v7))
+		coords.push_back({ v7,0,1 });
+	if (isInRange(v8))
+		coords.push_back({ v8,1,1 });
+	if (isInRange(v9))
+		coords.push_back({ 0,v9,0 });
+	if (isInRange(v10))
+		coords.push_back({ 1,v10,0 });
+	if (isInRange(v11))
+		coords.push_back({ 0,v11,1 });
+	if (isInRange(v12))
+		coords.push_back({ 1,v12,1 });
+	if (coords.empty() == true)
+		return coords;
+	// Convex Polygon Sorting
+
+	// Step1: Calculate centroid
+	auto c = QVector3D(0,0,0);
+	for(const auto & p:coords) {
+		c += p;
+	}
+	c /= coords.size();
+
+	// Step2: Calculate normal N
+	const auto N = QVector3D(A, B, C);
+	//const auto N = QVector3D::crossProduct(coords[1]-c,coords[0]-c).normalized();
+
+	// Step3: Get vector from the centroid to the first point:ZA
+	const auto V = (coords[0]-c).normalized();
+
+	// Step4: order all points P by the signed angle ZA to ZP with normal N
+	// Note:  signed angle == angle(ZA,ZP) * sign(n dot (ZA cross ZP))
+	std::sort(coords.begin(), coords.end(), [&V,&N,&c](const QVector3D & v1,const QVector3D & v2)->bool{
+		const auto zp1 = (v1 - c).normalized(), zp2 = (v2 - c).normalized();
+		const auto signedAngle1 = qRadiansToDegrees(std::acos(clamp(QVector3D::dotProduct(V, zp1),-1,1)))*getSign(QVector3D::dotProduct(N,QVector3D::crossProduct(V,zp1)));
+		const auto signedAngle2 = qRadiansToDegrees(std::acos(clamp(QVector3D::dotProduct(V, zp2),-1,1)))*getSign(QVector3D::dotProduct(N,QVector3D::crossProduct(V,zp2)));
+		return signedAngle1 < signedAngle2;
+	});
+	return coords;
+}
+

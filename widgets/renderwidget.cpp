@@ -295,6 +295,8 @@ void RenderWidget::paintGL()
 	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 	const auto renderMode = m_parameterWidget->options()->mode;
 	Q_D(RenderWidget);
+
+
 	//
 	const auto xs = m_parameterWidget->options()->xSpacing;
 	const auto ys = m_parameterWidget->options()->ySpacing;
@@ -310,8 +312,11 @@ void RenderWidget::paintGL()
 	if(m_volume != nullptr) {
 		if(renderMode == RenderMode::DVR)
 			m_volume->sliceMode(false);
-		else
+		else {
 			m_volume->sliceMode(true);
+			m_volume->setSliceSphereCoord(m_parameterWidget->options()->sliceNormal);
+		}
+			
 		m_volume->setTransform(world);
 		m_volume->render();
 	}
