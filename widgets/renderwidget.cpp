@@ -177,7 +177,7 @@ static QVector<QVector3D> cubeVert =
 
 RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	MarkModel * markModel,
-	RenderParameterWidget * widget, 
+	RenderParameterWidget * widget,
 	QWidget * parent)
 	:QOpenGLWidget(parent),
 	m_markModel(markModel),
@@ -185,8 +185,11 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_parameterWidget(widget),
 	m_camera(QVector3D(0.f, 0.f, 10.f)),
 	m_rayStep(0.02),
-	m_tfTexture(QOpenGLTexture::Target1D),
+	m_tfTexture(nullptr),
 	m_volume(nullptr),
+	m_meshShader(nullptr),
+	m_selectShader(nullptr),
+	m_pickFBO(nullptr),
 	d_ptr(new RenderWidgetPrivate(this))
 {
 	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
@@ -228,11 +231,7 @@ void RenderWidget::addContextAction(QAction* action)
 	m_contextMenu->addAction(action);
 }
 
-RenderWidget::~RenderWidget()
-{
-	Q_D(RenderWidget);
-	delete d;
-}
+
 
 void RenderWidget::initializeGL()
 {
@@ -240,14 +239,17 @@ void RenderWidget::initializeGL()
 		qFatal("initializeOpenGLFunctions failed");
 		return;
 	}
-	glClearColor(1.0, 1.0, 1.0, 1.0);
-	//glEnable(GL_CULL_FACE);
 
+	auto ctx = context();
+	qDebug() << "Context Info:" << ctx;
+	
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
-
+	
 	// Update transfer functions
 	emit requireTransferFunction();
+	makeCurrent();
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
 
@@ -255,24 +257,25 @@ void RenderWidget::initializeGL()
 		item->initializeGLResources();
 
 	// mesh shader
-	makeCurrent();
-	m_meshShader.create();
-	m_meshShader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/mesh_shader_v.glsl");
-	m_meshShader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/mesh_shader_f.glsl");
-	if(m_meshShader.link() == false) {
+	
+	m_meshShader = new QOpenGLShaderProgram;
+	m_meshShader->create();
+	m_meshShader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/mesh_shader_v.glsl");
+	m_meshShader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/mesh_shader_f.glsl");
+	if(m_meshShader->link() == false) {
 		qFatal("Mesh shader is not linked.");
 		return;
 	}
 	// pick shader
-	m_selectShader.create();
-	m_selectShader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/pick_shader_v.glsl");
-	m_selectShader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/pick_shader_f.glsl");
-	if(m_selectShader.link() == false) {
+	m_selectShader = new QOpenGLShaderProgram;
+	m_selectShader->create();
+	m_selectShader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/pick_shader_v.glsl");
+	m_selectShader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/pick_shader_f.glsl");
+	if(m_selectShader->link() == false) {
 		qFatal("Select shader is not linked.");
 		return;
 	}
 	doneCurrent();
-
 }
 
 //#define EXPORT_FBO_IMG
@@ -286,7 +289,9 @@ void RenderWidget::resizeGL(int w, int h)
 	m_otho.ortho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
 	m_proj.perspective(45.f, aspect, 0.01f, 100.f);
 
-	m_pickFBO.reset(new QOpenGLFramebufferObject(w,h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB));
+	if (m_pickFBO != nullptr);
+		delete m_pickFBO;
+	m_pickFBO = new QOpenGLFramebufferObject(w,h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB);
 
 	emit windowResized(w, h);
 }
@@ -330,41 +335,40 @@ void RenderWidget::paintGL()
 		if(d->enableStartPicking ==  true) {
 			m_pickFBO->bind();
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			m_selectShader.bind();
-			m_selectShader.setUniformValue("viewMatrix", viewMatrix);
-			m_selectShader.setUniformValue("projMatrix", m_proj);
-			m_selectShader.setUniformValue("modelMatrix", world);
+			m_selectShader->bind();
+			m_selectShader->setUniformValue("viewMatrix", viewMatrix);
+			m_selectShader->setUniformValue("projMatrix", m_proj);
+			m_selectShader->setUniformValue("modelMatrix", world);
 			for(int i=0;i<m_markMeshes.size();i++) {
 				const auto color = idToColor(i);
-				m_selectShader.setUniformValue("pickColor", color);
+				m_selectShader->setUniformValue("pickColor", color);
 				m_markMeshes[i]->render();
 			}
-			m_selectShader.release();
+			m_selectShader->release();
 			//m_pickFBO->toImage().save("C:\\Users\\ysl\\Desktop\\fb\\pickfbo.jpg");
 			m_pickFBO->release();
 		}
 
-		m_meshShader.bind();
-		m_meshShader.setUniformValue("viewMatrix", viewMatrix);
-		m_meshShader.setUniformValue("projMatrix", m_proj);
-		m_meshShader.setUniformValue("modelMatrix", world);
-		m_meshShader.setUniformValue("normalMatrix", world.normalMatrix());
-		m_meshShader.setUniformValue("lightPos", cameraPos);
-		m_meshShader.setUniformValue("viewPos", cameraPos); 
+		m_meshShader->bind();
+		m_meshShader->setUniformValue("viewMatrix", viewMatrix);
+		m_meshShader->setUniformValue("projMatrix", m_proj);
+		m_meshShader->setUniformValue("modelMatrix", world);
+		m_meshShader->setUniformValue("normalMatrix", world.normalMatrix());
+		m_meshShader->setUniformValue("lightPos", cameraPos);
+		m_meshShader->setUniformValue("viewPos", cameraPos); 
+
 		
 		for(int i=0;i<m_markMeshes.size();i++) {
 			QColor color = m_markColor[i];
 			if(i == d->selectedObjectId) {
 				color = m_markColor[i].lighter(150);
 			}
-			m_meshShader.setUniformValue("objectColor", color);
+			m_meshShader->setUniformValue("objectColor", color);
 			m_markMeshes[i]->render();
 		}
 
-		m_meshShader.release();
-
+		m_meshShader->release();
 	}
-
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent* event)
@@ -421,16 +425,18 @@ void RenderWidget::contextMenuEvent(QContextMenuEvent* event)
 void RenderWidget::updateTransferFunction(const float * func, bool updated)
 {
 	makeCurrent();
-	if (m_tfTexture.isCreated() == false)
+	if (m_tfTexture == nullptr)
 	{
-		m_tfTexture.setMagnificationFilter(QOpenGLTexture::Linear);
-		m_tfTexture.setMinificationFilter(QOpenGLTexture::Linear);
-		m_tfTexture.setWrapMode(QOpenGLTexture::ClampToEdge);
-		m_tfTexture.setSize(256);
-		m_tfTexture.setFormat(QOpenGLTexture::RGBA16_UNorm);		//Equivalent to GL_RGBA16
-		m_tfTexture.allocateStorage();
+		//m_tfTexture.isCreated() == false
+		m_tfTexture = new QOpenGLTexture(QOpenGLTexture::Target1D);
+		m_tfTexture->setMagnificationFilter(QOpenGLTexture::Linear);
+		m_tfTexture->setMinificationFilter(QOpenGLTexture::Linear);
+		m_tfTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
+		m_tfTexture->setSize(256);
+		m_tfTexture->setFormat(QOpenGLTexture::RGBA16_UNorm);		//Equivalent to GL_RGBA16
+		m_tfTexture->allocateStorage();
 	}
-	m_tfTexture.setData(QOpenGLTexture::RGBA, QOpenGLTexture::Float32, func);	//Equivalent to GL_RGBA and GL_FLOAT
+	m_tfTexture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::Float32, func);	//Equivalent to GL_RGBA and GL_FLOAT
 	doneCurrent();
 	if (updated)
 		update();
@@ -545,17 +551,36 @@ int RenderWidget::selectMesh(int x, int y)
 
 void RenderWidget::cleanup()
 {
+	qDebug() << "cleanup has been called";
 	makeCurrent();
-	qDebug() << "cleanup called";
-	m_tfTexture.destroy();
+
 	if(m_volume != nullptr)
 		m_volume->destroyGLResources();
 
 	for (auto & mesh : m_markMeshes)
 		mesh->destoryGLResources();
 
-	m_meshShader.destroyed();
-	m_selectShader.destroyed();
+	delete m_meshShader;
+	m_meshShader = nullptr;
+	delete m_selectShader;
+	m_selectShader = nullptr;
+	delete m_tfTexture;
+	m_tfTexture = nullptr;
+	delete m_pickFBO;
+	m_pickFBO = nullptr;
 
 	doneCurrent();
+}
+
+RenderWidget::~RenderWidget()
+{
+	cleanup();			//
+	Q_D(RenderWidget);
+	delete d;
+
+	/**
+	 * Critical: The context will emit aboutToBeDestroyed() signal and will cause a crash 
+	 * even after this class was destroyed if below disconnection had not been performed.
+	 */
+	disconnect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 }

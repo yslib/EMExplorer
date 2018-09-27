@@ -300,14 +300,14 @@ QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> 
 	QVector<QRectF> bounds;
 	for(const auto item :marks) {
 		auto meshIndex = -1;
-		auto minIntersectArea = std::numeric_limits<double>::max();
+		auto maxIntersectedArea = 0.0;
 		const auto r = item->boundingRect();		// Rectangle of current mark
 		for(auto i=0;i<bounds.size();i++) {
 			if(bounds[i].intersects(r) == true) {
 				const auto intersectedRect = bounds[i].intersected(r);
 				const auto intersectedArea = intersectedRect.width()*intersectedRect.height();
-				if(minIntersectArea > intersectedArea) {
-					minIntersectArea = intersectedArea;
+				if(maxIntersectedArea < intersectedArea) {
+					maxIntersectedArea = intersectedArea;
 					meshIndex = i;
 				}
 			}

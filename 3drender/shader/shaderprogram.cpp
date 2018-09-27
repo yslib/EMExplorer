@@ -12,7 +12,10 @@
 
 ShaderProgram::ShaderProgram():QOpenGLShaderProgram()
 {
-	m_glfuncs.initializeOpenGLFunctions();
+	if(m_glfuncs.initializeOpenGLFunctions() == false) {
+		qWarning("OpenGL Functions initialize failed");
+		return;
+	}
 }
 
 void ShaderProgram::setUniformSampler(const std::string& name, GLenum texUnit, GLenum target, GLuint texID)

@@ -153,7 +153,8 @@ TF1DTextureCanvas::TF1DTextureCanvas(TF1DMappingCanvas * tf, QWidget *parent)
 TF1DTextureCanvas::~TF1DTextureCanvas()
 {
 	makeCurrent();
-	glDeleteTextures(1, &m_texture);
+	if(m_texture != 0)
+		glDeleteTextures(1, &m_texture);
 	doneCurrent();
 }
 void TF1DTextureCanvas::initializeGL()

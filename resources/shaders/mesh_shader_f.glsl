@@ -12,7 +12,11 @@ void main(){
     
     //diffuse
     vec3 lightDir = normalize(lightPos - fragPos);
-    vec3 normal = normalize(outNormal);
+	vec3 normal;
+	if(gl_FrontFacing)
+       normal = normalize(outNormal);
+	else
+	   normal = normalize(-outNormal); 
     float diff =  max(dot(normal,lightDir),0);       //diffuse
 
     //specular

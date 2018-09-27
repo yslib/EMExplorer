@@ -19,27 +19,35 @@ class RenderWidget;
 class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 {
 	Q_OBJECT
-	QScopedPointer<PositionShader>			m_positionShader;
+	
 	QOpenGLBuffer							m_positionVBO;
 	QOpenGLBuffer							m_positionEBO;
 	QOpenGLVertexArrayObject				m_positionVAO;
-	QScopedPointer<QOpenGLFramebufferObject>m_fbo;
-	QSharedPointer<RayCastingShader>		m_currentShader;
-	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
-	QOpenGLBuffer							m_rayCastingTextureVBO;
-	QScopedPointer<SliceShader>			    m_sliceShader;
+
+	/*
+	 * Prefer raw pointer rather than smart pointer to manage following qt OpenGL helper classes.
+	 * Because these class need to explicitly initialize/destroy so as to deferred instance.
+	 */
+	PositionShader							*m_positionShader;
+	SliceShader								*m_sliceShader;
+	RayCastingShader						*m_currentShader;
+	QOpenGLFramebufferObject				*m_fbo;
+	QOpenGLTexture							*m_gradientTexture;
+	QOpenGLTexture							*m_volumeTexture;
+
 	QOpenGLBuffer							m_axisAlignedSliceVBO;
 	QOpenGLVertexArrayObject				m_axisAlignedSliceVAO;
+	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
+	QOpenGLBuffer							m_rayCastingTextureVBO;
 
-
-	QOpenGLTexture							m_gradientTexture;
-	QOpenGLTexture							m_volumeTexture;
 	GradientCalculator						m_gradCalc;
 	int										m_topSlice;
 	int										m_rightSlice;
 	int										m_frontSlice;
 	QMatrix4x4								m_normalizeTransform;
 	double									m_A, m_B, m_C, m_D;
+
+	bool									m_initialized;
 
 	bool									m_sliceMode;
 	void loadDataAndGradientToTexture();
@@ -81,6 +89,7 @@ public:
 
 	void sliceMode(bool enable);
 	void setSliceSphereCoord(const QVector3D & coord);
+	~SliceVolume();
 private slots:
 	void windowSizeChanged(int w, int h);
 private:
@@ -106,8 +115,6 @@ inline void SliceVolume::setSliceSphereCoord(const QVector3D & coord)
 	m_C = z -0.5;
 	m_D = -x * (m_A) - y * ( m_B) - z * (m_C);
 }
-
-
 
 
 #endif // SLICEVOLUME_H

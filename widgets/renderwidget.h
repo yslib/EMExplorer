@@ -106,18 +106,18 @@ private:
 	QVector3D								m_volumeBound;
 	float									m_rayStep;
 	// Textures
-	QOpenGLTexture							m_tfTexture;
+	QOpenGLTexture							*m_tfTexture;
 	QMenu									*m_contextMenu;
 	//Mark Mesh
 
 	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
 	QList<QColor>							m_markColor;
-	
-	QOpenGLShaderProgram					m_meshShader;
-
 	QScopedPointer<SliceVolume>				m_volume;
-	QOpenGLShaderProgram					m_selectShader;
-	QScopedPointer<QOpenGLFramebufferObject>m_pickFBO;
+
+
+	QOpenGLShaderProgram					*m_meshShader;
+	QOpenGLShaderProgram					*m_selectShader;
+	QOpenGLFramebufferObject				*m_pickFBO;
 
 
 	friend class RenderParameterWidget;

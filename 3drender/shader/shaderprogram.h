@@ -3,8 +3,8 @@
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions>
-#include <QOpenGLFunctions_3_1>
 #include <iostream>
+#include <QOpenGLFunctions_3_3_Core>
 
 class ShaderDataInterface;
 class ShaderProgram :public QOpenGLShaderProgram
@@ -14,7 +14,7 @@ public:
 	virtual void load(const ShaderDataInterface * data) = 0;
 	void setUniformSampler(const std::string &name, GLenum texUnit, GLenum target, GLuint texID);
 private:
-	QOpenGLFunctions m_glfuncs;
+	QOpenGLFunctions_3_3_Core m_glfuncs;
 };
 
 
