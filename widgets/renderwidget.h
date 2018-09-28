@@ -59,7 +59,7 @@ public:
 
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
-	void			addContextAction(QAction* action);
+	//void			addContextAction(QAction* action);
 					~RenderWidget();
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
@@ -68,7 +68,7 @@ protected:
 	void			mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
-	void			contextMenuEvent(QContextMenuEvent * event)Q_DECL_OVERRIDE;
+	//void			contextMenuEvent(QContextMenuEvent * event)Q_DECL_OVERRIDE;
 signals:
 	void			markModelChanged();
 	void			dataModelChanged();
@@ -107,7 +107,7 @@ private:
 	float									m_rayStep;
 	// Textures
 	QOpenGLTexture							*m_tfTexture;
-	QMenu									*m_contextMenu;
+	//QMenu									*m_contextMenu;
 	//Mark Mesh
 
 	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
@@ -118,7 +118,6 @@ private:
 	QOpenGLShaderProgram					*m_meshShader;
 	QOpenGLShaderProgram					*m_selectShader;
 	QOpenGLFramebufferObject				*m_pickFBO;
-
 
 	friend class RenderParameterWidget;
 	friend class TriangleMesh;

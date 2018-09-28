@@ -389,8 +389,8 @@ void MainWindow::createWidget()
 	m_renderParameterDockWidget = new QDockWidget(QStringLiteral("Rendering Parameters"));
 	m_renderParameterDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_renderParameterDockWidget->setWidget(m_parameterScrollArea);
-	m_renderParameterDockWidget->setVisible(false);
-	m_renderParameterDockWidget->setFloating(true);
+	//m_renderParameterDockWidget->setVisible(false);
+	//m_renderParameterDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_renderParameterDockWidget->toggleViewAction());
 
 	// TF1DEditor
@@ -398,8 +398,8 @@ void MainWindow::createWidget()
 	m_tfEditorDockWidget = new QDockWidget(QStringLiteral("Transfer Function"));
 	m_tfEditorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_tfEditorDockWidget->setWidget(m_tfEditorWidget);
-	m_tfEditorDockWidget->setVisible(false);
-	m_tfEditorDockWidget->setFloating(true);
+	//m_tfEditorDockWidget->setVisible(false);
+	//m_tfEditorDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
 
 	// VolumeWidget
@@ -409,8 +409,8 @@ void MainWindow::createWidget()
 	m_volumeViewDockWidget->setWidget(m_volumeView);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget, Qt::Horizontal);
 	m_viewMenu->addAction(m_volumeViewDockWidget->toggleViewAction());
-	m_volumeView->addContextAction(m_tfEditorDockWidget->toggleViewAction());
-	m_volumeView->addContextAction(m_renderParameterDockWidget->toggleViewAction());
+	//m_volumeView->addContextAction(m_tfEditorDockWidget->toggleViewAction());
+	//m_volumeView->addContextAction(m_renderParameterDockWidget->toggleViewAction());
 
 	connect(m_tfEditorWidget, &TF1DEditor::TF1DChanged, [this]()
 	{

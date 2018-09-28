@@ -4,8 +4,13 @@ in vec3 fragPos;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform vec4 objectColor;
+uniform bool outlining;
 out vec4 fragColor;
 void main(){
+	if(outlining == true){
+		fragColor = vec4(0.6,0.0,0.0,1.0);
+		return;
+	}
     const vec3 lightColor = vec3(1.0,1.0,1.0);
     //ambient
     float ambient = 0.3;

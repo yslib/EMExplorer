@@ -192,7 +192,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_pickFBO(nullptr),
 	d_ptr(new RenderWidgetPrivate(this))
 {
-	m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
+	//m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
 	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
 	connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
 	connect(widget, &RenderParameterWidget::markUpdated,this,&RenderWidget::updateMark);
@@ -226,10 +226,10 @@ QSize RenderWidget::sizeHint() const
 	return QSize(800, 600);
 }
 
-void RenderWidget::addContextAction(QAction* action)
-{
-	m_contextMenu->addAction(action);
-}
+//void RenderWidget::addContextAction(QAction* action)
+//{
+//	m_contextMenu->addAction(action);
+//}
 
 
 
@@ -291,7 +291,7 @@ void RenderWidget::resizeGL(int w, int h)
 
 	if (m_pickFBO != nullptr);
 		delete m_pickFBO;
-	m_pickFBO = new QOpenGLFramebufferObject(w,h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB);
+	m_pickFBO = new QOpenGLFramebufferObject(w,h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
 
 	emit windowResized(w, h);
 }
@@ -345,7 +345,6 @@ void RenderWidget::paintGL()
 				m_markMeshes[i]->render();
 			}
 			m_selectShader->release();
-			//m_pickFBO->toImage().save("C:\\Users\\ysl\\Desktop\\fb\\pickfbo.jpg");
 			m_pickFBO->release();
 		}
 
@@ -357,14 +356,41 @@ void RenderWidget::paintGL()
 		m_meshShader->setUniformValue("lightPos", cameraPos);
 		m_meshShader->setUniformValue("viewPos", cameraPos); 
 
-		
 		for(int i=0;i<m_markMeshes.size();i++) {
+			
 			QColor color = m_markColor[i];
+
 			if(i == d->selectedObjectId) {
+				//glClear(GL_STENCIL_BUFFER_BIT);
+				//glEnable(GL_STENCIL_TEST);
+				//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+				//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+				//glStencilMask(0xFF);
 				color = m_markColor[i].lighter(150);
+				//m_meshShader->setUniformValue("objectColor", color);
+				//m_markMeshes[i]->render();
+
+				//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+				//glStencilMask(0x00);
+				//glDisable(GL_DEPTH_TEST);
+				//m_meshShader->setUniformValue("outlining", true);
+				m_meshShader->setUniformValue("outlining", false);
+				m_meshShader->setUniformValue("objectColor", color);
+				m_meshShader->setUniformValue("modelMatrix", world);
+				m_markMeshes[i]->render();
+				//glStencilMask(0xFF);
+				//glEnable(GL_DEPTH_TEST);
+				//glDisable(GL_STENCIL_TEST);
 			}
-			m_meshShader->setUniformValue("objectColor", color);
-			m_markMeshes[i]->render();
+			else {
+				m_meshShader->setUniformValue("outlining", false);
+				m_meshShader->setUniformValue("objectColor", color);
+				m_meshShader->setUniformValue("modelMatrix", world);
+				m_markMeshes[i]->render();
+			}
+
+
 		}
 
 		m_meshShader->release();
@@ -415,12 +441,12 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 	}
 	update();
 }
-
-void RenderWidget::contextMenuEvent(QContextMenuEvent* event)
-{
-	const auto pos = event->pos();
-	m_contextMenu->exec(this->mapToGlobal(pos));
-}
+//
+//void RenderWidget::contextMenuEvent(QContextMenuEvent* event)
+//{
+//	const auto pos = event->pos();
+//	m_contextMenu->exec(this->mapToGlobal(pos));
+//}
 
 void RenderWidget::updateTransferFunction(const float * func, bool updated)
 {

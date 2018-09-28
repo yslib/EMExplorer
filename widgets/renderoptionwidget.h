@@ -70,6 +70,7 @@ public:
 signals:
 	void optionsChanged();
 	void markUpdated();
+
 private slots:
 	void radialSliderChanged(int value);
 	void thetaSliderChanged(int value);
@@ -100,6 +101,9 @@ private:
 	QGroupBox *m_renderOptionGroup;
 	QLabel *m_renderTypeLabel;
 	QComboBox *m_renderTypeCCBox;
+
+	QGroupBox *m_transferFunctionGroupBox;
+
 
 	QGroupBox *m_markListGroup;
 	QListView * m_markListView;

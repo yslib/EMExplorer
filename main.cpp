@@ -21,11 +21,11 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-	auto fmt = QSurfaceFormat::defaultFormat();
-	qDebug() << "Surface Format:" << fmt;
+	//auto fmt = QSurfaceFormat::defaultFormat();
+	//qDebug() << "Surface Format:" << fmt;
 
-	auto moduleType = QOpenGLContext::openGLModuleType();
-	qDebug() << moduleType;
+	//auto moduleType = QOpenGLContext::openGLModuleType();
+	//qDebug() << moduleType;
 
 
 

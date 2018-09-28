@@ -33,6 +33,7 @@ class TriangleMesh{
 	QOpenGLBuffer m_vbo;
 	QOpenGLBuffer m_ebo;
 	QOpenGLVertexArrayObject m_vao;
+	QVector3D m_centroid;
 
 	RenderWidget * m_renderer;
 
@@ -66,6 +67,8 @@ public:
 
 	const Vector3f *normalArray()const;
 
+	QVector3D centroid()const;
+
 	bool render();
 
 	void updateShader();
@@ -78,6 +81,7 @@ inline int TriangleMesh::vertexCount()const { return m_nVertex; }
 inline const int * TriangleMesh::indexArray()const { return m_vertexIndices.data(); }
 inline int TriangleMesh::indexCount()const { return m_nTriangles*3; }
 inline const Vector3f * TriangleMesh::normalArray()const { return m_normals.get();}
+inline QVector3D TriangleMesh::centroid()const { return m_centroid; }
 
 
 

@@ -38,10 +38,15 @@ m_vertexIndices(vertexIndices, vertexIndices + 3 * nTriangles),
 m_nTriangles(nTriangles),
 m_created(false),
 m_renderer(renderer),
-m_ebo(QOpenGLBuffer::IndexBuffer)
+m_ebo(QOpenGLBuffer::IndexBuffer),
+m_centroid{0,0,0}
 {
 	m_vertices.reset(new Point3f[nVertex]);
-	for(int i=0;i<nVertex;i++)  m_vertices[i] = trans * vertices[i];	//Wrong??
+	for (int i = 0; i < nVertex; i++) {
+		m_vertices[i] = trans * vertices[i];
+		m_centroid += m_vertices[i];
+	}
+	m_centroid /= nVertex;
 
 	int  normalBytes = 0;
 	int textureBytes = 0;
@@ -117,7 +122,5 @@ bool TriangleMesh::render(){
 	if (glfuncs == nullptr)
 		return false;
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);
-		//glfuncs->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glfuncs->glDrawElements(GL_TRIANGLES, m_nTriangles * 3, GL_UNSIGNED_INT, 0);
-		//glfuncs->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glfuncs->glDrawElements(GL_TRIANGLES, m_nTriangles * 3, GL_UNSIGNED_INT, 0);
 }
