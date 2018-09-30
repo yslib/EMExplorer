@@ -169,6 +169,7 @@ bool MarkModel::updateMeshMarkHelper(const QString& cate)
 	}
 
 	auto meshes = refactorMarks(meshMark);
+
 	QVector<QSharedPointer<Triangulate>> tris;
 	for(const auto m:meshes) {
 		tris.push_back(QSharedPointer<Triangulate>(new Triangulate(m)));
@@ -178,6 +179,7 @@ bool MarkModel::updateMeshMarkHelper(const QString& cate)
 	//if (tri == nullptr)
 	//	return false;
 	//bool success = tri->triangulate();
+
 	item->setData(1,QVariant::fromValue(tris));
 	return true;
 }
