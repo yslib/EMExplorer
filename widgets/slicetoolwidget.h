@@ -17,7 +17,6 @@ class QPushButton;
 QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class SliceEditorWidget;
-class RenderWidget;
 
 class SliceToolWidget:public QWidget
 {
@@ -63,7 +62,7 @@ private:
 		Backward
 	};
 	SliceEditorWidget * m_canvas;
-	RenderWidget * m_volumeWidget;
+	//RenderWidget * m_volumeWidget;
 
 	QCheckBox * m_topSliceCheckBox;
 	TitledSliderWithSpinBox * m_topSlider;

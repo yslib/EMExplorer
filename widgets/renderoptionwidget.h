@@ -1,10 +1,15 @@
 #pragma once
 
 #include <QWidget>
-#include <QVector3D>
+//#include "renderwidget.h"
+#include <QSharedPointer>
+
 
 class QAbstractItemModel;
 class MarkModel;
+class TF1DEditor;
+class RenderWidget;
+class RenderOptions;
 QT_BEGIN_NAMESPACE
 class QGroupBox;
 class QLabel;
@@ -17,69 +22,37 @@ class QListWidget;
 class QListView;
 class QPushButton;
 class QLineEdit;
+class QToolButton;
 QT_END_NAMESPACE
-
-
-enum RenderMode {
-	SliceTexture = 1,
-	LineMesh=2,
-	FillMesh=4,
-	DVR=8
-};
-
-
-
-
-struct RenderOptions {
-	float ambient;
-	float specular;
-	float diffuse;
-	float shininess;
-	float xSpacing;
-	float ySpacing;
-	float zSpacing;
-	QVector3D lightDirection;
-	RenderMode mode;
-	QVector3D sliceNormal;
-	RenderOptions() :
-		ambient(1.0)
-		, specular(0.75)
-		, diffuse(0.5)
-		, shininess(40.00)
-		, lightDirection(0, -1, 0)
-		, xSpacing(1.0)
-		, ySpacing(1.0)
-		, zSpacing(1.0)
-		, sliceNormal(0,0,0)
-	,mode(RenderMode::DVR)
-	{}
-};
-
 
 
 class RenderParameterWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	RenderParameterWidget(QWidget *parent = nullptr);
-	QSize sizeHint() const Q_DECL_OVERRIDE { return { 250,500 }; }
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 250,500 }; }
-	const RenderOptions * options()const { return m_renderOptions.data(); }
-	void setMarkModel(QAbstractItemModel * model);
+	RenderParameterWidget(RenderWidget * widget, QWidget *parent = nullptr);
+	QSize sizeHint() const Q_DECL_OVERRIDE { return { 300,600 }; }
+	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 300,600 }; }
 	~RenderParameterWidget(){}
 signals:
 	void optionsChanged();
 	void markUpdated();
-
+	void transferFunctionsChanged(const float * funcs);
 private slots:
 	void radialSliderChanged(int value);
 	void thetaSliderChanged(int value);
 	void phiSliderChanged(int value);
+	void transferFunctionChanged();
+	void renderTypeChanged(const QString & text);
+	void tfButtonClicked();
 private:
 	//void connectWith(VolumeWidget * widget);
 	//void disconnectWith(VolumeWidget * widget);
+	void setRenderWidget(RenderWidget * widget);
 
-	QScopedPointer<RenderOptions>					    m_renderOptions;
+	RenderWidget * m_widget;
+
+	QSharedPointer<RenderOptions>	m_renderOptions;
 
 	QGroupBox *m_volumeInfoGroup;
 	QLabel    *m_volumeSizeLabel;
@@ -103,10 +76,11 @@ private:
 	QComboBox *m_renderTypeCCBox;
 
 	QGroupBox *m_transferFunctionGroupBox;
+	QToolButton *m_tfButton;
+	TF1DEditor *m_tfEditor;
 
-
-	QGroupBox *m_markListGroup;
-	QListView * m_markListView;
+	//QGroupBox *m_markListGroup;
+	//QListView * m_markListView;
 
 	QGroupBox *m_meshGroup;
 	QPushButton * m_meshUpdateButton;
@@ -121,5 +95,6 @@ private:
 	QLabel * m_phiLabel;
 	QSlider* m_phiSlider;
 	QLabel *m_phiValueLabel;
+
 
 };

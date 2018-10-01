@@ -74,8 +74,8 @@ private:
 	QDockWidget * m_markInfoDOckWidget;
 	MarkInfoWidget * m_markInfoWidget;
 
-	QDockWidget *m_tfEditorDockWidget;
-	TF1DEditor * m_tfEditorWidget;
+	//QDockWidget *m_tfEditorDockWidget;
+	//TF1DEditor * m_tfEditorWidget;
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;

@@ -10,6 +10,7 @@
 #include "3drender/shader/shaderprogram.h"
 #include "algorithm/gradientcalculator.h"
 #include "3drender/geometry/mesh.h"
+//#include "renderoptionwidget.h"
 
 #include <QOpenGLTexture>
 
@@ -21,7 +22,39 @@ class QOpenGLShaderProgram;
 class SliceVolume;
 class QMenu;
 
-#include "renderoptionwidget.h"
+
+enum RenderMode {
+	SliceTexture = 1,
+	LineMesh = 2,
+	FillMesh = 4,
+	DVR = 8
+};
+
+struct RenderOptions {
+	float ambient;
+	float specular;
+	float diffuse;
+	float shininess;
+	float xSpacing;
+	float ySpacing;
+	float zSpacing;
+	QVector3D lightDirection;
+	RenderMode mode;
+	QVector3D sliceNormal;
+	RenderOptions() :
+		ambient(1.0)
+		, specular(0.75)
+		, diffuse(0.5)
+		, shininess(40.00)
+		, lightDirection(0, -1, 0)
+		, xSpacing(1.0)
+		, ySpacing(1.0)
+		, zSpacing(1.0)
+		, mode(RenderMode::DVR)
+		, sliceNormal(0, 0, 0)
+	{
+	}
+};
 
 class RenderWidgetPrivate {
 	Q_DECLARE_PUBLIC(RenderWidget);
@@ -33,7 +66,8 @@ public:
 		, frontSliceIndex(0)
 		, selectedObjectId(-1)
 		, enablePickingMode(true)
-		, enableStartPicking(false) {
+		, enableStartPicking(false)
+		, options(new RenderOptions){
 	}
 	int topSliceIndex;
 	int rightSliceIndex;
@@ -41,8 +75,10 @@ public:
 	int selectedObjectId;
 	bool enablePickingMode;
 	bool enableStartPicking;
+	QSharedPointer<RenderOptions> options;
 	QPoint lastMousePos;
 	QMatrix4x4 volumeNormalTransform;
+
 };
 //class RenderWidgetPrivate;
 
@@ -52,14 +88,14 @@ class RenderWidget:public QOpenGLWidget,
 {
 	Q_OBJECT
 public:
-					RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, RenderParameterWidget * widget,QWidget * parent = nullptr);
+					RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel,QWidget * parent = nullptr);
 	void			setDataModel(AbstractSliceDataModel * model);
 	void			setMarkModel(MarkModel * model);
 	FocusCamera     camera()const { return m_camera; }
+	QSharedPointer<RenderOptions> options()const;
 
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
-	//void			addContextAction(QAction* action);
 					~RenderWidget();
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
@@ -75,7 +111,7 @@ signals:
 	void			requireTransferFunction();
 	void		    windowResized(int w, int h);
 public slots:
-	void			updateTransferFunction(const float* func, bool updated);
+	void			updateTransferFunction(const float * func, bool updated);
 	void			updateMarkMesh();
 	void			setTopSlice(int value)   { Q_D(RenderWidget);d->topSliceIndex = value;update();}
 	void			setRightSlice(int value) { Q_D(RenderWidget);d->rightSliceIndex = value; update(); }
@@ -95,8 +131,7 @@ private:
 
 	MarkModel								*m_markModel;
 	AbstractSliceDataModel					*m_dataModel;
-	RenderParameterWidget					*m_parameterWidget;
-	RenderOptions*							m_options;
+	//RenderParameterWidget					*m_parameterWidget;
 
 	QMatrix4x4								m_proj;
 	QMatrix4x4								m_otho;
@@ -120,7 +155,9 @@ private:
 	QOpenGLFramebufferObject				*m_pickFBO;
 
 	friend class RenderParameterWidget;
+
 	friend class TriangleMesh;
+
 	friend class SliceVolume;
 };
 
@@ -132,5 +169,10 @@ inline QColor RenderWidget::idToColor(int id)
 inline int RenderWidget::colorToId(const QColor& color) 
 {
 	return color.red() + color.green() * 255 + color.blue() * 255 * 255;
+}
+inline QSharedPointer<RenderOptions> RenderWidget::options()const 
+{
+	//Q_D(RenderWidget);
+	return d_ptr->options;
 }
 #endif // VOLUMEWIDGET_H

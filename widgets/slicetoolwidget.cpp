@@ -18,15 +18,17 @@
 #include <QColorDialog>
 
 
-SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent) :m_canvas(canvas), m_volumeWidget(nullptr)
+SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent) :m_canvas(canvas)
 {
 	createWidgets();
 	updateActions();
 	m_canvas->m_panel = this;
+
 	if (m_canvas != nullptr)
 	{
 		connect(m_canvas, &SliceEditorWidget::dataModelChanged, this, &SliceToolWidget::updateProperty);
 	}
+
 	connections();
 }
 

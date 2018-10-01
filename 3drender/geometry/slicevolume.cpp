@@ -130,23 +130,23 @@ QMatrix4x4 SliceVolume::perspMatrix() const {
 QVector3D SliceVolume::lightDirection() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::lightDirection", "null pointer");
 
-	return m_renderer->m_parameterWidget->options()->lightDirection;
+	return m_renderer->d_ptr->options->lightDirection;
 }
 float SliceVolume::ambient() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::ambient", "null pointer");
-	return m_renderer->m_parameterWidget->options()->ambient;
+	return m_renderer->d_ptr->options->ambient;
 }
 float SliceVolume::diffuse() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::diffuse", "null pointer");
-	return m_renderer->m_parameterWidget->options()->diffuse;
+	return m_renderer->d_ptr->options->diffuse;
 }
 float SliceVolume::shininess() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::shininess", "null pointer");
-	return m_renderer->m_parameterWidget->options()->shininess;
+	return m_renderer->d_ptr->options->shininess;
 }
 float SliceVolume::specular() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::specular", "null pointer");
-	return m_renderer->m_parameterWidget->options()->specular;
+	return m_renderer->d_ptr->options->specular;
 }
 QVector3D SliceVolume::volumeBound() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::volumeBound", "null pointer");

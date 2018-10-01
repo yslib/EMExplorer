@@ -177,12 +177,12 @@ static QVector<QVector3D> cubeVert =
 
 RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	MarkModel * markModel,
-	RenderParameterWidget * widget,
+
 	QWidget * parent)
 	:QOpenGLWidget(parent),
 	m_markModel(markModel),
 	m_dataModel(dataModel),
-	m_parameterWidget(widget),
+	//m_parameterWidget(widget),
 	m_camera(QVector3D(0.f, 0.f, 10.f)),
 	m_rayStep(0.02),
 	m_tfTexture(nullptr),
@@ -193,9 +193,10 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	d_ptr(new RenderWidgetPrivate(this))
 {
 	//m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
-	Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
-	connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
-	connect(widget, &RenderParameterWidget::markUpdated,this,&RenderWidget::updateMark);
+
+	//Q_ASSERT_X(widget != nullptr, "VolumeWidget::VolumeWidget", "null pointer");
+	//connect(widget, &RenderParameterWidget::optionsChanged, [this]() {update(); });
+	//connect(widget, &RenderParameterWidget::markUpdated,this,&RenderWidget::updateMark);
 }
 
 void RenderWidget::setDataModel(AbstractSliceDataModel * model)
@@ -297,15 +298,14 @@ void RenderWidget::resizeGL(int w, int h)
 }
 void RenderWidget::paintGL()
 {
-	Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
-	const auto renderMode = m_parameterWidget->options()->mode;
+	//Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 	Q_D(RenderWidget);
 
-
+	const auto renderMode = d->options->mode;
 	//
-	const auto xs = m_parameterWidget->options()->xSpacing;
-	const auto ys = m_parameterWidget->options()->ySpacing;
-	const auto zs = m_parameterWidget->options()->zSpacing;
+	const auto xs = d->options->xSpacing;
+	const auto ys = d->options->ySpacing;
+	const auto zs = d->options->zSpacing;
 
 	QMatrix4x4 world;
 	world.setToIdentity();
@@ -319,7 +319,7 @@ void RenderWidget::paintGL()
 			m_volume->sliceMode(false);
 		else {
 			m_volume->sliceMode(true);
-			m_volume->setSliceSphereCoord(m_parameterWidget->options()->sliceNormal);
+			m_volume->setSliceSphereCoord(d->options->sliceNormal);
 		}
 			
 		m_volume->setTransform(world);

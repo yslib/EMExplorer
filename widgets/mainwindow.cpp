@@ -297,7 +297,7 @@ void MainWindow::readSettings()
 	readSettingsForDockWidget(m_markInfoDOckWidget, &settings);
 	readSettingsForImageView(m_imageView, &settings);
 	readSettingsForDockWidget(m_renderParameterDockWidget, &settings);
-	readSettingsForDockWidget(m_tfEditorDockWidget, &settings);
+	//readSettingsForDockWidget(m_tfEditorDockWidget, &settings);
 	readSettingsForDockWidget(m_imageViewControlPanelDockWidget, &settings);
 	readSettingsForDockWidget(m_volumeViewDockWidget, &settings);
 
@@ -314,7 +314,7 @@ void MainWindow::writeSettings()
 	writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
 	writeSettingsForDockWidget(m_markInfoDOckWidget, &settings);
 	writeSettingsForDockWidget(m_renderParameterDockWidget, &settings);
-	writeSettingsForDockWidget(m_tfEditorDockWidget, &settings);
+	//writeSettingsForDockWidget(m_tfEditorDockWidget, &settings);
 	writeSettingsForImageView(m_imageView, &settings);
 	writeSettingsForDockWidget(m_imageViewControlPanelDockWidget, &settings);
 	writeSettingsForDockWidget(m_volumeViewDockWidget, &settings);
@@ -330,7 +330,7 @@ void MainWindow::setDefaultLayout()
 	splitDockWidget(m_treeViewDockWidget, m_markInfoDOckWidget,Qt::Vertical);
 	//addDockWidget(Qt::BottomDockWidgetArea, m_markInfoDOckWidget);
 	splitDockWidget(m_imageViewDockWidget, m_profileViewDockWidget, Qt::Vertical);
-	splitDockWidget(m_volumeViewDockWidget,m_tfEditorDockWidget, Qt::Vertical);
+	//splitDockWidget(m_volumeViewDockWidget,m_tfEditorDockWidget, Qt::Vertical);
 
 }
 
@@ -382,8 +382,29 @@ void MainWindow::createWidget()
 	// addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
 	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 
+
+
+	// TF1DEditor
+   // m_tfEditorWidget = new TF1DEditor(this);
+	//m_tfEditorDockWidget = new QDockWidget(QStringLiteral("Transfer Function"));
+	//m_tfEditorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	//m_tfEditorDockWidget->setWidget(m_tfEditorWidget);
+	//m_tfEditorDockWidget->setVisible(false);
+	//m_tfEditorDockWidget->setFloating(true);
+	//m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
+
+	// VolumeWidget
+	m_volumeView = new RenderWidget(nullptr, nullptr,this);
+	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
+	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_volumeViewDockWidget->setWidget(m_volumeView);
+	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget, Qt::Horizontal);
+	m_viewMenu->addAction(m_volumeViewDockWidget->toggleViewAction());
+	//m_volumeView->addContextAction(m_tfEditorDockWidget->toggleViewAction());
+	//m_volumeView->addContextAction(m_renderParameterDockWidget->toggleViewAction());
+
 	// RenderParameterWidget
-	m_renderParameterWidget = new RenderParameterWidget(this);
+	m_renderParameterWidget = new RenderParameterWidget(m_volumeView,this);
 	m_parameterScrollArea = new QScrollArea(this);
 	m_parameterScrollArea->setWidget(m_renderParameterWidget);
 	m_renderParameterDockWidget = new QDockWidget(QStringLiteral("Rendering Parameters"));
@@ -393,37 +414,18 @@ void MainWindow::createWidget()
 	//m_renderParameterDockWidget->setFloating(true);
 	m_viewMenu->addAction(m_renderParameterDockWidget->toggleViewAction());
 
-	// TF1DEditor
-    m_tfEditorWidget = new TF1DEditor(this);
-	m_tfEditorDockWidget = new QDockWidget(QStringLiteral("Transfer Function"));
-	m_tfEditorDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	m_tfEditorDockWidget->setWidget(m_tfEditorWidget);
-	//m_tfEditorDockWidget->setVisible(false);
-	//m_tfEditorDockWidget->setFloating(true);
-	m_viewMenu->addAction(m_tfEditorDockWidget->toggleViewAction());
-
-	// VolumeWidget
-	m_volumeView = new RenderWidget(nullptr, nullptr, m_renderParameterWidget,this);
-	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Image View"));
-	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	m_volumeViewDockWidget->setWidget(m_volumeView);
-	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget, Qt::Horizontal);
-	m_viewMenu->addAction(m_volumeViewDockWidget->toggleViewAction());
-	//m_volumeView->addContextAction(m_tfEditorDockWidget->toggleViewAction());
-	//m_volumeView->addContextAction(m_renderParameterDockWidget->toggleViewAction());
-
-	connect(m_tfEditorWidget, &TF1DEditor::TF1DChanged, [this]()
-	{
-		std::unique_ptr<float[]> funs(new float[256 * 4]);
-		m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
-		m_volumeView->updateTransferFunction(funs.get(),true);
-	});
-	connect(m_volumeView, &RenderWidget::requireTransferFunction, [this]()
-	{
-		std::unique_ptr<float[]> funs(new float[256 * 4]);
-		m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
-		m_volumeView->updateTransferFunction(funs.get(), false);
-	});
+	//connect(m_tfEditorWidget, &TF1DEditor::TF1DChanged, [this]()
+	//{
+	//	std::unique_ptr<float[]> funs(new float[256 * 4]);
+	//	m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
+	//	m_volumeView->updateTransferFunction(funs.get(),true);
+	//});
+	//connect(m_volumeView, &RenderWidget::requireTransferFunction, [this]()
+	///{
+	//	std::unique_ptr<float[]> funs(new float[256 * 4]);
+	//	m_tfEditorWidget->getTransferFunction(funs.get(), 256, 1.0);
+	//	m_volumeView->updateTransferFunction(funs.get(), false);
+	//});
 	connect(m_imageView, &SliceEditorWidget::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
 
 

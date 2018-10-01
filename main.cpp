@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
 
-	QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts,true);
+	//QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts,true);
 
     QApplication a(argc, argv);
 
