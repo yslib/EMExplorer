@@ -4,16 +4,24 @@
 #include <QColor>
 
 
+struct CategoryInfo {
+	QString name;
+	QColor color;
+	CategoryInfo(const QString & n, const QColor & c):name(n),color(c){}
+};
 
 class CategoryItem
 {
-	QString m_name;
+	CategoryInfo m_info;
 	int m_count;
 	bool m_visible;
-	QColor m_color;
 public:
 	CategoryItem(const QString & name = QString(), const QColor & color = Qt::black, int count = 0, bool visible = true) :
-		m_name(name), m_color(color), m_count(count), m_visible(visible) {}
+		m_count(count), m_visible(visible) {
+		m_info.name = name;
+		m_info.color = color;
+	}
+	CategoryItem(const CategoryInfo & info);
 	inline QString name()const noexcept;
 	inline int count()const noexcept;
 	inline bool visible()const noexcept;
@@ -24,6 +32,7 @@ public:
 	inline void setColor(const QColor & c)noexcept;
 	inline void increaseCount()noexcept;
 	inline void decreaseCount()noexcept;
+	inline const CategoryInfo& categoryInfo() const;
 
 	friend QDataStream & operator<< (QDataStream & stream, const CategoryItem & item);
 	friend QDataStream & operator>>(QDataStream & stream, CategoryItem & item);
@@ -31,18 +40,23 @@ public:
 	friend QDataStream & operator>>(QDataStream & stream, QSharedPointer<CategoryItem>& item);
 };
 
-inline QString CategoryItem::name()const noexcept { return m_name; }
+inline CategoryItem::CategoryItem(const CategoryInfo& info):CategoryItem(info.name,info.color) {}
+inline QString CategoryItem::name()const noexcept { return m_info.name; }
 inline int CategoryItem::count()const noexcept { return m_count; }
 inline bool CategoryItem::visible()const noexcept { return m_visible; }
+inline const CategoryInfo & CategoryItem::categoryInfo()const 
+{
+	return m_info;
+}
 
 inline QColor CategoryItem::color() const noexcept
 {
-	return m_color;
+	return m_info.color;
 }
 
 inline void CategoryItem::setName(const QString & n) noexcept
 {
-	m_name = n;
+	m_info.name = n;
 }
 
 inline void CategoryItem::setCount(int c) noexcept
@@ -57,7 +71,7 @@ inline void CategoryItem::setVisible(bool visible) noexcept
 
 inline void CategoryItem::setColor(const QColor & c) noexcept
 {
-	m_color = c;
+	m_info.color = c;
 }
 
 inline void CategoryItem::increaseCount() noexcept

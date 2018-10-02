@@ -9,6 +9,7 @@
 
 //#include <QDataStream>
 
+struct CategoryInfo;
 QT_BEGIN_NAMESPACE
 class QGraphicsItem;
 QT_END_NAMESPACE
@@ -60,6 +61,7 @@ class MarkModel :public QAbstractItemModel
 	QModelIndex modelIndexHelper(const QModelIndex& root, const QString& display)const;
 	QModelIndex categoryIndexHelper(const QString& category)const;
 	QModelIndex categoryAddHelper(const QString& category, const QColor& color);		//set dirty
+	QModelIndex categoryAddHelper(const CategoryInfo & info);//set setdirty
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);				//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);
@@ -114,8 +116,11 @@ public:
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 	//Custom functions for accessing and setting data
-	inline void addMark(const QString & category, QGraphicsItem * mark);		//set dirty
-	void addMarks(const QString & category, const QList<QGraphicsItem*> & marks);			//set dirty
+	inline bool addMark(const QString& category, QGraphicsItem* mark);		//set dirty
+	bool addMarks(const QString& category, const QList<QGraphicsItem*>& marks);			//set dirty
+	bool addCategory(const CategoryInfo& info);			//set dirty
+
+
 	QList<QGraphicsItem*> marks(const QString & category)const;
 	QList<QGraphicsItem*> marks()const;			//This is time-consuming operation
 	QStringList categoryText()const;
@@ -141,7 +146,8 @@ public:
  * \Note: The operation will take the ownership of the pointer. If the model is destructed, 
  * \Note: the pointer will also be deleted.
  */
-inline void MarkModel::addMark(const QString& category, QGraphicsItem* mark){addMarks(category, QList<QGraphicsItem*>{mark});}
+
+inline bool MarkModel::addMark(const QString& category, QGraphicsItem* mark){return addMarks(category, QList<QGraphicsItem*>{mark});}
 inline int MarkModel::markCount(const QString & category)const{return rowCount(categoryIndexHelper(category));}
 inline void MarkModel::setDirty() { m_dirty = true; emit modified(); }
 inline bool MarkModel::dirty()const{return m_dirty;}

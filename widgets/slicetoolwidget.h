@@ -25,15 +25,16 @@ public:
     SliceToolWidget(SliceEditorWidget * canvas, QWidget * parent = nullptr);
 	void setImageCanvas(SliceEditorWidget * canvas);
 
-	int sliceIndex(SliceType type)const;
-	void setSliceIndex(SliceType type, int value);
-	int sliceCount(SliceType type)const;
-	void setSliceCount(SliceType type, int count);
-	bool sliceVisible(SliceType type)const;
+	//int sliceIndex(SliceType type)const;
+	//void setSliceIndex(SliceType type, int value);
+	//int sliceCount(SliceType type)const;
+	//void setSliceCount(SliceType type, int count);
+	//bool sliceVisible(SliceType type)const;
 
 	QString currentCategoryName()const;
 	QColor currentCategoryColor()const;
 	int categoryCount()const;
+
 	QSize sizeHint() const Q_DECL_OVERRIDE { return {250,500}; }
 	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return {250,300}; }
 
@@ -41,23 +42,24 @@ signals:
 	void topSliceIndexChanged(int value);
 	void rightSliceIndexChanged(int value);
 	void frontSliceIndexChanged(int value);
-
-
 private:
 	void createWidgets();
-	void updateActions();
-	void updateProperty();
 	void connections();
+	void updateDataModel();
+
 	void setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates);
 	void addCategoryInfoPrivate(const QString & name, const QColor & color);
+
 	void updateDeleteActionPrivate();
 	void updateSliceActions(SliceType type,bool checked);
+
 	QIcon createColorIcon(const QColor & color);
 	//private slots:
 	void onCategoryAdded();
 	void colorChanged();
 
-	enum class PlayDirection {
+	enum class PlayDirection 
+	{
 		Forward,
 		Backward
 	};

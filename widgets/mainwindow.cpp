@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent)
 
 {
-	//These functions need to be call in order.
+	//These functions need to be called in order.
 	setWindowTitle("MRC Marker");
 	createActions();
 	createMenu();

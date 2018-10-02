@@ -59,7 +59,6 @@ QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 	/*
 	 * This can be implement by a hash table, which is more efficient.
 	 */
-
 	int c = rowCount();	//children number of root. It's category				
 	for (int i = 0; i < c; i++)
 	{
@@ -86,6 +85,19 @@ QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor& 
 	setDirty();
 	return createIndex(c, 0, p);
 }
+
+QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info) 
+{
+	int c = rowCount();
+	beginInsertRows(QModelIndex(), c, c);
+	QVector<QVariant> d{ QVariant::fromValue(__Internal_Categroy_Type_{new CategoryItem(info)}) };
+	auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
+	m_rootItem->appendChild(p);
+	endInsertRows();
+	setDirty();
+	return createIndex(c, 0, p);
+}
+
 
 void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
 {
@@ -394,13 +406,17 @@ MarkModel::~MarkModel()
 }
 
 
-void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& marks)
+bool MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& marks)
 {
 	auto i = categoryIndexHelper(category);
 	if (i.isValid() == false)
 	{
-		i = categoryAddHelper(category,Qt::black);
+		return false;
+		const auto var = marks[0]->data(MarkProperty::CategoryColor);
+		const auto color = var.canConvert<QColor>() ? var.value<QColor>() : Qt::black;
+		i = categoryAddHelper(category,color);
 	}
+
 	int r = rowCount(i);
 	int c = marks.size();
 	beginInsertRows(i, r, r + c - 1);
@@ -423,7 +439,19 @@ void MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 
 	endInsertRows();
 	setDirty();
+	return true;
+}
 
+bool MarkModel::addCategory(const CategoryInfo & info)
+{
+	auto i = categoryIndexHelper(info.name);
+	if (i.isValid() == false)
+	{
+		i = categoryAddHelper(info);
+		setDirty();
+		return true;
+	}
+	return false;
 }
 
 QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
@@ -803,14 +831,14 @@ int MarkModel::columnCount(const QModelIndex & parent) const
 
 QDataStream & operator<<(QDataStream & stream, const CategoryItem & item)
 {
-	stream << item.m_name << item.m_color << item.m_count << item.m_visible;
+	stream << item.m_info.name << item.m_info.color << item.m_count << item.m_visible;
 	return stream;
 }
 
 QDataStream & operator>>(QDataStream & stream, CategoryItem & item)
 {
 
-	stream >> item.m_name >> item.m_color >> item.m_count >> item.m_visible;
+	stream >> item.m_info.name >> item.m_info.color >> item.m_count >> item.m_visible;
 	Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd,
 		"Category::operator<<", "corrupt data");
 	return stream;
@@ -819,14 +847,14 @@ QDataStream & operator>>(QDataStream & stream, CategoryItem & item)
 
 QDataStream& operator<<(QDataStream& stream, const QSharedPointer<CategoryItem>& item)
 {
-	stream << item->m_name << item->m_color << item->m_count << item->m_visible;
+	stream << item->m_info.name << item->m_info.color << item->m_count << item->m_visible;
 	return stream;
 }
 
 QDataStream & operator>>(QDataStream & stream, QSharedPointer<CategoryItem>& item)
 {
 	item.reset(new CategoryItem());
-	stream >> item->m_name >> item->m_color >> item->m_count >> item->m_visible;
+	stream >> item->m_info.name >> item->m_info.color >> item->m_count >> item->m_visible;
 	Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd,
 		"Category::operator<<", "corrupt data");
 	return stream;

@@ -36,6 +36,7 @@ class SliceItem;
 class SliceWidget;
 class RenderWidget;
 class SliceToolWidget;
+class CategoryInfo;
 
 class SliceScene :public QGraphicsScene
 {
@@ -46,6 +47,27 @@ protected:
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QGraphicsSceneWheelEvent* event) Q_DECL_OVERRIDE;
+};
+
+
+struct SliceState {
+	int topSliceIndex;
+	int rightSliceIndex;
+	int frontSliceIndex;
+	QString category;
+	QPen pen;
+	SliceState() :topSliceIndex(0)
+		, rightSliceIndex(0)
+		, frontSliceIndex(0)
+	{}
+};
+
+class SliceEditorWidgetPrivate {
+public:
+	SliceEditorWidgetPrivate():
+	state(new SliceState)
+	{}
+	QScopedPointer<SliceState> state;
 };
 
 class SliceEditorWidget :public QWidget
@@ -68,32 +90,40 @@ public:
 	void setTopSliceVisible(bool enable);
 	void setRightSliceVisible(bool enable);
 	void setFrontSliceVisible(bool enable);
+	void setSliceVisible(SliceType type, bool visible);
+
+	int currentSliceIndex(SliceType type)const;
+	void setSliceIndex(SliceType type, int index);
+
+	QString currentCategory()const;
+	void setCurrentCategory(const QString & name);
+	bool addCategory(const CategoryInfo & info)const;
+	QStringList categories() const;
+
 
 	SliceWidget * topView()const;
 	SliceWidget * rightView()const;
 	SliceWidget * frontView()const;
-
-	int currentSliceIndex(SliceType type)const;
+	
 	void resetZoom(bool check);
 	void zoomIn();
 	void zoomOut();
-	//void categoryAdded();
-	//void colorChanged();
 	void setOperation(SliceType type,int opt);
 
-	//inline VolumeWidget* volumeWidget()const;
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
 
+
 	QSize sizeHint() const Q_DECL_OVERRIDE { return {800,800}; }
 	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
-
+	~SliceEditorWidget();
 signals:
 	void topSliceOpened(int index);
 	void topSliceChanged(int index);
 	void topSlicePlayStoped(int index);
+
 	void rightSliceOpened(int index);
 	void rightSliceChanged(int index);
 	void rightSlicePlayStoped(int index);
@@ -108,7 +138,6 @@ signals:
 	void topSliceSelected(const QPoint & point);
 	void rightSliceSelected(const QPoint & point);
 	void frontSliceSelected(const QPoint & point);
-
 
 	void markModified();
 	void markSaved();
@@ -132,9 +161,9 @@ private:
 	void createConnections();
 	void createContextMenu();
 	//update helper
-	void updatePen(const QPen & pen);
-	void updateSliceCount(SliceType type);
-	void updateSlice(SliceType type, int index);
+	
+	//void updateSliceCount(SliceType type);
+	
 	void updateMarks(SliceType type);
 	void updateActions();
 	void updateDeleteAction();
@@ -146,27 +175,38 @@ private:
 	void detachMarkModel();
 	//void detachSliceModel();
 	inline bool contains(const QWidget* widget, const QPoint& pos);
-	//inline void setTopSliceCountHelper(int value);
-	//inline void setRightSliceCountHelper(int value);
-	//inline void setFrontSliceCountHelper(int value);
+
 	void markAddedHelper(SliceType type, QGraphicsItem * mark);
 	void markDeleteHelper();
 	void markSingleSelectionHelper();
-	void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);
-	void addCategoryManagerHelper(const QString & name, const QColor & color);
+
+	//void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);
+	//void addCategoryManagerHelper(const QString & name, const QColor & color);
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
+
 	SliceWidget * focusOn();
 	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * d);
 	//Data Model
+
+	SliceEditorWidgetPrivate * const d_ptr;
+	Q_DECLARE_PRIVATE(SliceEditorWidget);
+
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
-	SliceToolWidget * m_panel;
+
+	
+
+
+	//SliceToolWidget * m_panel;
+
+
 	//main layout
 	QGridLayout *m_layout;
 	SliceWidget * m_topView;
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
+
 	//VolumeWidget * m_renderView;
 
 	//Tool Bar
@@ -236,7 +276,6 @@ inline AbstractSliceDataModel * SliceEditorWidget::sliceModel()const { return m_
 inline SliceWidget * SliceEditorWidget::topView()const { return m_topView; }
 inline SliceWidget * SliceEditorWidget::rightView()const { return m_rightView; }
 inline SliceWidget * SliceEditorWidget::frontView()const { return m_frontView; }
-
 
 
 

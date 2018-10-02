@@ -15,98 +15,100 @@
 
 #include "slicewidget.h"			//enum SliceType
 #include "markcategorydialog.h"
+#include "model/categoryitem.h"
 #include <QColorDialog>
 
 
-SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent) :m_canvas(canvas)
+SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent):m_canvas(canvas)
 {
 	createWidgets();
-	updateActions();
-	m_canvas->m_panel = this;
-
-	if (m_canvas != nullptr)
-	{
-		connect(m_canvas, &SliceEditorWidget::dataModelChanged, this, &SliceToolWidget::updateProperty);
-	}
-
 	connections();
+
+	setImageCanvas(canvas);
+	
 }
 
 void SliceToolWidget::setImageCanvas(SliceEditorWidget* canvas)
 {
-	//disconnect signals
+	if (canvas == m_canvas)
+		return;
+	// disconnect signals
+	if(m_canvas != nullptr) 
+	{
+		disconnect(m_canvas, 0, this, 0);
+	}
 	m_canvas = canvas;
-	//connect signals
-	updateActions();
+	connect(m_canvas, &SliceEditorWidget::dataModelChanged, this, &SliceToolWidget::updateDataModel);
+	updateDataModel();
 }
 
-int SliceToolWidget::sliceIndex(SliceType type) const
-{
-	switch (type)
-	{
-	case SliceType::Top:
-		return m_topSlider->value();
-	case SliceType::Right:
-		return m_rightSlider->value();
-	case SliceType::Front:
-		return m_frontSlider->value();
-	}
-	return -1;
-}
-
-void SliceToolWidget::setSliceIndex(SliceType type, int value)
-{
-	switch (type)
-	{
-	case SliceType::Top:
-		return m_topSlider->setValue(value);
-	case SliceType::Right:
-		return m_rightSlider->setValue(value);
-	case SliceType::Front:
-		return m_frontSlider->setValue(value);
-	}
-}
-
-int SliceToolWidget::sliceCount(SliceType type) const
-{
-	switch (type)
-	{
-	case SliceType::Top:
-		return m_topSlider->maximum();
-	case SliceType::Right:
-		return m_rightSlider->maximum();
-	case SliceType::Front:
-		return m_frontSlider->maximum();
-	}
-	return 0;
-}
-
-void SliceToolWidget::setSliceCount(SliceType type, int count)
-{
-	switch (type)
-	{
-	case SliceType::Top:
-		 m_topSlider->setMaximum(count);
-	case SliceType::Right:
-		 m_rightSlider->setMaximum(count);
-	case SliceType::Front:
-		 m_frontSlider->setMaximum(count);
-	}
-}
-
-bool SliceToolWidget::sliceVisible(SliceType type) const
-{
-	switch (type)
-	{
-	case SliceType::Top:
-		return m_topSliceCheckBox->isChecked();
-	case SliceType::Right:
-		return m_rightSliceCheckBox->isChecked();
-	case SliceType::Front:
-		return m_frontSliceCheckBox->isChecked();
-	}
-	return false;
-}
+//int SliceToolWidget::sliceIndex(SliceType type) const
+//{
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		return m_topSlider->value();
+//	case SliceType::Right:
+//		return m_rightSlider->value();
+//	case SliceType::Front:
+//		return m_frontSlider->value();
+//	}
+//	return -1;
+//}
+//
+//void SliceToolWidget::setSliceIndex(SliceType type, int value)
+//{
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		return m_topSlider->setValue(value);
+//	case SliceType::Right:
+//		return m_rightSlider->setValue(value);
+//	case SliceType::Front:
+//		return m_frontSlider->setValue(value);
+//	}
+//}
+//
+//int SliceToolWidget::sliceCount(SliceType type) const
+//{
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		return m_topSlider->maximum();
+//	case SliceType::Right:
+//		return m_rightSlider->maximum();
+//	case SliceType::Front:
+//		return m_frontSlider->maximum();
+//	}
+//	return 0;
+//}
+//
+//void SliceToolWidget::setSliceCount(SliceType type, int count)
+//{
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		 m_topSlider->setMaximum(count);
+//	case SliceType::Right:
+//		 m_rightSlider->setMaximum(count);
+//	case SliceType::Front:
+//		 m_frontSlider->setMaximum(count);
+//	}
+//}
+//
+//bool SliceToolWidget::sliceVisible(SliceType type) const
+//{
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		return m_topSliceCheckBox->isChecked();
+//	case SliceType::Right:
+//		return m_rightSliceCheckBox->isChecked();
+//	case SliceType::Front:
+//		return m_frontSliceCheckBox->isChecked();
+//	}
+//	return false;
+//}
 
 QString SliceToolWidget::currentCategoryName() const
 {
@@ -272,34 +274,41 @@ void SliceToolWidget::createWidgets()
 	setLayout(mainLayout);
 }
 
-void SliceToolWidget::updateActions()
-{
-	bool enable = m_canvas && m_canvas->sliceModel();
 
-}
 
-void SliceToolWidget::updateProperty()
-{
-	Q_ASSERT_X(m_canvas, "ImageViewControlPanel::updateProperty", "canvas pointer is null.");
-	const auto m = m_canvas->sliceModel();
-	Q_ASSERT_X(m, "ImageViewControlPanel::updateProperty", "data model pointer is null.");
-	const int miz = m->topSliceCount();
-	const int miy = m->rightSliceCount();
-	const int mix = m->frontSliceCount();
-
-	m_topSlider->setMaximum(miz - 1);
-	m_rightSlider->setMaximum(miy - 1);
-	m_frontSlider->setMaximum(mix - 1);
-	//connections();
-}
-
-void SliceToolWidget::connections()
+void SliceToolWidget::updateDataModel()
 {
 	if (m_canvas == nullptr)
 		return;
-	connect(m_topSlider,   &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->updateSlice(SliceType::Top, value); });
-	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->updateSlice(SliceType::Right, value); });
-	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->updateSlice(SliceType::Front, value); });
+	const auto m = m_canvas->sliceModel();
+	if (m == nullptr) {
+		setEnabled(false);
+		return;
+	}
+	
+	const auto miz = m->topSliceCount();
+	const auto miy = m->rightSliceCount();
+	const auto mix = m->frontSliceCount();
+	m_topSlider->setMaximum(miz - 1);
+	m_rightSlider->setMaximum(miy - 1);
+	m_frontSlider->setMaximum(mix - 1);
+	setEnabled(true);
+
+	//	Add category
+	const auto cates = m_canvas->categories();
+	m_categoryCBBox->clear();
+	foreach(const auto & c,cates) {
+		m_categoryCBBox->addItem(c);
+	}
+}
+
+
+void SliceToolWidget::connections()
+{
+	connect(m_topSlider,   &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->setSliceIndex(SliceType::Top, value); });
+	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->setSliceIndex(SliceType::Right, value); });
+	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_canvas->setSliceIndex(SliceType::Front, value); });
+
 	connect(m_topSlider,   &TitledSliderWithSpinBox::valueChanged, this,&SliceToolWidget::topSliceIndexChanged);
 	connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, this,&SliceToolWidget::rightSliceIndexChanged);
 	connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, this,&SliceToolWidget::frontSliceIndexChanged);
@@ -317,7 +326,7 @@ void SliceToolWidget::connections()
 
 	connect(m_zoomInAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomIn);
 	connect(m_zoomOutAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomOut);
-	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_canvas->m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); m_canvas->updatePen(pen); });
+	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_canvas->m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); m_canvas->setPen(pen); });
 	connect(m_colorAction, &QToolButton::clicked, this, &SliceToolWidget::colorChanged);
 
 	connect(m_markAction, &QToolButton::toggled, [this](bool enable)
@@ -365,12 +374,16 @@ void SliceToolWidget::setCategoryInfoPrivate(const QVector<QPair<QString, QColor
 	m_categoryCBBox->clear();
 	foreach(const auto & p, cates)
 		m_categoryCBBox->addItem(p.first, QVariant::fromValue(p.second));
+
 }
 
 void SliceToolWidget::addCategoryInfoPrivate(const QString & name, const QColor & color)
 {
 	m_categoryCBBox->addItem(name, color);
 	m_categoryCBBox->setCurrentText(name);
+
+	m_canvas->addCategory(CategoryInfo(name, color));
+
 }
 
 void SliceToolWidget::updateDeleteActionPrivate()
@@ -433,7 +446,7 @@ void SliceToolWidget::onCategoryAdded()
 		addCategoryInfoPrivate(name, color);
 		QPen pen = m_canvas->m_topView->pen();
 		pen.setColor(color);
-		m_canvas->updatePen(pen);
+		m_canvas->setPen(pen);
 		///TODO:: This color need to be add categoryItem
 
 	});
@@ -450,5 +463,4 @@ void SliceToolWidget::colorChanged()
 	pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color")));
 	m_canvas->setPen(pen);
 }
-
 

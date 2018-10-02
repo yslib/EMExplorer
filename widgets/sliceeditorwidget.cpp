@@ -26,9 +26,9 @@ void SliceEditorWidget::createWidgets()
 
 void SliceEditorWidget::createToolBar()
 {
-	m_zoomInAction = new QAction(QIcon(":icons/resources/icons/zoom_in.png"),QStringLiteral("Zoom In"), this);
+	m_zoomInAction = new QAction(QIcon(":icons/resources/icons/zoom_in.png"), QStringLiteral("Zoom In"), this);
 	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
-	m_zoomOutAction = new QAction(QIcon(":icons/resources/icons/zoom_out.png"),QStringLiteral("Zoom Out"), this);
+	m_zoomOutAction = new QAction(QIcon(":icons/resources/icons/zoom_out.png"), QStringLiteral("Zoom Out"), this);
 	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
 }
 
@@ -60,19 +60,23 @@ void SliceEditorWidget::createConnections()
 void SliceEditorWidget::updateActions()
 {
 	bool enable = m_sliceModel != nullptr;
+
 	updateDeleteAction();
-	const auto topVis = m_panel ? m_panel->sliceVisible(SliceType::Top) : true;
-	const auto rightVis = m_panel ? m_panel->sliceVisible(SliceType::Right) : true;
-	const auto frontVis = m_panel ? m_panel->sliceVisible(SliceType::Front) : true;
-	updateTopSliceActions(topVis);
-	updateRightSliceActions(rightVis);
-	updateFrontSliceActions(frontVis);
+
+	//const auto topVis = m_panel ? m_panel->sliceVisible(SliceType::Top) : true;
+	//const auto rightVis = m_panel ? m_panel->sliceVisible(SliceType::Right) : true;
+	//const auto frontVis = m_panel ? m_panel->sliceVisible(SliceType::Front) : true;
+
+	updateTopSliceActions(true);
+	updateRightSliceActions(true);
+	updateFrontSliceActions(true);
 }
 
 void SliceEditorWidget::updateDeleteAction()
 {
-	if (m_panel == nullptr)return;
-	m_panel->updateDeleteActionPrivate();
+	return;
+	//if (m_panel == nullptr)return;
+	//m_panel->updateDeleteActionPrivate();
 }
 
 void SliceEditorWidget::updateTopSliceActions(bool check)
@@ -99,33 +103,35 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 		"ImageView::updateMarkModel", "null pointer");
 
 	m_markModel = model;
-	connect(m_markModel,&MarkModel::modified,this,&SliceEditorWidget::markModified);
-	QVector<QPair<QString, QColor>> cates;
-	if (m_markModel != nullptr) {
-		m_markModel->m_view = this;
-		m_markModel->m_dataModel = m_sliceModel;
-		auto cateItems = m_markModel->categoryItems();
-		QVector<QPair<QString, QColor>> cates;
-		foreach(const auto & item, cateItems)
-			cates << qMakePair(item->name(), item->color());
-	}
+	connect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);
+
+	//QVector<QPair<QString, QColor>> cates;
+	//if (m_markModel != nullptr) {
+	//	m_markModel->m_view = this;
+	//	m_markModel->m_dataModel = m_sliceModel;
+	//	auto cateItems = m_markModel->categoryItems();
+	//	QVector<QPair<QString, QColor>> cates;
+	//	foreach(const auto & item, cateItems)
+	//		cates << qMakePair(item->name(), item->color());
+	//}
+
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
 	updateMarks(SliceType::Front);
 
-	setCategoryManagerHelper(cates);
+	//setCategoryManagerHelper(cates);
 
 }
 
 void SliceEditorWidget::updateSliceModel()
 {
-	updateSliceCount(SliceType::Top);
-	updateSliceCount(SliceType::Right);
-	updateSliceCount(SliceType::Front);
+	//updateSliceCount(SliceType::Top);
+	//updateSliceCount(SliceType::Right);
+	//updateSliceCount(SliceType::Front);
 
-	updateSlice(SliceType::Front,0);
-	updateSlice(SliceType::Right,0);
-	updateSlice(SliceType::Top,0);
+	setSliceIndex(SliceType::Front, 0);
+	setSliceIndex(SliceType::Right, 0);
+	setSliceIndex(SliceType::Top, 0);
 }
 
 void SliceEditorWidget::detachMarkModel()
@@ -236,15 +242,16 @@ void SliceEditorWidget::createContextMenu()
 	m_contextMenu->addAction(m_marksManagerDlgAction);
 }
 
-SliceEditorWidget::SliceEditorWidget(QWidget *parent, 
+SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	bool topSliceVisible,
 	bool rightSliceVisible,
-	bool frontSliceVisible, 
+	bool frontSliceVisible,
 	AbstractSliceDataModel * model) :
 	QWidget(parent),
 	m_markModel(nullptr),
 	m_sliceModel(model),
-	m_panel(nullptr)
+	d_ptr(new SliceEditorWidgetPrivate)
+	//m_panel(nullptr)
 {
 	m_layout = new QGridLayout;
 	m_topView = new SliceWidget(this);
@@ -311,20 +318,28 @@ MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractS
 
 void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 {
-	Q_ASSERT_X(m_panel, "ImageCanvas::markAddedHelper", "null pointer");
-	QString cate = m_panel->currentCategoryName();
-	QVariant categoryColor = m_panel->currentCategoryColor();
+	//Q_ASSERT_X(m_panel, "ImageCanvas::markAddedHelper", "null pointer");
 
-	if (cate.isEmpty())
-	{
-		//Add a default catetory
-		cate = QStringLiteral("Category#%1").arg(m_panel->categoryCount());
-		categoryColor = QVariant::fromValue(Qt::black);
-		QPen pen = m_topView->pen();
-		pen.setColor(Qt::black);
-		updatePen(pen);
-		addCategoryManagerHelper(cate, categoryColor.value<QColor>());
-	}
+	//d_ptr->state->category;
+	Q_ASSERT_X(m_markModel, "SliceEditorWidget::markAddedHelper", "m_markModel != nullptr");
+	const auto cate = d_ptr->state->category;
+	const auto cateItem = m_markModel->categoryItem(cate);
+
+	Q_ASSERT_X(cateItem != nullptr, "SliceEditorWidget::markAddedHelper", "cateItem != nullptr");
+		
+	const QVariant categoryColor =QVariant::fromValue<QColor>(cateItem->categoryInfo().color);
+
+
+	//if (cate.isEmpty())
+	//{
+	//	//Add a default catetory
+	//	cate = QStringLiteral("Category#%1").arg(m_panel->categoryCount());
+	//	categoryColor = QVariant::fromValue(Qt::black);
+	//	QPen pen = m_topView->pen();
+	//	pen.setColor(Qt::black);
+	//	setPen(pen);
+	//	addCategoryManagerHelper(cate, categoryColor.value<QColor>());
+	//}
 	//auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
 	mark->setData(MarkProperty::SliceType, QVariant::fromValue(static_cast<int>(type)));
 	mark->setData(MarkProperty::CategoryName, QVariant::fromValue(cate));
@@ -333,7 +348,7 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	//slicetype, sliceindex, categoryname, name, color, categorycolor, visible state
 	int index;
 	QColor color;
-	index = m_panel->sliceIndex(type);
+	index = currentSliceIndex(type);
 	switch (type)
 	{
 	case SliceType::Top:
@@ -384,17 +399,17 @@ void SliceEditorWidget::markSingleSelectionHelper()
 	emit markSeleteced(item);
 }
 
-void SliceEditorWidget::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
-{
-	if (m_panel == nullptr)return;
-	m_panel->setCategoryInfoPrivate(cates);
-}
-
-void SliceEditorWidget::addCategoryManagerHelper(const QString & name, const QColor & color)
-{
-	if (m_panel == nullptr)return;
-	m_panel->addCategoryInfoPrivate(name, color);
-}
+//void SliceEditorWidget::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
+//{
+//	if (m_panel == nullptr)return;
+//	m_panel->setCategoryInfoPrivate(cates);
+//}
+//
+//void SliceEditorWidget::addCategoryManagerHelper(const QString & name, const QColor & color)
+//{
+//	if (m_panel == nullptr)return;
+//	m_panel->addCategoryInfoPrivate(name, color);
+//}
 
 SliceWidget* SliceEditorWidget::focusOn()
 {
@@ -406,42 +421,63 @@ SliceWidget* SliceEditorWidget::focusOn()
 		return m_frontView;
 	return nullptr;
 }
+
 bool SliceEditorWidget::topSliceVisible() const
 {
 	return m_topView->isHidden();
 }
+
 bool SliceEditorWidget::rightSliceVisible() const
 {
 	return m_rightView->isHidden();
 }
+
 bool SliceEditorWidget::frontSliceVisible() const
 {
 	return m_frontView->isHidden();
 }
+
 QPen SliceEditorWidget::pen() const
 {
 	return m_topView->pen();
 }
-void SliceEditorWidget::setPen(const QPen & pen)
-{
-	updatePen(pen);
-}
- void SliceEditorWidget::setTopSliceVisible(bool enable)
-{
-	 m_topView->setVisible(enable);
+
+
+
+void SliceEditorWidget::setSliceVisible(SliceType type, bool visible) {
+	switch (type) {
+	case SliceType::Top:
+		m_topView->setVisible(visible);
+		break;
+	case SliceType::Right:
+		m_rightView->setVisible(visible);
+		break;
+	case SliceType::Front:
+		m_frontView->setVisible(visible);
+		break;
+	default:
+		return;
+	}
 	updateActions();
+	return;
 }
- void SliceEditorWidget::setRightSliceVisible(bool enable)
+
+void SliceEditorWidget::setTopSliceVisible(bool enable)
 {
-	m_rightView->setVisible(enable);
-	updateActions();
+	setSliceVisible(SliceType::Top, enable);
 }
- void SliceEditorWidget::setFrontSliceVisible(bool enable)
+
+void SliceEditorWidget::setRightSliceVisible(bool enable)
 {
-	m_frontView->setVisible(enable);
-	updateActions();
+	setSliceVisible(SliceType::Right, enable);
 }
-void SliceEditorWidget::updatePen(const QPen &pen)
+
+void SliceEditorWidget::setFrontSliceVisible(bool enable)
+{
+	setSliceVisible(SliceType::Front, enable);
+}
+
+void SliceEditorWidget::setPen(const QPen &pen)
 {
 	m_topView->setPen(pen);
 	m_rightView->setPen(pen);
@@ -502,26 +538,28 @@ MarkModel * SliceEditorWidget::markModel()
 	return m_markModel;
 }
 
+SliceEditorWidget::~SliceEditorWidget()
+{
+	delete d_ptr;
+}
+
+
 int SliceEditorWidget::currentSliceIndex(SliceType type) const
 {
 	//static int topSliceIndex;
 	//static int rightSliceIndex;
 	//static int frontSliceIndex;
-	if(m_panel == nullptr)
+	
+	switch (type)
 	{
-		switch(type)
-		{
-		case SliceType::Top:
-			return 0;
-		case SliceType::Right:
-			return 0;
-		case SliceType::Front:
-			return 0;
-		}
-	}else
-	{
-		return m_panel->sliceIndex(type);
+	case SliceType::Top:
+		return d_ptr->state->topSliceIndex;
+	case SliceType::Right:
+		return d_ptr->state->rightSliceIndex;
+	case SliceType::Front:
+		return d_ptr->state->frontSliceIndex;
 	}
+
 }
 
 void SliceEditorWidget::resetZoom(bool check)
@@ -549,7 +587,7 @@ void SliceEditorWidget::zoomOut()
 
 void SliceEditorWidget::setOperation(SliceType type, int opt)
 {
-	switch(type)
+	switch (type)
 	{
 	case SliceType::Top:
 		m_topView->setOperation(opt);
@@ -615,13 +653,14 @@ void SliceEditorWidget::onFrontSlicePlay(bool enable)
 }
 void SliceEditorWidget::timerEvent(QTimerEvent* event)
 {
-	Q_ASSERT_X(m_panel, "ImageCanvas::timerEvent", "null pointer");
+	//Q_ASSERT_X(m_panel, "ImageCanvas::timerEvent", "null pointer");
 	Q_ASSERT_X(m_sliceModel, "ImageCanvas::timerEvent", "null pointer");
 	int timeId = event->timerId();
+
 	if (timeId == m_topTimerId)
 	{
 		int maxSlice = m_sliceModel->topSliceCount();
-		int cur = m_panel->sliceIndex(SliceType::Top);
+		int cur = d_ptr->state->topSliceIndex;
 		if (m_topSlicePlayDirection == PlayDirection::Forward)
 		{
 			cur++;
@@ -639,12 +678,12 @@ void SliceEditorWidget::timerEvent(QTimerEvent* event)
 			m_topSlicePlayDirection = PlayDirection::Forward;
 		}
 		//m_topSlider->setValue(cur);
-		m_panel->setSliceIndex(SliceType::Top, cur);
+		setSliceIndex(SliceType::Top, cur);
 	}
 	else if (timeId == m_rightTimerId)
 	{
 		int maxSlice = m_sliceModel->rightSliceCount();
-		int cur = m_panel->sliceIndex(SliceType::Right);
+		int cur = d_ptr->state->rightSliceIndex;
 		if (m_rightSlicePlayDirection == PlayDirection::Forward)
 		{
 			cur++;
@@ -662,13 +701,13 @@ void SliceEditorWidget::timerEvent(QTimerEvent* event)
 			m_rightSlicePlayDirection = PlayDirection::Forward;
 		}
 		//m_rightSlider->setValue(cur);
-		m_panel->setSliceIndex(SliceType::Right, cur);
+		setSliceIndex(SliceType::Right, cur);
 
 	}
 	else if (timeId == m_frontTimerId)
 	{
 		int maxSlice = m_sliceModel->frontSliceCount();
-		int cur = m_panel->sliceIndex(SliceType::Front);
+		int cur = d_ptr->state->frontSliceIndex;
 		if (m_frontSlicePlayDirection == PlayDirection::Forward)
 		{
 			cur++;
@@ -686,7 +725,7 @@ void SliceEditorWidget::timerEvent(QTimerEvent* event)
 			m_frontSlicePlayDirection = PlayDirection::Forward;
 		}
 		//m_frontSlider->setValue(cur);
-		m_panel->setSliceIndex(SliceType::Front, cur);
+		setSliceIndex(SliceType::Front, cur);
 	}
 }
 
@@ -711,97 +750,141 @@ void SliceEditorWidget::contextMenuEvent(QContextMenuEvent* event)
 	event->accept();
 }
 
-void SliceEditorWidget::updateSliceCount(SliceType type)
-{
-	Q_ASSERT_X(m_panel, "ImageCanvas::updateSliceCount", "null pointer");
-	int count = -1;
-	switch (type)
-	{
-	case SliceType::Top:
-		count = m_sliceModel->topSliceCount();
-		break;
-	case SliceType::Right:
-		count = m_sliceModel->rightSliceCount();
-		break;
-	case SliceType::Front:
-		count = m_sliceModel->frontSliceCount();
-		break;
-	default:
-		break;
-	}
-	m_panel->setSliceCount(type, count-1);
-}
+//void SliceEditorWidget::updateSliceCount(SliceType type)
+//{
+//	//Q_ASSERT_X(m_panel, "ImageCanvas::updateSliceCount", "null pointer");
+//	int count = -1;
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		count = m_sliceModel->topSliceCount();
+//		break;
+//	case SliceType::Right:
+//		count = m_sliceModel->rightSliceCount();
+//		break;
+//	case SliceType::Front:
+//		count = m_sliceModel->frontSliceCount();
+//		break;
+//	default:
+//		break;
+//	}
+//	m_panel->setSliceCount(type, count-1);
+//}
 
-void SliceEditorWidget::updateSlice(SliceType type, int index)
+void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 {
 	//
+	Q_ASSERT_X(m_sliceModel, "SliceEditorWidget::setSliceIndex", "null pointer");
 	SliceWidget * view = nullptr;
 	std::function<QImage(int)> sliceGetter;
 	const MarkModel::MarkSliceList * list = nullptr;
+	Q_D(SliceEditorWidget);
 	switch (type)
 	{
 	case SliceType::Top:
+	{
+		if (index > m_sliceModel->topSliceCount() - 1)
+			return;
 		view = m_topView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice,
-			m_sliceModel, std::placeholders::_1);
-		list = &m_markModel->topSliceVisibleMarks();
+		sliceGetter = std::bind(&AbstractSliceDataModel::topSlice, m_sliceModel, std::placeholders::_1);
+		if (m_markModel != nullptr)
+			list = &m_markModel->topSliceVisibleMarks();
+		d->state->topSliceIndex = index;
 		break;
+	}
+
 	case SliceType::Right:
+	{
+		if (index > m_sliceModel->rightSliceCount() - 1)
+			return;
 		view = m_rightView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice,
-			m_sliceModel, std::placeholders::_1);
-		list = &m_markModel->rightSliceVisibleMarks();
+		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice, m_sliceModel, std::placeholders::_1);
+		if (m_markModel != nullptr)
+			list = &m_markModel->rightSliceVisibleMarks();
+		d->state->rightSliceIndex = index;
 		break;
+	}
 	case SliceType::Front:
+	{
+		if (index > m_sliceModel->frontSliceCount() - 1)
+			return;
 		view = m_frontView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice,
-			m_sliceModel, std::placeholders::_1);
-		list = &m_markModel->frontSliceVisibleMarks();
+		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+		if (m_markModel != nullptr)
+			list = &m_markModel->frontSliceVisibleMarks();
+		d->state->frontSliceIndex = index;
 		break;
+	}
+
 	default:
 		Q_ASSERT_X(false,
 			"ImageView::updateSlice", "SliceType error.");
+		return;
 	}
 	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true,
 		"ImageView::updateSlice", "null function");
+
 	view->setImage(sliceGetter(index));
 	view->clearSliceMarks();
+
+	// Set Marks
+	if (list != nullptr)
+		view->setMarks((*list)[index]);
+}
+
+QString SliceEditorWidget::currentCategory() const
+{
+	return d_ptr->state->category;
+}
+
+void SliceEditorWidget::setCurrentCategory(const QString& name) {
+	Q_D(SliceEditorWidget);
+	d->state->category = name;
+}
+
+bool SliceEditorWidget::addCategory(const CategoryInfo & info)const
+{
 	if (m_markModel == nullptr)
-		return;
-	//Q_ASSERT_X(m_markModel, "ImageView::updateSlice", "null pointer");
-	view->setMarks((*list)[index]);
+		return false;
+	return m_markModel->addCategory(info);
+}
+
+QStringList SliceEditorWidget::categories() const 
+{
+	if (m_markModel == nullptr)
+		return  QStringList();
+	return m_markModel->categoryText();
 }
 
 void SliceEditorWidget::updateMarks(SliceType type)
 {
-	Q_ASSERT_X(m_markModel,"ImageCanvas::updateMarks", "mark model null pointer");
-	Q_ASSERT_X(m_panel, "ImageCanvas::updateMarks", "panel null pointer");
+	if (m_markModel == nullptr)
+		return;
+
+	const auto index = currentSliceIndex(type);
 	switch (type)
 	{
 	case SliceType::Top:
 	{
-		//QList<QGraphicsItem*> res;
-		auto m = m_markModel->topSliceVisibleMarks()[m_panel->sliceIndex(type)];
-		//for (int i = 0; i < m.size(); i++)
-			//res.append(QueryMarkItemInterface<QGraphicsItem*,PolyMarkItem*>(m[i]));
+		const auto &lists = m_markModel->topSliceVisibleMarks();
+		Q_ASSERT_X(index < lists.size(), "SliceEditorWidget::updateMarks", "top slice index out of range");
+		const auto &m = m_markModel->topSliceVisibleMarks()[index];
 		m_topView->setMarks(m);
 	}
 	break;
 	case SliceType::Right:
 	{
-		//QList<QGraphicsItem*> res;
-		auto m = m_markModel->rightSliceVisibleMarks()[m_panel->sliceIndex(type)];
-		//for (int i = 0; i < m.size(); i++)
-			//res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
+		const auto &lists = m_markModel->rightSliceVisibleMarks();
+		Q_ASSERT_X(index< lists.size(), "SliceEditorWidget::updateMarks", "right slice index out of range");
+		const auto &m = lists[index];
 		m_rightView->setMarks(m);
 	}
 	break;
 	case SliceType::Front:
 	{
-		//QList<QGraphicsItem*> res;
-		auto m = m_markModel->frontSliceVisibleMarks()[m_panel->sliceIndex(type)];
-		//for (int i = 0; i < m.size(); i++)
-		//	res.append(QueryMarkItemInterface<QGraphicsItem*, PolyMarkItem*>(m[i]));
+		const auto &lists = m_markModel->frontSliceVisibleMarks();
+		Q_ASSERT_X(index < lists.size(), "SliceEditorWidget::updateMarks", "front slice index out of range");
+		const auto &m = lists[index];
 		m_frontView->setMarks(m);
 	}
 	break;
@@ -815,24 +898,20 @@ SliceScene::SliceScene(QObject *parent) :QGraphicsScene(parent)
 
 void SliceScene::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-	//qDebug() << "mousePressEvent in scene";
 	QGraphicsScene::mousePressEvent(event);
 }
 
 void SliceScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-	//qDebug() << "mouseMoveEvent in scene";
 	QGraphicsScene::mouseMoveEvent(event);
 }
 
 void SliceScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
-	//qDebug() << "mouseReleaseEvent in scene";
 	QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void SliceScene::wheelEvent(QGraphicsSceneWheelEvent * event)
 {
-	//qDebug() << "wheelEvent in scene";
 	QGraphicsScene::wheelEvent(event);
 }
