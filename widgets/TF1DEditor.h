@@ -37,6 +37,8 @@ public:
 	// Get TF1DMapping Canvas
 	TF1DMappingCanvas* getTF1DMappingCanvas() { return transCanvas; }
 
+	TF1DTextureCanvas* getTF1DTextureCanvas() { return textureCanvas; }
+
 	// Get the 1D transfer function
 	void getTransferFunction(float* transferFunction, size_t dimension, float factor);
 

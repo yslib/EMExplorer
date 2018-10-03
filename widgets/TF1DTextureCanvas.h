@@ -3,14 +3,16 @@
 
 #include <QGLWidget>
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
+//#include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer> 
 #include <QScopedPointer>
 #include <QOpenGLFunctions_3_1>
+//#include <QOpenGLFunctions_3_3_Core>
 
 class TF1DMappingCanvas;
+
 class TF1DTextureCanvas : public QOpenGLWidget,protected QOpenGLFunctions_3_1
 {
     Q_OBJECT

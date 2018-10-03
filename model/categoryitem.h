@@ -4,10 +4,11 @@
 #include <QColor>
 
 
-struct CategoryInfo {
+class CategoryInfo {
+	public:
 	QString name;
 	QColor color;
-	CategoryInfo(const QString & n, const QColor & c):name(n),color(c){}
+	CategoryInfo(const QString & n = QString(), const QColor & c = Qt::black):name(n),color(c){}
 };
 
 class CategoryItem

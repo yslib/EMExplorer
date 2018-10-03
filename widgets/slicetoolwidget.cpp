@@ -23,9 +23,7 @@ SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent):m_
 {
 	createWidgets();
 	connections();
-
 	setImageCanvas(canvas);
-	
 }
 
 void SliceToolWidget::setImageCanvas(SliceEditorWidget* canvas)
@@ -278,6 +276,8 @@ void SliceToolWidget::createWidgets()
 
 void SliceToolWidget::updateDataModel()
 {
+	qDebug() << "SliceToolWidget::updateDataModel has been called";
+
 	if (m_canvas == nullptr)
 		return;
 	const auto m = m_canvas->sliceModel();
@@ -285,10 +285,11 @@ void SliceToolWidget::updateDataModel()
 		setEnabled(false);
 		return;
 	}
-	
+
 	const auto miz = m->topSliceCount();
 	const auto miy = m->rightSliceCount();
 	const auto mix = m->frontSliceCount();
+
 	m_topSlider->setMaximum(miz - 1);
 	m_rightSlider->setMaximum(miy - 1);
 	m_frontSlider->setMaximum(mix - 1);
@@ -381,9 +382,9 @@ void SliceToolWidget::addCategoryInfoPrivate(const QString & name, const QColor 
 {
 	m_categoryCBBox->addItem(name, color);
 	m_categoryCBBox->setCurrentText(name);
-
-	m_canvas->addCategory(CategoryInfo(name, color));
-
+	//auto ci = CategoryInfo(name, color);
+	m_canvas->addCategory(CategoryInfo(name,color));
+	m_canvas->setCurrentCategory(name);
 }
 
 void SliceToolWidget::updateDeleteActionPrivate()

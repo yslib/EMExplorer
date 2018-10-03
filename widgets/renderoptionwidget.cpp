@@ -1,6 +1,7 @@
 #include "renderoptionwidget.h"
 #include "renderwidget.h"
 #include "TF1DEditor.h"
+#include "widgets/TF1DTextureCanvas.h"
 
 #include <QGroupBox>
 #include <QBoxLayout>
@@ -11,7 +12,8 @@
 #include <QSlider>
 #include <QLineEdit>
 #include <QToolButton>
-#include <QAction>
+
+
 
 
 RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* parent)
@@ -122,12 +124,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	renderTypeVLayout->addLayout(renderTypeHLayout);
 	m_renderOptionGroup->setLayout(renderTypeVLayout);
 
-	//m_markListGroup = new QGroupBox(QStringLiteral("Mark List"));
-	//m_markListView = new QListView(this);
 
-	//auto vLayout = new QVBoxLayout;
-	//vLayout->addWidget(m_markListView);
-	//m_markListGroup->setLayout(vLayout);
 
 	// Transfer Function Widget
 	m_transferFunctionGroupBox = new QGroupBox("Transfer Function");
@@ -135,12 +132,15 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_tfButton = new QToolButton(this);
 	connect(m_tfButton, &QToolButton::clicked, this, &RenderParameterWidget::tfButtonClicked);
 	m_tfButton->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+
 	m_tfEditor = new TF1DEditor(this);
 	m_tfEditor->setMinimumSize(250, 300);
 	m_tfEditor->setWindowFlags(Qt::Dialog);
 	m_tfEditor->setWindowModality(Qt::NonModal);
 	m_tfEditor->setVisible(false);
-
+	
+	
+	tfWidgetHLayout->addWidget(m_tfEditor->getTF1DTextureCanvas(), 4, Qt::AlignLeft);
 	tfWidgetHLayout->addWidget(m_tfButton,1,Qt::AlignLeft);
 
 	m_transferFunctionGroupBox->setLayout(tfWidgetHLayout);

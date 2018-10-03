@@ -303,7 +303,7 @@ void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
 	view->clearSliceMarks();
 }
 
-
+	
 int SliceEditorWidget::currentIndexHelper(SliceType type)
 {
 	return currentSliceIndex(type);
@@ -322,7 +322,8 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 
 	//d_ptr->state->category;
 	Q_ASSERT_X(m_markModel, "SliceEditorWidget::markAddedHelper", "m_markModel != nullptr");
-	const auto cate = d_ptr->state->category;
+
+	const auto cate = d_ptr->state->currentCategory;
 	const auto cateItem = m_markModel->categoryItem(cate);
 
 	Q_ASSERT_X(cateItem != nullptr, "SliceEditorWidget::markAddedHelper", "cateItem != nullptr");
@@ -546,10 +547,6 @@ SliceEditorWidget::~SliceEditorWidget()
 
 int SliceEditorWidget::currentSliceIndex(SliceType type) const
 {
-	//static int topSliceIndex;
-	//static int rightSliceIndex;
-	//static int frontSliceIndex;
-	
 	switch (type)
 	{
 	case SliceType::Top:
@@ -559,6 +556,7 @@ int SliceEditorWidget::currentSliceIndex(SliceType type) const
 	case SliceType::Front:
 		return d_ptr->state->frontSliceIndex;
 	}
+	return -1;
 
 }
 
@@ -834,20 +832,26 @@ void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 
 QString SliceEditorWidget::currentCategory() const
 {
-	return d_ptr->state->category;
+	return d_ptr->state->currentCategory;
 }
 
 void SliceEditorWidget::setCurrentCategory(const QString& name) {
 	Q_D(SliceEditorWidget);
-	d->state->category = name;
+	d->state->currentCategory = name;
 }
 
-bool SliceEditorWidget::addCategory(const CategoryInfo & info)const
-{
-	if (m_markModel == nullptr)
-		return false;
-	return m_markModel->addCategory(info);
+bool SliceEditorWidget::addCategory(const CategoryInfo& info)  {
+		if (m_markModel == nullptr)
+			return false;
+		return m_markModel->addCategory(info);	
 }
+
+//bool SliceEditorWidget::addCategory(const CategoryInfo & info)const
+//{
+//	if (m_markModel == nullptr)
+//		return false;
+//	return m_markModel->addCategory(info);
+//}
 
 QStringList SliceEditorWidget::categories() const 
 {

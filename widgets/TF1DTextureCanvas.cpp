@@ -13,7 +13,6 @@
 	}												\
 }													\
 
-
 namespace
 {
 	const char * bgVertShader = "#version 150 \n"
@@ -218,22 +217,17 @@ void TF1DTextureCanvas::initializeGL()
 	glVertexAttribPointer(m_bgColorPos, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(GLfloat)));
 	m_bgVBO.release();
 	m_bgVAO.release();
-	
-
 }
 
 void TF1DTextureCanvas::resizeGL(int width, int height)
 {
-	
 	glViewport(0, 0, width, height);
 	m_othoMat.setToIdentity();
 	m_othoMat.ortho(0, 5, 0, 0.6, 2, -2);
-	
 }
 
 void TF1DTextureCanvas::paintGL()
 {
-	
 	glClear(GL_COLOR_BUFFER_BIT);
 	QOpenGLVertexArrayObject::Binder binder(&m_bgVAO);
 	m_bgShader->bind();

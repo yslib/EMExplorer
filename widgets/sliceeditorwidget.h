@@ -54,8 +54,7 @@ struct SliceState {
 	int topSliceIndex;
 	int rightSliceIndex;
 	int frontSliceIndex;
-	QString category;
-	QPen pen;
+	QString currentCategory;
 	SliceState() :topSliceIndex(0)
 		, rightSliceIndex(0)
 		, frontSliceIndex(0)
@@ -97,7 +96,7 @@ public:
 
 	QString currentCategory()const;
 	void setCurrentCategory(const QString & name);
-	bool addCategory(const CategoryInfo & info)const;
+	bool addCategory(const CategoryInfo & info);
 	QStringList categories() const;
 
 
