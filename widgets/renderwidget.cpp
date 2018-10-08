@@ -241,8 +241,7 @@ void RenderWidget::initializeGL()
 		return;
 	}
 
-	auto ctx = context();
-	qDebug() << "Context Info:" << ctx;
+
 	
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -475,6 +474,7 @@ void RenderWidget::updateMarkMesh() {
 }
 
 void RenderWidget::updateMark() {
+	qDebug() << "update Mark has been called";
 	if(m_markModel == nullptr || m_dataModel == nullptr) {
 		return;
 	}

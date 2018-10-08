@@ -2,6 +2,7 @@
 #include "renderwidget.h"
 #include "TF1DEditor.h"
 #include "widgets/TF1DTextureCanvas.h"
+#include "widgets/TF1DMappingCanvas.h"
 
 #include <QGroupBox>
 #include <QBoxLayout>
@@ -127,6 +128,8 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_transferFunctionGroupBox = new QGroupBox("Transfer Function");
 	auto tfWidgetHLayout = new QHBoxLayout;
 	m_tfButton = new QToolButton(this);
+	m_tfButton->setIcon(QIcon(QStringLiteral(":icons/resources/icons/histogram.png")));
+	m_tfButton->setToolTip(QStringLiteral("1D Transfer function"));
 	connect(m_tfButton, &QToolButton::clicked, this, &RenderParameterWidget::tfButtonClicked);
 	m_tfButton->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 
@@ -134,10 +137,19 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_tfEditor->setMinimumSize(250, 300);
 	m_tfEditor->setWindowFlags(Qt::Dialog);
 	m_tfEditor->setWindowModality(Qt::NonModal);
-	m_tfEditor->setVisible(false);
-	
-	
-	tfWidgetHLayout->addWidget(m_tfEditor->getTF1DTextureCanvas(), 4, Qt::AlignLeft);
+	//m_tfEditor->setVisible(false);
+
+	 auto tfMappingCanvas = m_tfEditor->getTF1DMappingCanvas();
+	 auto tfTextureWidget = new TF1DTextureCanvas(tfMappingCanvas, this);
+	 tfTextureWidget->setFixedHeight(15);
+	auto slot = [tfTextureWidget]() {tfTextureWidget->update();};
+	connect(tfMappingCanvas, &TF1DMappingCanvas::changed,slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::loadTransferFunction,slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::saveTransferFunction,slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::resetTransferFunction,slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::toggleInteraction,slot);
+
+	tfWidgetHLayout->addWidget(tfTextureWidget, 4, Qt::AlignLeft);
 	tfWidgetHLayout->addWidget(m_tfButton,1,Qt::AlignLeft);
 
 	m_transferFunctionGroupBox->setLayout(tfWidgetHLayout);
@@ -263,6 +275,7 @@ void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 	disconnect(this, nullptr, m_widget, nullptr);
 	m_widget = widget;
 	connect(this, &RenderParameterWidget::optionsChanged, m_widget, [this]() {m_widget->update();});
+	connect(this, &RenderParameterWidget::markUpdated, m_widget, &RenderWidget::updateMark);
 
 	m_renderOptions = m_widget != nullptr?widget->options():QSharedPointer<RenderOptions>();
 	setEnabled(m_widget != nullptr);

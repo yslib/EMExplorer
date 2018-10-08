@@ -14,6 +14,30 @@
         <file>resources/icons/zoom_in.png</file>
         <file>resources/icons/zoom_out.png</file>
         <file>resources/icons/add.png</file>
+        <file>resources/icons/about.png</file>
+        <file>resources/icons/arrowLeftRight.png</file>
+        <file>resources/icons/banana.png</file>
+        <file>resources/icons/boundingBox.png</file>
+        <file>resources/icons/clear.png</file>
+        <file>resources/icons/colorize.png</file>
+        <file>resources/icons/defaultView.png</file>
+        <file>resources/icons/eraser.png</file>
+        <file>resources/icons/grid.png</file>
+        <file>resources/icons/histogram.png</file>
+        <file>resources/icons/histogramLog.png</file>
+        <file>resources/icons/imageOpen.png</file>
+        <file>resources/icons/nextVP.png</file>
+        <file>resources/icons/open1.png</file>
+        <file>resources/icons/preVP.png</file>
+        <file>resources/icons/quad.png</file>
+        <file>resources/icons/TF1DExport.png</file>
+        <file>resources/icons/TF1DImport.png</file>
+        <file>resources/icons/TFClear.png</file>
+        <file>resources/icons/TFOpen.png</file>
+        <file>resources/icons/TFSave.png</file>
+        <file>resources/icons/volumeOpen.png</file>
+        <file>resources/icons/voteModel.png</file>
+        <file>resources/icons/VPSelect.png</file>
     </qresource>
     <qresource prefix="/shaders">
         <file>resources/shaders/position_f.glsl</file>

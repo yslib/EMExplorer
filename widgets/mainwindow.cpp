@@ -441,7 +441,7 @@ void MainWindow::createActions()
 	connect(m_openMarkAction, &QAction::triggered, this, &MainWindow::openMark);
 
 	//set default action
-	m_setDefaultLayoutAction = new QAction(QIcon(""),QStringLiteral("Default Layout"),this);
+	m_setDefaultLayoutAction = new QAction(QIcon(":/icons/resources/icons/grid.png"),QStringLiteral("Default Layout"),this);
 	m_setDefaultLayoutAction->setToolTip(QStringLiteral("Default Layout"));
 	
 	toolBar->addAction(m_setDefaultLayoutAction);

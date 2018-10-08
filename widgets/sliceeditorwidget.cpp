@@ -3,6 +3,7 @@
 #include <QMenu>
 #include <QComboBox>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "globals.h"
 #include "abstract/abstractslicedatamodel.h"
@@ -250,6 +251,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	QWidget(parent),
 	m_markModel(nullptr),
 	m_sliceModel(model),
+	//m_sliceTimer(nullptr),
 	d_ptr(new SliceEditorWidgetPrivate)
 	//m_panel(nullptr)
 {
@@ -262,6 +264,9 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_topView->setNavigationViewEnabled(true);
 	m_rightView->setNavigationViewEnabled(false);
 	m_frontView->setNavigationViewEnabled(false);
+
+	//m_sliceTimer = new QTimer(this);
+	//connect(m_sliceTimer, &QTimer::timeout, this, &SliceEditorWidget::onSliceTimer);
 
 	createWidgets();
 	createToolBar();
@@ -304,7 +309,7 @@ void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
 	view->clearSliceMarks();
 }
 
-	
+
 int SliceEditorWidget::currentIndexHelper(SliceType type)
 {
 	return currentSliceIndex(type);
@@ -328,8 +333,8 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	const auto cateItem = m_markModel->categoryItem(cate);
 
 	Q_ASSERT_X(cateItem != nullptr, "SliceEditorWidget::markAddedHelper", "cateItem != nullptr");
-		
-	const QVariant categoryColor =QVariant::fromValue<QColor>(cateItem->categoryInfo().color);
+
+	const QVariant categoryColor = QVariant::fromValue<QColor>(cateItem->categoryInfo().color);
 
 
 	//if (cate.isEmpty())
@@ -589,134 +594,9 @@ void SliceEditorWidget::setOperation(SliceType type, int opt)
 		break;
 	}
 }
-void SliceEditorWidget::setEnabled(bool enable)
-{
-	m_topView->setEnabled(enable);
-	m_rightView->setEnabled(enable);
-	m_frontView->setEnabled(enable);
-
-}
 
 
-void SliceEditorWidget::onTopSlicePlay(bool enable)
-{
-	if (enable)
-	{
-		m_topTimerId = startTimer(50);
-		m_topSlicePlayDirection = PlayDirection::Forward;
-	}
-	else
-	{
-		killTimer(m_topTimerId);
-		m_topTimerId = 0;
-	}
-}
 
-void SliceEditorWidget::onRightSlicePlay(bool enable)
-{
-	if (enable)
-	{
-		m_rightTimerId = startTimer(50);
-		//qDebug() << "onRightSliceTimer" << m_rightTimerId;
-		m_rightSlicePlayDirection = PlayDirection::Forward;
-	}
-	else
-	{
-		killTimer(m_rightTimerId);
-		m_rightTimerId = 0;
-	}
-}
-void SliceEditorWidget::onFrontSlicePlay(bool enable)
-{
-	if (enable)
-	{
-		m_frontTimerId = startTimer(50);
-		//qDebug() << "onFrontSliceTimer" << m_frontTimerId;
-		m_frontSlicePlayDirection = PlayDirection::Forward;
-	}
-	else
-	{
-		killTimer(m_frontTimerId);
-		m_frontTimerId = 0;
-	}
-}
-void SliceEditorWidget::timerEvent(QTimerEvent* event)
-{
-	//Q_ASSERT_X(m_panel, "ImageCanvas::timerEvent", "null pointer");
-	Q_ASSERT_X(m_sliceModel, "ImageCanvas::timerEvent", "null pointer");
-	int timeId = event->timerId();
-
-	if (timeId == m_topTimerId)
-	{
-		int maxSlice = m_sliceModel->topSliceCount();
-		int cur = d_ptr->state->topSliceIndex;
-		if (m_topSlicePlayDirection == PlayDirection::Forward)
-		{
-			cur++;
-		}
-		else
-		{
-			cur--;
-		}
-		if (cur >= maxSlice)
-		{
-			m_topSlicePlayDirection = PlayDirection::Backward;
-		}
-		else if (cur <= 0)
-		{
-			m_topSlicePlayDirection = PlayDirection::Forward;
-		}
-		//m_topSlider->setValue(cur);
-		setSliceIndex(SliceType::Top, cur);
-	}
-	else if (timeId == m_rightTimerId)
-	{
-		int maxSlice = m_sliceModel->rightSliceCount();
-		int cur = d_ptr->state->rightSliceIndex;
-		if (m_rightSlicePlayDirection == PlayDirection::Forward)
-		{
-			cur++;
-		}
-		else
-		{
-			cur--;
-		}
-		if (cur >= maxSlice)
-		{
-			m_rightSlicePlayDirection = PlayDirection::Backward;
-		}
-		else if (cur <= 0)
-		{
-			m_rightSlicePlayDirection = PlayDirection::Forward;
-		}
-		//m_rightSlider->setValue(cur);
-		setSliceIndex(SliceType::Right, cur);
-
-	}
-	else if (timeId == m_frontTimerId)
-	{
-		int maxSlice = m_sliceModel->frontSliceCount();
-		int cur = d_ptr->state->frontSliceIndex;
-		if (m_frontSlicePlayDirection == PlayDirection::Forward)
-		{
-			cur++;
-		}
-		else
-		{
-			cur--;
-		}
-		if (cur >= maxSlice)
-		{
-			m_frontSlicePlayDirection = PlayDirection::Backward;
-		}
-		else if (cur <= 0)
-		{
-			m_frontSlicePlayDirection = PlayDirection::Forward;
-		}
-		//m_frontSlider->setValue(cur);
-		setSliceIndex(SliceType::Front, cur);
-	}
-}
 
 void SliceEditorWidget::contextMenuEvent(QContextMenuEvent* event)
 {
@@ -810,10 +690,10 @@ void SliceEditorWidget::setCurrentCategory(const QString& name) {
 	d->state->currentCategory = name;
 }
 
-bool SliceEditorWidget::addCategory(const CategoryInfo& info)  {
-		if (m_markModel == nullptr)
-			return false;
-		return m_markModel->addCategory(info);	
+bool SliceEditorWidget::addCategory(const CategoryInfo& info) {
+	if (m_markModel == nullptr)
+		return false;
+	return m_markModel->addCategory(info);
 }
 
 //bool SliceEditorWidget::addCategory(const CategoryInfo & info)const
@@ -823,7 +703,7 @@ bool SliceEditorWidget::addCategory(const CategoryInfo& info)  {
 //	return m_markModel->addCategory(info);
 //}
 
-QStringList SliceEditorWidget::categories() const 
+QStringList SliceEditorWidget::categories() const
 {
 	if (m_markModel == nullptr)
 		return  QStringList();
@@ -849,7 +729,7 @@ void SliceEditorWidget::updateMarks(SliceType type)
 	case SliceType::Right:
 	{
 		const auto &lists = m_markModel->rightSliceVisibleMarks();
-		Q_ASSERT_X(index< lists.size(), "SliceEditorWidget::updateMarks", "right slice index out of range");
+		Q_ASSERT_X(index < lists.size(), "SliceEditorWidget::updateMarks", "right slice index out of range");
 		const auto &m = lists[index];
 		m_rightView->setMarks(m);
 	}

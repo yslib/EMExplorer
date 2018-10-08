@@ -49,7 +49,7 @@ namespace
 		"void main(){\n"
 		"	fragColor = texture(tfTexture,aTexCoords);\n"
 		"}\n";
-		
+
 
 	const float g_bgMesh[] = {
 		0       , 0     , -0.5  , 1     , 1     , 1 ,		//vertex and color
@@ -139,34 +139,32 @@ namespace
 		5.0f,0.f,-0.5f,1.f,
 		5.0f,0.6f,-0.5f,1.f,
 		0.f,0.6f,-0.5f,0.f,
-		
+
 	};
 }
 
 
 TF1DTextureCanvas::TF1DTextureCanvas(TF1DMappingCanvas * tf, QWidget *parent)
 	: QOpenGLWidget(parent)
-    , m_texture(0),m_transferFunction(tf)
+	, m_texture(0), m_transferFunction(tf),m_tfShader(nullptr),m_bgShader(nullptr)
 {
+	qDebug() << "TF1DTextureCanvas constructor has been called";
 }
 TF1DTextureCanvas::~TF1DTextureCanvas()
 {
-	makeCurrent();
-	if(m_texture != 0)
-		glDeleteTextures(1, &m_texture);
-	doneCurrent();
+	cleanup();
 }
 void TF1DTextureCanvas::initializeGL()
 {
-	
+	qDebug() << "TF1DTextureCanvas::intializeGL has been called";
+
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &TF1DTextureCanvas::cleanup);
 	//glBegin();
-
 	//create 1d transfer function texture
 	//glEnable(GL_TEXTURE_1D);			//glGetError() == 1280 ?? GL_ERROR_ENUM
-	m_tfShader.reset(new QOpenGLShaderProgram);
+	m_tfShader = new QOpenGLShaderProgram;
 	m_tfShader->addShaderFromSourceCode(QOpenGLShader::Vertex, tfVertShader);
 	m_tfShader->addShaderFromSourceCode(QOpenGLShader::Fragment, tfFragShader);
 	m_tfShader->link();
@@ -197,7 +195,7 @@ void TF1DTextureCanvas::initializeGL()
 	glDisable(GL_TEXTURE_1D);
 
 	//Background Shader initialization
-	m_bgShader.reset(new QOpenGLShaderProgram);
+	m_bgShader = new QOpenGLShaderProgram;
 	m_bgShader->addShaderFromSourceCode(QOpenGLShader::Vertex, bgVertShader);
 	m_bgShader->addShaderFromSourceCode(QOpenGLShader::Fragment, bgFragShader);
 	m_bgShader->link();
@@ -257,9 +255,26 @@ void TF1DTextureCanvas::paintGL()
 void TF1DTextureCanvas::cleanup()
 {
 	makeCurrent();
+	if(m_tfShader != nullptr) {
+		delete m_tfShader;
+		m_tfShader = nullptr;
+	}
+
+	if(m_bgShader != nullptr) {
+		delete m_bgShader;
+		m_bgShader = nullptr;
+	}
+
+
 	m_bgVAO.destroy();
 	m_bgVBO.destroy();
 	m_tfVAO.destroy();
 	m_tfVBO.destroy();
+
+	if (m_texture != 0) {
+		glDeleteTextures(1, &m_texture);
+		m_texture = 0;
+	}
+
 	doneCurrent();
 }

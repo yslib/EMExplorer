@@ -40,22 +40,22 @@ void TF1DEditor::createWidgets()
 	hboxButton->setSpacing(0);
 
 	clearButton = new QToolButton();
-    clearButton->setIcon(QIcon("./Resources/TFClear.png"));
+    clearButton->setIcon(QIcon(":icons/resources/icons/TFClear.png"));
     clearButton->setToolTip(tr("Reset to default 1D transfer function"));
 	hboxButton->addWidget(clearButton);
 
     loadButton = new QToolButton();
-    loadButton->setIcon(QIcon("./Resources/TFOpen.png"));
+    loadButton->setIcon(QIcon(":icons/resources/icons/TFOpen.png"));
     loadButton->setToolTip(tr("Load 1D transfer function"));
 	hboxButton->addWidget(loadButton);
 
     saveButton = new QToolButton();
-    saveButton->setIcon(QIcon("./Resources/TFSave.png"));
+    saveButton->setIcon(QIcon(":icons/resources/icons/TFSave.png"));
     saveButton->setToolTip(tr("Save 1D transfer function"));
     hboxButton->addWidget(saveButton);
 
 	expandButton = new QToolButton();
-	expandButton->setIcon(QIcon("./Resources/arrowLeftRight.png"));
+	expandButton->setIcon(QIcon(":icons/resources/icons/arrowLeftRight.png"));
 	expandButton->setToolTip(tr("Zoom-in on the area between lower and upper thresholds"));
 	expandButton->setCheckable(true);
 	expandButton->setChecked(false);
@@ -94,7 +94,7 @@ void TF1DEditor::createWidgets()
     hboxSpin->addSpacing(21);
 
 	// texture canvas
-    textureCanvas = new TF1DTextureCanvas(transCanvas,0);
+    textureCanvas = new TF1DTextureCanvas(transCanvas,this);
     textureCanvas->setFixedHeight(15);
     textureCanvas->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
@@ -142,11 +142,13 @@ void TF1DEditor::createConnections()
 void TF1DEditor::getTransferFunction(float* transferFunction, size_t dimension, float factor)
 {
 	transCanvas->getTransferFunction(transferFunction, dimension, factor);
-	textureCanvas->update();
+	//textureCanvas->update();
+	//textureCanvas->repaint();
 }
 
 void TF1DEditor::updateTransferFunction()
 {
+	repaintAll();
     emit TF1DChanged();
 }
 

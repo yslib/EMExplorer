@@ -14,6 +14,7 @@ class QToolButton;
 class QCheckBox;
 class QComboBox;
 class QPushButton;
+class QTimer;
 QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class SliceEditorWidget;
@@ -31,6 +32,8 @@ signals:
 	void topSliceIndexChanged(int value);
 	void rightSliceIndexChanged(int value);
 	void frontSliceIndexChanged(int value);
+private slots:
+	void onSliceTimer();
 private:
 	void createWidgets();
 	void connections();
@@ -71,13 +74,16 @@ private:
 	QToolButton *m_frontSlicePlayAction;
 	QToolButton * m_menuButton;
 
-	//menu on view toolbar
+
 	PlayDirection m_topSlicePlayDirection;
 	int m_topTimerId;
 	PlayDirection m_rightSlicePlayDirection;
 	int m_rightTimerId;
 	PlayDirection m_frontSlicePlayDirection;
 	int m_frontTimerId;
+	SliceType m_playSliceType;
+
+	QTimer *m_sliceTimer;
 
 	//Widgets on edit toolbar
 	QLabel * m_categoryLabel;

@@ -17,13 +17,22 @@
 #include "markcategorydialog.h"
 #include "model/categoryitem.h"
 #include <QColorDialog>
+#include <QTimer>
 
 
-SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent):m_canvas(nullptr)
+SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent):
+m_canvas(nullptr)
+,m_sliceTimer(nullptr)
+,m_topSlicePlayDirection(PlayDirection::Forward)
+,m_rightSlicePlayDirection(PlayDirection::Forward)
+,m_frontSlicePlayDirection(PlayDirection::Forward)
 {
 	createWidgets();
 	setImageCanvas(canvas);
 	connections();
+	m_sliceTimer = new QTimer(this);
+	m_sliceTimer->setInterval(100);
+	connect(m_sliceTimer, &QTimer::timeout, this, &SliceToolWidget::onSliceTimer);
 }
 
 void SliceToolWidget::setImageCanvas(SliceEditorWidget* canvas)
@@ -40,74 +49,6 @@ void SliceToolWidget::setImageCanvas(SliceEditorWidget* canvas)
 	updateDataModel();
 }
 
-//int SliceToolWidget::sliceIndex(SliceType type) const
-//{
-//	switch (type)
-//	{
-//	case SliceType::Top:
-//		return m_topSlider->value();
-//	case SliceType::Right:
-//		return m_rightSlider->value();
-//	case SliceType::Front:
-//		return m_frontSlider->value();
-//	}
-//	return -1;
-//}
-//
-//void SliceToolWidget::setSliceIndex(SliceType type, int value)
-//{
-//	switch (type)
-//	{
-//	case SliceType::Top:
-//		return m_topSlider->setValue(value);
-//	case SliceType::Right:
-//		return m_rightSlider->setValue(value);
-//	case SliceType::Front:
-//		return m_frontSlider->setValue(value);
-//	}
-//}
-//
-//int SliceToolWidget::sliceCount(SliceType type) const
-//{
-//	switch (type)
-//	{
-//	case SliceType::Top:
-//		return m_topSlider->maximum();
-//	case SliceType::Right:
-//		return m_rightSlider->maximum();
-//	case SliceType::Front:
-//		return m_frontSlider->maximum();
-//	}
-//	return 0;
-//}
-//
-//void SliceToolWidget::setSliceCount(SliceType type, int count)
-//{
-//	switch (type)
-//	{
-//	case SliceType::Top:
-//		 m_topSlider->setMaximum(count);
-//	case SliceType::Right:
-//		 m_rightSlider->setMaximum(count);
-//	case SliceType::Front:
-//		 m_frontSlider->setMaximum(count);
-//	}
-//}
-//
-//bool SliceToolWidget::sliceVisible(SliceType type) const
-//{
-//	switch (type)
-//	{
-//	case SliceType::Top:
-//		return m_topSliceCheckBox->isChecked();
-//	case SliceType::Right:
-//		return m_rightSliceCheckBox->isChecked();
-//	case SliceType::Front:
-//		return m_frontSliceCheckBox->isChecked();
-//	}
-//	return false;
-//}
-
 QString SliceToolWidget::currentCategoryName() const
 {
 	return m_categoryCBBox->currentText();
@@ -123,6 +64,57 @@ int SliceToolWidget::categoryCount() const
 	return m_categoryCBBox->count();
 }
 
+
+void SliceToolWidget::onSliceTimer() {
+	qDebug() << "on slice timer";
+	int maxSliceCount = 0;
+	int curIndex;
+	PlayDirection * direction = nullptr;
+
+	const auto m = m_canvas->sliceModel();
+
+	switch (m_playSliceType) {
+	case SliceType::Top:
+		maxSliceCount = m->topSliceCount();
+		curIndex = m_topSlider->value();
+		direction = &m_topSlicePlayDirection;
+		break;
+	case SliceType::Right:
+		maxSliceCount = m->rightSliceCount();
+		curIndex = m_rightSlider->value();
+		direction = &m_rightSlicePlayDirection;
+		break;
+	case SliceType::Front:
+		maxSliceCount = m->frontSliceCount();
+		curIndex = m_frontSlider->value();
+		direction = &m_frontSlicePlayDirection;
+		break;
+	default:
+		return;
+	}
+
+	if ((*direction) == PlayDirection::Forward)
+		(curIndex)++;
+	else
+		(curIndex)--;
+	if (curIndex == maxSliceCount - 1)
+		(*direction) = PlayDirection::Backward;
+	else if ((curIndex) == 0)
+		(*direction) = PlayDirection::Forward;
+
+	m_canvas->setSliceIndex(m_playSliceType, curIndex);
+	switch(m_playSliceType) {
+	case SliceType::Top:
+		m_topSlider->setValue(curIndex);
+		break;
+	case SliceType::Right:
+		m_rightSlider->setValue(curIndex);
+		break;
+	case SliceType::Front:
+		m_frontSlider->setValue(curIndex);
+		break;
+	}
+}
 
 void SliceToolWidget::createWidgets()
 {
@@ -301,6 +293,10 @@ void SliceToolWidget::updateDataModel()
 	foreach(const auto & c,cates) {
 		m_categoryCBBox->addItem(c);
 	}
+	if(m_categoryCBBox->count() == 0) {
+		m_categoryCBBox->addItem(QStringLiteral("Default"));
+		m_categoryCBBox->setCurrentText(QStringLiteral("Default"));
+	}
 }
 
 
@@ -320,11 +316,46 @@ void SliceToolWidget::connections()
 
 	connect(m_resetAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::resetZoom);
 	//view toolbar actions
-	connect(m_topSlicePlayAction, &QToolButton::toggled, [this](bool enable) {m_canvas->onTopSlicePlay(enable); if (!enable)emit m_canvas->topSlicePlayStoped(m_topSlider->value()); });
-	connect(m_rightSlicePlayAction, &QToolButton::toggled, [this](bool enable) {m_canvas->onRightSlicePlay(enable); if (!enable)emit m_canvas->rightSlicePlayStoped(m_rightSlider->value()); });
-	connect(m_frontSlicePlayAction, &QToolButton::toggled, [this](bool enable) {m_canvas->onFrontSlicePlay(enable); if (!enable)emit m_canvas->frontSlicePlayStoped(m_frontSlider->value()); });
+	connect(m_topSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
+		m_sliceTimer->stop();
+		m_rightSlicePlayAction->blockSignals(true);
+		m_rightSlicePlayAction->toggled(false);
+		m_rightSlicePlayAction->blockSignals(false);
+		m_frontSlicePlayAction->blockSignals(true);
+		m_frontSlicePlayAction->toggled(false);
+		m_frontSlicePlayAction->blockSignals(false);
+		if (enable == false)
+			return;
+		m_playSliceType = SliceType::Top;
+		m_sliceTimer->start();
+	});
+	connect(m_rightSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
+		m_sliceTimer->stop();
+		m_topSlicePlayAction->blockSignals(true);
+		m_topSlicePlayAction->toggled(false);
+		m_topSlicePlayAction->blockSignals(false);
+		m_frontSlicePlayAction->blockSignals(true);
+		m_frontSlicePlayAction->toggled(false);
+		m_frontSlicePlayAction->blockSignals(false);
+		if (enable == false)
+			return;
+		m_playSliceType = SliceType::Right;
+		m_sliceTimer->start();
+	});
+	connect(m_frontSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
+		m_sliceTimer->stop();
+		m_topSlicePlayAction->blockSignals(true);
+		m_topSlicePlayAction->toggled(false);
+		m_topSlicePlayAction->blockSignals(false);
+		m_rightSlicePlayAction->blockSignals(true);
+		m_rightSlicePlayAction->toggled(false);
+		m_rightSlicePlayAction->blockSignals(false);
+		if (enable == false)
+			return;
+		m_playSliceType = SliceType::Front;
+		m_sliceTimer->start();
+	});
 	connect(m_addCategoryAction, &QToolButton::clicked, this, &SliceToolWidget::onCategoryAdded);
-
 	connect(m_zoomInAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomIn);
 	connect(m_zoomOutAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomOut);
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_canvas->m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); m_canvas->setPen(pen); });

@@ -4,6 +4,7 @@
 #include <QList>
 #include <QWidget>
 #include <QGraphicsScene>
+
 enum class SliceType;
 QT_BEGIN_NAMESPACE
 class QGridLayout;
@@ -23,6 +24,7 @@ class QToolButton;
 class QCheckBox;
 class QComboBox;
 class QPushButton;
+class QTimer;
 QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class ItemContext;
@@ -94,6 +96,9 @@ public:
 	int currentSliceIndex(SliceType type)const;
 	void setSliceIndex(SliceType type, int index);
 
+	void playSlice(SliceType type, bool play);
+
+
 	QString currentCategory()const;
 	void setCurrentCategory(const QString & name);
 	bool addCategory(const CategoryInfo & info);
@@ -141,14 +146,8 @@ signals:
 	void markModified();
 	void markSaved();
 	void markSeleteced(QGraphicsItem * item);
-public slots:
-	void setEnabled(bool enable);
-	void onTopSlicePlay(bool enable);
-	void onRightSlicePlay(bool enable);
-	void onFrontSlicePlay(bool enable);
-
+	
 protected:
-	void timerEvent(QTimerEvent* event) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
 private:
 	enum class PlayDirection {
@@ -205,13 +204,6 @@ private:
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
 
-
-	PlayDirection m_topSlicePlayDirection;
-	int m_topTimerId;
-	PlayDirection m_rightSlicePlayDirection;
-	int m_rightTimerId;
-	PlayDirection m_frontSlicePlayDirection;
-	int m_frontTimerId;
 
 	//ContextMenu
 	QMenu *m_contextMenu;

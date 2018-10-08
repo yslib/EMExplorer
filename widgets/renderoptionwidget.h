@@ -31,6 +31,7 @@ class RenderParameterWidget : public QWidget
 	Q_OBJECT
 public:
 	RenderParameterWidget(RenderWidget * widget, QWidget *parent = nullptr);
+	void setRenderWidget(RenderWidget * widget);
 	~RenderParameterWidget(){}
 signals:
 	void optionsChanged();
@@ -46,7 +47,7 @@ private slots:
 private:
 	//void connectWith(VolumeWidget * widget);
 	//void disconnectWith(VolumeWidget * widget);
-	void setRenderWidget(RenderWidget * widget);
+	
 
 	RenderWidget * m_widget;
 
