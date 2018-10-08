@@ -26,6 +26,7 @@ m_paintNavigationView(false)
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setDragMode(QGraphicsView::RubberBandDrag);
 	setOperation(Operation::Move);
+	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	m_anchorItem = new QGraphicsPixmapItem(createAnchorItemPixmap());
 	m_anchorItem->setVisible(false);
 	setStyleSheet(QStringLiteral("border:0px solid white"));
@@ -360,5 +361,5 @@ void SliceWidget::moveSlice(const QPointF& dir)
 
 QSize SliceWidget::sizeHint() const
 {
-	return m_image.size()*0.45;
+	return m_image.size();
 }

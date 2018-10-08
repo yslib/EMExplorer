@@ -89,6 +89,7 @@ float SliceVolume::rayStep() const {
 }
 unsigned SliceVolume::transferFunctionsTexId() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::transferFunctionsTexId", "null pointer");
+	if (m_renderer->m_tfTexture == nullptr) return 0;
 	return m_renderer->m_tfTexture->textureId();
 }
 QVector3D SliceVolume::cameraPos() const {

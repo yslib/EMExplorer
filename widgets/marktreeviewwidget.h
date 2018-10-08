@@ -11,8 +11,6 @@ class MarkManagerWidget:public QTreeView
 {
 public:
     MarkManagerWidget(QWidget * parent = nullptr);
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
-	QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(250, 250); }
 
 protected:
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;

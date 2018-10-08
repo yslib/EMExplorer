@@ -24,20 +24,9 @@ class SliceToolWidget:public QWidget
 public:
     SliceToolWidget(SliceEditorWidget * canvas, QWidget * parent = nullptr);
 	void setImageCanvas(SliceEditorWidget * canvas);
-
-	//int sliceIndex(SliceType type)const;
-	//void setSliceIndex(SliceType type, int value);
-	//int sliceCount(SliceType type)const;
-	//void setSliceCount(SliceType type, int count);
-	//bool sliceVisible(SliceType type)const;
-
 	QString currentCategoryName()const;
 	QColor currentCategoryColor()const;
 	int categoryCount()const;
-
-	QSize sizeHint() const Q_DECL_OVERRIDE { return {250,500}; }
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return {250,300}; }
-
 signals:
 	void topSliceIndexChanged(int value);
 	void rightSliceIndexChanged(int value);

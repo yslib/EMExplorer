@@ -13,12 +13,9 @@
 #include <QLineEdit>
 #include <QToolButton>
 
-
-
-
 RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* parent)
 	:QWidget(parent)
-	,m_widget(widget)
+	,m_widget(nullptr)
 {
 	//volume info
 	m_volumeInfoGroup = new QGroupBox(QStringLiteral("Volume Info"));
@@ -198,7 +195,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	mainVLayout->addWidget(m_transferFunctionGroupBox);
 	mainVLayout->addWidget(m_meshGroup);
 	mainVLayout->addWidget(m_sliceGroup);
-	mainVLayout->addStretch();
+	//mainVLayout->addStretch();
 	setLayout(mainVLayout);
 
 	setRenderWidget(widget);
@@ -232,6 +229,8 @@ void RenderParameterWidget::phiSliderChanged(int value)
 
 void RenderParameterWidget::transferFunctionChanged() {
 	QScopedPointer<float, QScopedPointerArrayDeleter<float>> tfuncs(new float[256 * 4]);
+	if (m_tfEditor == nullptr)
+		return;
 	m_tfEditor->getTransferFunction(tfuncs.data(), 256, 1.0);
 	Q_ASSERT_X(m_widget, "&TF1DEditor::TF1DChange", "m_widget != nullptr");
 	m_widget->updateTransferFunction(tfuncs.data(), true);
@@ -259,7 +258,12 @@ void RenderParameterWidget::tfButtonClicked() {
 
 void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 
+	if (m_widget == widget)
+		return;
+	disconnect(this, nullptr, m_widget, nullptr);
 	m_widget = widget;
+	connect(this, &RenderParameterWidget::optionsChanged, m_widget, [this]() {m_widget->update();});
+
 	m_renderOptions = m_widget != nullptr?widget->options():QSharedPointer<RenderOptions>();
 	setEnabled(m_widget != nullptr);
 	

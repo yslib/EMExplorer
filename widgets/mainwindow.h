@@ -55,15 +55,13 @@ private:
 	QDockWidget * m_volumeViewDockWidget;
 	RenderWidget * m_volumeView;
 
-	QDockWidget * m_renderParameterDockWidget;
 	RenderParameterWidget * m_renderParameterWidget;
-	QScrollArea *m_parameterScrollArea;
+	SliceToolWidget * m_sliceToolWidget;
+	QScrollArea * m_scrollAreaWidget;
+	QDockWidget * m_controlDockWidget;
 
 	QDockWidget * m_imageViewDockWidget;
 	SliceEditorWidget * m_imageView;
-
-	QDockWidget * m_imageViewControlPanelDockWidget;
-	SliceToolWidget * m_imageViewControlPanel;
 
 	QDockWidget * m_profileViewDockWidget;
 	ProfileWidget * m_profileView;
@@ -71,7 +69,7 @@ private:
 	QDockWidget * m_treeViewDockWidget;
 	MarkManagerWidget * m_treeView;
 
-	QDockWidget * m_markInfoDOckWidget;
+	QDockWidget * m_markInfoDockWidget;
 	MarkInfoWidget * m_markInfoWidget;
 
 	//QDockWidget *m_tfEditorDockWidget;

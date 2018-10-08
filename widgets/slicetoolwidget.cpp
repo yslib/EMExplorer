@@ -19,11 +19,11 @@
 #include <QColorDialog>
 
 
-SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent):m_canvas(canvas)
+SliceToolWidget::SliceToolWidget(SliceEditorWidget * canvas, QWidget* parent):m_canvas(nullptr)
 {
 	createWidgets();
-	connections();
 	setImageCanvas(canvas);
+	connections();
 }
 
 void SliceToolWidget::setImageCanvas(SliceEditorWidget* canvas)

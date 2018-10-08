@@ -115,8 +115,8 @@ public:
 	MarkModel* markModel();
 
 
-	QSize sizeHint() const Q_DECL_OVERRIDE { return {800,800}; }
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
+	//QSize sizeHint() const Q_DECL_OVERRIDE { return {800,800}; }
+	//QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
 	~SliceEditorWidget();
 signals:
 	void topSliceOpened(int index);
@@ -194,67 +194,24 @@ private:
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
 
-	
-
-
-	//SliceToolWidget * m_panel;
-
-
 	//main layout
 	QGridLayout *m_layout;
 	SliceWidget * m_topView;
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
 
-	//VolumeWidget * m_renderView;
-
-	//Tool Bar
-	//QToolBar * m_viewToolBar;
-	//QToolBar * m_editToolBar;
-	////Widgets on view toolbar
-	//TitledSliderWithSpinBox * m_topSlider;
-	//QCheckBox * m_topSliceCheckBox;
-	//QCheckBox * m_rightSliceCheckBox;
-	//TitledSliderWithSpinBox * m_rightSlider;
-	//QCheckBox * m_frontSliceCheckBox;
-	//TitledSliderWithSpinBox * m_frontSlider;
-	//QAction * m_volumeWidgetAction;
-
 	////actions on view toolbar
 
 	QAction *m_zoomInAction;
 	QAction *m_zoomOutAction;
-	//QAction * m_resetAction;
-	//
-	//QAction *m_topSlicePlayAction;
-	//QAction *m_rightSlicePlayAction;
-	//QAction *m_frontSlicePlayAction;
-	//
-	//QToolButton * m_menuButton;
 
-	////menu on view toolbar
-	//QMenu * m_menu;
 
-	//QAction * m_histDlg;
 	PlayDirection m_topSlicePlayDirection;
 	int m_topTimerId;
 	PlayDirection m_rightSlicePlayDirection;
 	int m_rightTimerId;
 	PlayDirection m_frontSlicePlayDirection;
 	int m_frontTimerId;
-
-	//Widgets on edit toolbar
-	//QLabel * m_categoryLabel;
-	//QComboBox * m_categoryCBBox;
-	//QLabel * m_penSizeLabel;
-	//QComboBox* m_penSizeCBBox;
-
-	//actions on edit toolbar
-	//QAction *m_markAction;
-	//QAction *m_markSelectionAction;
-	//QAction *m_colorAction;
-	//QAction *m_markDeletionAction;
-	//QAction *m_addCategoryAction;
 
 	//ContextMenu
 	QMenu *m_contextMenu;
@@ -264,7 +221,6 @@ private:
 	QAction * m_pixelViewDlgAction;
 	QAction * m_marksManagerDlgAction;
 	QWidget * m_menuWidget;
-
 
 	friend class SliceToolWidget;
 };

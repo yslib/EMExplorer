@@ -31,8 +31,6 @@ class RenderParameterWidget : public QWidget
 	Q_OBJECT
 public:
 	RenderParameterWidget(RenderWidget * widget, QWidget *parent = nullptr);
-	QSize sizeHint() const Q_DECL_OVERRIDE { return { 300,600 }; }
-	QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 300,600 }; }
 	~RenderParameterWidget(){}
 signals:
 	void optionsChanged();

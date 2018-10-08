@@ -14,7 +14,6 @@
 #include "sliceeditorwidget.h"
 #include "slicewidget.h"
 #include "renderwidget.h"
-#include "slicetoolwidget.h"
 
 inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos)
 {
@@ -22,6 +21,7 @@ inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos
 }
 void SliceEditorWidget::createWidgets()
 {
+
 }
 
 void SliceEditorWidget::createToolBar()
@@ -254,6 +254,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	//m_panel(nullptr)
 {
 	m_layout = new QGridLayout;
+	m_layout->setContentsMargins(0, 0, 0, 0);
 	m_topView = new SliceWidget(this);
 	m_rightView = new SliceWidget(this);
 	m_frontView = new SliceWidget(this);
@@ -268,10 +269,10 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	createConnections();
 	updateActions();
 
-	setWindowTitle(QStringLiteral("ImageCanvas"));
+	setWindowTitle(QStringLiteral("Slice View"));
 	m_layout->addWidget(m_topView, 0, 0, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignCenter);
-	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignCenter);
+	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignLeft);
+	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignTop);
 	setLayout(m_layout);
 }
 
@@ -400,17 +401,7 @@ void SliceEditorWidget::markSingleSelectionHelper()
 	emit markSeleteced(item);
 }
 
-//void SliceEditorWidget::setCategoryManagerHelper(const QVector<QPair<QString, QColor>>& cates)
-//{
-//	if (m_panel == nullptr)return;
-//	m_panel->setCategoryInfoPrivate(cates);
-//}
-//
-//void SliceEditorWidget::addCategoryManagerHelper(const QString & name, const QColor & color)
-//{
-//	if (m_panel == nullptr)return;
-//	m_panel->addCategoryInfoPrivate(name, color);
-//}
+
 
 SliceWidget* SliceEditorWidget::focusOn()
 {
@@ -747,27 +738,6 @@ void SliceEditorWidget::contextMenuEvent(QContextMenuEvent* event)
 	}
 	event->accept();
 }
-
-//void SliceEditorWidget::updateSliceCount(SliceType type)
-//{
-//	//Q_ASSERT_X(m_panel, "ImageCanvas::updateSliceCount", "null pointer");
-//	int count = -1;
-//	switch (type)
-//	{
-//	case SliceType::Top:
-//		count = m_sliceModel->topSliceCount();
-//		break;
-//	case SliceType::Right:
-//		count = m_sliceModel->rightSliceCount();
-//		break;
-//	case SliceType::Front:
-//		count = m_sliceModel->frontSliceCount();
-//		break;
-//	default:
-//		break;
-//	}
-//	m_panel->setSliceCount(type, count-1);
-//}
 
 void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 {
