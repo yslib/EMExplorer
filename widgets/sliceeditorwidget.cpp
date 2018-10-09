@@ -106,29 +106,16 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	m_markModel = model;
 	connect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);
 
-	//QVector<QPair<QString, QColor>> cates;
-	//if (m_markModel != nullptr) {
-	//	m_markModel->m_view = this;
-	//	m_markModel->m_dataModel = m_sliceModel;
-	//	auto cateItems = m_markModel->categoryItems();
-	//	QVector<QPair<QString, QColor>> cates;
-	//	foreach(const auto & item, cateItems)
-	//		cates << qMakePair(item->name(), item->color());
-	//}
+
 
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
 	updateMarks(SliceType::Front);
 
-	//setCategoryManagerHelper(cates);
-
 }
 
 void SliceEditorWidget::updateSliceModel()
 {
-	//updateSliceCount(SliceType::Top);
-	//updateSliceCount(SliceType::Right);
-	//updateSliceCount(SliceType::Front);
 
 	setSliceIndex(SliceType::Front, 0);
 	setSliceIndex(SliceType::Right, 0);
@@ -337,17 +324,6 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	const QVariant categoryColor = QVariant::fromValue<QColor>(cateItem->categoryInfo().color);
 
 
-	//if (cate.isEmpty())
-	//{
-	//	//Add a default catetory
-	//	cate = QStringLiteral("Category#%1").arg(m_panel->categoryCount());
-	//	categoryColor = QVariant::fromValue(Qt::black);
-	//	QPen pen = m_topView->pen();
-	//	pen.setColor(Qt::black);
-	//	setPen(pen);
-	//	addCategoryManagerHelper(cate, categoryColor.value<QColor>());
-	//}
-	//auto m = QueryMarkItemInterface<AbstractMarkItem*,PolyMarkItem*>(mark);
 	mark->setData(MarkProperty::SliceType, QVariant::fromValue(static_cast<int>(type)));
 	mark->setData(MarkProperty::CategoryName, QVariant::fromValue(cate));
 	mark->setData(MarkProperty::CategoryColor, categoryColor);

@@ -25,6 +25,8 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 public:
 	explicit MainWindow(QWidget *parent = 0);
+	void open(const QString& fileName);
+	void openMark(const QString & fileName);
 	~MainWindow();
 protected:
 	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
@@ -34,9 +36,9 @@ private:
 	void createActions();
 	void createStatusBar();
 	void createMarkTreeView();
-	void open();
+
 	bool saveMark();
-	void openMark();
+
 	void saveAs();
 	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
 	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);

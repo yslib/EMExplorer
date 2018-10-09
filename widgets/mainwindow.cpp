@@ -65,12 +65,13 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	//writeSettings();
 }
 
-void MainWindow::open()
+void MainWindow::open(const QString& fileName)
 {
-	QString fileName = QFileDialog::getOpenFileName(this,
-		QStringLiteral("OpenFile"),
-		QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
-		QStringLiteral("mrc Files(*.mrc *mrcs)"));
+	//QString fileName = QFileDialog::getOpenFileName(this,
+	//	QStringLiteral("OpenFile"),
+	//	QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
+	//	QStringLiteral("mrc Files(*.mrc *mrcs)"));
+
 	if (fileName.isEmpty())
 		return;
 	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
@@ -131,12 +132,13 @@ bool MainWindow::saveMark()
 	return ok;
 }
 
-void MainWindow::openMark()
+void MainWindow::openMark(const QString & fileName)
 {
-	QString fileName = QFileDialog::getOpenFileName(this,
-		QStringLiteral("Mark Open"),
-		QStringLiteral(""),
-		QStringLiteral("Mark File(*.mar)"));
+	//QString fileName = QFileDialog::getOpenFileName(this,
+	//	QStringLiteral("Mark Open"),
+	//	QStringLiteral(""),
+	//	QStringLiteral("Mark File(*.mar)"));
+
 	if (fileName.isEmpty() == true)
 		return;
 	if (fileName.endsWith(QStringLiteral(".mar")) == true)
@@ -427,7 +429,12 @@ void MainWindow::createActions()
 	m_openAction->setToolTip(QStringLiteral("Open MRC file"));
 	QToolBar * toolBar = addToolBar(QStringLiteral("Tools"));
 	toolBar->addAction(m_openAction);
-	connect(m_openAction, &QAction::triggered, this, &MainWindow::open);
+	connect(m_openAction, &QAction::triggered, [this]() {
+		open(QFileDialog::getOpenFileName(this,
+		QStringLiteral("OpenFile"),
+		QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
+		QStringLiteral("mrc Files(*.mrc *mrcs)")));	
+	});
 	//save mark action
 	m_saveAction = new QAction(QIcon(":/icons/resources/icons/save_as.png"), QStringLiteral("Save Mark"), this);
 	m_saveAction->setToolTip(QStringLiteral("Save Mark"));
@@ -438,7 +445,12 @@ void MainWindow::createActions()
 	m_openMarkAction = new QAction(QIcon(":/icons/resources/icons/open_mark.png"), QStringLiteral("Open Mark"), this);
 	m_openMarkAction->setToolTip(QStringLiteral("Open Mark"));
 	toolBar->addAction(m_openMarkAction);
-	connect(m_openMarkAction, &QAction::triggered, this, &MainWindow::openMark);
+	connect(m_openMarkAction, &QAction::triggered,[this]() {
+		openMark(QFileDialog::getOpenFileName(this,
+			QStringLiteral("Mark Open"),
+			QStringLiteral(""),
+			QStringLiteral("Mark File(*.mar)")));
+	});
 
 	//set default action
 	m_setDefaultLayoutAction = new QAction(QIcon(":/icons/resources/icons/grid.png"),QStringLiteral("Default Layout"),this);
