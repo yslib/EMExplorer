@@ -43,6 +43,7 @@ protected:
 	void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
 signals:
 	void sliceSelected(const QPoint & point);
+	void sliceSelected();
 	void markAdded(QGraphicsItem * item);
 	void viewMoved(const QPointF & delta);
 	void selectionChanged();

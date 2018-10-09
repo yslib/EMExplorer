@@ -8,6 +8,9 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QScrollArea>
+#include <QVBoxLayout>
+#include <QToolButton>
+#include <QEvent>
 
 #include "mainwindow.h"
 #include "model/mrc.h"
@@ -20,11 +23,12 @@
 #include "widgets/renderoptionwidget.h"
 #include "widgets/slicetoolwidget.h"
 #include "widgets/renderwidget.h"
-#include <QVBoxLayout>
+#include "widgets/slicewidget.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent)
+	,m_toolBar(nullptr)
 
 {
 	//These functions need to be called in order.
@@ -48,7 +52,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	const auto model = m_imageView->markModel();
 	if (model != nullptr &&model->dirty())
 	{
-		auto button = QMessageBox::warning(this, QStringLiteral("Save Mark"),
+		const auto button = QMessageBox::warning(this, QStringLiteral("Save Mark"),
 			QStringLiteral("Marks have not been saved. Do you want to save them before closing?"),
 			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
 			QMessageBox::Yes);
@@ -74,9 +78,9 @@ void MainWindow::open(const QString& fileName)
 
 	if (fileName.isEmpty())
 		return;
-	QString name = fileName.mid(fileName.lastIndexOf('/') + 1);
+	auto name = fileName.mid(fileName.lastIndexOf('/') + 1);
 	Q_UNUSED(name);
-	auto markModel = m_imageView->markModel();
+	const auto markModel = m_imageView->markModel();
 
 	if (markModel != nullptr && markModel->dirty() == true)
 	{
@@ -91,8 +95,8 @@ void MainWindow::open(const QString& fileName)
 			return;
 	}
 	QSharedPointer<MRC> mrc(new MRC(fileName.toStdString()));
-	MRCDataModel * sliceModel = new MRCDataModel(mrc);
-	auto infoModel = setupProfileModel(*mrc);
+	auto * sliceModel = new MRCDataModel(mrc);
+	const auto infoModel = setupProfileModel(*mrc);
 	auto m = m_imageView->markModel();
 	m->deleteLater();
 	auto t = m_imageView->takeSliceModel(sliceModel);
@@ -197,6 +201,23 @@ void MainWindow::openMark(const QString & fileName)
 
 }
 
+bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
+	if(watched == m_imageViewDockWidget) {
+		if(event->type() == QEvent::FocusIn) {
+			qDebug() << "Slice View Focuse";
+			event->accept();
+			return true;
+		}
+	}else if(watched == m_volumeViewDockWidget) {
+		if(event->type() == QEvent::FocusIn) {
+			qDebug() << "Volume View Focuse";
+			event->accept();
+			return true;
+		}
+	}
+	return QMainWindow::eventFilter(watched, event);
+}
+
 void MainWindow::saveAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this,
@@ -236,8 +257,8 @@ void MainWindow::readSettingsForDockWidget(QDockWidget* dock, QSettings* setting
 		settings = ptr.data();
 	}
 	settings->beginGroup(dock->windowTitle());
-	bool floating = settings->value(QStringLiteral("floating"), false).toBool();
-	bool visible = settings->value(QStringLiteral("visible"), true).toBool();
+	const auto floating = settings->value(QStringLiteral("floating"), false).toBool();
+	const auto visible = settings->value(QStringLiteral("visible"), true).toBool();
 	dock->move(settings->value(QStringLiteral("pos"), QPoint(0, 0)).toPoint());
 	dock->resize(settings->value(QStringLiteral("size"), QSize(100, 500)).toSize());
 	dock->setVisible(visible);
@@ -327,12 +348,31 @@ void MainWindow::setDefaultLayout()
 	splitDockWidget(m_markInfoDockWidget, m_profileViewDockWidget, Qt::Vertical);
 }
 
+void MainWindow::setParallelLayout() {
+	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
+	splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
+	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	splitDockWidget(m_markInfoDockWidget, m_profileViewDockWidget, Qt::Vertical);
+}
+
+void MainWindow::updateToolBarActions() {
+	// qDebug() << "MainWindow::updateToolBarActions need to be implemented";
+
+}
+
+void MainWindow::sliceViewSelected(SliceType type) {
+	/// TODO::update histogram and pixel view context
+
+}
+
 void MainWindow::createWidget()
 {
 	setDockOptions(QMainWindow::AnimatedDocks);
 	setDockOptions(QMainWindow::AllowNestedDocks);
 	setDockOptions(QMainWindow::AllowTabbedDocks);
-	setDockNestingEnabled(true);
+	setDockNestingEnabled(true);	
 
 	auto w = takeCentralWidget();
 	if (w)
@@ -374,20 +414,22 @@ void MainWindow::createWidget()
 	m_imageViewDockWidget = new QDockWidget(QStringLiteral("Slice View"));
 	m_imageView = new SliceEditorWidget;
 	m_imageViewDockWidget->setWidget(m_imageView);
+	m_imageViewDockWidget->installEventFilter(this);
 	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	connect(m_imageView, &SliceEditorWidget::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
 	connect(m_imageView, &SliceEditorWidget::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
+	connect(m_imageView, &SliceEditorWidget::viewFocus, this, &MainWindow::sliceViewSelected);
 
 	// VolumeWidget
 	m_volumeView = new RenderWidget(nullptr, nullptr,this);
 	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Volume View"));
+	m_volumeViewDockWidget->installEventFilter(this);
 	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_volumeViewDockWidget->setWidget(m_volumeView);
 	m_viewMenu->addAction(m_volumeViewDockWidget->toggleViewAction());
 
 	// Control Widget
 	m_renderParameterWidget = new RenderParameterWidget(m_volumeView, this);
-
 	m_sliceToolWidget = new SliceToolWidget(m_imageView, this);
 
 	auto layout = new QVBoxLayout;
@@ -408,6 +450,110 @@ void MainWindow::createWidget()
 	connect(m_sliceToolWidget, &SliceToolWidget::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
 	connect(m_sliceToolWidget, &SliceToolWidget::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
 	connect(m_sliceToolWidget, &SliceToolWidget::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
+
+
+	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "null pointer");
+	m_toolBar->addSeparator();
+	// Zoom In Action
+	m_zoomInAction = new QToolButton(this);
+	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
+	m_zoomInAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_zoomInAction->setIcon(QIcon(":icons/resources/icons/zoom_in.png"));
+	connect(m_zoomInAction, &QToolButton::clicked, m_imageView, &SliceEditorWidget::zoomIn);
+	m_toolBar->addWidget(m_zoomInAction);
+
+	// Zoom Out Action
+	m_zoomOutAction = new QToolButton(this);
+	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
+	m_zoomOutAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_zoomOutAction->setIcon(QIcon(":icons/resources/icons/zoom_out.png"));
+	connect(m_zoomOutAction, &QToolButton::clicked, m_imageView, &SliceEditorWidget::zoomOut);
+	m_toolBar->addWidget(m_zoomOutAction);
+
+	// Reset Zoom Action
+	m_resetAction = new QToolButton(this);
+	m_resetAction->setToolTip(QStringLiteral("Reset"));
+	m_resetAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_resetAction->setIcon(QIcon(":icons/resources/icons/reset.png"));
+	connect(m_resetAction, &QToolButton::clicked, m_imageView, &SliceEditorWidget::resetZoom);
+	m_toolBar->addWidget(m_resetAction);
+
+	// Mark Pen Action
+	m_markAction = new QToolButton(this);
+	m_markAction->setToolTip(QStringLiteral("Mark"));
+	m_markAction->setCheckable(true);
+	m_markAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_markAction->setIcon(QIcon(":icons/resources/icons/mark.png"));
+	m_markAction->setCheckable(true);
+	connect(m_markAction, &QToolButton::toggled, [this](bool enable)
+	{
+		if (enable == true)
+		{
+			m_imageView->topView()->setOperation(SliceWidget::Paint);
+			m_imageView->rightView()->setOperation(SliceWidget::Paint);
+			m_imageView->frontView()->setOperation(SliceWidget::Paint);
+			//m_moveAction->setChecked(false);
+			m_markSelectionAction->setChecked(false);
+		}
+		else
+		{
+			m_imageView->topView()->setOperation(SliceWidget::Move);
+			m_imageView->rightView()->setOperation(SliceWidget::Move);
+			m_imageView->frontView()->setOperation(SliceWidget::Move);
+		}
+	});
+	m_toolBar->addWidget(m_markAction);
+
+	// Selection Tool Button
+	m_markSelectionAction = new QToolButton(this);
+	m_markSelectionAction->setToolTip(QStringLiteral("Select Mark"));
+	m_markSelectionAction->setCheckable(true);
+	m_markSelectionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_markSelectionAction->setIcon(QIcon(":icons/resources/icons/select.png"));
+	connect(m_markSelectionAction, &QToolButton::toggled, [this](bool enable)
+	{
+		if (enable == true)
+		{
+			m_imageView->topView()->setOperation(SliceWidget::Selection);
+			m_imageView->rightView()->setOperation(SliceWidget::Selection);
+			m_imageView->frontView()->setOperation(SliceWidget::Selection);
+			m_markAction->setChecked(false);
+			//m_moveAction->setChecked(false);
+		}
+		else
+		{
+			m_imageView->topView()->setOperation(SliceWidget::Move);
+			m_imageView->rightView()->setOperation(SliceWidget::Move);
+			m_imageView->frontView()->setOperation(SliceWidget::Move);
+		}
+
+	});
+	m_toolBar->addWidget(m_markSelectionAction);
+
+	// Deletion ToolButton
+	m_markDeletionAction = new QToolButton(this);
+	m_markDeletionAction->setToolTip(QStringLiteral("Delete Mark"));
+	m_markDeletionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_markDeletionAction->setIcon(QIcon(":icons/resources/icons/delete.png"));
+	connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); m_imageView->deleteSelectedMarks(); });
+	m_toolBar->addWidget(m_markDeletionAction);
+
+	// Pixel View ToolButton
+	m_pixelViewAction = new QToolButton(this);
+	m_pixelViewAction->setToolTip(QStringLiteral("Pixel View"));
+	m_pixelViewAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
+	m_pixelViewAction->setIcon(QIcon(""));
+	/// TODO:: connect
+	m_toolBar->addWidget(m_pixelViewAction);
+
+	// Histogram ToolButton
+	m_histogramAction = new QToolButton(this);
+	m_histogramAction->setToolTip(QStringLiteral("Histogram"));
+	m_histogramAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
+	m_histogramAction->setIcon(QIcon());
+	/// TODO:: connect
+	m_toolBar->addWidget(m_histogramAction);
+
 }
 
 void MainWindow::createMenu()
@@ -427,24 +573,28 @@ void MainWindow::createActions()
 {
 	m_openAction = new QAction(QIcon(":/icons/resources/icons/open.png"), QStringLiteral("Open"), this);
 	m_openAction->setToolTip(QStringLiteral("Open MRC file"));
-	QToolBar * toolBar = addToolBar(QStringLiteral("Tools"));
-	toolBar->addAction(m_openAction);
+
+	m_toolBar = addToolBar(QStringLiteral("Tools"));
+
+	m_toolBar->addAction(m_openAction);
+
 	connect(m_openAction, &QAction::triggered, [this]() {
 		open(QFileDialog::getOpenFileName(this,
 		QStringLiteral("OpenFile"),
 		QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
 		QStringLiteral("mrc Files(*.mrc *mrcs)")));	
 	});
+
 	//save mark action
 	m_saveAction = new QAction(QIcon(":/icons/resources/icons/save_as.png"), QStringLiteral("Save Mark"), this);
 	m_saveAction->setToolTip(QStringLiteral("Save Mark"));
-	toolBar->addAction(m_saveAction);
+	m_toolBar->addAction(m_saveAction);
 	connect(m_saveAction, &QAction::triggered, this, &MainWindow::saveMark);
 
 	//open mark action
 	m_openMarkAction = new QAction(QIcon(":/icons/resources/icons/open_mark.png"), QStringLiteral("Open Mark"), this);
 	m_openMarkAction->setToolTip(QStringLiteral("Open Mark"));
-	toolBar->addAction(m_openMarkAction);
+	m_toolBar->addAction(m_openMarkAction);
 	connect(m_openMarkAction, &QAction::triggered,[this]() {
 		openMark(QFileDialog::getOpenFileName(this,
 			QStringLiteral("Mark Open"),
@@ -455,9 +605,13 @@ void MainWindow::createActions()
 	//set default action
 	m_setDefaultLayoutAction = new QAction(QIcon(":/icons/resources/icons/grid.png"),QStringLiteral("Default Layout"),this);
 	m_setDefaultLayoutAction->setToolTip(QStringLiteral("Default Layout"));
-	
-	toolBar->addAction(m_setDefaultLayoutAction);
+	m_toolBar->addAction(m_setDefaultLayoutAction);
 	connect(m_setDefaultLayoutAction, &QAction::triggered, this, &MainWindow::setDefaultLayout);
+
+	m_parallelLayoutAction = new QAction(QIcon(), QStringLiteral("Parallel Layout"), this);
+	m_parallelLayoutAction->setToolTip(QStringLiteral("Parallel Layout"));
+	m_toolBar->addAction(m_parallelLayoutAction);
+	connect(m_parallelLayoutAction, &QAction::triggered, this, &MainWindow::setParallelLayout);
 }
 
 void MainWindow::createStatusBar()

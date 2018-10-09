@@ -34,6 +34,10 @@ signals:
 	void frontSliceIndexChanged(int value);
 private slots:
 	void onSliceTimer();
+	void onTopSlicePlayAction();
+	void onRightSlicePlayAction();
+	void onFrontSlicePlayAction();
+
 private:
 	void createWidgets();
 	void connections();
@@ -66,9 +70,7 @@ private:
 	TitledSliderWithSpinBox * m_frontSlider;
 
 	//actions on view toolbar
-	QToolButton *m_zoomInAction;
-	QToolButton *m_zoomOutAction;
-	QToolButton * m_resetAction;
+
 	QToolButton *m_topSlicePlayAction;
 	QToolButton *m_rightSlicePlayAction;
 	QToolButton *m_frontSlicePlayAction;
@@ -90,13 +92,22 @@ private:
 	QComboBox * m_categoryCBBox;
 	QLabel * m_penSizeLabel;
 	QComboBox* m_penSizeCBBox;
-	//actions on edit toolbar
-	QToolButton *m_markAction;
-	QToolButton *m_markSelectionAction;
 	QToolButton *m_colorAction;
-	//QAction *m_markMergeAction;
-	QToolButton *m_markDeletionAction;
 	QToolButton *m_addCategoryAction;
+
+	//actions on edit toolbar
+
+	//QToolButton *m_markAction;
+	//QToolButton *m_markSelectionAction;
+	//QToolButton *m_markDeletionAction;
+
+	//QToolButton *m_zoomInAction;
+	//QToolButton *m_zoomOutAction;
+	//QToolButton * m_resetAction;
+
+	//QToolButton *m_pixelViewButton;
+	//QToolButton *m_histogramButton;
+
 
 	friend class SliceEditorWidget;
 };

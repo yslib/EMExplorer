@@ -66,7 +66,6 @@ int SliceToolWidget::categoryCount() const
 
 
 void SliceToolWidget::onSliceTimer() {
-	qDebug() << "on slice timer";
 	int maxSliceCount = 0;
 	int curIndex;
 	PlayDirection * direction = nullptr;
@@ -114,6 +113,19 @@ void SliceToolWidget::onSliceTimer() {
 		m_frontSlider->setValue(curIndex);
 		break;
 	}
+}
+
+void SliceToolWidget::onTopSlicePlayAction() 
+{
+	
+}
+void SliceToolWidget::onRightSlicePlayAction() 
+{
+	
+}
+void SliceToolWidget::onFrontSlicePlayAction() 
+{
+	
 }
 
 void SliceToolWidget::createWidgets()
@@ -174,30 +186,30 @@ void SliceToolWidget::createWidgets()
 	mainLayout->addWidget(group);
 
 	//View Group
-	group = new QGroupBox(QStringLiteral("View"), this);
-	hLayout = new QHBoxLayout;
+	//group = new QGroupBox(QStringLiteral("Functions"), this);
+	//hLayout = new QHBoxLayout;
 
-	m_zoomInAction = new QToolButton(this);
-	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
-	m_zoomInAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_zoomInAction->setIcon(QIcon(":icons/resources/icons/zoom_in.png"));
-	hLayout->addWidget(m_zoomInAction);
+	//m_zoomInAction = new QToolButton(this);
+	//m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
+	//m_zoomInAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_zoomInAction->setIcon(QIcon(":icons/resources/icons/zoom_in.png"));
+	//hLayout->addWidget(m_zoomInAction);
 
-	m_zoomOutAction = new QToolButton(this);
-	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
-	m_zoomOutAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_zoomOutAction->setIcon(QIcon(":icons/resources/icons/zoom_out.png"));
-	hLayout->addWidget(m_zoomOutAction);
+	//m_zoomOutAction = new QToolButton(this);
+	//m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
+	//m_zoomOutAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_zoomOutAction->setIcon(QIcon(":icons/resources/icons/zoom_out.png"));
+	//hLayout->addWidget(m_zoomOutAction);
 
-	m_resetAction = new QToolButton(this);
-	m_resetAction->setToolTip(QStringLiteral("Reset"));
-	m_resetAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_resetAction->setIcon(QIcon(":icons/resources/icons/reset.png"));
+	//m_resetAction = new QToolButton(this);
+	//m_resetAction->setToolTip(QStringLiteral("Reset"));
+	//m_resetAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_resetAction->setIcon(QIcon(":icons/resources/icons/reset.png"));
+	//hLayout->addWidget(m_resetAction);
+	//hLayout->setAlignment(Qt::AlignLeft);
+	//group->setLayout(hLayout);
+	//mainLayout->addWidget(group);
 
-	hLayout->addWidget(m_resetAction);
-	hLayout->setAlignment(Qt::AlignLeft);
-	group->setLayout(hLayout);
-	mainLayout->addWidget(group);
 
 	//Mark Group
 	group = new QGroupBox(QStringLiteral("Mark"), this);
@@ -232,29 +244,29 @@ void SliceToolWidget::createWidgets()
 	vLayout->addLayout(hLayout);
 
 	//Mark pen
-	hLayout = new QHBoxLayout;
+	//hLayout = new QHBoxLayout;
+	//m_markAction = new QToolButton(this);
+	//m_markAction->setToolTip(QStringLiteral("Mark"));
+	//m_markAction->setCheckable(true);
+	//m_markAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_markAction->setIcon(QIcon(":icons/resources/icons/mark.png"));
+	//m_markAction->setCheckable(true);
 
-	m_markAction = new QToolButton(this);
-	m_markAction->setToolTip(QStringLiteral("Mark"));
-	m_markAction->setCheckable(true);
-	m_markAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_markAction->setIcon(QIcon(":icons/resources/icons/mark.png"));
-	m_markAction->setCheckable(true);
-	hLayout->addWidget(m_markAction);
-	//selection
-	m_markSelectionAction = new QToolButton(this);
-	m_markSelectionAction->setToolTip(QStringLiteral("Select Mark"));
-	m_markSelectionAction->setCheckable(true);
-	m_markSelectionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_markSelectionAction->setIcon(QIcon(":icons/resources/icons/select.png"));
-	hLayout->addWidget(m_markSelectionAction);
-	//deletion
-	m_markDeletionAction = new QToolButton(this);
-	m_markDeletionAction->setToolTip(QStringLiteral("Delete Mark"));
-	m_markDeletionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_markDeletionAction->setIcon(QIcon(":icons/resources/icons/delete.png"));
-	hLayout->addWidget(m_markDeletionAction);
-	hLayout->setAlignment(Qt::AlignLeft);
+	//hLayout->addWidget(m_markAction);
+	////selection
+	//m_markSelectionAction = new QToolButton(this);
+	//m_markSelectionAction->setToolTip(QStringLiteral("Select Mark"));
+	//m_markSelectionAction->setCheckable(true);
+	//m_markSelectionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_markSelectionAction->setIcon(QIcon(":icons/resources/icons/select.png"));
+	//hLayout->addWidget(m_markSelectionAction);
+	////deletion
+	//m_markDeletionAction = new QToolButton(this);
+	//m_markDeletionAction->setToolTip(QStringLiteral("Delete Mark"));
+	//m_markDeletionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_markDeletionAction->setIcon(QIcon(":icons/resources/icons/delete.png"));
+	//hLayout->addWidget(m_markDeletionAction);
+	//hLayout->setAlignment(Qt::AlignLeft);
 
 	vLayout->addLayout(hLayout);
 	group->setLayout(vLayout);
@@ -312,16 +324,12 @@ void SliceToolWidget::connections()
 	connect(m_rightSliceCheckBox, &QCheckBox::toggled, m_canvas, &SliceEditorWidget::updateRightSliceActions);
 	connect(m_frontSliceCheckBox, &QCheckBox::toggled, m_canvas, &SliceEditorWidget::updateFrontSliceActions);
 
-	connect(m_resetAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::resetZoom);
+	//connect(m_resetAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::resetZoom);
 	//view toolbar actions
 	connect(m_topSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
 		m_sliceTimer->stop();
-		m_rightSlicePlayAction->blockSignals(true);
-		m_rightSlicePlayAction->toggled(false);
-		m_rightSlicePlayAction->blockSignals(false);
-		m_frontSlicePlayAction->blockSignals(true);
-		m_frontSlicePlayAction->toggled(false);
-		m_frontSlicePlayAction->blockSignals(false);
+		m_rightSlicePlayAction->setChecked(false);
+		m_frontSlicePlayAction->setChecked(false);
 		if (enable == false)
 			return;
 		m_playSliceType = SliceType::Top;
@@ -329,12 +337,8 @@ void SliceToolWidget::connections()
 	});
 	connect(m_rightSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
 		m_sliceTimer->stop();
-		m_topSlicePlayAction->blockSignals(true);
-		m_topSlicePlayAction->toggled(false);
-		m_topSlicePlayAction->blockSignals(false);
-		m_frontSlicePlayAction->blockSignals(true);
-		m_frontSlicePlayAction->toggled(false);
-		m_frontSlicePlayAction->blockSignals(false);
+		m_topSlicePlayAction->setChecked(false);
+		m_frontSlicePlayAction->setChecked(false);
 		if (enable == false)
 			return;
 		m_playSliceType = SliceType::Right;
@@ -342,59 +346,55 @@ void SliceToolWidget::connections()
 	});
 	connect(m_frontSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
 		m_sliceTimer->stop();
-		m_topSlicePlayAction->blockSignals(true);
-		m_topSlicePlayAction->toggled(false);
-		m_topSlicePlayAction->blockSignals(false);
-		m_rightSlicePlayAction->blockSignals(true);
-		m_rightSlicePlayAction->toggled(false);
-		m_rightSlicePlayAction->blockSignals(false);
+		m_topSlicePlayAction->setChecked(false);
+		m_rightSlicePlayAction->setChecked(false);
 		if (enable == false)
 			return;
 		m_playSliceType = SliceType::Front;
 		m_sliceTimer->start();
 	});
 	connect(m_addCategoryAction, &QToolButton::clicked, this, &SliceToolWidget::onCategoryAdded);
-	connect(m_zoomInAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomIn);
-	connect(m_zoomOutAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomOut);
+	//connect(m_zoomInAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomIn);
+	//connect(m_zoomOutAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomOut);
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_canvas->m_topView->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); m_canvas->setPen(pen); });
 	connect(m_colorAction, &QToolButton::clicked, this, &SliceToolWidget::colorChanged);
 
-	connect(m_markAction, &QToolButton::toggled, [this](bool enable)
-	{
-		if (enable == true)
-		{
-			m_canvas->m_topView->setOperation(SliceWidget::Paint);
-			m_canvas->m_rightView->setOperation(SliceWidget::Paint);
-			m_canvas->m_frontView->setOperation(SliceWidget::Paint);
-			//m_moveAction->setChecked(false);
-			m_markSelectionAction->setChecked(false);
-		}
-		else
-		{
-			m_canvas->m_topView->setOperation(SliceWidget::Move);
-			m_canvas->m_rightView->setOperation(SliceWidget::Move);
-			m_canvas->m_frontView->setOperation(SliceWidget::Move);
-		}
-	});
-	connect(m_markSelectionAction, &QToolButton::toggled, [this](bool enable)
-	{
-		if (enable == true)
-		{
-			m_canvas->m_topView->setOperation(SliceWidget::Selection);
-			m_canvas->m_rightView->setOperation(SliceWidget::Selection);
-			m_canvas->m_frontView->setOperation(SliceWidget::Selection);
-			m_markAction->setChecked(false);
-			//m_moveAction->setChecked(false);
-		}
-		else
-		{
-			m_canvas->m_topView->setOperation(SliceWidget::Move);
-			m_canvas->m_rightView->setOperation(SliceWidget::Move);
-			m_canvas->m_frontView->setOperation(SliceWidget::Move);
-		}
+	//connect(m_markAction, &QToolButton::toggled, [this](bool enable)
+	//{
+	//	if (enable == true)
+	//	{
+	//		m_canvas->m_topView->setOperation(SliceWidget::Paint);
+	//		m_canvas->m_rightView->setOperation(SliceWidget::Paint);
+	//		m_canvas->m_frontView->setOperation(SliceWidget::Paint);
+	//		//m_moveAction->setChecked(false);
+	//		m_markSelectionAction->setChecked(false);
+	//	}
+	//	else
+	//	{
+	//		m_canvas->m_topView->setOperation(SliceWidget::Move);
+	//		m_canvas->m_rightView->setOperation(SliceWidget::Move);
+	//		m_canvas->m_frontView->setOperation(SliceWidget::Move);
+	//	}
+	//});
+	//connect(m_markSelectionAction, &QToolButton::toggled, [this](bool enable)
+	//{
+	//	if (enable == true)
+	//	{
+	//		m_canvas->m_topView->setOperation(SliceWidget::Selection);
+	//		m_canvas->m_rightView->setOperation(SliceWidget::Selection);
+	//		m_canvas->m_frontView->setOperation(SliceWidget::Selection);
+	//		m_markAction->setChecked(false);
+	//		//m_moveAction->setChecked(false);
+	//	}
+	//	else
+	//	{
+	//		m_canvas->m_topView->setOperation(SliceWidget::Move);
+	//		m_canvas->m_rightView->setOperation(SliceWidget::Move);
+	//		m_canvas->m_frontView->setOperation(SliceWidget::Move);
+	//	}
 
-	});
-	connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); m_canvas->markDeleteHelper(); m_canvas->updateDeleteAction(); });
+	//});
+	//connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); m_canvas->deleteSelectedMarks(); m_canvas->updateDeleteAction(); });
 
 }
 
@@ -418,11 +418,11 @@ void SliceToolWidget::addCategoryInfoPrivate(const QString & name, const QColor 
 
 void SliceToolWidget::updateDeleteActionPrivate()
 {
-	const bool enable = m_canvas && m_canvas->markModel()
-		&& (m_canvas->topView()->selectedItemCount()
-			|| m_canvas->rightView()->selectedItemCount()
-			|| m_canvas->frontView()->selectedItemCount());
-	m_markDeletionAction->setEnabled(enable);
+	//const bool enable = m_canvas && m_canvas->markModel()
+	//	&& (m_canvas->topView()->selectedItemCount()
+	//		|| m_canvas->rightView()->selectedItemCount()
+	//		|| m_canvas->frontView()->selectedItemCount());
+	//m_markDeletionAction->setEnabled(enable);
 }
 
 void SliceToolWidget::updateSliceActions(SliceType type, bool checked)

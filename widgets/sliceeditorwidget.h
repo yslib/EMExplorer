@@ -114,6 +114,8 @@ public:
 	void zoomOut();
 	void setOperation(SliceType type,int opt);
 
+	void deleteSelectedMarks();
+
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
@@ -142,6 +144,8 @@ signals:
 	void topSliceSelected(const QPoint & point);
 	void rightSliceSelected(const QPoint & point);
 	void frontSliceSelected(const QPoint & point);
+
+	void viewFocus(SliceType type);
 
 	void markModified();
 	void markSaved();
@@ -175,7 +179,7 @@ private:
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
 	void markAddedHelper(SliceType type, QGraphicsItem * mark);
-	void markDeleteHelper();
+	
 	void markSingleSelectionHelper();
 
 	//void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);

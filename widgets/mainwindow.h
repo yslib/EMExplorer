@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QMainWindow>
 #include "model/mrcdatamodel.h"
+enum class SliceType;
 QT_BEGIN_NAMESPACE
 class QTableView;
 class QStandardItemModel;
@@ -9,6 +10,7 @@ class QAbstractTableModel;
 class QAction;
 class QSettings;
 class QScrollArea;
+class QToolButton;
 QT_END_NAMESPACE
 class SliceEditorWidget;
 class MarkModel;
@@ -20,6 +22,9 @@ class RenderParameterWidget;
 class TF1DEditor;
 class RenderWidget;
 class SliceToolWidget;
+
+
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -27,6 +32,7 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	void open(const QString& fileName);
 	void openMark(const QString & fileName);
+	bool eventFilter(QObject* watched, QEvent* event) override;
 	~MainWindow();
 protected:
 	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
@@ -36,7 +42,6 @@ private:
 	void createActions();
 	void createStatusBar();
 	void createMarkTreeView();
-
 	bool saveMark();
 
 	void saveAs();
@@ -47,6 +52,9 @@ private:
 	void readSettings();
 	void writeSettings();
 	void setDefaultLayout();
+	void setParallelLayout();
+	void updateToolBarActions();
+	void sliceViewSelected(SliceType type);
 
 	AbstractSliceDataModel * replaceSliceModel(AbstractSliceDataModel* model);
 	MarkModel * replaceMarkModel(MarkModel * model);
@@ -74,18 +82,31 @@ private:
 	QDockWidget * m_markInfoDockWidget;
 	MarkInfoWidget * m_markInfoWidget;
 
-	//QDockWidget *m_tfEditorDockWidget;
-	//TF1DEditor * m_tfEditorWidget;
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;
+
 	//Status bar
 	QStatusBar * m_statusBar;
-	//Actions
+
+	// Tool Bar
+	QToolBar *m_toolBar;
+		
+	// Actions
 	QAction * m_openAction;
 	QAction * m_saveAction;
 	QAction * m_openMarkAction;
 	QAction * m_setDefaultLayoutAction;
+	QAction * m_parallelLayoutAction;
+	QToolButton *m_markAction;
+	QToolButton *m_markSelectionAction;
+	QToolButton *m_markDeletionAction;
+	QToolButton *m_zoomInAction;
+	QToolButton *m_zoomOutAction;
+	QToolButton * m_resetAction;
+	QToolButton *m_pixelViewAction;
+	QToolButton *m_histogramAction;
+
 };
 
 #endif // MAINWINDOW_H

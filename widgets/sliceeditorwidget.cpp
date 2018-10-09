@@ -36,9 +36,9 @@ void SliceEditorWidget::createToolBar()
 void SliceEditorWidget::createConnections()
 {
 	//forward selected signals
-	connect(m_topView, &SliceWidget::sliceSelected, this, &SliceEditorWidget::topSliceSelected);
-	connect(m_rightView, &SliceWidget::sliceSelected, this, &SliceEditorWidget::rightSliceSelected);
-	connect(m_frontView, &SliceWidget::sliceSelected, this, &SliceEditorWidget::frontSliceSelected);
+	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
+	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::rightSliceSelected);
+	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::frontSliceSelected);
 
 	connect(m_topView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
 	connect(m_rightView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
@@ -56,6 +56,10 @@ void SliceEditorWidget::createConnections()
 
 	connect(m_zoomInAction, &QAction::triggered, this, &SliceEditorWidget::zoomIn);
 	connect(m_zoomOutAction, &QAction::triggered, this, &SliceEditorWidget::zoomOut);
+
+	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
+	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
+	connect(m_frontView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Front); });
 }
 
 void SliceEditorWidget::updateActions()
@@ -105,8 +109,6 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 
 	m_markModel = model;
 	connect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);
-
-
 
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
@@ -193,7 +195,7 @@ void SliceEditorWidget::createContextMenu()
 			pixelViewDlg->show();
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//			pixelViewDlg->setImage(m_sliceModel->topSlice(m_topSlider->value()));
-			connect(m_topView, &SliceWidget::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+			connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), pixelViewDlg, &AbstractPlugin::sliceSelected);
 			connect(this, &SliceEditorWidget::topSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit topSliceOpened(currentSliceIndex(SliceType::Top));
 
@@ -205,7 +207,7 @@ void SliceEditorWidget::createContextMenu()
 			pixelViewDlg->show();
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//	pixelViewDlg->setImage(m_sliceModel->rightSlice(m_rightSlider->value()));
-			connect(m_rightView, &SliceWidget::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+			connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), pixelViewDlg, &AbstractPlugin::sliceSelected);
 			connect(this, &SliceEditorWidget::rightSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit rightSliceOpened(currentSliceIndex(SliceType::Right));
 		}
@@ -216,7 +218,7 @@ void SliceEditorWidget::createContextMenu()
 			pixelViewDlg->show();
 			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
 			//	pixelViewDlg->setImage(m_sliceModel->frontSlice(m_frontSlider->value()));
-			connect(m_frontView, &SliceWidget::sliceSelected, pixelViewDlg, &AbstractPlugin::sliceSelected);
+			connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected) ,pixelViewDlg, &AbstractPlugin::sliceSelected);
 			connect(this, &SliceEditorWidget::frontSliceOpened, pixelViewDlg, &AbstractPlugin::sliceOpened);
 			emit frontSliceOpened(currentSliceIndex(SliceType::Front));
 		}
@@ -351,7 +353,7 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	m_markModel->addMark(cate, mark);
 }
 
-void SliceEditorWidget::markDeleteHelper()
+void SliceEditorWidget::deleteSelectedMarks()
 {
 	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
 	QList<QGraphicsItem*> items;

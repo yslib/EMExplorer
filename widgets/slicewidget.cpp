@@ -48,6 +48,7 @@ void SliceWidget::focusInEvent(QFocusEvent* event)
 {
 	Q_UNUSED(event);
 	setStyleSheet(QStringLiteral("border:1px solid red"));
+	emit sliceSelected();
 }
 
 void SliceWidget::focusOutEvent(QFocusEvent* event)
@@ -75,7 +76,7 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 	const auto & navigationRect = thumbnail.rect();
 	const double f1 =  navigationRect.width()/ scRect.width(),f2 = navigationRect.height()/scRect.height();
 	QPainter p(&thumbnail);
-	p.setPen(QPen(Qt::black, 2));
+	p.setPen(QPen(Qt::red, 2));
 	p.drawRect(QRect(
 		f1 * (viewRectInScene.x() - scRect.x()),			//transform from view rectangle to thumbnail rectangle
 		f2 * (viewRectInScene.y() - scRect.y()),
