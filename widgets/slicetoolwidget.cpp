@@ -268,8 +268,6 @@ void SliceToolWidget::createWidgets()
 
 void SliceToolWidget::updateDataModel()
 {
-	qDebug() << "SliceToolWidget::updateDataModel has been called";
-
 	if (m_canvas == nullptr)
 		return;
 	const auto m = m_canvas->sliceModel();

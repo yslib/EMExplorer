@@ -148,7 +148,6 @@ TF1DTextureCanvas::TF1DTextureCanvas(TF1DMappingCanvas * tf, QWidget *parent)
 	: QOpenGLWidget(parent)
 	, m_texture(0), m_transferFunction(tf),m_tfShader(nullptr),m_bgShader(nullptr)
 {
-	qDebug() << "TF1DTextureCanvas constructor has been called";
 }
 TF1DTextureCanvas::~TF1DTextureCanvas()
 {
@@ -156,7 +155,6 @@ TF1DTextureCanvas::~TF1DTextureCanvas()
 }
 void TF1DTextureCanvas::initializeGL()
 {
-	qDebug() << "TF1DTextureCanvas::intializeGL has been called";
 
 	initializeOpenGLFunctions();
 	glClearColor(1.0, 1.0, 1.0, 1.0);

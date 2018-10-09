@@ -577,7 +577,6 @@ int RenderWidget::selectMesh(int x, int y)
 
 void RenderWidget::cleanup()
 {
-	qDebug() << "cleanup has been called";
 	makeCurrent();
 
 	if(m_volume != nullptr)

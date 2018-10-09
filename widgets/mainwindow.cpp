@@ -390,7 +390,7 @@ void MainWindow::createWidget()
 
 	m_sliceToolWidget = new SliceToolWidget(m_imageView, this);
 
-	auto layout = new QVBoxLayout(this);
+	auto layout = new QVBoxLayout;
 	layout->addWidget(m_renderParameterWidget);
 	layout->addWidget(m_sliceToolWidget);
 	m_scrollAreaWidget = new QScrollArea(this);
