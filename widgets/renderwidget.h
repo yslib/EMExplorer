@@ -91,6 +91,7 @@ public:
 					RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel,QWidget * parent = nullptr);
 	void			setDataModel(AbstractSliceDataModel * model);
 	void			setMarkModel(MarkModel * model);
+	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
 	FocusCamera     camera()const { return m_camera; }
 	QSharedPointer<RenderOptions> options()const;
 

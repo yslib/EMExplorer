@@ -207,7 +207,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	mainVLayout->addWidget(m_transferFunctionGroupBox);
 	mainVLayout->addWidget(m_meshGroup);
 	mainVLayout->addWidget(m_sliceGroup);
-	//mainVLayout->addStretch();
+	mainVLayout->addStretch();
 	setLayout(mainVLayout);
 
 	setRenderWidget(widget);

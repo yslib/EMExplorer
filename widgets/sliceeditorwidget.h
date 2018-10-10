@@ -114,6 +114,10 @@ public:
 	void zoomOut();
 	void setOperation(SliceType type,int opt);
 
+	void updateTopSliceActions(bool enable);
+	void updateFrontSliceActions(bool check);
+	void updateRightSliceActions(bool check);
+
 	void deleteSelectedMarks();
 
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
@@ -169,9 +173,7 @@ private:
 	void updateMarks(SliceType type);
 	void updateActions();
 	void updateDeleteAction();
-	void updateTopSliceActions(bool enable);
-	void updateFrontSliceActions(bool check);
-	void updateRightSliceActions(bool check);
+
 	void installMarkModel(MarkModel* model);
 	void updateSliceModel();
 	void detachMarkModel();

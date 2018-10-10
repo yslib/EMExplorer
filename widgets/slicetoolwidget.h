@@ -74,18 +74,18 @@ private:
 	QToolButton *m_topSlicePlayAction;
 	QToolButton *m_rightSlicePlayAction;
 	QToolButton *m_frontSlicePlayAction;
+
 	QToolButton * m_menuButton;
 
 
 	PlayDirection m_topSlicePlayDirection;
-	int m_topTimerId;
 	PlayDirection m_rightSlicePlayDirection;
-	int m_rightTimerId;
 	PlayDirection m_frontSlicePlayDirection;
-	int m_frontTimerId;
+
 	SliceType m_playSliceType;
 
 	QTimer *m_sliceTimer;
+
 
 	//Widgets on edit toolbar
 	QLabel * m_categoryLabel;
@@ -95,18 +95,7 @@ private:
 	QToolButton *m_colorAction;
 	QToolButton *m_addCategoryAction;
 
-	//actions on edit toolbar
 
-	//QToolButton *m_markAction;
-	//QToolButton *m_markSelectionAction;
-	//QToolButton *m_markDeletionAction;
-
-	//QToolButton *m_zoomInAction;
-	//QToolButton *m_zoomOutAction;
-	//QToolButton * m_resetAction;
-
-	//QToolButton *m_pixelViewButton;
-	//QToolButton *m_histogramButton;
 
 
 	friend class SliceEditorWidget;

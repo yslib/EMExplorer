@@ -7,7 +7,6 @@
 #include <QSettings>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QScrollArea>
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QEvent>
@@ -24,12 +23,12 @@
 #include "widgets/slicetoolwidget.h"
 #include "widgets/renderwidget.h"
 #include "widgets/slicewidget.h"
+#include "widgets/slicecontrolwidget.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent)
 	,m_toolBar(nullptr)
-
 {
 	//These functions need to be called in order.
 	setWindowTitle("MRC Marker");
@@ -41,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	resize(1650, 1080);
 
 	//readSettings();
+	updateActionsAndControlPanelByWidgetFocus(static_cast<FocusState>(0));
+	updateActionsBySelectionInSliceView();
 	setUnifiedTitleAndToolBarOnMac(true);
 }
 MainWindow::~MainWindow()
@@ -71,10 +72,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 void MainWindow::open(const QString& fileName)
 {
-	//QString fileName = QFileDialog::getOpenFileName(this,
-	//	QStringLiteral("OpenFile"),
-	//	QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
-	//	QStringLiteral("mrc Files(*.mrc *mrcs)"));
+
 
 	if (fileName.isEmpty())
 		return;
@@ -138,10 +136,6 @@ bool MainWindow::saveMark()
 
 void MainWindow::openMark(const QString & fileName)
 {
-	//QString fileName = QFileDialog::getOpenFileName(this,
-	//	QStringLiteral("Mark Open"),
-	//	QStringLiteral(""),
-	//	QStringLiteral("Mark File(*.mar)"));
 
 	if (fileName.isEmpty() == true)
 		return;
@@ -202,15 +196,15 @@ void MainWindow::openMark(const QString & fileName)
 }
 
 bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
-	if(watched == m_imageViewDockWidget) {
+	if(watched == m_volumeView) {
 		if(event->type() == QEvent::FocusIn) {
-			qDebug() << "Slice View Focuse";
+			updateActionsAndControlPanelByWidgetFocus(FocusInVolumeView);
 			event->accept();
 			return true;
 		}
-	}else if(watched == m_volumeViewDockWidget) {
+	}else if(watched == m_imageView) {
 		if(event->type() == QEvent::FocusIn) {
-			qDebug() << "Volume View Focuse";
+			updateActionsAndControlPanelByWidgetFocus(FocusInSliceWidget);
 			event->accept();
 			return true;
 		}
@@ -357,14 +351,44 @@ void MainWindow::setParallelLayout() {
 	splitDockWidget(m_markInfoDockWidget, m_profileViewDockWidget, Qt::Vertical);
 }
 
-void MainWindow::updateToolBarActions() {
-	// qDebug() << "MainWindow::updateToolBarActions need to be implemented";
+void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 
+	//static FocusState s_state = static_cast<FocusState>(0);
+
+	m_zoomInAction->setEnabled(state & FocusInSliceView);
+	m_zoomOutAction->setEnabled(state & FocusInSliceView);
+	m_resetAction->setEnabled(state & (FocusInSliceView | FocusInSliceWidget));
+	m_markAction->setEnabled(state & FocusInTopSliceView);
+
+
+	m_markSelectionAction->setEnabled(state & FocusInTopSliceView);		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
+
+	m_pixelViewAction->setEnabled(state & FocusInSliceView);
+	m_histogramAction->setEnabled(state & FocusInSliceView);
+
+	m_volumeControlWidget->setVisible(state & FocusInVolumeView);
+	m_sliceToolControlWidget->setVisible(state & FocusInSliceWidget);
+	m_sliceControlWidget->setVisible(state&(FocusInVolumeView|FocusInSliceWidget));
+}
+
+void MainWindow::updateActionsBySelectionInSliceView(){
+	Q_ASSERT_X(m_imageView, "MainWindow::updateActionsBySelectionInSliceView", "null pointer");
+	const auto topView = m_imageView->topView();
+	//const auto rightView = m_imageView->rightView();
+	//const auto frontView = m_imageView->frontView();
+	const bool enable = topView->selectedItemCount();	// rightView and frontView would be considered in the future
+	m_markDeletionAction->setEnabled(enable);
 }
 
 void MainWindow::sliceViewSelected(SliceType type) {
 	/// TODO::update histogram and pixel view context
-
+	if(type == SliceType::Top){
+		updateActionsAndControlPanelByWidgetFocus(FocusInTopSliceView);
+	}else if(type == SliceType::Right) {
+		updateActionsAndControlPanelByWidgetFocus(FocusInRightSliceView);
+	}else if(type == SliceType::Front) {
+		updateActionsAndControlPanelByWidgetFocus(FocusInFrontSliceView);
+	}
 }
 
 void MainWindow::createWidget()
@@ -413,28 +437,37 @@ void MainWindow::createWidget()
 	//ImageCanvas  centralWidget
 	m_imageViewDockWidget = new QDockWidget(QStringLiteral("Slice View"));
 	m_imageView = new SliceEditorWidget;
+	m_imageView->installEventFilter(this);
+	m_imageView->setFocusPolicy(Qt::ClickFocus);
 	m_imageViewDockWidget->setWidget(m_imageView);
-	m_imageViewDockWidget->installEventFilter(this);
 	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	connect(m_imageViewDockWidget, &QDockWidget::visibilityChanged, [this](bool enable) {if(enable)updateActionsAndControlPanelByWidgetFocus(FocusInSliceWidget); });
+
+
 	connect(m_imageView, &SliceEditorWidget::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
 	connect(m_imageView, &SliceEditorWidget::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
 	connect(m_imageView, &SliceEditorWidget::viewFocus, this, &MainWindow::sliceViewSelected);
+	connect(m_imageView->topView(), &SliceWidget::selectionChanged, this, &MainWindow::updateActionsBySelectionInSliceView);
 
 	// VolumeWidget
 	m_volumeView = new RenderWidget(nullptr, nullptr,this);
+	m_volumeView->installEventFilter(this);
+	m_volumeView->setFocusPolicy(Qt::ClickFocus);
 	m_volumeViewDockWidget = new QDockWidget(QStringLiteral("Volume View"));
-	m_volumeViewDockWidget->installEventFilter(this);
 	m_volumeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_volumeViewDockWidget->setWidget(m_volumeView);
+	connect(m_volumeViewDockWidget, &QDockWidget::visibilityChanged, [this](bool enable) {if(enable)updateActionsAndControlPanelByWidgetFocus(FocusInVolumeView); });
 	m_viewMenu->addAction(m_volumeViewDockWidget->toggleViewAction());
 
 	// Control Widget
-	m_renderParameterWidget = new RenderParameterWidget(m_volumeView, this);
-	m_sliceToolWidget = new SliceToolWidget(m_imageView, this);
+	m_volumeControlWidget = new RenderParameterWidget(m_volumeView, this);
+	m_sliceToolControlWidget = new SliceToolWidget(m_imageView, this);
+	m_sliceControlWidget = new SliceControlWidget(m_imageView, m_volumeView, this);
 
 	auto layout = new QVBoxLayout;
-	layout->addWidget(m_renderParameterWidget);
-	layout->addWidget(m_sliceToolWidget);
+	layout->addWidget(m_sliceControlWidget);
+	layout->addWidget(m_volumeControlWidget);
+	layout->addWidget(m_sliceToolControlWidget);
 	m_scrollAreaWidget = new QScrollArea(this);
 	m_scrollAreaWidget->setLayout(layout);
 
@@ -447,9 +480,9 @@ void MainWindow::createWidget()
 
 
 	connect(m_imageView, &SliceEditorWidget::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
-	connect(m_sliceToolWidget, &SliceToolWidget::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
-	connect(m_sliceToolWidget, &SliceToolWidget::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
-	connect(m_sliceToolWidget, &SliceToolWidget::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
+	connect(m_sliceToolControlWidget, &SliceToolWidget::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
+	connect(m_sliceToolControlWidget, &SliceToolWidget::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
+	connect(m_sliceToolControlWidget, &SliceToolWidget::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
 
 
 	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "null pointer");
@@ -477,6 +510,8 @@ void MainWindow::createWidget()
 	m_resetAction->setIcon(QIcon(":icons/resources/icons/reset.png"));
 	connect(m_resetAction, &QToolButton::clicked, m_imageView, &SliceEditorWidget::resetZoom);
 	m_toolBar->addWidget(m_resetAction);
+
+	m_toolBar->addSeparator();
 
 	// Mark Pen Action
 	m_markAction = new QToolButton(this);
@@ -529,6 +564,7 @@ void MainWindow::createWidget()
 
 	});
 	m_toolBar->addWidget(m_markSelectionAction);
+	m_toolBar->addSeparator();
 
 	// Deletion ToolButton
 	m_markDeletionAction = new QToolButton(this);
@@ -538,11 +574,13 @@ void MainWindow::createWidget()
 	connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); m_imageView->deleteSelectedMarks(); });
 	m_toolBar->addWidget(m_markDeletionAction);
 
+	m_toolBar->addSeparator();
+
 	// Pixel View ToolButton
 	m_pixelViewAction = new QToolButton(this);
 	m_pixelViewAction->setToolTip(QStringLiteral("Pixel View"));
 	m_pixelViewAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
-	m_pixelViewAction->setIcon(QIcon(""));
+	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/VPSelect.png"));
 	/// TODO:: connect
 	m_toolBar->addWidget(m_pixelViewAction);
 
@@ -550,7 +588,7 @@ void MainWindow::createWidget()
 	m_histogramAction = new QToolButton(this);
 	m_histogramAction->setToolTip(QStringLiteral("Histogram"));
 	m_histogramAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
-	m_histogramAction->setIcon(QIcon());
+	m_histogramAction->setIcon(QIcon(":icons/resources/icons/histogram.png"));
 	/// TODO:: connect
 	m_toolBar->addWidget(m_histogramAction);
 
@@ -608,7 +646,8 @@ void MainWindow::createActions()
 	m_toolBar->addAction(m_setDefaultLayoutAction);
 	connect(m_setDefaultLayoutAction, &QAction::triggered, this, &MainWindow::setDefaultLayout);
 
-	m_parallelLayoutAction = new QAction(QIcon(), QStringLiteral("Parallel Layout"), this);
+	// Set Parallel Layout Action
+	m_parallelLayoutAction = new QAction(QIcon(":/icons/resources/icons/arrowLeftRight.png"), QStringLiteral("Parallel Layout"), this);
 	m_parallelLayoutAction->setToolTip(QStringLiteral("Parallel Layout"));
 	m_toolBar->addAction(m_parallelLayoutAction);
 	connect(m_parallelLayoutAction, &QAction::triggered, this, &MainWindow::setParallelLayout);

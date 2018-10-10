@@ -57,7 +57,8 @@ HEADERS +=./widgets/doubleslider.h \
     3drender/geometry/slicevolume.h \
     3drender/geometry/renderobject.h \
     algorithm/triangulate.h \
-    algorithm/subdivion.h
+    algorithm/subdivion.h \
+    widgets/slicecontrolwidget.h
 SOURCES +=./widgets/doubleslider.cpp \
     ./widgets/TF1DEditor.cpp \
     ./widgets/TF1DMappingCanvas.cpp \
@@ -95,7 +96,8 @@ SOURCES +=./widgets/doubleslider.cpp \
     3drender/geometry/slicevolume.cpp \
     3drender/geometry/renderobject.cpp \
     algorithm/triangulate.cpp \
-    algorithm/subdivion.cpp
+    algorithm/subdivion.cpp \
+    widgets/slicecontrolwidget.cpp
 RESOURCES += resources.qrc
 
 

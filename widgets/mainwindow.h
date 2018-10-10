@@ -22,6 +22,7 @@ class RenderParameterWidget;
 class TF1DEditor;
 class RenderWidget;
 class SliceToolWidget;
+class SliceControlWidget;
 
 
 
@@ -37,6 +38,16 @@ public:
 protected:
 	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
 private:
+
+	enum FocusState {
+		FocusInTopSliceView = 1,
+		FocusInRightSliceView = 2,
+		FocusInFrontSliceView = 4,
+		FocusInVolumeView = 8,
+		FocusInSliceView = FocusInTopSliceView | FocusInRightSliceView | FocusInFrontSliceView,
+		FocusInSliceWidget = FocusInSliceView
+	};
+
 	void createWidget();
 	void createMenu();
 	void createActions();
@@ -53,7 +64,9 @@ private:
 	void writeSettings();
 	void setDefaultLayout();
 	void setParallelLayout();
-	void updateToolBarActions();
+
+	void updateActionsAndControlPanelByWidgetFocus(FocusState state);
+	void updateActionsBySelectionInSliceView();
 	void sliceViewSelected(SliceType type);
 
 	AbstractSliceDataModel * replaceSliceModel(AbstractSliceDataModel* model);
@@ -65,8 +78,9 @@ private:
 	QDockWidget * m_volumeViewDockWidget;
 	RenderWidget * m_volumeView;
 
-	RenderParameterWidget * m_renderParameterWidget;
-	SliceToolWidget * m_sliceToolWidget;
+	RenderParameterWidget * m_volumeControlWidget;
+	SliceToolWidget * m_sliceToolControlWidget;
+	SliceControlWidget * m_sliceControlWidget;
 	QScrollArea * m_scrollAreaWidget;
 	QDockWidget * m_controlDockWidget;
 
@@ -98,14 +112,20 @@ private:
 	QAction * m_openMarkAction;
 	QAction * m_setDefaultLayoutAction;
 	QAction * m_parallelLayoutAction;
+
 	QToolButton *m_markAction;
 	QToolButton *m_markSelectionAction;
+
 	QToolButton *m_markDeletionAction;
 	QToolButton *m_zoomInAction;
 	QToolButton *m_zoomOutAction;
 	QToolButton * m_resetAction;
 	QToolButton *m_pixelViewAction;
 	QToolButton *m_histogramAction;
+
+
+	// State
+
 
 };
 
