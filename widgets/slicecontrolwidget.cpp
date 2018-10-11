@@ -6,6 +6,8 @@
 #include <QGroupBox>
 #include <QTimer>
 #include <QButtonGroup>
+#include <QLabel>
+#include <QComboBox>
 
 #include "globals.h"
 #include "widgets/titledsliderwithspinbox.h"
@@ -14,27 +16,24 @@
 #include "widgets/renderwidget.h"
 
 
-SliceControlWidget::SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget,QWidget* parent):
-QWidget(parent)
-,m_volumeWidget(nullptr)
-,m_sliceWidget(nullptr)
-, m_sliceTimer(nullptr)
-, m_topSlicePlayDirection(PlayDirection::Forward)
-, m_rightSlicePlayDirection(PlayDirection::Forward)
-, m_frontSlicePlayDirection(PlayDirection::Forward)
+SliceControlWidget::SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget, QWidget* parent) :
+	QWidget(parent)
+	, m_volumeWidget(nullptr)
+	, m_sliceWidget(nullptr)
+	, m_sliceTimer(nullptr)
+	, m_topSlicePlayDirection(PlayDirection::Forward)
+	, m_rightSlicePlayDirection(PlayDirection::Forward)
+	, m_frontSlicePlayDirection(PlayDirection::Forward)
 {
 
 	// Widgets
 
-	auto * group = new QGroupBox(QStringLiteral("Slice Slider"), this);
+	auto * group = new QGroupBox(QStringLiteral("Axis-aligned Slice"), this);
 	auto * vLayout = new QVBoxLayout;
 	//top slider
 	m_topSliceCheckBox = new QCheckBox;
 	m_topSliceCheckBox->setChecked(true);
 
-	connect(m_topSliceCheckBox, &QCheckBox::toggled, m_sliceWidget, &SliceEditorWidget::updateTopSliceActions);
-
-	///TODO:: add connection with slice visiblity function in RenderWidget
 
 	m_topSlider = new TitledSliderWithSpinBox(this, tr("Z:"));
 	m_topSlicePlayAction = new QToolButton(this);
@@ -53,7 +52,6 @@ QWidget(parent)
 	//right slider 
 	m_rightSliceCheckBox = new QCheckBox;
 	m_rightSliceCheckBox->setChecked(true);
-	connect(m_rightSliceCheckBox, &QCheckBox::toggled, m_sliceWidget, &SliceEditorWidget::updateRightSliceActions);
 	m_rightSlider = new TitledSliderWithSpinBox(this, tr("Y:"));
 	m_rightSlicePlayAction = new QToolButton(this);
 
@@ -70,7 +68,6 @@ QWidget(parent)
 	//front slider
 	m_frontSliceCheckBox = new QCheckBox;
 	m_frontSliceCheckBox->setChecked(true);
-	connect(m_frontSliceCheckBox, &QCheckBox::toggled, m_sliceWidget, &SliceEditorWidget::updateFrontSliceActions);
 	m_frontSlider = new TitledSliderWithSpinBox(this, tr("X:"));
 	m_frontSlicePlayAction = new QToolButton(this);
 	m_frontSlicePlayAction->setToolTip(QStringLiteral("PlayZ"));
@@ -82,6 +79,29 @@ QWidget(parent)
 	hFrontLayout->addWidget(m_frontSlider);
 	hFrontLayout->addWidget(m_frontSlicePlayAction);
 	vLayout->addLayout(hFrontLayout);
+	// Stop Action
+	m_stopAction = new QToolButton(this);
+	m_stopAction->setToolTip(QStringLiteral("Stop"));
+	m_stopAction->setCheckable(true);
+	m_stopAction->setChecked(true);
+	m_stopAction->setIcon(QIcon(":icons/resources/icons/quad.png"));
+	m_stopAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	connect(m_stopAction, &QToolButton::toggled, [this](bool enable) {m_sliceTimer->stop(); });
+	auto hStopActionLayout = new QHBoxLayout;
+
+
+	// Interval widget
+	m_intervalLabel = new QLabel(QStringLiteral("Interval:"), this);
+	m_intervalCBBox = new QComboBox(this);
+	for (int i = 1; i <= 10; i++)
+		m_intervalCBBox->addItem(QString::number(i * 10) + QStringLiteral("ms"), i * 10);
+	m_intervalCBBox->setCurrentText(QStringLiteral("50ms"));
+	connect(m_intervalCBBox, &QComboBox::currentTextChanged, [this](const QString & text) {m_sliceTimer->setInterval(m_intervalCBBox->currentData().toInt()); });
+	hStopActionLayout->addWidget(m_intervalLabel, Qt::AlignLeft);
+	hStopActionLayout->addWidget(m_intervalCBBox, Qt::AlignLeft);
+	hStopActionLayout->addWidget(m_stopAction, Qt::AlignRight);
+	vLayout->addLayout(hStopActionLayout);
+
 
 	group->setLayout(vLayout);
 
@@ -95,27 +115,19 @@ QWidget(parent)
 	m_sliceTimer->setInterval(100);
 	connect(m_sliceTimer, &QTimer::timeout, this, &SliceControlWidget::onSliceTimer);
 
-
 	// Play action connections
-
 	connect(m_topSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
 		m_sliceTimer->stop();
-		if (enable == false)
-			return;
 		m_playSliceType = SliceType::Top;
 		m_sliceTimer->start();
 	});
 	connect(m_rightSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
 		m_sliceTimer->stop();
-		if (enable == false)
-			return;
 		m_playSliceType = SliceType::Right;
 		m_sliceTimer->start();
 	});
 	connect(m_frontSlicePlayAction, &QToolButton::toggled, [this](bool enable) {
 		m_sliceTimer->stop();
-		if (enable == false)
-			return;
 		m_playSliceType = SliceType::Front;
 		m_sliceTimer->start();
 	});
@@ -127,9 +139,10 @@ QWidget(parent)
 	m_playButtonGroup->addButton(m_topSlicePlayAction);
 	m_playButtonGroup->addButton(m_rightSlicePlayAction);
 	m_playButtonGroup->addButton(m_frontSlicePlayAction);
+	m_playButtonGroup->addButton(m_stopAction);
 
 
-	setSliceModel(sliceWidget,volumeWidget);
+	setSliceModel(sliceWidget, volumeWidget);
 
 }
 
@@ -139,37 +152,55 @@ void SliceControlWidget::setSliceModel(SliceEditorWidget* sliceWidget, RenderWid
 	if (m_sliceWidget == sliceWidget && m_volumeWidget == volumeWidget)
 		return;
 
-	bool valid=false;
-	AbstractSliceDataModel * model = nullptr;
+	// disconnect all signals related to m_sliceWidget
+	if (m_sliceWidget != nullptr) {
 
-	if (sliceWidget == nullptr && volumeWidget == nullptr) {
-		valid = false;
-		model = nullptr;
-	}else if(sliceWidget != nullptr && volumeWidget != nullptr) {
-		valid = m_sliceWidget->sliceModel() == m_volumeWidget->dataModel();
-		model = m_sliceWidget->sliceModel();
-	}else if(sliceWidget != nullptr && volumeWidget == nullptr) {
-		valid = true;
-		model = sliceWidget->sliceModel();
-	}else if(sliceWidget == nullptr && volumeWidget != nullptr){
-		valid = true;
-		model = volumeWidget->dataModel();
+		disconnect(m_sliceWidget, 0, this, 0);
+		disconnect(m_topSliceCheckBox, 0, m_sliceWidget, 0);
+		disconnect(m_rightSliceCheckBox, 0, m_sliceWidget, 0);
+		disconnect(m_frontSliceCheckBox, 0, m_sliceWidget, 0);
+		disconnect(m_topSlider, 0, m_sliceWidget, 0);
+		disconnect(m_rightSlider, 0, m_sliceWidget, 0);
+		disconnect(m_frontSlider, 0, m_sliceWidget, 0);
 	}
+	// disconnect all signals related to m_volumeWidget
+	if (m_volumeWidget != nullptr) {
+
+		disconnect(m_volumeWidget, 0, this, 0);
+		disconnect(m_topSliceCheckBox, 0, m_volumeWidget, 0);
+		disconnect(m_rightSliceCheckBox, 0, m_volumeWidget, 0);
+		disconnect(m_frontSliceCheckBox, 0, m_volumeWidget, 0);
+		disconnect(m_topSlider, 0, m_volumeWidget, 0);
+		disconnect(m_rightSlider, 0, m_volumeWidget, 0);
+		disconnect(m_frontSlider, 0, m_volumeWidget, 0);
+	}
+
+	// Connect all signals related to slice widget
 	m_sliceWidget = sliceWidget;
+	if (m_sliceWidget != nullptr) {
+		connect(m_sliceWidget, &SliceEditorWidget::dataModelChanged, this, &SliceControlWidget::updateDataModel);
+		connect(m_topSliceCheckBox, &QCheckBox::toggled, m_sliceWidget, &SliceEditorWidget::setTopSliceVisibility);
+		connect(m_rightSliceCheckBox, &QCheckBox::toggled, m_sliceWidget, &SliceEditorWidget::setRightSliceVisibility);
+		connect(m_frontSliceCheckBox, &QCheckBox::toggled, m_sliceWidget, &SliceEditorWidget::setFrontSliceVisibility);
+		connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_sliceWidget->setSliceIndex(SliceType::Top, value); });
+		connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_sliceWidget->setSliceIndex(SliceType::Right, value); });
+		connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, [this](int value) {m_sliceWidget->setSliceIndex(SliceType::Front, value); });
+	}
+
+	// Connect all signals related to volume widget
 	m_volumeWidget = volumeWidget;
-	setEnabled(valid);
-	if (valid == false)
-		return;
+	if (m_volumeWidget != nullptr) {
+		connect(volumeWidget, &RenderWidget::dataModelChanged, this, &SliceControlWidget::updateDataModel);
+		connect(m_topSliceCheckBox, &QCheckBox::toggled, m_volumeWidget, &RenderWidget::setTopSliceVisible);
+		connect(m_rightSliceCheckBox, &QCheckBox::toggled, m_volumeWidget, &RenderWidget::setRightSliceVisible);
+		connect(m_frontSliceCheckBox, &QCheckBox::toggled, m_volumeWidget, &RenderWidget::setFrontSliceVisible);
+		connect(m_topSlider, &TitledSliderWithSpinBox::valueChanged, m_volumeWidget, &RenderWidget::setTopSlice);
+		connect(m_rightSlider, &TitledSliderWithSpinBox::valueChanged, m_volumeWidget, &RenderWidget::setFrontSlice);
+		connect(m_frontSlider, &TitledSliderWithSpinBox::valueChanged, m_volumeWidget, &RenderWidget::setRightSlice);
 
-	
-	const auto miz = model->topSliceCount();
-	const auto miy = model->rightSliceCount();
-	const auto mix = model->frontSliceCount();
+	}
 
-	m_topSlider->setMaximum(miz - 1);
-	m_rightSlider->setMaximum(miy - 1);
-	m_frontSlider->setMaximum(mix - 1);
-
+	updateDataModel();
 }
 
 void SliceControlWidget::onSliceTimer() {
@@ -177,21 +208,19 @@ void SliceControlWidget::onSliceTimer() {
 	int curIndex;
 	PlayDirection * direction = nullptr;
 
-	const auto m = m_dataModel;
-
 	switch (m_playSliceType) {
 	case SliceType::Top:
-		maxSliceCount = m->topSliceCount();
+		maxSliceCount = m_topSlider->maximum();
 		curIndex = m_topSlider->value();
 		direction = &m_topSlicePlayDirection;
 		break;
 	case SliceType::Right:
-		maxSliceCount = m->rightSliceCount();
+		maxSliceCount = m_rightSlider->maximum();
 		curIndex = m_rightSlider->value();
 		direction = &m_rightSlicePlayDirection;
 		break;
 	case SliceType::Front:
-		maxSliceCount = m->frontSliceCount();
+		maxSliceCount = m_frontSlider->maximum();
 		curIndex = m_frontSlider->value();
 		direction = &m_frontSlicePlayDirection;
 		break;
@@ -203,39 +232,55 @@ void SliceControlWidget::onSliceTimer() {
 		(curIndex)++;
 	else
 		(curIndex)--;
-	if (curIndex == maxSliceCount - 1)
+	if (curIndex == maxSliceCount)
 		(*direction) = PlayDirection::Backward;
 	else if ((curIndex) == 0)
 		(*direction) = PlayDirection::Forward;
 
-	if(m_sliceWidget != nullptr)
-		m_sliceWidget->setSliceIndex(m_playSliceType, curIndex);
-
-	
 	switch (m_playSliceType) {
-		case SliceType::Top:
-			{
-				m_topSlider->setValue(curIndex);		
-				if(m_volumeWidget != nullptr) {
-					m_volumeWidget->setTopSlice(curIndex);
-				}
-			}
-			break;
-		case SliceType::Right: 
-			{
-				m_rightSlider->setValue(curIndex);
-				if (m_volumeWidget != nullptr) {
-					m_volumeWidget->setRightSlice(curIndex);
-				}
-			}
-			break;
-		case SliceType::Front: 
-			{
-				m_frontSlider->setValue(curIndex);
-				if (m_volumeWidget != nullptr) {
-					m_volumeWidget->setFrontSlice(curIndex);
-				}
-			}
-			break;
+	case SliceType::Top:
+		m_topSlider->setValue(curIndex);			// This will emit signal to change index
+		break;
+	case SliceType::Right:
+		m_rightSlider->setValue(curIndex);
+		break;
+	case SliceType::Front:
+		m_frontSlider->setValue(curIndex);
+		break;
 	}
 }
+
+void SliceControlWidget::updateDataModel() {
+
+	AbstractSliceDataModel * model = nullptr;
+	bool valid = false;
+
+	if (m_sliceWidget == nullptr && m_volumeWidget == nullptr) {
+		valid = false;
+		model = nullptr;
+	}
+	else if (m_sliceWidget != nullptr && m_volumeWidget != nullptr) {
+		valid = m_sliceWidget->sliceModel() == m_volumeWidget->dataModel();
+		model = m_sliceWidget->sliceModel();
+	}
+	else if (m_sliceWidget != nullptr && m_volumeWidget == nullptr) {
+		valid = true;
+		model = m_sliceWidget->sliceModel();
+	}
+	else if (m_sliceWidget == nullptr && m_volumeWidget != nullptr) {
+		valid = true;
+		model = m_volumeWidget->dataModel();
+	}
+	setEnabled(valid && model);
+	if (!valid || !model)
+		return;
+
+	const auto miz = model->topSliceCount();
+	const auto miy = model->rightSliceCount();
+	const auto mix = model->frontSliceCount();
+
+	m_topSlider->setMaximum(miz - 1);
+	m_rightSlider->setMaximum(miy - 1);
+	m_frontSlider->setMaximum(mix - 1);
+}
+

@@ -71,7 +71,7 @@ private:
 	QDoubleSpinBox *m_shininessSpinBox;
 	QDoubleSpinBox *m_specularSpinBox;
 	QGroupBox *m_renderOptionGroup;
-	QLabel *m_renderTypeLabel;
+	//QLabel *m_renderTypeLabel;
 	QComboBox *m_renderTypeCCBox;
 
 	QGroupBox *m_transferFunctionGroupBox;

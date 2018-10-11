@@ -311,7 +311,7 @@ void MainWindow::readSettings()
 
 
 	readSettingsForDockWidget(m_profileViewDockWidget, &settings);
-	readSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	//readSettingsForDockWidget(m_treeViewDockWidget, &settings);
 	readSettingsForDockWidget(m_markInfoDockWidget, &settings);
 	readSettingsForImageView(m_imageView, &settings);
 	readSettingsForDockWidget(m_volumeViewDockWidget, &settings);
@@ -326,7 +326,7 @@ void MainWindow::writeSettings()
 	settings.endGroup();
 
 	writeSettingsForDockWidget(m_profileViewDockWidget, &settings);
-	writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	//writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
 	writeSettingsForDockWidget(m_markInfoDockWidget, &settings);
 	writeSettingsForImageView(m_imageView, &settings);
 	writeSettingsForDockWidget(m_volumeViewDockWidget, &settings);
@@ -334,21 +334,21 @@ void MainWindow::writeSettings()
 
 void MainWindow::setDefaultLayout()
 {
-	addDockWidget(Qt::LeftDockWidgetArea,m_treeViewDockWidget);
+	addDockWidget(Qt::LeftDockWidgetArea, m_profileViewDockWidget);
 	addDockWidget(Qt::RightDockWidgetArea,m_controlDockWidget);
-	splitDockWidget(m_treeViewDockWidget,m_imageViewDockWidget,Qt::Horizontal);
+	splitDockWidget(m_profileViewDockWidget,m_imageViewDockWidget,Qt::Horizontal);
 	tabifyDockWidget(m_imageViewDockWidget,m_volumeViewDockWidget);
-	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget,Qt::Vertical);
-	splitDockWidget(m_markInfoDockWidget, m_profileViewDockWidget, Qt::Vertical);
+	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget,Qt::Vertical);
+	splitDockWidget(m_profileViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
 }
 
 void MainWindow::setParallelLayout() {
-	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	addDockWidget(Qt::LeftDockWidgetArea, m_profileViewDockWidget);
 	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
-	splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	splitDockWidget(m_profileViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
-	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
-	splitDockWidget(m_markInfoDockWidget, m_profileViewDockWidget, Qt::Vertical);
+//	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	splitDockWidget(m_profileViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
 }
 
 void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
@@ -359,16 +359,13 @@ void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 	m_zoomOutAction->setEnabled(state & FocusInSliceView);
 	m_resetAction->setEnabled(state & (FocusInSliceView | FocusInSliceWidget));
 	m_markAction->setEnabled(state & FocusInTopSliceView);
-
-
 	m_markSelectionAction->setEnabled(state & FocusInTopSliceView);		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
-
 	m_pixelViewAction->setEnabled(state & FocusInSliceView);
 	m_histogramAction->setEnabled(state & FocusInSliceView);
-
 	m_volumeControlWidget->setVisible(state & FocusInVolumeView);
 	m_sliceToolControlWidget->setVisible(state & FocusInSliceWidget);
 	m_sliceControlWidget->setVisible(state&(FocusInVolumeView|FocusInSliceWidget));
+	m_treeView->setVisible(state&(FocusInSliceWidget));
 }
 
 void MainWindow::updateActionsBySelectionInSliceView(){
@@ -425,13 +422,7 @@ void MainWindow::createWidget()
 	// MarkTreeView
 	m_treeView = new MarkManagerWidget;
 
-	m_treeViewDockWidget = new QDockWidget(QStringLiteral("Mark View"));
-	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	m_treeViewDockWidget->setWidget(m_treeView);
-
-	m_treeViewDockWidget->setMinimumSize(300, 0);
-	m_treeViewDockWidget->setMaximumSize(300, 10000);
-	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+	
 
 
 	//ImageCanvas  centralWidget
@@ -464,10 +455,13 @@ void MainWindow::createWidget()
 	m_sliceToolControlWidget = new SliceToolWidget(m_imageView, this);
 	m_sliceControlWidget = new SliceControlWidget(m_imageView, m_volumeView, this);
 
+
 	auto layout = new QVBoxLayout;
 	layout->addWidget(m_sliceControlWidget);
 	layout->addWidget(m_volumeControlWidget);
 	layout->addWidget(m_sliceToolControlWidget);
+	layout->addWidget(m_treeView);
+	layout->addStretch(1);
 	m_scrollAreaWidget = new QScrollArea(this);
 	m_scrollAreaWidget->setLayout(layout);
 
@@ -480,9 +474,6 @@ void MainWindow::createWidget()
 
 
 	connect(m_imageView, &SliceEditorWidget::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
-	connect(m_sliceToolControlWidget, &SliceToolWidget::topSliceIndexChanged, [this](int value) {m_volumeView->setTopSlice(value); });
-	connect(m_sliceToolControlWidget, &SliceToolWidget::rightSliceIndexChanged, [this](int value) {m_volumeView->setRightSlice(value); });
-	connect(m_sliceToolControlWidget, &SliceToolWidget::frontSliceIndexChanged, [this](int value) {m_volumeView->setFrontSlice(value); });
 
 
 	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "null pointer");

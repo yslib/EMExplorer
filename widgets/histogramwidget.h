@@ -14,6 +14,9 @@ class QComboBox;
 class QPushButton;
 class QLabel;
 class QGroupBox;
+
+class SliceEditorWidget;
+
 class Histogram:public QWidget
 {
     Q_OBJECT
@@ -66,49 +69,42 @@ class HistogramWidget:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    explicit HistogramWidget(SliceType type, const QString & name,SliceWidget * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr)noexcept;
-    QVector<int> getHist()const;
-    void setEnabled(bool enable);
-	//model interface
-	//void setModel(DataItemModel * model);
-	//void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>());
-	//void activateItem(const QModelIndex & index);
-public slots:
-    //void setLeftCursorValue(int value);
-    //void setRightCursorValue(int value);
+	explicit HistogramWidget(SliceType type,
+		const QString & name,
+		SliceEditorWidget * sliceEidtor = nullptr,
+		QWidget * parent = nullptr);
+private slots:
+
 	void onMinValueChanged(int value);
 	void onMaxValueChanged(int value);
-    void reset();
+    void resetOriginalImage();
     void filterImage();
+
+
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
-protected:
-	void sliceOpened(int index) override;
-	void sliceChanged(int index) override;
-	void slicePlayStoped(int index) override;
-	void sliceSelected(const QPoint& pos) override;
+
+protected slots:
+	void updateDataModel()override;
+
 private:
-
-	int getLeftCursorValue()const;
-	int getRightCursorValue()const;
-    void setImage(const QImage & image);
-
-    void updateImage();
-	//QModelIndex getDataIndex(const QModelIndex & itemIndex);
-
-	void updateActions();
-    void createWidgets();
+	void initWidgets();
+	void init();
+	void createWidgets();
 	void createConnections();
 
+    void histEqualizeImage();
     void updateParameterLayout(const QString & text);
 
-	//bool m_internalUpdate;
+	SliceEditorWidget * m_sliceWidget;
+	SliceType m_sliceType;
 
     QGridLayout * m_mainLayout;
     QGroupBox * m_histogramGroupBox;
     QGridLayout * m_histogramLayout;
     Histogram * m_hist;
+
     QLabel * m_histNumLabel;
     QSpinBox * m_histNumSpinBox;
     TitledSliderWithSpinBox * m_minSlider;
@@ -133,5 +129,9 @@ private:
 
 	int m_currentIndex;
 };
+
+
+
+
 
 #endif // HISTOGRAM_H

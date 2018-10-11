@@ -3,34 +3,46 @@
 
 #include <QWidget>
 //#include "imageviewer.h"
+
 enum class SliceType;
 class SliceItem;
 class AbstractSliceDataModel;
 class SliceWidget;
+class SliceEditorWidget;
+
 class AbstractPlugin:public QWidget
 {
 public:
-    AbstractPlugin(SliceType type,const QString & name,SliceWidget * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
+    AbstractPlugin(SliceEditorWidget * sliceEditor, QWidget * parent = nullptr);
 	virtual  ~AbstractPlugin(){}
-protected slots:
-	virtual void sliceChanged(int index);
-	virtual void sliceSelected(const QPoint & pos);
-	virtual void sliceOpened(int index);
-	virtual void slicePlayStoped(int index);
-	virtual void slicePlaying(int index);
-protected:
-	SliceItem * sliceItem();
-	QImage originalImage(int index);
-	SliceWidget * view();
-	QString sliceName()const;
-private:
-	Q_OBJECT
-	AbstractSliceDataModel * m_model;
-	SliceWidget *m_view;
-	SliceType m_type;
-	QString m_sliceName;
 
-	friend class SliceEditorWidget;
+protected:
+
+	int currentIndex(SliceType type)const;
+
+	SliceItem * sliceItem(SliceType type)const;
+
+	QImage originalImage(SliceType type, int index);
+
+	QImage image(SliceType type, int index);
+
+	void setImage(SliceType type,int index, const QImage & image);
+
+	void setCurrentImage(SliceType type,const QImage & image);
+
+	QImage currentImage(SliceType type);
+
+	SliceWidget * view(SliceType type);
+
+protected slots:
+	virtual void updateDataModel();
+
+private:
+
+	Q_OBJECT
+
+	void setSliceEditor(SliceEditorWidget * widget);
+	SliceEditorWidget * m_sliceEditor;
 };
 
 #endif // ABSTRACTPLUGIN_H

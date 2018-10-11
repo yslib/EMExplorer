@@ -168,6 +168,9 @@ SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 &
 	, m_gradCalc(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount())
 	, m_renderer(renderer)
 	, m_sliceMode(false)
+	, m_frontSliceVisible(true)
+	, m_rightSliceVisible(true)
+	, m_topSliceVisible(true)
 	, m_positionShader(nullptr)
 	, m_currentShader(nullptr)
 	, m_sliceShader(nullptr)
@@ -298,9 +301,9 @@ bool SliceVolume::render() {
 	if (m_sliceMode == true) {
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 
-		float topCoord = float(m_renderer->d_ptr->topSliceIndex) / float(m_dataModel->topSliceCount());
-		float rightCoord = float(m_renderer->d_ptr->rightSliceIndex) / float(m_dataModel->rightSliceCount());
-		float frontCoord = float(m_renderer->d_ptr->frontSliceIndex) / float(m_dataModel->frontSliceCount());
+		const auto topCoord = float(m_renderer->d_ptr->topSliceIndex) / float(m_dataModel->topSliceCount());
+		const auto rightCoord = float(m_renderer->d_ptr->rightSliceIndex) / float(m_dataModel->rightSliceCount());
+		const auto frontCoord = float(m_renderer->d_ptr->frontSliceIndex) / float(m_dataModel->frontSliceCount());
 
 		m_sliceShader->load(this);
 		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj);
@@ -309,42 +312,53 @@ bool SliceVolume::render() {
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 		m_axisAlignedSliceVAO.bind();
-		float top[] =
-		{
-			0.0,0.0,topCoord,
-			1.0,0.0,topCoord,
-			1.0,1.0,topCoord,
-			0.0,1.0,topCoord,
-		};
 		m_axisAlignedSliceVBO.bind();
-		m_axisAlignedSliceVBO.write(0, top, sizeof(top));
-		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 
-		float right[] =
-		{
-			0.0,rightCoord,0.0,
-			1.0,rightCoord,0.0,
-			1.0,rightCoord,1.0,
-			0.0,rightCoord,1.0,
-		};
-		m_axisAlignedSliceVBO.write(0, right, sizeof(right));
-		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
-		float front[] =
-		{
-			frontCoord,0.0,0.0,
-			frontCoord,1.0,0.0,
-			frontCoord,1.0,1.0,
-			frontCoord,0.0,1.0,
-		};
-		m_axisAlignedSliceVBO.write(0, front, sizeof(front));
-		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		if(m_topSliceVisible == true) {
+			qDebug() << "top";
+			float top[] =
+			{
+				0.0,0.0,topCoord,
+				1.0,0.0,topCoord,
+				1.0,1.0,topCoord,
+				0.0,1.0,topCoord,
+			};
+			m_axisAlignedSliceVBO.write(0, top, sizeof(top));
+			glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		}
+
+		if(m_rightSliceVisible == true) {
+			qDebug() << "right";
+			float right[] =
+			{
+				0.0,rightCoord,0.0,
+				1.0,rightCoord,0.0,
+				1.0,rightCoord,1.0,
+				0.0,rightCoord,1.0,
+			};
+			m_axisAlignedSliceVBO.write(0, right, sizeof(right));
+			glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		}
+
+		if(m_frontSliceVisible == true) {
+			qDebug() << "front";
+			float front[] =
+			{
+				frontCoord,0.0,0.0,
+				frontCoord,1.0,0.0,
+				frontCoord,1.0,1.0,
+				frontCoord,0.0,1.0,
+			};
+			m_axisAlignedSliceVBO.write(0, front, sizeof(front));
+			glfuncs->glDrawArrays(GL_QUADS, 0, 4);
+		}
 
 		const auto sliceCoords = sliceCoord(m_A, m_B, m_C, m_D);
+
 		m_axisAlignedSliceVBO.write(0, sliceCoords.constData(), sizeof(QVector3D)*sliceCoords.size());
 		glfuncs->glDrawArrays(GL_TRIANGLE_FAN, 0, sliceCoords.size());
 
 		m_sliceShader->release();
-
 	}
 	else {
 		m_fbo->bind();

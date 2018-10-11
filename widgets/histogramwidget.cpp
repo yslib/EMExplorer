@@ -10,6 +10,7 @@
 
 #include "histogramwidget.h"
 #include "model/sliceitem.h"
+#include "widgets/sliceeditorwidget.h"
 
 
 #define cimg_display 0 //
@@ -237,45 +238,55 @@ qreal Histogram::getXofRightCursor()
 /*
  * HistogramViewer Definitions
 */
-HistogramWidget::HistogramWidget(SliceType type,const QString & name, SliceWidget * view, AbstractSliceDataModel * model, QWidget * parent)noexcept:AbstractPlugin(type,name,view,model,parent)
+HistogramWidget::HistogramWidget(SliceType type,const QString & name, SliceEditorWidget * sliceEditor,  QWidget * parent):
+AbstractPlugin(sliceEditor,parent),
+m_sliceType(type),
+m_sliceWidget(sliceEditor)
 {
     createWidgets();
 	createConnections();
-    updateActions();
+
+	setWindowTitle(name);
+
+	init();
+
+	setEnabled(sliceItem(m_sliceType) != nullptr);
+
 }
-void HistogramWidget::setImage(const QImage &image)
-{
-    m_hist->setImage(image);
-}
-QVector<int> HistogramWidget::getHist() const
-{
-    return m_hist->getHist();
-}
+
 void HistogramWidget::onMinValueChanged(int value)
 {
 	Q_UNUSED(value);
-    updateImage();
+    histEqualizeImage();
 }
 
 void HistogramWidget::onMaxValueChanged(int value)
 {
 	Q_UNUSED(value);
-    updateImage();
+    histEqualizeImage();
 }
-void HistogramWidget::reset()
+void HistogramWidget::resetOriginalImage()
 {
-	qDebug() << "HistogramViewer::reset|"<<m_currentIndex;
-	//bool old = m_minSlider->blockSignals(true);
-	m_minSlider->setValue(0);
-	//m_minSlider->blockSignals(old);
-	//old = m_maxSlider->blockSignals(true);
-	m_maxSlider->setValue(255);
+
 	//m_maxSlider->blockSignals(old);
-	SliceItem * item = sliceItem();
+	SliceItem * item = sliceItem(m_sliceType);
+
 	Q_ASSERT_X(item, "HistogramViewer::reset", "null pointer");
-	QImage origin = originalImage(m_currentIndex);
+	Q_ASSERT_X(m_sliceWidget, "HistogramWidget", "null pointer");
+
+	const auto curIndex = currentIndex(m_sliceType);
+	const auto origin = originalImage(m_sliceType,curIndex);
+
+	// reset slice view with original image
 	item->setPixmap(QPixmap::fromImage(origin));
-	setImage(origin);
+
+	// reset histogram with original image
+	m_hist->setImage(origin);
+
+	setImage(m_sliceType,curIndex,origin);
+
+
+	initWidgets();
 }
 
 void HistogramWidget::filterImage()
@@ -286,7 +297,8 @@ void HistogramWidget::filterImage()
     //int currentIndex = m_ptr->getCurrentSliceIndex();
     //QImage slice = m_ptr->getOriginalTopSlice(currentIndex);
 
-	QImage slice = originalImage(m_currentIndex).copy();
+	QImage slice = currentImage(m_sliceType).copy();
+	
 
     int width = slice.width();
     int height = slice.height();
@@ -305,39 +317,55 @@ void HistogramWidget::filterImage()
     //m_internalUpdate = true;
     //m_ptr->setSlice(slice,currentIndex,SliceType::SliceZ);
     //m_model->setData(getDataIndex(m_modelIndex),QVariant::fromValue(m_ptr));
-	SliceItem * item = sliceItem();
+	SliceItem * item = sliceItem(m_sliceType);
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
 	item->setPixmap(QPixmap::fromImage(slice));
+
+	setCurrentImage(m_sliceType, slice);
 }
 
-void HistogramWidget::sliceOpened(int index)
-{
-	m_currentIndex = index;
-	setImage(originalImage(index));
+
+void HistogramWidget::updateDataModel() {
+	qDebug() << "Data Model Changed";
+	init();
 }
 
-void HistogramWidget::sliceChanged(int index)
-{
-	Q_UNUSED(index);
+void HistogramWidget::initWidgets() {
+	m_minSlider->blockSignals(true);
+	m_minSlider->setValue(0);
+	m_minSlider->blockSignals(false);
+	m_maxSlider->blockSignals(true);
+	m_maxSlider->setValue(255);
+	m_maxSlider->blockSignals(false);
+
+
 }
 
-void HistogramWidget::slicePlayStoped(int index)
-{
-	Q_UNUSED(index);
+void HistogramWidget::init() {
+	// reset all widgets and get image to draw histogram
+
+	initWidgets();
+
+	SliceItem * item = sliceItem(m_sliceType);
+	const auto curImg = currentImage(m_sliceType);
+
+	item->setPixmap(QPixmap::fromImage(curImg));
+
+	// reset histogram with original image
+	m_hist->setImage(curImg);
+
+
+
 }
 
-void HistogramWidget::sliceSelected(const QPoint & pos)
+void HistogramWidget::histEqualizeImage()
 {
-	Q_UNUSED(pos);
-}
-
-void HistogramWidget::updateImage()
-{
-	int minValue = m_minSlider->value();
-	int maxValue = m_maxSlider->value();
-	qDebug() << minValue << " " << maxValue;
+	const auto minValue = m_minSlider->value();
+	const auto maxValue = m_maxSlider->value();
+	//qDebug() << minValue << " " << maxValue;
 	//update min and max value
-	QImage oriImage = originalImage(m_currentIndex).copy();
+	QImage oriImage = originalImage(m_sliceType,m_currentIndex).copy();
+
 	Q_ASSERT_X(oriImage.isNull() == false, "HistogramViewer::updateImage", "null image");
 	unsigned char *image = oriImage.bits();
 	int width = oriImage.width();
@@ -369,22 +397,14 @@ void HistogramWidget::updateImage()
 //		}
 //	}
     m_hist->setImage(oriImage);			//Note:: this variable is no longer the original image.
-	SliceItem * item = sliceItem();
+	SliceItem * item = sliceItem(m_sliceType);
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
-	qDebug() << item->pos();
+	//qDebug() << item->pos();
 	item->setPixmap(QPixmap::fromImage(oriImage));
-	qDebug() << item->pos();
+	//qDebug() << item->pos();
+	setCurrentImage(m_sliceType,oriImage);
 }
 
-//QModelIndex HistogramViewer::getDataIndex(const QModelIndex& itemIndex)
-//{
-//    return itemIndex.sibling(itemIndex.row(),itemIndex.column()+1);
-//}
-
-void HistogramWidget::updateActions()
-{
-    setEnabled(sliceItem() != nullptr);
-}
 
 void HistogramWidget::createWidgets()
 {
@@ -460,6 +480,8 @@ void HistogramWidget::createConnections()
 {
 	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, m_hist, &Histogram::setLeftCursorValue);
 	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, m_hist, &Histogram::setRightCursorValue);
+	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMinValueChanged);
+	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMaxValueChanged);
 
 	connect(m_filterButton, &QPushButton::clicked, this, &HistogramWidget::filterImage);
 
@@ -472,10 +494,9 @@ void HistogramWidget::createConnections()
 		qDebug() << "Signal::currentTextChanged";
 		updateParameterLayout(text);
 	});
-	connect(m_reset, &QPushButton::clicked, this, &HistogramWidget::reset);
+	connect(m_reset, &QPushButton::clicked, this, &HistogramWidget::resetOriginalImage);
 
-	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMinValueChanged);
-	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMaxValueChanged);
+
 }
 
 void HistogramWidget::updateParameterLayout(const QString &text)
@@ -517,33 +538,4 @@ void HistogramWidget::updateParameterLayout(const QString &text)
 
     }
 }
-
-
-void HistogramWidget::setEnabled(bool enable)
-{
-    m_histNumSpinBox->setEnabled(enable);
-    m_minSlider->setEnabled(enable);
-    m_maxSlider->setEnabled(enable);
-    m_hist->setEnabled(enable);
-    m_filterComboBox->setEditable(enable);
-    m_filterButton->setEnabled(enable);
-    m_reset->setEnabled(enable);
-    m_medianKernelSizeSpinBox->setEnabled(enable);
-    m_sigmaXSpinBox->setEnabled(enable);
-    m_sigmaYSpinBox->setEnabled(enable);
-}
-
-
-
-
-int HistogramWidget::getLeftCursorValue() const
-{
-   return m_minSlider->value();
-}
-
-int HistogramWidget::getRightCursorValue() const
-{
-    return m_maxSlider->value();
-}
-
 

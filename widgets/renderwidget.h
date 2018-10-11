@@ -83,12 +83,12 @@ public:
 //class RenderWidgetPrivate;
 
 
-class RenderWidget:public QOpenGLWidget,
-				   protected QOpenGLFunctions_3_3_Core
+class RenderWidget :public QOpenGLWidget,
+	protected QOpenGLFunctions_3_3_Core
 {
 	Q_OBJECT
 public:
-					RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel,QWidget * parent = nullptr);
+	RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, QWidget * parent = nullptr);
 	void			setDataModel(AbstractSliceDataModel * model);
 	void			setMarkModel(MarkModel * model);
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
@@ -97,7 +97,7 @@ public:
 
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
-					~RenderWidget();
+	~RenderWidget();
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
 	void			resizeGL(int w, int h) Q_DECL_OVERRIDE;
@@ -105,7 +105,6 @@ protected:
 	void			mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
-	//void			contextMenuEvent(QContextMenuEvent * event)Q_DECL_OVERRIDE;
 signals:
 	void			markModelChanged();
 	void			dataModelChanged();
@@ -114,9 +113,12 @@ signals:
 public slots:
 	void			updateTransferFunction(const float * func, bool updated);
 	void			updateMarkMesh();
-	void			setTopSlice(int value)   { Q_D(RenderWidget);d->topSliceIndex = value;update();}
-	void			setRightSlice(int value) { Q_D(RenderWidget);d->rightSliceIndex = value; update(); }
-	void			setFrontSlice(int value) { Q_D(RenderWidget);d->frontSliceIndex = value; update(); }
+	void			setTopSlice(int value) { Q_D(RenderWidget); d->topSliceIndex = value; update(); }
+	void			setRightSlice(int value) { Q_D(RenderWidget); d->rightSliceIndex = value; update(); }
+	void			setFrontSlice(int value) { Q_D(RenderWidget); d->frontSliceIndex = value; update(); }
+	void			setTopSliceVisible(bool check);
+	void			setRightSliceVisible(bool check);
+	void			setFrontSliceVisible(bool check);
 private slots:
 	void			updateMark();
 private:

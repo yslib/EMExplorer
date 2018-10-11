@@ -11,24 +11,30 @@ class PixelWidget:public AbstractPlugin
 {
     Q_OBJECT
 public:
-    PixelWidget(SliceType type, const QString & name,SliceWidget * view = nullptr, AbstractSliceDataModel * model = nullptr, QWidget * parent = nullptr);
-    int getWidth()const;
-    int getHeight()const;
+
+    PixelWidget(SliceType type, const QString & name,SliceEditorWidget*widget, QWidget * parent = nullptr);
+
 public slots:
+
     void setPosition(const QPoint & p);
-	void sliceSelected(const QPoint& pos) Q_DECL_OVERRIDE;
+
 protected:
+
 	void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
-protected slots:
-	void sliceOpened(int index) override;
+
 private:
+
     void changeLayout(QSize areaSize);
+
     void changeValue(const QImage & image,const QPoint & pos);
+
 	void calcCount(QSize areaSize);
+
 	void setWidget(QWidget * widget,int xpos, int ypos);
+
 	void setWidth(int width);
+
 	void setHeight(int height);
-	void setImage(const QImage & image);
 
 
 	static const int s_width = 50;
@@ -38,7 +44,8 @@ private:
 	static const int s_left = 0;
 	static const int s_right = 0;
 
-    QImage m_image;
+	SliceType m_sliceType;
+
     QVector<QSharedPointer<QLineEdit>> m_pixelLabels;
 	QVector<bool> m_flags;
     QVector<QSharedPointer<QLabel>> m_columnHeadersLabels;
@@ -50,7 +57,7 @@ private:
     int m_minValueIndex;
     int m_maxValueIndex;
 	int m_centroidIndex;
-    //QGridLayout * layout;
+
 };
 
 #endif // PIXELVIWER_H

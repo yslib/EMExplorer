@@ -41,15 +41,21 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	QOpenGLBuffer							m_rayCastingTextureVBO;
 
 	GradientCalculator						m_gradCalc;
+
+
 	int										m_topSlice;
 	int										m_rightSlice;
 	int										m_frontSlice;
 	QMatrix4x4								m_normalizeTransform;
+
 	double									m_A, m_B, m_C, m_D;
 
-	bool									m_initialized;
 
+	bool									m_initialized;
 	bool									m_sliceMode;
+	bool									m_frontSliceVisible;
+	bool									m_rightSliceVisible;
+	bool									m_topSliceVisible;
 	void loadDataAndGradientToTexture();
 	const AbstractSliceDataModel*			m_dataModel;
 	RenderWidget							*m_renderer;
@@ -78,6 +84,7 @@ public://ShaderDataInterface
 	QVector3D volumeBound() const override;
 	QSize windowSize() const override;
 public:
+;
 	SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans,
 		const VolumeFormat & fmt = VolumeFormat(),
 		RenderWidget * renderer = nullptr);
@@ -89,9 +96,17 @@ public:
 
 	void sliceMode(bool enable);
 	void setSliceSphereCoord(const QVector3D & coord);
+
+	void setFrontSliceVisible(bool check) { m_frontSliceVisible = check; }
+	void setRightSliceVisible(bool check) { m_rightSliceVisible = check; }
+	void setTopSliceVisible(bool check)	  { m_topSliceVisible = check; }
+
 	~SliceVolume();
+
+
 private slots:
 	void windowSizeChanged(int w, int h);
+
 private:
 	static QVector<QVector3D> sliceCoord(double A,double B,double C,double D);
 	static bool isInRange(double v) { return v >= 0 && v <= 1; }

@@ -53,13 +53,13 @@ protected:
 
 
 struct SliceState {
-	int topSliceIndex;
-	int rightSliceIndex;
-	int frontSliceIndex;
+	int currentTopSliceIndex;
+	int currentRightSliceIndex;
+	int currentFrontSliceIndex;
 	QString currentCategory;
-	SliceState() :topSliceIndex(0)
-		, rightSliceIndex(0)
-		, frontSliceIndex(0)
+	SliceState() :currentTopSliceIndex(0)
+		, currentRightSliceIndex(0)
+		, currentFrontSliceIndex(0)
 	{}
 };
 
@@ -96,8 +96,7 @@ public:
 	int currentSliceIndex(SliceType type)const;
 	void setSliceIndex(SliceType type, int index);
 
-	void playSlice(SliceType type, bool play);
-
+	//void playSlice(SliceType type, bool play);
 
 	QString currentCategory()const;
 	void setCurrentCategory(const QString & name);
@@ -114,14 +113,15 @@ public:
 	void zoomOut();
 	void setOperation(SliceType type,int opt);
 
-	void updateTopSliceActions(bool enable);
-	void updateFrontSliceActions(bool check);
-	void updateRightSliceActions(bool check);
+	void setTopSliceVisibility(bool enable);
+	void setFrontSliceVisibility(bool check);
+	void setRightSliceVisibility(bool check);
 
 	void deleteSelectedMarks();
 
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
+
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
 
@@ -130,17 +130,9 @@ public:
 	//QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
 	~SliceEditorWidget();
 signals:
-	void topSliceOpened(int index);
 	void topSliceChanged(int index);
-	void topSlicePlayStoped(int index);
-
-	void rightSliceOpened(int index);
 	void rightSliceChanged(int index);
-	void rightSlicePlayStoped(int index);
-
-	void frontSliceOpened(int index);
 	void frontSliceChanged(int index);
-	void frontSlicePlayStoped(int index);
 
 	void dataModelChanged();
 	void markModelChanged();
@@ -217,10 +209,10 @@ private:
 	QAction * m_zoomOut;
 	QAction * m_histDlgAction;
 	QAction * m_pixelViewDlgAction;
-	QAction * m_marksManagerDlgAction;
+	//QAction * m_marksManagerDlgAction;
 	QWidget * m_menuWidget;
 
-	friend class SliceToolWidget;
+	//friend class SliceToolWidget;
 };
 
 //inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}

@@ -106,22 +106,18 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_lightingGroup->setLayout(lightingVLayout);
 
 	//Render Type
-	m_renderOptionGroup = new QGroupBox(QStringLiteral("Render Option"), this);
+	m_renderOptionGroup = new QGroupBox(QStringLiteral("Render Type"), this);
 	auto renderTypeVLayout = new QVBoxLayout;
-	m_renderTypeLabel = new QLabel(QStringLiteral("Render Type"), this);
 	m_renderTypeCCBox = new QComboBox(this);
 	m_renderTypeCCBox->addItem(QStringLiteral("DVR"));
-	m_renderTypeCCBox->addItem(QStringLiteral("Mark FillMesh with Slice"));
-	m_renderTypeCCBox->addItem(QStringLiteral("Mark LineMesh with Slice"));
+	m_renderTypeCCBox->addItem(QStringLiteral("FillMesh"));
 
 	connect(m_renderTypeCCBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged),this,&RenderParameterWidget::renderTypeChanged);
 
 	auto renderTypeHLayout = new QHBoxLayout;
-	renderTypeHLayout->addWidget(m_renderTypeLabel);
 	renderTypeHLayout->addWidget(m_renderTypeCCBox);
 	renderTypeVLayout->addLayout(renderTypeHLayout);
 	m_renderOptionGroup->setLayout(renderTypeVLayout);
-
 
 
 	// Transfer Function Widget
@@ -139,10 +135,13 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_tfEditor->setWindowModality(Qt::NonModal);
 	//m_tfEditor->setVisible(false);
 
-	 auto tfMappingCanvas = m_tfEditor->getTF1DMappingCanvas();
-	 auto tfTextureWidget = new TF1DTextureCanvas(tfMappingCanvas, this);
-	 tfTextureWidget->setFixedHeight(15);
-	auto slot = [tfTextureWidget]() {tfTextureWidget->update();};
+	const auto tfMappingCanvas = m_tfEditor->getTF1DMappingCanvas();
+	auto tfTextureWidget = new TF1DTextureCanvas(tfMappingCanvas, this);
+	tfTextureWidget->setFixedHeight(15);
+	tfTextureWidget->setFixedWidth(200);
+	//tfTextureWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+	const auto slot = [tfTextureWidget]() {tfTextureWidget->update();};
 	connect(tfMappingCanvas, &TF1DMappingCanvas::changed,slot);
 	connect(tfMappingCanvas, &TF1DMappingCanvas::loadTransferFunction,slot);
 	connect(tfMappingCanvas, &TF1DMappingCanvas::saveTransferFunction,slot);
@@ -163,7 +162,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	meshVLayout->addWidget(m_meshUpdateButton);
 	m_meshGroup->setLayout(meshVLayout);
 
-	m_sliceGroup = new QGroupBox(QStringLiteral("Slice"));
+	m_sliceGroup = new QGroupBox(QStringLiteral("Abitrary Slice"));
 	m_radLabel = new QLabel(QStringLiteral("R:"));
 	m_radSlider = new QSlider(Qt::Horizontal);
 	m_radSlider->setMinimum(0);
@@ -200,13 +199,14 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	/// Add New Widget above
 
 	auto mainVLayout = new QVBoxLayout;
+	mainVLayout->addWidget(m_sliceGroup);
 	mainVLayout->addWidget(m_volumeInfoGroup);
 	mainVLayout->addWidget(m_lightingGroup);
 	mainVLayout->addWidget(m_renderOptionGroup);
 	//mainVLayout->addWidget(m_markListGroup);
 	mainVLayout->addWidget(m_transferFunctionGroupBox);
 	mainVLayout->addWidget(m_meshGroup);
-	mainVLayout->addWidget(m_sliceGroup);
+	
 	mainVLayout->addStretch();
 	setLayout(mainVLayout);
 
@@ -253,11 +253,8 @@ void RenderParameterWidget::renderTypeChanged(const QString& text) {
 	if (text == QStringLiteral("DVR")) {
 		m_renderOptions->mode = (RenderMode::DVR);
 	}
-	else if (text == QStringLiteral("Mark FillMesh with Slice")) {
+	else if (text == QStringLiteral("FillMesh")) {
 		m_renderOptions->mode = RenderMode(RenderMode::SliceTexture&RenderMode::FillMesh);
-	}
-	else if (text == QStringLiteral("Mark LineMesh with Slice")) {
-		m_renderOptions->mode = RenderMode(RenderMode::SliceTexture&RenderMode::LineMesh);
 	}
 	emit optionsChanged();
 }

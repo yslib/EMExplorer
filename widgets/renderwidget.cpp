@@ -240,9 +240,6 @@ void RenderWidget::initializeGL()
 		qFatal("initializeOpenGLFunctions failed");
 		return;
 	}
-
-
-	
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
@@ -473,8 +470,25 @@ void RenderWidget::updateMarkMesh() {
 		return;
 }
 
+void RenderWidget::setTopSliceVisible(bool check) 
+{
+	if(m_volume != nullptr)
+	m_volume->setTopSliceVisible(check);
+	update();
+}
+void RenderWidget::setRightSliceVisible(bool check) {
+	if (m_volume != nullptr)
+	m_volume->setRightSliceVisible(check);
+	update();
+}
+void RenderWidget::setFrontSliceVisible(bool check) {
+	if (m_volume != nullptr)
+	m_volume->setFrontSliceVisible(check);
+	update();
+}
+
 void RenderWidget::updateMark() {
-	qDebug() << "update Mark has been called";
+
 	if(m_markModel == nullptr || m_dataModel == nullptr) {
 		return;
 	}

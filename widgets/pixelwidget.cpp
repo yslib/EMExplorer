@@ -4,8 +4,8 @@
 #include <QDebug>
 #include <QLabel>
 
-PixelWidget::PixelWidget(SliceType type, const QString & name, SliceWidget * view, AbstractSliceDataModel * model, QWidget * parent) :
-	AbstractPlugin(type, name, view, model, parent)
+PixelWidget::PixelWidget(SliceType type, const QString & name, SliceEditorWidget*widget, QWidget * parent) :
+	AbstractPlugin(widget, parent),m_sliceType(type)
 {
 	m_cornerLabel.reset(new QLabel(this), &QObject::deleteLater);
 	m_cornerLabel->setText(QString("..."));
@@ -14,6 +14,7 @@ PixelWidget::PixelWidget(SliceType type, const QString & name, SliceWidget * vie
 	m_cornerLabel->resize(s_width, s_height);
 
 	m_cornerLabel->setContentsMargins(0, 0, 0, 0);
+
 	resize(360, 150);
 }
 
@@ -27,34 +28,17 @@ void PixelWidget::setHeight(int height)
 	Q_UNUSED(height);
 }
 
-void PixelWidget::setImage(const QImage &image)
-{
-	m_image = image;
-	changeValue(m_image, m_pos);
-}
-
-
 void PixelWidget::setPosition(const QPoint &p)
 {
 	m_pos = p;
-	changeValue(m_image, m_pos);
+	changeValue(currentImage(m_sliceType), m_pos);
 }
 
-void PixelWidget::sliceSelected(const QPoint& pos)
-{
-	setPosition(pos);
-}
 void PixelWidget::resizeEvent(QResizeEvent* event)
 {
 	Q_UNUSED(event);
 	changeLayout(size());
 }
-
-void PixelWidget::sliceOpened(int index)
-{
-	setImage(originalImage(index));
-}
-
 void PixelWidget::changeLayout(QSize areaSize)
 {
 	calcCount(areaSize);
@@ -107,7 +91,7 @@ void PixelWidget::changeLayout(QSize areaSize)
 		m_rowHeadersLabels.push_back(ptr);
 	}
 	//qDebug() << m_cornerLabel->size();
-	changeValue(m_image, m_pos);
+	changeValue(currentImage(m_sliceType), m_pos);
 }
 
 /*

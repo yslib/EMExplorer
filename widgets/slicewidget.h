@@ -26,6 +26,7 @@ public:
 	void setImage(const QImage & image);
 	inline void setPen(const QPen & pen);
 	inline void setNavigationViewEnabled(bool enabled);
+
 	inline QPen pen()const;
 	void clearSliceMarks();
 	QList<QGraphicsItem*> selectedItems()const;
@@ -55,8 +56,10 @@ private:
 	QGraphicsItem * createMarkItem();
 	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
 	Q_OBJECT
+
 	qreal m_scaleFactor;
 	bool m_paintNavigationView;
+
 	QVector<QPoint> m_paintViewPointsBuffer;
 	QPointF m_prevViewPoint;
 	//QColor m_color;

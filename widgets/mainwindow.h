@@ -90,7 +90,7 @@ private:
 	QDockWidget * m_profileViewDockWidget;
 	ProfileWidget * m_profileView;
 
-	QDockWidget * m_treeViewDockWidget;
+	//QDockWidget * m_treeViewDockWidget;
 	MarkManagerWidget * m_treeView;
 
 	QDockWidget * m_markInfoDockWidget;
