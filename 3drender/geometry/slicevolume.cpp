@@ -315,7 +315,6 @@ bool SliceVolume::render() {
 		m_axisAlignedSliceVBO.bind();
 
 		if(m_topSliceVisible == true) {
-			qDebug() << "top";
 			float top[] =
 			{
 				0.0,0.0,topCoord,
@@ -326,9 +325,7 @@ bool SliceVolume::render() {
 			m_axisAlignedSliceVBO.write(0, top, sizeof(top));
 			glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 		}
-
 		if(m_rightSliceVisible == true) {
-			qDebug() << "right";
 			float right[] =
 			{
 				0.0,rightCoord,0.0,
@@ -339,9 +336,7 @@ bool SliceVolume::render() {
 			m_axisAlignedSliceVBO.write(0, right, sizeof(right));
 			glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 		}
-
 		if(m_frontSliceVisible == true) {
-			qDebug() << "front";
 			float front[] =
 			{
 				frontCoord,0.0,0.0,
