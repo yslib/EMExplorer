@@ -41,12 +41,15 @@ Histogram::Histogram(QWidget *parent, const QImage &image):Histogram(parent)
 void Histogram::setImage(const QImage &image)
 {
     ///TODO: bull shit design
-    if(image.depth() != 8 || image.bytesPerLine() != image.width()){
+	//qDebug() << image.depth() << " " << image.bytesPerLine() << " " << image.width() << " " << image.height();
+    if(image.depth() != 8 ){
+
         QMessageBox::critical(this,tr("Error"),
                               tr("Only Support 8bit image."),
                               QMessageBox::Yes,QMessageBox::Yes);
         return;
     }
+
     m_hist.clear();
     m_hist.resize(BIN_COUNT);
 
@@ -238,20 +241,16 @@ qreal Histogram::getXofRightCursor()
 /*
  * HistogramViewer Definitions
 */
-HistogramWidget::HistogramWidget(SliceType type,const QString & name, SliceEditorWidget * sliceEditor,  QWidget * parent):
-AbstractPlugin(sliceEditor,parent),
-m_sliceType(type),
-m_sliceWidget(sliceEditor)
+HistogramWidget::HistogramWidget(SliceType type, SliceEditorWidget * sliceEditor,  QWidget * parent):
+AbstractSliceViewPlugin(type,sliceEditor,parent)
 {
     createWidgets();
-	createConnections();
 
-	setWindowTitle(name);
+	createConnections();
 
 	init();
 
-	setEnabled(sliceItem(m_sliceType) != nullptr);
-
+	setEnabled(sliceItem(sliceType()) != nullptr);
 }
 
 void HistogramWidget::onMinValueChanged(int value)
@@ -269,13 +268,13 @@ void HistogramWidget::resetOriginalImage()
 {
 
 	//m_maxSlider->blockSignals(old);
-	SliceItem * item = sliceItem(m_sliceType);
+	SliceItem * item = sliceItem(sliceType());
 
 	Q_ASSERT_X(item, "HistogramViewer::reset", "null pointer");
-	Q_ASSERT_X(m_sliceWidget, "HistogramWidget", "null pointer");
+	//Q_ASSERT_X(m_sliceWidget, "HistogramWidget", "null pointer");
 
-	const auto curIndex = currentIndex(m_sliceType);
-	const auto origin = originalImage(m_sliceType,curIndex);
+	const auto curIndex = currentIndex(sliceType());
+	const auto origin = originalImage(sliceType(),curIndex);
 
 	// reset slice view with original image
 	item->setPixmap(QPixmap::fromImage(origin));
@@ -283,7 +282,7 @@ void HistogramWidget::resetOriginalImage()
 	// reset histogram with original image
 	m_hist->setImage(origin);
 
-	setImage(m_sliceType,curIndex,origin);
+	setImage(sliceType(),curIndex,origin);
 
 
 	initWidgets();
@@ -297,7 +296,7 @@ void HistogramWidget::filterImage()
     //int currentIndex = m_ptr->getCurrentSliceIndex();
     //QImage slice = m_ptr->getOriginalTopSlice(currentIndex);
 
-	QImage slice = currentImage(m_sliceType).copy();
+	QImage slice = currentImage(sliceType()).copy();
 	
 
     int width = slice.width();
@@ -317,11 +316,11 @@ void HistogramWidget::filterImage()
     //m_internalUpdate = true;
     //m_ptr->setSlice(slice,currentIndex,SliceType::SliceZ);
     //m_model->setData(getDataIndex(m_modelIndex),QVariant::fromValue(m_ptr));
-	SliceItem * item = sliceItem(m_sliceType);
+	SliceItem * item = sliceItem(sliceType());
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
 	item->setPixmap(QPixmap::fromImage(slice));
 
-	setCurrentImage(m_sliceType, slice);
+	setCurrentImage(sliceType(), slice);
 }
 
 
@@ -346,8 +345,8 @@ void HistogramWidget::init() {
 
 	initWidgets();
 
-	SliceItem * item = sliceItem(m_sliceType);
-	const auto curImg = currentImage(m_sliceType);
+	SliceItem * item = sliceItem(sliceType());
+	const auto curImg = currentImage(sliceType());
 
 	item->setPixmap(QPixmap::fromImage(curImg));
 
@@ -364,7 +363,7 @@ void HistogramWidget::histEqualizeImage()
 	const auto maxValue = m_maxSlider->value();
 	//qDebug() << minValue << " " << maxValue;
 	//update min and max value
-	QImage oriImage = originalImage(m_sliceType,m_currentIndex).copy();
+	QImage oriImage = originalImage(sliceType(),currentIndex(sliceType())).copy();
 
 	Q_ASSERT_X(oriImage.isNull() == false, "HistogramViewer::updateImage", "null image");
 	unsigned char *image = oriImage.bits();
@@ -397,19 +396,19 @@ void HistogramWidget::histEqualizeImage()
 //		}
 //	}
     m_hist->setImage(oriImage);			//Note:: this variable is no longer the original image.
-	SliceItem * item = sliceItem(m_sliceType);
+	SliceItem * item = sliceItem(sliceType());
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
 	//qDebug() << item->pos();
 	item->setPixmap(QPixmap::fromImage(oriImage));
 	//qDebug() << item->pos();
-	setCurrentImage(m_sliceType,oriImage);
+	setCurrentImage(sliceType(),oriImage);
 }
 
 
 void HistogramWidget::createWidgets()
 {
-    m_mainLayout = new QGridLayout(this);
-    m_histogramLayout= new QGridLayout(this);
+	m_mainLayout = new QGridLayout;
+	m_histogramLayout = new QGridLayout;
     m_histogramGroupBox = new QGroupBox(QStringLiteral("Histogram"),this);
     m_histogramGroupBox->setLayout(m_histogramLayout);
     m_histNumSpinBox = new QSpinBox(this);
@@ -434,9 +433,9 @@ void HistogramWidget::createWidgets()
     m_filterComboBox->addItem(QStringLiteral("Gaussian Filter"));
     m_filterComboBox->setEditable(false);
     m_filterButton = new QPushButton(QStringLiteral("Filter"),this);
-    m_parameterLayout = new QGridLayout(this);
+	m_parameterLayout = new QGridLayout;
 
-    m_filterLayout =new QGridLayout(this);
+	m_filterLayout = new QGridLayout;
     m_filterGroupBox = new QGroupBox(QStringLiteral("Filter"),this);
     m_filterGroupBox->setLayout(m_filterLayout);
     m_filterLayout->addWidget(m_filterLabel,0,1);
@@ -473,6 +472,7 @@ void HistogramWidget::createWidgets()
     m_minSlider->setMaximum(maxValue);
     m_minSlider->setValue(0);
     m_maxSlider->setValue(maxValue);
+	setLayout(m_mainLayout);
 
 }
 
@@ -491,7 +491,7 @@ void HistogramWidget::createConnections()
 		Q_UNUSED(text);
 	});
 	connect(m_filterComboBox, &QComboBox::currentTextChanged, [=](const QString & text) {
-		qDebug() << "Signal::currentTextChanged";
+		//qDebug() << "Signal::currentTextChanged";
 		updateParameterLayout(text);
 	});
 	connect(m_reset, &QPushButton::clicked, this, &HistogramWidget::resetOriginalImage);

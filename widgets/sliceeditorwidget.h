@@ -32,7 +32,7 @@ class MarkModel;
 class HistogramWidget;
 class PixelWidget;
 class MRC;
-class AbstractPlugin;
+class AbstractSliceEditorPlugin;
 class AbstractSliceDataModel;
 class SliceItem;
 class SliceWidget;
@@ -80,6 +80,8 @@ public:
 		bool rightSliceVisible = true,
 		bool frontSliceVisible = true,
 		AbstractSliceDataModel * model = nullptr);
+
+	bool eventFilter(QObject* watched, QEvent* event) override;
 
 	bool topSliceVisible() const;
 	bool rightSliceVisible() const;
@@ -148,23 +150,19 @@ signals:
 	void markSeleteced(QGraphicsItem * item);
 	
 protected:
-	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
+
 private:
 	enum class PlayDirection {
 		Forward,
 		Backward
 	};
-	void createWidgets();
-	void createToolBar();
 	void createConnections();
-	void createContextMenu();
 	//update helper
 	
 	//void updateSliceCount(SliceType type);
 	
 	void updateMarks(SliceType type);
 	void updateActions();
-	void updateDeleteAction();
 
 	void installMarkModel(MarkModel* model);
 	void updateSliceModel();
@@ -197,22 +195,16 @@ private:
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
 
-	////actions on view toolbar
 
-	QAction *m_zoomInAction;
-	QAction *m_zoomOutAction;
 
 
 	//ContextMenu
-	QMenu *m_contextMenu;
-	QAction * m_zoomIn;
-	QAction * m_zoomOut;
-	QAction * m_histDlgAction;
-	QAction * m_pixelViewDlgAction;
-	//QAction * m_marksManagerDlgAction;
-	QWidget * m_menuWidget;
+	//QMenu *m_contextMenu;
+	//QAction * m_zoomIn;
+	//QAction * m_zoomOut;
 
-	//friend class SliceToolWidget;
+	//QWidget * m_menuWidget;
+
 };
 
 //inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}

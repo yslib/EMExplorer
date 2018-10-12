@@ -10,12 +10,12 @@ class AbstractSliceDataModel;
 class SliceWidget;
 class SliceEditorWidget;
 
-class AbstractPlugin:public QWidget
+class AbstractSliceEditorPlugin:public QWidget
 {
 public:
-    AbstractPlugin(SliceEditorWidget * sliceEditor, QWidget * parent = nullptr);
-	virtual  ~AbstractPlugin(){}
-
+    AbstractSliceEditorPlugin(SliceEditorWidget * sliceEditor, QWidget * parent = nullptr);
+	virtual  ~AbstractSliceEditorPlugin() = default;
+	//AbstractSliceEditorPlugin(const AbstractSliceEditorPlugin &) = delete;
 protected:
 
 	int currentIndex(SliceType type)const;
@@ -35,7 +35,7 @@ protected:
 	SliceWidget * view(SliceType type);
 
 protected slots:
-	virtual void updateDataModel();
+	virtual void updateDataModel();		//Is signal better?
 
 private:
 
@@ -43,6 +43,17 @@ private:
 
 	void setSliceEditor(SliceEditorWidget * widget);
 	SliceEditorWidget * m_sliceEditor;
+};
+
+
+
+class AbstractSliceViewPlugin:public AbstractSliceEditorPlugin {
+public:
+	AbstractSliceViewPlugin(SliceType type, SliceEditorWidget * sliceEditor, QWidget * parent = nullptr);
+protected:
+	virtual SliceType sliceType()const;
+private:
+	SliceType m_sliceType;
 };
 
 #endif // ABSTRACTPLUGIN_H

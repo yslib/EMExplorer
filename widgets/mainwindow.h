@@ -11,6 +11,7 @@ class QAction;
 class QSettings;
 class QScrollArea;
 class QToolButton;
+class QButtonGroup;
 QT_END_NAMESPACE
 class SliceEditorWidget;
 class MarkModel;
@@ -44,8 +45,8 @@ private:
 		FocusInRightSliceView = 2,
 		FocusInFrontSliceView = 4,
 		FocusInVolumeView = 8,
+		FocusInSliceWidget = 16,
 		FocusInSliceView = FocusInTopSliceView | FocusInRightSliceView | FocusInFrontSliceView,
-		FocusInSliceWidget = FocusInSliceView
 	};
 
 	void createWidget();
@@ -53,17 +54,30 @@ private:
 	void createActions();
 	void createStatusBar();
 	void createMarkTreeView();
+
+	void createSliceEditorPlugins();
+
+
 	bool saveMark();
 
 	void saveAs();
+
 	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
 	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
+
 	void writeSettingsForImageView(SliceEditorWidget * view, QSettings * settings);
 	void readSettingsForImageView(SliceEditorWidget * view, QSettings * settings);
+
 	void readSettings();
 	void writeSettings();
+
 	void setDefaultLayout();
 	void setParallelLayout();
+
+	void pixelViewActionTriggered();
+	void histogramViewActionTriggered();
+
+	void toolBarActionsTriggered(QAction * action);
 
 	void updateActionsAndControlPanelByWidgetFocus(FocusState state);
 	void updateActionsBySelectionInSliceView();
@@ -113,19 +127,25 @@ private:
 	QAction * m_setDefaultLayoutAction;
 	QAction * m_parallelLayoutAction;
 
+	//
+	QButtonGroup * m_markButtonGroup;
 	QToolButton *m_markAction;
 	QToolButton *m_markSelectionAction;
+	QToolButton *m_sliceMoveAction;
 
 	QToolButton *m_markDeletionAction;
 	QToolButton *m_zoomInAction;
 	QToolButton *m_zoomOutAction;
 	QToolButton * m_resetAction;
+
+	//QHash<QAction*,QToolButton*> m_pluginButtons;
+
 	QToolButton *m_pixelViewAction;
 	QToolButton *m_histogramAction;
 
 
 	// State
-
+	FocusState m_currentFocus;
 
 };
 

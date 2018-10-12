@@ -1,10 +1,10 @@
-#include "abstractplugin.h"
+#include "AbstractSliceEditorPlugin.h"
 #include "model/sliceitem.h"
 #include "widgets/slicewidget.h"
 #include "abstractslicedatamodel.h"
 #include "widgets/sliceeditorwidget.h"
 
-AbstractPlugin::AbstractPlugin(
+AbstractSliceEditorPlugin::AbstractSliceEditorPlugin(
 	SliceEditorWidget * sliceEditor,
 	QWidget * parent) :
 	QWidget(parent),
@@ -13,14 +13,17 @@ AbstractPlugin::AbstractPlugin(
 	setSliceEditor(sliceEditor);
 }
 
-int AbstractPlugin::currentIndex(SliceType type) const {
+
+int AbstractSliceEditorPlugin::currentIndex(SliceType type) const {
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::currentIndex", "null pointer");
 	return m_sliceEditor->currentSliceIndex(type);
 }
 
-SliceItem * AbstractPlugin::sliceItem(SliceType type)const
+
+SliceItem * AbstractSliceEditorPlugin::sliceItem(SliceType type)const
 {
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::sliceItem", "null pointer");
+
 	switch (type) {
 	case SliceType::Top:
 		return static_cast<SliceItem*>(m_sliceEditor->topView()->items().value(1));
@@ -32,7 +35,7 @@ SliceItem * AbstractPlugin::sliceItem(SliceType type)const
 		return nullptr;
 	}
 }
-QImage AbstractPlugin::originalImage(SliceType type, int index)
+QImage AbstractSliceEditorPlugin::originalImage(SliceType type, int index)
 {
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::originalImage", "null pointer");
 	const auto model = m_sliceEditor->sliceModel();
@@ -51,7 +54,7 @@ QImage AbstractPlugin::originalImage(SliceType type, int index)
 	}
 }
 
-QImage AbstractPlugin::image(SliceType type, int index) {
+QImage AbstractSliceEditorPlugin::image(SliceType type, int index) {
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::originalImage", "null pointer");
 	const auto model = m_sliceEditor->sliceModel();
 	if (model == nullptr)
@@ -69,7 +72,7 @@ QImage AbstractPlugin::image(SliceType type, int index) {
 	}
 }
 
-void AbstractPlugin::setImage(SliceType type, int index, const QImage& image) {
+void AbstractSliceEditorPlugin::setImage(SliceType type, int index, const QImage& image) {
 
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::originalImage", "null pointer");
 	const auto model = m_sliceEditor->sliceModel();
@@ -91,18 +94,18 @@ void AbstractPlugin::setImage(SliceType type, int index, const QImage& image) {
 	}
 }
 
-void AbstractPlugin::setCurrentImage(SliceType type, const QImage & image)
+void AbstractSliceEditorPlugin::setCurrentImage(SliceType type, const QImage & image)
 {
 	setImage(type, currentIndex(type), image);
 }
 
 
-QImage AbstractPlugin::currentImage(SliceType type)
+QImage AbstractSliceEditorPlugin::currentImage(SliceType type)
 {
 	return image(type, currentIndex(type));
 }
 
-SliceWidget * AbstractPlugin::view(SliceType type)
+SliceWidget * AbstractSliceEditorPlugin::view(SliceType type)
 {
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::sliceItem", "null pointer");
 	switch (type) {
@@ -117,11 +120,11 @@ SliceWidget * AbstractPlugin::view(SliceType type)
 	}
 }
 
-void AbstractPlugin::updateDataModel() {
+void AbstractSliceEditorPlugin::updateDataModel() {
 
 }
 
-void AbstractPlugin::setSliceEditor(SliceEditorWidget* widget) {
+void AbstractSliceEditorPlugin::setSliceEditor(SliceEditorWidget* widget) {
 	if (m_sliceEditor == widget)
 		return;
 	if (m_sliceEditor != nullptr)
@@ -129,10 +132,19 @@ void AbstractPlugin::setSliceEditor(SliceEditorWidget* widget) {
 
 	m_sliceEditor = widget;
 
-	connect(m_sliceEditor, &SliceEditorWidget::dataModelChanged, this, &AbstractPlugin::updateDataModel);
+	connect(m_sliceEditor, &SliceEditorWidget::dataModelChanged, this, &AbstractSliceEditorPlugin::updateDataModel);
 
 	updateDataModel();
 
+}
+
+AbstractSliceViewPlugin::AbstractSliceViewPlugin(SliceType type, SliceEditorWidget* sliceEditor, QWidget* parent):
+AbstractSliceEditorPlugin(sliceEditor,parent)
+,m_sliceType(type)
+{}
+
+SliceType AbstractSliceViewPlugin::sliceType() const {
+	return m_sliceType;
 }
 
 

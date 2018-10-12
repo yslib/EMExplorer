@@ -2,17 +2,17 @@
 #define PIXELVIWER_H
 //#include <QLineEdit>
 
-#include "abstract/abstractplugin.h"
+#include "abstract/AbstractSliceEditorPlugin.h"
 
 
 class QLabel;
 class QLineEdit;
-class PixelWidget:public AbstractPlugin
+class PixelWidget:public AbstractSliceViewPlugin
 {
     Q_OBJECT
 public:
 
-    PixelWidget(SliceType type, const QString & name,SliceEditorWidget*widget, QWidget * parent = nullptr);
+    PixelWidget(SliceType type,SliceEditorWidget*widget, QWidget * parent = nullptr);
 
 public slots:
 
@@ -44,7 +44,7 @@ private:
 	static const int s_left = 0;
 	static const int s_right = 0;
 
-	SliceType m_sliceType;
+	//SliceType m_sliceType;
 
     QVector<QSharedPointer<QLineEdit>> m_pixelLabels;
 	QVector<bool> m_flags;

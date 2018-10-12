@@ -11,7 +11,7 @@ m_scaleFactor(0.5),
 m_currentPaintingSlice(nullptr),
 m_paint(false),
 m_selection(false),
-m_pen(QPen(Qt::black,5,Qt::SolidLine)),
+m_pen(QPen(Qt::black, 5, Qt::SolidLine)),
 m_slice(nullptr),
 m_paintingItem(nullptr),
 m_state(0),
@@ -37,12 +37,13 @@ void SliceWidget::setMarks(const QList<QGraphicsItem*>& items)
 	set_mark_helper_(items);
 }
 void SliceWidget::wheelEvent(QWheelEvent *event) {
-	//double numDegrees = -event->delta() / 8.0;
-	//double numSteps = numDegrees / 15.0;
-	//double factor = std::pow(1.125, numSteps);
+	//const auto numDegrees = -event->delta() / 8.0;
+	//const auto numSteps = numDegrees / 15.0;
+	//const auto factor = std::pow(1.125, numSteps);
 	//scale(factor, factor);
-	//QGraphicsView::wheelEvent(event);
-	event->accept();
+	//event->accept();
+	QGraphicsView::wheelEvent(event);
+	//event->accept();
 }
 void SliceWidget::focusInEvent(QFocusEvent* event)
 {
@@ -63,18 +64,19 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 
 	if (m_paintNavigationView == false)
 		return;
+
 	const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
 	const auto & viewRectInScene = mapToScene(rect()).boundingRect();
 	if (viewRectInScene.contains(sliceRectInScene))
 		return;
 	//const auto & scRect = sceneRect();
 	const auto & scRect = m_slice->mapRectToScene(m_slice->boundingRect());
-	QImage thumbnail(QSize(200, 200), QImage::Format_Grayscale8);
+	QImage thumbnail(QSize(200, 200), QImage::Format_RGB32);
 	QPainter p0(&thumbnail);
 	render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
 	p0.end();
 	const auto & navigationRect = thumbnail.rect();
-	const double f1 =  navigationRect.width()/ scRect.width(),f2 = navigationRect.height()/scRect.height();
+	const double f1 = navigationRect.width() / scRect.width(), f2 = navigationRect.height() / scRect.height();
 	QPainter p(&thumbnail);
 	p.setPen(QPen(Qt::red, 2));
 	p.drawRect(QRect(
@@ -82,85 +84,98 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 		f2 * (viewRectInScene.y() - scRect.y()),
 		f1 * viewRectInScene.width(),
 		f2 * viewRectInScene.height()));			//draw the zoom rectangle onto the thumbnail
-	
+
 	p.drawRect(thumbnail.rect());
 	p.end();
 	QPainter p2(this->viewport());//draw the zoom image
 	const auto s = size();
-	p2.drawPixmap(thumbnailRect(sliceRectInScene,viewRectInScene), QPixmap::fromImage(thumbnail));
+	p2.drawPixmap(thumbnailRect(sliceRectInScene, viewRectInScene), QPixmap::fromImage(thumbnail));
 	p2.end();
 }
 
 void SliceWidget::mousePressEvent(QMouseEvent *event)
 {
-	if (m_state == None)
-		return;
-	QPoint viewPos = event->pos();
-	QPointF pos = mapToScene(viewPos);
-	m_prevViewPoint = viewPos;
-	auto items = scene()->items(pos);
-	Qt::MouseButton button = event->button();
+	//if (event->isAccepted())
+	//	return;
 
-	if(button == Qt::LeftButton)			//locate the anchor for left button click
-	{
-		m_anchorItem->setPos(m_slice->mapFromScene(pos).toPoint());
-		m_anchorItem->setVisible(true);
+	const auto button = event->button();
+	const auto viewPos = event->pos();
+	const auto scenePos = mapToScene(viewPos);
+
+	m_prevViewPoint = viewPos;
+
+	auto items = scene()->items(scenePos);
+
+	if (button == Qt::RightButton) {
+		event->accept();
+		return;
 	}
 
 	for (const auto & item : items) {
-		if (m_state == Operation::Paint
-			&&button == Qt::LeftButton)
-		{
-			SliceItem * slice = qgraphicsitem_cast<SliceItem*>(item);
-			if (slice == m_slice)
-			{
-				QPoint itemPoint = slice->mapFromScene(pos).toPoint();
-				emit sliceSelected(itemPoint);
+		auto * itm = qgraphicsitem_cast<SliceItem*>(item);
+		if (itm == m_slice) {	 // Operations must perform on slice item.
 
-				m_currentPaintingSlice = slice;
+			if(button == Qt::RightButton) {			// ignore right button event
+				event->accept();
+				return;
+			}
+
+			const auto itemPoint = m_slice->mapFromScene(scenePos).toPoint();
+
+			emit sliceSelected(itemPoint);
+
+			if (m_state == Operation::Paint) {
+
+				m_currentPaintingSlice = m_slice;
+
 				m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
-				m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
 
+				m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
 				m_paintingItem->setPen(m_pen);
 				m_paintingItem->appendPoint(itemPoint);
+
 				event->accept();
-				return;	//In painting state, We only find the click position on slice and do nothing else
+				return;
 			}
-		}
-		else if (m_state == Operation::Selection
-			&& button == Qt::LeftButton)
-		{
-			SliceItem * slice = qgraphicsitem_cast<SliceItem*>(item);
-			if (slice == m_slice /*or slice != nullptr*/)
-			{
-				emit sliceSelected(slice->mapFromScene(pos).toPoint());
-			}
-			//In the state,We could select only one mark and apply default mouse 
-			//click event on base class for the rubber mode
-			StrokeMarkItem * mark = qgraphicsitem_cast<StrokeMarkItem*>(item);
-			if (mark != nullptr&&mark->isVisible())			//select a visible mark
-			{
-				///TODO::Do something for the selected visible marks
-				//select one 
-				//qDebug() << "Select";
-				//mark->setSelected(true);
+			else if (m_state == Operation::Selection) { 
+
+				// Selecting items automatically by calling default event handler of the QGraphicsView
 				return QGraphicsView::mousePressEvent(event);
+			}
+			else if (m_state == Operation::Move) {
+
+				// Do nothing
+				event->accept();
+				return;
+			}
+			else if (m_state == Operation::None) {
+
+				// Set Anchor
+				m_anchorItem->setPos(itemPoint);
+				m_anchorItem->setVisible(true);
+				event->accept();
+				return;
 			}
 
 		}
-		else if (m_state == Operation::Move && button == Qt::LeftButton)
-		{
-			event->accept();
-			return;
-		}
 	}
-	QGraphicsView::mousePressEvent(event);
+
+	// Handling Events on other area by default event handler
+	//QGraphicsView::mousePressEvent(event);
+	event->accept();
+	return;
 }
 
 void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if (m_state == None)
 		return;
+
+	if(event->button() == Qt::RightButton) {
+		event->accept();
+		return;
+	}
+
 	if (m_state == Operation::Paint)		// on drawing a mark
 	{
 		if (m_currentPaintingSlice != nullptr)
@@ -168,17 +183,21 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 			QPoint viewPos = event->pos();
 			m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)));
 			m_paintViewPointsBuffer << viewPos;
+
+			event->accept();
 			return;
 		}
 	}
 	else if (m_state == Operation::Move)	//move the slice
 	{
-		QPointF currentScenePoint = event->pos();
-		QPointF delta = currentScenePoint - m_prevViewPoint;
+		const auto currentScenePoint = event->pos();
+		const auto delta = currentScenePoint - m_prevViewPoint;
 		m_prevViewPoint = currentScenePoint;
 		//resetTransform();
 		//translate(1,1);
 		translate(delta.x(), delta.y());
+		//translate(delta);
+
 		emit viewMoved(delta);
 		//qDebug() << delta << " " << sceneRect() << " " << rect();
 		//auto items = scene()->items();
@@ -201,34 +220,43 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 	}
 	else if (m_state == Operation::Selection)
 	{
-		QGraphicsView::mouseMoveEvent(event);
+		return QGraphicsView::mouseMoveEvent(event);
 	}
+
 	QGraphicsView::mouseMoveEvent(event);
 }
 
 void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+
 	if (m_state == None)
 		return;
+
+	if(event->button() == Qt::RightButton) {
+		event->accept();
+		return;
+	}
+
 	Qt::MouseButton button = event->button();
-	if (button == Qt::LeftButton && m_state == Operation::Paint)			//create a mark
+	if (m_state == Operation::Paint)			//create a mark
 	{
-		Q_ASSERT_X(m_currentPaintingSlice, 
-			"SliceView::mouseReleaseEvent", "null pointer");
+		//Q_ASSERT_X(m_currentPaintingSlice,"SliceView::mouseReleaseEvent", "null pointer");
+		if(m_currentPaintingSlice == nullptr) {
+			event->accept();
+			return;
+		}
 		m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(event->pos())));
 		if (m_currentPaintingSlice == m_slice)
 			emit markAdded(m_paintingItem);
 		m_currentPaintingSlice = nullptr;
+
+		event->accept();
 		return;
-	}else if(button == Qt::LeftButton && m_state == Operation::Move)
-	{
-		QGraphicsView::mouseReleaseEvent(event);
-	}else if(button == Qt::LeftButton && m_state == Operation::Selection)
-	{
-		QGraphicsView::mouseReleaseEvent(event);
 	}
 	QGraphicsView::mouseReleaseEvent(event);
 }
+
+
 void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
 	if (sliceItem == nullptr)
@@ -244,8 +272,8 @@ void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, Slice
 		 */
 		QRect rect = inImage.rect();
 		//auto rectInView = mapFromScene(rect).boundingRect();
-		translate(rect.width()/2, rect.height()/2);
-		rect.adjust(-rect.width(),-rect.height(),0,0);
+		translate(rect.width() / 2, rect.height() / 2);
+		rect.adjust(-rect.width(), -rect.height(), 0, 0);
 		scene()->setSceneRect(rect);
 	}
 	else
@@ -293,12 +321,13 @@ QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 	QPixmap pixmap(target.size());
 	pixmap.fill(Qt::transparent);
 	QPainter painter(&pixmap);
-	
-	if(fileName.isEmpty() == false)
+
+	if (fileName.isEmpty() == false)
 	{
 		QPixmap image(fileName);
 		painter.drawPixmap(target, image, image.rect());
-	}else
+	}
+	else
 	{
 		painter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
 		painter.drawLine(0, length / 2, length, length / 2);
@@ -318,6 +347,9 @@ void SliceWidget::set_mark_helper_(
 	}
 
 }
+
+
+
 inline
 void SliceWidget::clear_slice_marks_helper_(SliceItem * slice)
 {

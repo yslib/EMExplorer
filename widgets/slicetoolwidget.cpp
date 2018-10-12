@@ -118,9 +118,6 @@ void SliceToolWidget::updateDataModel()
 		setEnabled(false);
 		return;
 	}
-
-
-
 	setEnabled(true);
 
 	//	Add category

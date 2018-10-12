@@ -4,8 +4,8 @@
 #include <QDebug>
 #include <QLabel>
 
-PixelWidget::PixelWidget(SliceType type, const QString & name, SliceEditorWidget*widget, QWidget * parent) :
-	AbstractPlugin(widget, parent),m_sliceType(type)
+PixelWidget::PixelWidget(SliceType type,  SliceEditorWidget*widget, QWidget * parent) :
+	AbstractSliceViewPlugin(type,widget,parent)
 {
 	m_cornerLabel.reset(new QLabel(this), &QObject::deleteLater);
 	m_cornerLabel->setText(QString("..."));
@@ -31,7 +31,7 @@ void PixelWidget::setHeight(int height)
 void PixelWidget::setPosition(const QPoint &p)
 {
 	m_pos = p;
-	changeValue(currentImage(m_sliceType), m_pos);
+	changeValue(currentImage(sliceType()), m_pos);
 }
 
 void PixelWidget::resizeEvent(QResizeEvent* event)
@@ -91,7 +91,7 @@ void PixelWidget::changeLayout(QSize areaSize)
 		m_rowHeadersLabels.push_back(ptr);
 	}
 	//qDebug() << m_cornerLabel->size();
-	changeValue(currentImage(m_sliceType), m_pos);
+	changeValue(currentImage(sliceType()), m_pos);
 }
 
 /*

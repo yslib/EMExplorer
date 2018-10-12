@@ -437,12 +437,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 	}
 	update();
 }
-//
-//void RenderWidget::contextMenuEvent(QContextMenuEvent* event)
-//{
-//	const auto pos = event->pos();
-//	m_contextMenu->exec(this->mapToGlobal(pos));
-//}
+
 
 void RenderWidget::updateTransferFunction(const float * func, bool updated)
 {

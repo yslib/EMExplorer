@@ -6,7 +6,7 @@
 #include <QAbstractItemView>
 
 #include "titledsliderwithspinbox.h"
-#include "abstract/abstractplugin.h"
+#include "abstract/AbstractSliceEditorPlugin.h"
 
 
 class QMouseEvent;
@@ -65,12 +65,11 @@ private:
 };
 
 
-class HistogramWidget:public AbstractPlugin
+class HistogramWidget:public AbstractSliceViewPlugin
 {
     Q_OBJECT
 public:
 	explicit HistogramWidget(SliceType type,
-		const QString & name,
 		SliceEditorWidget * sliceEidtor = nullptr,
 		QWidget * parent = nullptr);
 private slots:
@@ -97,8 +96,8 @@ private:
     void histEqualizeImage();
     void updateParameterLayout(const QString & text);
 
-	SliceEditorWidget * m_sliceWidget;
-	SliceType m_sliceType;
+	//SliceEditorWidget * m_sliceWidget;
+	//SliceType m_sliceType;
 
     QGridLayout * m_mainLayout;
     QGroupBox * m_histogramGroupBox;
@@ -127,7 +126,7 @@ private:
     QPushButton* m_reset;
 	//
 
-	int m_currentIndex;
+	//int m_currentIndex;
 };
 
 

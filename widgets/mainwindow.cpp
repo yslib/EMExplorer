@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QEvent>
+#include <QButtonGroup>
 
 #include "mainwindow.h"
 #include "model/mrc.h"
@@ -24,6 +25,8 @@
 #include "widgets/renderwidget.h"
 #include "widgets/slicewidget.h"
 #include "widgets/slicecontrolwidget.h"
+#include "widgets/pixelwidget.h"
+#include "widgets/histogramwidget.h"
 
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent) :
@@ -351,21 +354,79 @@ void MainWindow::setParallelLayout() {
 	splitDockWidget(m_profileViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
 }
 
+void MainWindow::pixelViewActionTriggered()
+{
+	PixelWidget * pixelViewDlg = nullptr;
+	SliceType type;
+	QString windowTitle;
+	if(m_currentFocus == FocusInTopSliceView) {
+		type = SliceType::Top;
+		windowTitle = QStringLiteral("TopSlice PixelView");
+	}else if(m_currentFocus == FocusInRightSliceView) {
+		type = SliceType::Right;
+		windowTitle = QStringLiteral("RightSlice PixelView");
+	}else if(m_currentFocus == FocusInFrontSliceView) {
+		type = SliceType::Front;
+		windowTitle = QStringLiteral("FrontSlice PixelView");
+	}
+	pixelViewDlg = new PixelWidget(type,m_imageView,this);
+	pixelViewDlg->setWindowFlag(Qt::Window);
+	pixelViewDlg->setWindowTitle(windowTitle);
+	pixelViewDlg->show();
+	pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
+	//connect(m_imageView,&SliceEditorWidget::sele)
+	/// TODO:: connect selection Siganls
+
+}
+
+void MainWindow::histogramViewActionTriggered() {
+	HistogramWidget * histogramView = nullptr;
+	SliceType type;
+	QString windowTitle;
+	if (m_currentFocus == FocusInTopSliceView) {
+		type = SliceType::Top;
+		windowTitle = QStringLiteral("TopSlice HistogramView");
+	}
+	else if (m_currentFocus == FocusInRightSliceView) {
+		type = SliceType::Right;
+		windowTitle = QStringLiteral("RightSlice HistogramView");
+	}
+	else if (m_currentFocus == FocusInFrontSliceView) {
+		type = SliceType::Front;
+		windowTitle = QStringLiteral("FrontSlice HistogramView");
+	}
+	histogramView = new HistogramWidget(type, m_imageView, this);
+	histogramView->setWindowTitle(windowTitle);
+	histogramView->setWindowFlag(Qt::Window);
+	histogramView->show();
+	histogramView->setAttribute(Qt::WA_DeleteOnClose);
+}
+
+
+
+void MainWindow::toolBarActionsTriggered(QAction* action) {
+	///TODO::
+	return;
+}
+
 void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 
 	//static FocusState s_state = static_cast<FocusState>(0);
+	m_currentFocus = state;
 
-	m_zoomInAction->setEnabled(state & FocusInSliceView);
-	m_zoomOutAction->setEnabled(state & FocusInSliceView);
+	m_zoomInAction->setEnabled(state & (FocusInSliceView));
+	m_zoomOutAction->setEnabled(state & (FocusInSliceView));
 	m_resetAction->setEnabled(state & (FocusInSliceView | FocusInSliceWidget));
-	m_markAction->setEnabled(state & FocusInTopSliceView);
-	m_markSelectionAction->setEnabled(state & FocusInTopSliceView);		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
-	m_pixelViewAction->setEnabled(state & FocusInSliceView);
-	m_histogramAction->setEnabled(state & FocusInSliceView);
-	m_volumeControlWidget->setVisible(state & FocusInVolumeView);
-	m_sliceToolControlWidget->setVisible(state & FocusInSliceWidget);
-	m_sliceControlWidget->setVisible(state&(FocusInVolumeView|FocusInSliceWidget));
-	m_treeView->setVisible(state&(FocusInSliceWidget));
+	m_markAction->setEnabled(state & (FocusInTopSliceView));
+	m_markSelectionAction->setEnabled(state & (FocusInTopSliceView));		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
+	m_sliceMoveAction->setEnabled(state & (FocusInSliceView));
+	m_pixelViewAction->setEnabled(state & (FocusInSliceView));
+	m_histogramAction->setEnabled(state & (FocusInSliceView));
+
+	m_volumeControlWidget->setVisible(state & (FocusInVolumeView));
+	m_sliceToolControlWidget->setVisible(state & (FocusInSliceWidget | FocusInSliceView));
+	m_sliceControlWidget->setVisible(state&(FocusInVolumeView|FocusInSliceWidget|FocusInSliceView));
+	m_treeView->setVisible(state&(FocusInSliceWidget | FocusInSliceView));
 }
 
 void MainWindow::updateActionsBySelectionInSliceView(){
@@ -421,8 +482,6 @@ void MainWindow::createWidget()
 
 	// MarkTreeView
 	m_treeView = new MarkManagerWidget;
-
-	
 
 
 	//ImageCanvas  centralWidget
@@ -504,6 +563,9 @@ void MainWindow::createWidget()
 
 	m_toolBar->addSeparator();
 
+
+	m_markButtonGroup = new QButtonGroup(this);
+
 	// Mark Pen Action
 	m_markAction = new QToolButton(this);
 	m_markAction->setToolTip(QStringLiteral("Mark"));
@@ -511,22 +573,14 @@ void MainWindow::createWidget()
 	m_markAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	m_markAction->setIcon(QIcon(":icons/resources/icons/mark.png"));
 	m_markAction->setCheckable(true);
+
+	m_markButtonGroup->addButton(m_markAction);
+
 	connect(m_markAction, &QToolButton::toggled, [this](bool enable)
 	{
-		if (enable == true)
-		{
 			m_imageView->topView()->setOperation(SliceWidget::Paint);
 			m_imageView->rightView()->setOperation(SliceWidget::Paint);
 			m_imageView->frontView()->setOperation(SliceWidget::Paint);
-			//m_moveAction->setChecked(false);
-			m_markSelectionAction->setChecked(false);
-		}
-		else
-		{
-			m_imageView->topView()->setOperation(SliceWidget::Move);
-			m_imageView->rightView()->setOperation(SliceWidget::Move);
-			m_imageView->frontView()->setOperation(SliceWidget::Move);
-		}
 	});
 	m_toolBar->addWidget(m_markAction);
 
@@ -536,25 +590,31 @@ void MainWindow::createWidget()
 	m_markSelectionAction->setCheckable(true);
 	m_markSelectionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	m_markSelectionAction->setIcon(QIcon(":icons/resources/icons/select.png"));
+	m_markButtonGroup->addButton(m_markSelectionAction);
 	connect(m_markSelectionAction, &QToolButton::toggled, [this](bool enable)
 	{
-		if (enable == true)
-		{
 			m_imageView->topView()->setOperation(SliceWidget::Selection);
 			m_imageView->rightView()->setOperation(SliceWidget::Selection);
 			m_imageView->frontView()->setOperation(SliceWidget::Selection);
-			m_markAction->setChecked(false);
-			//m_moveAction->setChecked(false);
-		}
-		else
-		{
-			m_imageView->topView()->setOperation(SliceWidget::Move);
-			m_imageView->rightView()->setOperation(SliceWidget::Move);
-			m_imageView->frontView()->setOperation(SliceWidget::Move);
-		}
-
 	});
+
 	m_toolBar->addWidget(m_markSelectionAction);
+
+	m_sliceMoveAction = new QToolButton(this);
+	m_sliceMoveAction->setToolTip(QStringLiteral("Move"));
+	m_sliceMoveAction->setCheckable(true);
+	m_sliceMoveAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_sliceMoveAction->setIcon(QIcon(":icons/resources/icons/select.png"));
+	m_markButtonGroup->addButton(m_sliceMoveAction);
+	connect(m_sliceMoveAction, &QToolButton::toggled, [this](bool enable)
+	{
+		m_imageView->topView()->setOperation(SliceWidget::Move);
+		m_imageView->rightView()->setOperation(SliceWidget::Move);
+		m_imageView->frontView()->setOperation(SliceWidget::Move);
+	});
+
+	m_toolBar->addWidget(m_sliceMoveAction);
+
 	m_toolBar->addSeparator();
 
 	// Deletion ToolButton
@@ -573,6 +633,7 @@ void MainWindow::createWidget()
 	m_pixelViewAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
 	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/VPSelect.png"));
 	/// TODO:: connect
+	connect(m_pixelViewAction, &QToolButton::clicked, this, &MainWindow::pixelViewActionTriggered);
 	m_toolBar->addWidget(m_pixelViewAction);
 
 	// Histogram ToolButton
@@ -581,6 +642,7 @@ void MainWindow::createWidget()
 	m_histogramAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
 	m_histogramAction->setIcon(QIcon(":icons/resources/icons/histogram.png"));
 	/// TODO:: connect
+	connect(m_histogramAction, &QToolButton::clicked, this, &MainWindow::histogramViewActionTriggered);
 	m_toolBar->addWidget(m_histogramAction);
 
 }
@@ -660,6 +722,11 @@ void MainWindow::createMarkTreeView()
 	//m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 
 }
+
+void MainWindow::createSliceEditorPlugins() {
+	
+}
+
 
 AbstractSliceDataModel * MainWindow::replaceSliceModel(AbstractSliceDataModel * model)
 {

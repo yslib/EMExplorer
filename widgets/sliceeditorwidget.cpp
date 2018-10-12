@@ -19,18 +19,7 @@ inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos
 {
 	return (widget->rect()).contains(pos);
 }
-void SliceEditorWidget::createWidgets()
-{
 
-}
-
-void SliceEditorWidget::createToolBar()
-{
-	m_zoomInAction = new QAction(QIcon(":icons/resources/icons/zoom_in.png"), QStringLiteral("Zoom In"), this);
-	m_zoomInAction->setToolTip(QStringLiteral("Zoom In"));
-	m_zoomOutAction = new QAction(QIcon(":icons/resources/icons/zoom_out.png"), QStringLiteral("Zoom Out"), this);
-	m_zoomOutAction->setToolTip(QStringLiteral("Zoom Out"));
-}
 
 void SliceEditorWidget::createConnections()
 {
@@ -45,16 +34,13 @@ void SliceEditorWidget::createConnections()
 
 	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 
-	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
-	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
-	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
+	//connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
+	//connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
+	//connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
 
 	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
-
-	connect(m_zoomInAction, &QAction::triggered, this, &SliceEditorWidget::zoomIn);
-	connect(m_zoomOutAction, &QAction::triggered, this, &SliceEditorWidget::zoomOut);
 
 	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
 	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
@@ -63,24 +49,10 @@ void SliceEditorWidget::createConnections()
 
 void SliceEditorWidget::updateActions()
 {
-	bool enable = m_sliceModel != nullptr;
-
-	updateDeleteAction();
-
-	//const auto topVis = m_panel ? m_panel->sliceVisible(SliceType::Top) : true;
-	//const auto rightVis = m_panel ? m_panel->sliceVisible(SliceType::Right) : true;
-	//const auto frontVis = m_panel ? m_panel->sliceVisible(SliceType::Front) : true;
-
+	const auto enable = m_sliceModel != nullptr;
 	setTopSliceVisibility(true);
 	setRightSliceVisibility(true);
 	setFrontSliceVisibility(true);
-}
-
-void SliceEditorWidget::updateDeleteAction()
-{
-	return;
-	//if (m_panel == nullptr)return;
-	//m_panel->updateDeleteActionPrivate();
 }
 
 void SliceEditorWidget::setTopSliceVisibility(bool check)
@@ -129,86 +101,6 @@ void SliceEditorWidget::detachMarkModel()
 		m_markModel->detachFromView();
 }
 
-
-void SliceEditorWidget::createContextMenu()
-{
-	m_contextMenu = new QMenu(this);
-	///TODO:: add icons here
-
-	m_histDlgAction = new QAction(QStringLiteral("Histgoram..."), this);
-	m_pixelViewDlgAction = new QAction(QStringLiteral("Pixel View..."), this);
-	//m_marksManagerDlgAction = new QAction(QStringLiteral("Marks..."), this);
-
-	//m_panel
-
-	connect(m_histDlgAction, &QAction::triggered, [this]()
-	{
-
-		AbstractPlugin * histViewDlg;
-		if (m_menuWidget == m_topView)
-		{
-			histViewDlg = new HistogramWidget(SliceType::Top, QStringLiteral("Top Slice Histogram"), this, this);
-			histViewDlg->setWindowFlag(Qt::Window);
-			histViewDlg->show();
-			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-		
-		}
-		else if (m_menuWidget == m_rightView)
-		{
-			histViewDlg = new HistogramWidget(SliceType::Right, QStringLiteral("Right Slice Histogram"),this, this);
-			histViewDlg->setWindowFlag(Qt::Window);
-			histViewDlg->show();
-			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-		}
-		else if (m_menuWidget == m_frontView)
-		{
-			histViewDlg = new HistogramWidget(SliceType::Front, QStringLiteral("Front Slice Histogram"),this,this);
-			histViewDlg->setWindowFlag(Qt::Window);
-			histViewDlg->show();
-			histViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-
-		}
-		//connect(this, &ImageView::sliceChanged, histViewDlg, &AbstractPlugin::sliceChanged);
-	//	connect(this, &SliceEditorWidget::topSlicePlayStoped, histViewDlg, &AbstractPlugin::slicePlayStoped);
-	});
-	connect(m_pixelViewDlgAction, &QAction::triggered, [this]()
-	{
-		PixelWidget * pixelViewDlg;
-		if (m_menuWidget == m_topView)
-		{
-			pixelViewDlg = new PixelWidget(SliceType::Top, QStringLiteral("Top Slice Pixel View"),this, this);
-			pixelViewDlg->setWindowFlag(Qt::Window);
-			pixelViewDlg->show();
-			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-			connect(this, &SliceEditorWidget::topSliceSelected, pixelViewDlg, &PixelWidget::setPosition);
-
-		}
-		else if (m_menuWidget == m_rightView)
-		{
-			pixelViewDlg = new PixelWidget(SliceType::Right, QStringLiteral("Right Slice Pixel View"),this,this);
-			pixelViewDlg->setWindowFlag(Qt::Window);
-			pixelViewDlg->show();
-			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-			connect(this, &SliceEditorWidget::rightSliceSelected, pixelViewDlg, &PixelWidget::setPosition);
-		}
-		else if (m_menuWidget == m_frontView)
-		{
-			pixelViewDlg = new PixelWidget(SliceType::Front, QStringLiteral("Front Slice Pixel View"),this,this);
-			pixelViewDlg->setWindowFlag(Qt::Window);
-			pixelViewDlg->show();
-			pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-			connect(this, &SliceEditorWidget::frontSliceSelected, pixelViewDlg, &PixelWidget::setPosition);
-		}
-	});
-
-	m_contextMenu->addAction(m_zoomInAction);
-	m_contextMenu->addAction(m_zoomOutAction);
-	m_contextMenu->addSeparator();
-	m_contextMenu->addAction(m_histDlgAction);
-	m_contextMenu->addAction(m_pixelViewDlgAction);
-	//m_contextMenu->addAction(m_marksManagerDlgAction);
-}
-
 SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	bool topSliceVisible,
 	bool rightSliceVisible,
@@ -223,29 +115,66 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 {
 	m_layout = new QGridLayout;
 	m_layout->setContentsMargins(0, 0, 0, 0);
+
 	m_topView = new SliceWidget(this);
-	m_rightView = new SliceWidget(this);
-	m_frontView = new SliceWidget(this);
-
+	m_topView->installEventFilter(this);
 	m_topView->setNavigationViewEnabled(true);
+
+	m_rightView = new SliceWidget(this);
+	m_rightView->installEventFilter(this);
 	m_rightView->setNavigationViewEnabled(false);
+
+	m_frontView = new SliceWidget(this);
+	m_frontView->installEventFilter(this);
 	m_frontView->setNavigationViewEnabled(false);
-
-	//m_sliceTimer = new QTimer(this);
-	//connect(m_sliceTimer, &QTimer::timeout, this, &SliceEditorWidget::onSliceTimer);
-
-	createWidgets();
-	createToolBar();
-	createContextMenu();
+	
 	createConnections();
 	updateActions();
 
-	setWindowTitle(QStringLiteral("Slice View"));
+	setWindowTitle(QStringLiteral("Slice Editor"));
 	m_layout->addWidget(m_topView, 0, 0, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignLeft);
 	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignTop);
 	setLayout(m_layout);
 }
+
+bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
+	if(watched == m_topView) {
+		if(event->type() == QEvent::Wheel) {
+			const auto e = static_cast<QWheelEvent*>(event);
+			if (e->delta() > 0)
+				zoomIn();
+			else
+				zoomOut();
+			event->accept();
+			return true;
+		}
+	}else if(watched == m_rightView) {
+		if(event->type() == QEvent::Wheel) {
+			const auto e = static_cast<QWheelEvent*>(event);
+			if (e->delta() > 0)
+				zoomIn();
+			else
+				zoomOut();
+			event->accept();
+			return true;
+		}
+		
+	}else if(watched == m_frontView) {
+		if(event->type() == QEvent::Wheel) {
+			const auto e = static_cast<QWheelEvent*>(event);
+			if (e->delta() > 0)
+				zoomIn();
+			else
+				zoomOut();
+			event->accept();
+			return true;
+		}
+	}
+	return false;
+}
+
+
 
 void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
 {
@@ -520,7 +449,7 @@ void SliceEditorWidget::resetZoom(bool check)
 
 void SliceEditorWidget::zoomIn()
 {
-	double factor = std::pow(1.125, 1);
+	const auto factor = std::pow(1.125, 1);
 	m_topView->scale(factor, factor);
 	m_rightView->scale(factor, factor);
 	m_frontView->scale(factor, factor);
@@ -528,7 +457,7 @@ void SliceEditorWidget::zoomIn()
 
 void SliceEditorWidget::zoomOut()
 {
-	double factor = std::pow(1.125, -1);
+	const auto factor = std::pow(1.125, -1);
 	m_topView->scale(factor, factor);
 	m_rightView->scale(factor, factor);
 	m_frontView->scale(factor, factor);
@@ -548,30 +477,6 @@ void SliceEditorWidget::setOperation(SliceType type, int opt)
 		m_frontView->setOperation(opt);
 		break;
 	}
-}
-
-
-
-
-void SliceEditorWidget::contextMenuEvent(QContextMenuEvent* event)
-{
-	const QPoint pos = event->pos();
-	if (true == contains(m_topView, m_topView->mapFrom(this, pos)))
-	{
-		m_menuWidget = m_topView;
-		m_contextMenu->exec(this->mapToGlobal(pos));
-	}
-	else if (true == contains(m_rightView, m_rightView->mapFrom(this, pos)))
-	{
-		m_menuWidget = m_rightView;
-		m_contextMenu->exec(this->mapToGlobal(pos));
-	}
-	else if (true == contains(m_frontView, m_frontView->mapFrom(this, pos)))
-	{
-		m_menuWidget = m_frontView;
-		m_contextMenu->exec(this->mapToGlobal(pos));
-	}
-	event->accept();
 }
 
 void SliceEditorWidget::setSliceIndex(SliceType type, int index)

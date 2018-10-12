@@ -20,10 +20,10 @@ QImage MRCDataModel::originalTopSlice(int index) const
 
 QImage MRCDataModel::originalRightSlice(int index) const
 {
-	int width = m_d->width();
-	int height = m_d->height();
-	int slice = m_d->slice();
-	int size = width * height *slice;
+	const auto width = m_d->width();
+	const auto height = m_d->height();
+	const auto slice = m_d->slice();
+	const auto size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
 	auto data = m_d->data<MRC::MRCUInt8>();
 	Q_ASSERT_X(data != nullptr, "MRCDataModel::originalRightSlice", "type error");
@@ -41,10 +41,10 @@ QImage MRCDataModel::originalRightSlice(int index) const
 
 QImage MRCDataModel::originalFrontSlice(int index) const
 {
-	int width = m_d->width();
-	int height = m_d->height();
-	int slice = m_d->slice();
-	int size = width * height *slice;
+	const auto  width = m_d->width();
+	const auto height = m_d->height();
+	const auto slice = m_d->slice();
+	const auto size = width * height *slice;
 	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
 	auto data = m_d->data<MRC::MRCUInt8>();
 	Q_ASSERT_X(data != nullptr, "MRCDataModel::originalFrontSlice", "type error");
