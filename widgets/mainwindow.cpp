@@ -359,6 +359,10 @@ void MainWindow::pixelViewActionTriggered()
 	PixelWidget * pixelViewDlg = nullptr;
 	SliceType type;
 	QString windowTitle;
+	std::function<void(const QPoint&)> selectSignal;
+	auto a = &SliceEditorWidget::topSliceSelected;
+	
+
 	if(m_currentFocus == FocusInTopSliceView) {
 		type = SliceType::Top;
 		windowTitle = QStringLiteral("TopSlice PixelView");
@@ -369,13 +373,21 @@ void MainWindow::pixelViewActionTriggered()
 		type = SliceType::Front;
 		windowTitle = QStringLiteral("FrontSlice PixelView");
 	}
-	pixelViewDlg = new PixelWidget(type,m_imageView,this);
+	
+	pixelViewDlg = new PixelWidget(type, m_imageView, this);
 	pixelViewDlg->setWindowFlag(Qt::Window);
 	pixelViewDlg->setWindowTitle(windowTitle);
 	pixelViewDlg->show();
 	pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);
-	//connect(m_imageView,&SliceEditorWidget::sele)
-	/// TODO:: connect selection Siganls
+
+	if(type == SliceType::Top) {
+		connect(m_imageView,&SliceEditorWidget::topSliceSelected , pixelViewDlg, &PixelWidget::setPosition);
+	}else if(type == SliceType::Right) {
+		connect(m_imageView,&SliceEditorWidget::rightSliceSelected , pixelViewDlg, &PixelWidget::setPosition);
+	}else if(type == SliceType::Front) {
+		connect(m_imageView,&SliceEditorWidget::frontSliceSelected , pixelViewDlg, &PixelWidget::setPosition);
+	}
+
 
 }
 
@@ -419,6 +431,8 @@ void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 	m_resetAction->setEnabled(state & (FocusInSliceView | FocusInSliceWidget));
 	m_markAction->setEnabled(state & (FocusInTopSliceView));
 	m_markSelectionAction->setEnabled(state & (FocusInTopSliceView));		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
+	m_anchorAction->setEnabled(state &(FocusInSliceView));
+
 	m_sliceMoveAction->setEnabled(state & (FocusInSliceView));
 	m_pixelViewAction->setEnabled(state & (FocusInSliceView));
 	m_histogramAction->setEnabled(state & (FocusInSliceView));
@@ -615,6 +629,18 @@ void MainWindow::createWidget()
 
 	m_toolBar->addWidget(m_sliceMoveAction);
 
+	m_anchorAction = new QToolButton(this);
+	m_anchorAction->setToolTip(QStringLiteral("Anchor"));
+	m_anchorAction->setCheckable(true);
+	m_anchorAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_anchorAction->setIcon(QIcon(":icons/resources/icons/voteModel.png"));
+	m_markButtonGroup->addButton(m_anchorAction);
+	m_toolBar->addWidget(m_anchorAction);
+	connect(m_anchorAction, &QToolButton::toggled, [this](bool enable) {
+		m_imageView->topView()->setOperation(SliceWidget::None);
+		m_imageView->rightView()->setOperation(SliceWidget::None);
+		m_imageView->frontView()->setOperation(SliceWidget::None);
+	});
 	m_toolBar->addSeparator();
 
 	// Deletion ToolButton

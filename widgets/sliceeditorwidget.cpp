@@ -142,12 +142,13 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 	if(watched == m_topView) {
 		if(event->type() == QEvent::Wheel) {
 			const auto e = static_cast<QWheelEvent*>(event);
+			qDebug() << "Mouse Wheel Event";
 			if (e->delta() > 0)
 				zoomIn();
 			else
 				zoomOut();
 			event->accept();
-			return true;
+			return false;
 		}
 	}else if(watched == m_rightView) {
 		if(event->type() == QEvent::Wheel) {
@@ -157,7 +158,7 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 			else
 				zoomOut();
 			event->accept();
-			return true;
+			return false;
 		}
 		
 	}else if(watched == m_frontView) {
@@ -168,7 +169,7 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 			else
 				zoomOut();
 			event->accept();
-			return true;
+			return false;
 		}
 	}
 	return false;

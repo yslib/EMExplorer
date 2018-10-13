@@ -132,6 +132,7 @@ private:
 	QToolButton *m_markAction;
 	QToolButton *m_markSelectionAction;
 	QToolButton *m_sliceMoveAction;
+	QToolButton *m_anchorAction;
 
 	QToolButton *m_markDeletionAction;
 	QToolButton *m_zoomInAction;

@@ -42,7 +42,8 @@ void SliceWidget::wheelEvent(QWheelEvent *event) {
 	//const auto factor = std::pow(1.125, numSteps);
 	//scale(factor, factor);
 	//event->accept();
-	QGraphicsView::wheelEvent(event);
+	//QGraphicsView::wheelEvent(event);
+	qDebug() << "wheelEvent in SliceWidget";
 	//event->accept();
 }
 void SliceWidget::focusInEvent(QFocusEvent* event)
@@ -120,9 +121,9 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 				return;
 			}
 
-			const auto itemPoint = m_slice->mapFromScene(scenePos).toPoint();
+			const auto itemPoint = m_slice->mapFromScene(scenePos);
 
-			emit sliceSelected(itemPoint);
+			emit sliceSelected(itemPoint.toPoint());
 
 			if (m_state == Operation::Paint) {
 
@@ -160,7 +161,6 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 		}
 	}
 
-	// Handling Events on other area by default event handler
 	//QGraphicsView::mousePressEvent(event);
 	event->accept();
 	return;
@@ -168,6 +168,8 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 
 void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 {
+	// Note that the returned value for event->button() is always Qt::NoButton for mouse move events.
+
 	if (m_state == None)
 		return;
 
@@ -180,16 +182,16 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		if (m_currentPaintingSlice != nullptr)
 		{
-			QPoint viewPos = event->pos();
+			const auto viewPos = event->pos();
 			m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)));
 			m_paintViewPointsBuffer << viewPos;
-
 			event->accept();
 			return;
 		}
 	}
 	else if (m_state == Operation::Move)	//move the slice
 	{
+		qDebug() << "Slice Moved";
 		const auto currentScenePoint = event->pos();
 		const auto delta = currentScenePoint - m_prevViewPoint;
 		m_prevViewPoint = currentScenePoint;
@@ -253,6 +255,7 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 		event->accept();
 		return;
 	}
+
 	QGraphicsView::mouseReleaseEvent(event);
 }
 
