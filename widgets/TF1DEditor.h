@@ -14,6 +14,7 @@ QT_END_NAMESPACE
 class DoubleSlider;
 class TF1DMappingCanvas;
 class TF1DTextureCanvas;
+class Volume;
 //class GPUVolume;
 
 class TF1DEditor : public QWidget {
@@ -48,6 +49,8 @@ public:
 
 	// Get the previous TF file name
 	QString getTFFileName() { return curTFFile; }
+
+	void setVolumeInformation(Volume * volume);
 
 signals:
     // This signal is emitted when the transfer function has changed.

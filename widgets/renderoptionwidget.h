@@ -39,6 +39,7 @@ signals:
 	void markUpdated();
 	void transferFunctionsChanged(const float * funcs);
 private slots:
+	void updateDataModel();
 	void radialSliderChanged(int value);
 	void thetaSliderChanged(int value);
 	void phiSliderChanged(int value);

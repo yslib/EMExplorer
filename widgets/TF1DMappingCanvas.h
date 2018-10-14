@@ -20,6 +20,8 @@ class QAction;
 class QMenu;
 QT_END_NAMESPACE
 
+class Volume;
+
 class TF1DMappingCanvas : public QWidget {
 	Q_OBJECT
 
@@ -88,6 +90,8 @@ public:
 
 	// Load the 1D transfer function
 	void load(const char* filename);
+
+	void setVolumeInfomation(Volume * volume) { m_volume = volume; update(); }
 
 signals:
     // Signal that is emitted when the transfer function changed.
@@ -230,6 +234,8 @@ protected:
     QAction* resetAction;      ///< action for reset transfer function context menu entry
 
 	QPixmap* cache;   ///< pixmap for caching the painted histogram
+
+	Volume * m_volume;
 };
 
 

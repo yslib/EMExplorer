@@ -3,6 +3,7 @@
 #include "TF1DEditor.h"
 #include "widgets/TF1DTextureCanvas.h"
 #include "widgets/TF1DMappingCanvas.h"
+#include "3drender/geometry/volume.h"
 
 #include <QGroupBox>
 #include <QBoxLayout>
@@ -215,6 +216,11 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* par
 }
 
 
+void RenderParameterWidget::updateDataModel() {
+	// Volume update
+	qDebug() << "RenderParameterWidget::updateDataModel has been called";
+	m_tfEditor->setVolumeInformation(m_widget->volume());
+}
 
 void RenderParameterWidget::radialSliderChanged(int value) {
 	const auto rad = value * 0.01;
@@ -277,6 +283,7 @@ void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 	connect(this, &RenderParameterWidget::optionsChanged, m_widget, [this]() {m_widget->update(); });
 	connect(this, &RenderParameterWidget::markUpdated, m_widget, &RenderWidget::updateMark);
 	connect(m_widget, &RenderWidget::requireTransferFunction, this, &RenderParameterWidget::transferFunctionChanged);
+	connect(m_widget, &RenderWidget::dataModelChanged, this, &RenderParameterWidget::updateDataModel);
 
 	m_renderOptions = m_widget != nullptr ? widget->options() : QSharedPointer<RenderOptions>();
 	setEnabled(m_widget != nullptr);

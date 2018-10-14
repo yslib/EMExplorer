@@ -11,6 +11,7 @@ class QMouseEvent;
  * method. The range of the values is from 0.0 to 1.0 and stored in float variables.
  * To avoid an overlay of the two sliders the active one shunts the inactive slider.
  */
+
 class DoubleSlider : public QWidget {
     Q_OBJECT
 public:
@@ -40,13 +41,13 @@ public:
      * Returns the minimum of the range marked out by the two sliders, e.g.
      * the x-coordinate of the left slider in a normalized coordinate system.
      */
-    float getMinValue();
+    float getMinValue()const;
 
     /**
      * Returns the maximum of the range marked out by the two sliders, e.g.
      * the x-coordinate of the right slider in a normalized coordinate system.
      */
-    float getMaxValue();
+    float getMaxValue()const;
 
 public slots:
      /**

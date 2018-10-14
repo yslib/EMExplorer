@@ -198,7 +198,7 @@ void SliceVolume::setRenderWidget(RenderWidget* widget) {
 		disconnect(m_renderer, 0, this,0);
 	}
 	m_renderer = widget;
-	connect(m_renderer, &RenderWidget::windowResized, this, &SliceVolume::windowSizeChanged,Qt::AutoConnection);
+	connect(m_renderer, &RenderWidget::windowResized, this, &SliceVolume::setFramebufferSize,Qt::AutoConnection);
 }
 
 bool SliceVolume::initializeGLResources() {
@@ -258,6 +258,8 @@ bool SliceVolume::initializeGLResources() {
 
 	//load volume data and gradient
 	loadDataAndGradientToTexture();
+
+	setFramebufferSize(windowSize().width(), windowSize().height());
 
 
 	return (m_initialized = true);
@@ -395,7 +397,7 @@ SliceVolume::~SliceVolume() {
 
 }
 
-void SliceVolume::windowSizeChanged(int w, int h) {
+void SliceVolume::setFramebufferSize(int w, int h) {
 
 	if (m_fbo != nullptr)
 		delete m_fbo;

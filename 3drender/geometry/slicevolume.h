@@ -104,7 +104,7 @@ public:
 	~SliceVolume();
 
 private slots:
-	void windowSizeChanged(int w, int h);
+	void setFramebufferSize(int w, int h);
 
 private:
 	static QVector<QVector3D> sliceCoord(double A,double B,double C,double D);

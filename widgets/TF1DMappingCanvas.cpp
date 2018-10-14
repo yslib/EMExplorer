@@ -9,6 +9,7 @@
 #include <QToolTip>
 #include <QMessageBox>
 #include "TF1DMappingCanvas.h"
+#include "3drender/geometry/volume.h"
 
 bool sortFunction(TF1DMappingKey* a, TF1DMappingKey* b) 
 {
@@ -23,6 +24,7 @@ TF1DMappingCanvas::TF1DMappingCanvas(QWidget* parent, bool noColor_,
     , xAxisText(xAxisText_)
     , yAxisText(yAxisText_)
 	, cache(0)
+	, m_volume(0)
 {
     xRange = QVector2D(0.f, 1.f);
     yRange = QVector2D(0.f, 1.f);
@@ -781,7 +783,9 @@ void TF1DMappingCanvas::drawMarker(QPainter& paint, const QColor& color, const Q
 void TF1DMappingCanvas::drawHistogram(QPainter& paint)
 {
     //qWarning("TF1DMappingCanvas::drawHistogram: This function is disabled now.");
-	return;
+	//return;
+	if (m_volume == nullptr)
+		return;
 	if(cache == 0 || cache->rect() != rect()) //{
 	{
         delete cache;
@@ -815,9 +819,10 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
         */
 
         //TODO::
-        int histogramWidth;
-        double logMaxValue;
-        double * histogram;
+		const auto histogramWidth = 256;
+
+        double logMaxValue = std::log(m_volume->maxIsoValue());
+		double * histogram = m_volume->isoStat();
         //
 
 		QVector2D p;

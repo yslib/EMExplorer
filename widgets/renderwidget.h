@@ -15,12 +15,14 @@
 #include <QOpenGLTexture>
 
 
+
 class MarkModel;
 class AbstractSliceDataModel;
 class ShaderProgram;
 class QOpenGLShaderProgram;
 class SliceVolume;
 class QMenu;
+class GPUVolume;
 
 
 enum RenderMode {
@@ -94,6 +96,7 @@ public:
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
 	FocusCamera     camera()const { return m_camera; }
 	QSharedPointer<RenderOptions> options()const;
+	GPUVolume*	    volume()const;
 
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
@@ -112,7 +115,6 @@ signals:
 	void		    windowResized(int w, int h);
 public slots:
 	void			updateTransferFunction(const float * func);
-	void			updateMarkMesh();
 	void			setTopSlice(int value) { Q_D(RenderWidget); d->topSliceIndex = value; update(); }
 	void			setRightSlice(int value) { Q_D(RenderWidget); d->rightSliceIndex = value; update(); }
 	void			setFrontSlice(int value) { Q_D(RenderWidget); d->frontSliceIndex = value; update(); }
@@ -126,7 +128,7 @@ private:
 	Q_DECLARE_PRIVATE(RenderWidget);
 
 	void									updateVolumeData();
-	void									updateMarkData();
+	//void									updateMarkData();
 	static QColor							idToColor(int id);
 	static int								colorToId(const QColor & color);
 	int										selectMesh(int x,int y);		//(x,y) coordinates on screen

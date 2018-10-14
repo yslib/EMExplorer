@@ -56,8 +56,10 @@ public:
 	int xLength()const;
 	int yLength()const;
 	int zLength()const;
+
 	double * isoStat()const { return m_isoStat.get(); }
 	double maxIsoValue()const { return m_maxIsoValue; }
+
 	const void * data()const;
 	const VolumeFormat & format()const;
 	virtual ~Volume();

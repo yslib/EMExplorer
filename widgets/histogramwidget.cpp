@@ -434,23 +434,17 @@ void HistogramWidget::updateContrastAndBrightness()
 		const auto scanLine = image.scanLine(h);
 		for(auto w = 0;w<width;++w) {
 			auto t = scanLine[w] - mean;
-
 			t *= contrast; //Adjust contrast
 			t += mean * brightness; // Adjust brightness
-
 			scanLine[w] = (t > 255.0) ? (255) : (t<0.0 ? (0):(t));
-
 		}
 	}
 
 	setCurrentImage(sliceType(), image);
-
 	m_hist->setImage(image);			//Note:: this variable is no longer the original image.
 	SliceItem * item = sliceItem(sliceType());
 	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
-	//qDebug() << item->pos();
 	item->setPixmap(QPixmap::fromImage(image));
-
 }
 
 
@@ -546,19 +540,10 @@ void HistogramWidget::createConnections()
 	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, m_hist, &Histogram::setRightCursorValue);
 	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMinValueChanged);
 	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMaxValueChanged);
-
 	connect(m_filterButton, &QPushButton::clicked, this, &HistogramWidget::filterImage);
-
-	connect(m_filterComboBox, QOverload<const QString &>::of(&QComboBox::activated), [=](const QString & text) {
-		Q_UNUSED(text);
-	});
-	connect(m_filterComboBox, &QComboBox::currentTextChanged, [=](const QString & text) {
-		//qDebug() << "Signal::currentTextChanged";
-		updateParameterLayout(text);
-	});
+	connect(m_filterComboBox, QOverload<const QString &>::of(&QComboBox::activated), [=](const QString & text) {Q_UNUSED(text);});
+	connect(m_filterComboBox, &QComboBox::currentTextChanged, [=](const QString & text) {updateParameterLayout(text);});
 	connect(m_reset, &QPushButton::clicked, this, &HistogramWidget::resetOriginalImage);
-
-
 }
 
 void HistogramWidget::updateParameterLayout(const QString &text)

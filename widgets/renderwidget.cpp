@@ -203,19 +203,28 @@ void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 {
 	m_dataModel = model;
 	updateVolumeData();
+
+	emit requireTransferFunction();
 	emit dataModelChanged();
+
 	update();
 }
 
 void RenderWidget::setMarkModel(MarkModel* model)
 {
 	m_markModel = model;
-	updateMarkData();
+	updateMark();
+	//emit markModelChanged();
 	emit markModelChanged();
 	update();
 }
 
 //ShaderDataInterface
+
+GPUVolume* RenderWidget::volume() const 
+{
+	return m_volume.data();
+}
 
 QSize RenderWidget::minimumSizeHint() const
 {
@@ -246,6 +255,7 @@ void RenderWidget::initializeGL()
 
 	// Update transfer functions
 	emit requireTransferFunction();
+
 	makeCurrent();
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
@@ -458,11 +468,7 @@ void RenderWidget::updateTransferFunction(const float * func)
 	update();
 }
 
-void RenderWidget::updateMarkMesh() {
-	//TODO:: update m_markMeshes
-	if (m_markModel == nullptr)
-		return;
-}
+
 
 void RenderWidget::setTopSliceVisible(bool check)
 {
@@ -536,6 +542,8 @@ void RenderWidget::updateMark() {
 
 	}
 	doneCurrent();
+
+	
 }
 
 void RenderWidget::updateVolumeData()
@@ -562,9 +570,9 @@ void RenderWidget::updateVolumeData()
 
 	const auto s = size();
 
-	emit windowResized(s.width(), s.height());
+	//emit windowResized(s.width(), s.height());			// A bullshit design
 
-	emit requireTransferFunction();
+
 
 	doneCurrent();
 }
@@ -578,11 +586,6 @@ void RenderWidget::updateVolumeData()
  * \date	2018.07.19
  */
 
-void RenderWidget::updateMarkData()
-{
-
-	//triangulate mark to mesh
-}
 
 int RenderWidget::selectMesh(int x, int y)
 {

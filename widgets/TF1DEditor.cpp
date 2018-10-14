@@ -146,6 +146,11 @@ void TF1DEditor::getTransferFunction(float* transferFunction, size_t dimension, 
 	//textureCanvas->repaint();
 }
 
+void TF1DEditor::setVolumeInformation(Volume* volume) {
+	Q_ASSERT_X(transCanvas, "TF1DEditor::setVolumeInformation", "null pointer");
+	transCanvas->setVolumeInfomation(volume);
+}
+
 void TF1DEditor::updateTransferFunction()
 {
 	repaintAll();

@@ -28,8 +28,8 @@ void DoubleSlider::setOffsets(int left, int right)
 void DoubleSlider::paintEvent(QPaintEvent* event) 
 {
     event->accept();
-	int leftMarker =  static_cast<int>(std::floor(minValue_ * (width()-leftOffset_-rightOffset_) + leftOffset_ + 0.5));
-	int rightMarker = static_cast<int>(std::floor(maxValue_ * (width()-leftOffset_-rightOffset_) + leftOffset_ + 0.5));
+	const auto leftMarker =  static_cast<int>(std::floor(minValue_ * (width()-leftOffset_-rightOffset_) + leftOffset_ + 0.5));
+	const auto rightMarker = static_cast<int>(std::floor(maxValue_ * (width()-leftOffset_-rightOffset_) + leftOffset_ + 0.5));
     QPoint leftSlider[5] = {
         QPoint(leftMarker - sliderWidth_, static_cast<int>(0.3f * height())),
         QPoint(leftMarker - sliderWidth_, height()),
@@ -44,9 +44,9 @@ void DoubleSlider::paintEvent(QPaintEvent* event)
         QPoint(rightMarker + sliderWidth_, static_cast<int>(0.3f * height())),
         QPoint(rightMarker, 0)
     };
-    QColor sliderColor(255, 255, 255);
-    QColor sliderDarkColor(75, 130, 89);
-    QColor lineColor(75, 130, 89);
+    const QColor sliderColor(255, 255, 255);
+    const QColor sliderDarkColor(75, 130, 89);
+    const QColor lineColor(75, 130, 89);
 
     QPainter paint(this);
     paint.setRenderHint(QPainter::Antialiasing);
@@ -119,7 +119,7 @@ void DoubleSlider::moveSlider(float mousePos)
     if (rightSliderActive_ && !leftSliderActive_)
         setMaxValue(mousePos);
     if (rightSliderActive_ && leftSliderActive_) {
-        float mouseDiff = normalizedMousePos_ - mousePos;
+        const auto mouseDiff = normalizedMousePos_ - mousePos;
         setMinValue(mV1_ - mouseDiff);
         setMaxValue(mV2_ - mouseDiff);
     }
@@ -186,12 +186,12 @@ void DoubleSlider::setValues(float val1, float val2)
     }
 }
 
-float DoubleSlider::getMinValue() 
+float DoubleSlider::getMinValue()const
 {
     return minValue_;
 }
 
-float DoubleSlider::getMaxValue() 
+float DoubleSlider::getMaxValue()const
 {
     return maxValue_;
 }
