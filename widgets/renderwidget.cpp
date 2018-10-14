@@ -236,14 +236,14 @@ QSize RenderWidget::sizeHint() const
 
 void RenderWidget::initializeGL()
 {
-	if(initializeOpenGLFunctions() == false) {
+	if (initializeOpenGLFunctions() == false) {
 		qFatal("initializeOpenGLFunctions failed");
 		return;
 	}
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
-	
+
 	// Update transfer functions
 	emit requireTransferFunction();
 	makeCurrent();
@@ -254,12 +254,12 @@ void RenderWidget::initializeGL()
 		item->initializeGLResources();
 
 	// mesh shader
-	
+
 	m_meshShader = new QOpenGLShaderProgram;
 	m_meshShader->create();
 	m_meshShader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/mesh_shader_v.glsl");
 	m_meshShader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/mesh_shader_f.glsl");
-	if(m_meshShader->link() == false) {
+	if (m_meshShader->link() == false) {
 		qFatal("Mesh shader is not linked.");
 		return;
 	}
@@ -268,7 +268,7 @@ void RenderWidget::initializeGL()
 	m_selectShader->create();
 	m_selectShader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/pick_shader_v.glsl");
 	m_selectShader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/pick_shader_f.glsl");
-	if(m_selectShader->link() == false) {
+	if (m_selectShader->link() == false) {
 		qFatal("Select shader is not linked.");
 		return;
 	}
@@ -287,8 +287,8 @@ void RenderWidget::resizeGL(int w, int h)
 	m_proj.perspective(45.f, aspect, 0.01f, 100.f);
 
 	if (m_pickFBO != nullptr);
-		delete m_pickFBO;
-	m_pickFBO = new QOpenGLFramebufferObject(w,h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
+	delete m_pickFBO;
+	m_pickFBO = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
 
 	emit windowResized(w, h);
 }
@@ -308,34 +308,34 @@ void RenderWidget::paintGL()
 	world.scale(xs, ys, zs);
 
 	//
-	m_camera.setCenter(d->volumeNormalTransform*world*QVector3D(0.5,0.5,0.5));
+	m_camera.setCenter(d->volumeNormalTransform*world*QVector3D(0.5, 0.5, 0.5));
 
-	if(m_volume != nullptr) {
-		if(renderMode == RenderMode::DVR)
+	if (m_volume != nullptr) {
+		if (renderMode == RenderMode::DVR)
 			m_volume->sliceMode(false);
 		else {
 			m_volume->sliceMode(true);
 			m_volume->setSliceSphereCoord(d->options->sliceNormal);
 		}
-			
+
 		m_volume->setTransform(world);
 		m_volume->render();
 	}
 
-	if(renderMode != RenderMode::DVR) {
+	if (renderMode != RenderMode::DVR) {
 
 		const auto viewMatrix = camera().view();
 		const auto cameraPos = camera().position();
 
 
-		if(d->enableStartPicking ==  true) {
+		if (d->enableStartPicking == true) {
 			m_pickFBO->bind();
-			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_selectShader->bind();
 			m_selectShader->setUniformValue("viewMatrix", viewMatrix);
 			m_selectShader->setUniformValue("projMatrix", m_proj);
 			m_selectShader->setUniformValue("modelMatrix", world);
-			for(int i=0;i<m_markMeshes.size();i++) {
+			for (int i = 0; i < m_markMeshes.size(); i++) {
 				const auto color = idToColor(i);
 				m_selectShader->setUniformValue("pickColor", color);
 				m_markMeshes[i]->render();
@@ -350,13 +350,13 @@ void RenderWidget::paintGL()
 		m_meshShader->setUniformValue("modelMatrix", world);
 		m_meshShader->setUniformValue("normalMatrix", world.normalMatrix());
 		m_meshShader->setUniformValue("lightPos", cameraPos);
-		m_meshShader->setUniformValue("viewPos", cameraPos); 
+		m_meshShader->setUniformValue("viewPos", cameraPos);
 
-		for(int i=0;i<m_markMeshes.size();i++) {
-			
+		for (int i = 0; i < m_markMeshes.size(); i++) {
+
 			QColor color = m_markColor[i];
 
-			if(i == d->selectedObjectId) {
+			if (i == d->selectedObjectId) {
 				//glClear(GL_STENCIL_BUFFER_BIT);
 				//glEnable(GL_STENCIL_TEST);
 				//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -439,7 +439,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 }
 
 
-void RenderWidget::updateTransferFunction(const float * func, bool updated)
+void RenderWidget::updateTransferFunction(const float * func)
 {
 	makeCurrent();
 	if (m_tfTexture == nullptr)
@@ -455,8 +455,7 @@ void RenderWidget::updateTransferFunction(const float * func, bool updated)
 	}
 	m_tfTexture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::Float32, func);	//Equivalent to GL_RGBA and GL_FLOAT
 	doneCurrent();
-	if (updated)
-		update();
+	update();
 }
 
 void RenderWidget::updateMarkMesh() {
@@ -465,26 +464,32 @@ void RenderWidget::updateMarkMesh() {
 		return;
 }
 
-void RenderWidget::setTopSliceVisible(bool check) 
+void RenderWidget::setTopSliceVisible(bool check)
 {
-	if(m_volume != nullptr)
-	m_volume->setTopSliceVisible(check);
-	update();
+	if (m_volume != nullptr) {
+		m_volume->setTopSliceVisible(check);
+		update();
+	}
 }
 void RenderWidget::setRightSliceVisible(bool check) {
-	if (m_volume != nullptr)
-	m_volume->setRightSliceVisible(check);
-	update();
+
+	if (m_volume != nullptr) {
+		m_volume->setRightSliceVisible(check);
+		update();
+	}
 }
 void RenderWidget::setFrontSliceVisible(bool check) {
-	if (m_volume != nullptr)
-	m_volume->setFrontSliceVisible(check);
-	update();
+
+	if (m_volume != nullptr) {
+		m_volume->setFrontSliceVisible(check);
+		update();
+	}
 }
 
 void RenderWidget::updateMark() {
 
-	if(m_markModel == nullptr || m_dataModel == nullptr) {
+	if (m_markModel == nullptr || m_dataModel == nullptr) 
+	{
 		return;
 	}
 	Q_D(RenderWidget);
@@ -500,7 +505,7 @@ void RenderWidget::updateMark() {
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
 
-	for(const auto & c:cates) {
+	for (const auto & c : cates) {
 		const auto meshes = m_markModel->markMesh(c);
 		/**
 		 *This is a low efficient operation because color of category could not be retrieved
@@ -508,7 +513,7 @@ void RenderWidget::updateMark() {
 		 *  TODO:: The issue would be addressed soon.
 		*/
 		const QColor color = m_markModel->marks(c)[0]->data(MarkProperty::CategoryColor).value<QColor>();		//Temporarily
-		for(const auto & mesh:meshes) {
+		for (const auto & mesh : meshes) {
 
 			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
 			const auto v = mesh->vertices();
@@ -528,7 +533,7 @@ void RenderWidget::updateMark() {
 			m_markMeshes.push_back(ptr);
 			m_markColor.push_back(color);
 		}
-		
+
 	}
 	doneCurrent();
 }
@@ -540,6 +545,7 @@ void RenderWidget::updateVolumeData()
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
+
 	Q_D(RenderWidget);
 
 	QVector3D m_scale = QVector3D(x, y, z);
@@ -549,9 +555,17 @@ void RenderWidget::updateVolumeData()
 	d->volumeNormalTransform.scale(m_scale);
 	QMatrix4x4 I;
 	I.setToIdentity();
-	m_volume.reset(new SliceVolume(m_dataModel,I,VolumeFormat(), this));
+
+	m_volume.reset(new SliceVolume(m_dataModel, I, VolumeFormat(), this));
 	makeCurrent();
 	m_volume->initializeGLResources();
+
+	const auto s = size();
+
+	emit windowResized(s.width(), s.height());
+
+	emit requireTransferFunction();
+
 	doneCurrent();
 }
 
@@ -576,8 +590,8 @@ int RenderWidget::selectMesh(int x, int y)
 	m_pickFBO->bind();
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	unsigned char color[4];
-	glReadPixels(x,size().height()-y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
-	const auto id = colorToId(QColor(color[0],color[1],color[2]));
+	glReadPixels(x, size().height() - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+	const auto id = colorToId(QColor(color[0], color[1], color[2]));
 	m_pickFBO->release();
 	doneCurrent();
 	return id;
@@ -588,7 +602,7 @@ void RenderWidget::cleanup()
 {
 	makeCurrent();
 
-	if(m_volume != nullptr)
+	if (m_volume != nullptr)
 		m_volume->destroyGLResources();
 
 	for (auto & mesh : m_markMeshes)
@@ -612,9 +626,9 @@ RenderWidget::~RenderWidget()
 	Q_D(RenderWidget);
 	delete d;
 
-	/**
-	 * Critical: The context will emit aboutToBeDestroyed() signal and will cause a crash 
-	 * even after this class was destroyed if below disconnection had not been performed.
+	/*!
+		Critical: The context will emit aboutToBeDestroyed() signal and will cause a crash
+		even after this class was destroyed if below disconnection had not been called
 	 */
 	disconnect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 }

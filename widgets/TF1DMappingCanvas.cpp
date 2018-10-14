@@ -782,7 +782,7 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
 {
     //qWarning("TF1DMappingCanvas::drawHistogram: This function is disabled now.");
 	return;
-	//if(cache == 0 || cache->rect() != rect()) {
+	if(cache == 0 || cache->rect() != rect()) //{
 	{
         delete cache;
         cache = new QPixmap(rect().size());
@@ -806,9 +806,9 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
 
         /*
          * This function is disabled now.
-         * Because I plan to remove the Volume class and replace a new one later.
-         * In order to keep old code, Three uninitilized varibles are declared for compipling.
-         * You are expected to complete the code like this next:
+         * Because we plan to remove the Volume class and replace a new one later.
+         * In order to keep old code, Three uninitialized variables are defined for compiling.
+         * You are expected to complete the code like this later
          *    int histogramWidth = volume->getBucketCount();
          *    double logMaxValue = log(volume->getMaxIsoValue());
          *    double* histogram = volume->getIsosurfaceStat();
@@ -817,7 +817,7 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
         //TODO::
         int histogramWidth;
         double logMaxValue;
-        double* histogram;
+        double * histogram;
         //
 
 		QVector2D p;

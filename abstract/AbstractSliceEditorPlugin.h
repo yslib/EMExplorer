@@ -2,9 +2,10 @@
 #define ABSTRACTPLUGIN_H
 
 #include <QWidget>
-//#include "imageviewer.h"
 
 enum class SliceType;
+
+
 class SliceItem;
 class AbstractSliceDataModel;
 class SliceWidget;
@@ -36,11 +37,8 @@ protected:
 
 protected slots:
 	virtual void updateDataModel();		//Is signal better?
-
 private:
-
 	Q_OBJECT
-
 	void setSliceEditor(SliceEditorWidget * widget);
 	SliceEditorWidget * m_sliceEditor;
 };

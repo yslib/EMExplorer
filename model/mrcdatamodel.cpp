@@ -11,11 +11,28 @@ MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):
 }
 QImage MRCDataModel::originalTopSlice(int index) const
 {
-	int width = m_d->width();
-	int height = m_d->height();
-	auto d = m_d->data<MRC::MRCUInt8>();
-	Q_ASSERT_X(d != nullptr, "ItemContext::getOriginalTopSlice", "type convertion error");
-	return QImage(d + index * width*height, width, height, QImage::Format_Grayscale8);
+	const auto width = m_d->width();
+	const auto height = m_d->height();
+	const auto d = m_d->data<MRC::MRCUInt8>();
+	Q_ASSERT_X(d != nullptr, "MRCDataModel::originalTopSlice", "type convertion error");
+
+	const auto data = d + width * height * index;
+
+	QImage newImage(width, height, QImage::Format_Grayscale8);
+
+	// For 32-bit aligned requirement of the QImage, 
+	// A new image has to be created and copy original data manually.
+
+#pragma omp parallel for
+	for(auto i=0;i<height;i++) {
+		const auto scanLine = newImage.scanLine(i);
+		for(auto j = 0;j<width;j++) {
+			const auto idx = i * width + j;
+			*(scanLine + j) = *(data + idx);
+		}
+	}
+	
+	return newImage;
 }
 
 QImage MRCDataModel::originalRightSlice(int index) const
@@ -24,19 +41,29 @@ QImage MRCDataModel::originalRightSlice(int index) const
 	const auto height = m_d->height();
 	const auto slice = m_d->slice();
 	const auto size = width * height *slice;
-	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
-	auto data = m_d->data<MRC::MRCUInt8>();
+	//std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[slice*height]);
+	const auto data = m_d->data<MRC::MRCUInt8>();
 	Q_ASSERT_X(data != nullptr, "MRCDataModel::originalRightSlice", "type error");
-	for (int i = 0; i < height; i++)
+
+	QImage newImage(slice, height, QImage::Format_Grayscale8);
+
+#pragma omp parallel for
+
+	for (auto i = 0; i < height; i++)
 	{
-		for (int j = 0; j < slice; j++)
+		const auto scanLine = newImage.scanLine(i);
+		for (auto j = 0; j < slice; j++)
 		{
-			int idx = index + i * width + j * width*height;
+			const auto idx = index + i * width + j * width*height;
 			Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
-			imageBuffer[j + i * slice] = data[idx];
+			//imageBuffer[j + i * slice] = data[idx];
+
+			scanLine[j] = data[idx];
 		}
 	}
-	return QImage(imageBuffer.get(), slice, height, QImage::Format_Grayscale8).copy();
+
+	//return QImage(imageBuffer.get(), slice, height, QImage::Format_Grayscale8).copy();
+	return newImage;
 }
 
 QImage MRCDataModel::originalFrontSlice(int index) const
@@ -45,19 +72,26 @@ QImage MRCDataModel::originalFrontSlice(int index) const
 	const auto height = m_d->height();
 	const auto slice = m_d->slice();
 	const auto size = width * height *slice;
-	std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
-	auto data = m_d->data<MRC::MRCUInt8>();
+	//std::unique_ptr<unsigned char[]> imageBuffer(new unsigned char[width*slice]);
+	const auto data = m_d->data<MRC::MRCUInt8>();
 	Q_ASSERT_X(data != nullptr, "MRCDataModel::originalFrontSlice", "type error");
-	for (int i = 0; i < slice; i++)
+
+	QImage newImage(width,slice, QImage::Format_Grayscale8);
+
+#pragma omp parallel for
+	for (auto i = 0; i < slice; i++)
 	{
-		for (int j = 0; j < width; j++)
+		const auto scanLine = newImage.scanLine(i);
+		for (auto j = 0; j < width; j++)
 		{
-			int idx = j + index * width + i * width*height;
+			const auto idx = j + index * width + i * width*height;
 			Q_ASSERT_X(idx < size,"MRCDataModel::originalFrontSlice","size error");
-			imageBuffer[j + i * width] = data[idx];
+			//imageBuffer[j + i * width] = data[idx];
+			scanLine[j] = data[idx];
 		}
 	}
-	return QImage(imageBuffer.get(), width, slice, QImage::Format_Grayscale8).copy();
+	//return QImage(imageBuffer.get(), width, slice, QImage::Format_Grayscale8).copy();
+	return newImage;
 }
 
 unsigned char* MRCDataModel::data()

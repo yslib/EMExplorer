@@ -32,6 +32,7 @@ class RenderParameterWidget : public QWidget
 public:
 	RenderParameterWidget(RenderWidget * widget, QWidget *parent = nullptr);
 	void setRenderWidget(RenderWidget * widget);
+	QSharedPointer<float> transferFunction()const;
 	~RenderParameterWidget(){}
 signals:
 	void optionsChanged();

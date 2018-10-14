@@ -433,7 +433,6 @@ void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 	m_markSelectionAction->setEnabled(state & (FocusInTopSliceView));		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
 	m_anchorAction->setEnabled(state &(FocusInSliceView));
 
-	m_sliceMoveAction->setEnabled(state & (FocusInSliceView));
 	m_pixelViewAction->setEnabled(state & (FocusInSliceView));
 	m_histogramAction->setEnabled(state & (FocusInSliceView));
 
@@ -529,6 +528,7 @@ void MainWindow::createWidget()
 	m_sliceControlWidget = new SliceControlWidget(m_imageView, m_volumeView, this);
 
 
+
 	auto layout = new QVBoxLayout;
 	layout->addWidget(m_sliceControlWidget);
 	layout->addWidget(m_volumeControlWidget);
@@ -614,26 +614,13 @@ void MainWindow::createWidget()
 
 	m_toolBar->addWidget(m_markSelectionAction);
 
-	m_sliceMoveAction = new QToolButton(this);
-	m_sliceMoveAction->setToolTip(QStringLiteral("Move"));
-	m_sliceMoveAction->setCheckable(true);
-	m_sliceMoveAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_sliceMoveAction->setIcon(QIcon(":icons/resources/icons/select.png"));
-	m_markButtonGroup->addButton(m_sliceMoveAction);
-	connect(m_sliceMoveAction, &QToolButton::toggled, [this](bool enable)
-	{
-		m_imageView->topView()->setOperation(SliceWidget::Move);
-		m_imageView->rightView()->setOperation(SliceWidget::Move);
-		m_imageView->frontView()->setOperation(SliceWidget::Move);
-	});
-
-	m_toolBar->addWidget(m_sliceMoveAction);
 
 	m_anchorAction = new QToolButton(this);
 	m_anchorAction->setToolTip(QStringLiteral("Anchor"));
 	m_anchorAction->setCheckable(true);
 	m_anchorAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	m_anchorAction->setIcon(QIcon(":icons/resources/icons/voteModel.png"));
+	m_anchorAction->setChecked(true);
 	m_markButtonGroup->addButton(m_anchorAction);
 	m_toolBar->addWidget(m_anchorAction);
 	connect(m_anchorAction, &QToolButton::toggled, [this](bool enable) {

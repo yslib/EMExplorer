@@ -89,6 +89,7 @@ float SliceVolume::rayStep() const {
 }
 unsigned SliceVolume::transferFunctionsTexId() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::transferFunctionsTexId", "null pointer");
+	//qDebug() << m_renderer->m_tfTexture;
 	if (m_renderer->m_tfTexture == nullptr) return 0;
 	return m_renderer->m_tfTexture->textureId();
 }
@@ -194,10 +195,10 @@ SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 &
 
 void SliceVolume::setRenderWidget(RenderWidget* widget) {
 	if (m_renderer != nullptr) {
-		disconnect(m_renderer, &RenderWidget::windowResized, this, &SliceVolume::windowSizeChanged);
+		disconnect(m_renderer, 0, this,0);
 	}
 	m_renderer = widget;
-	connect(m_renderer, &RenderWidget::windowResized, this, &SliceVolume::windowSizeChanged);
+	connect(m_renderer, &RenderWidget::windowResized, this, &SliceVolume::windowSizeChanged,Qt::AutoConnection);
 }
 
 bool SliceVolume::initializeGLResources() {

@@ -14,37 +14,43 @@ m_selection(false),
 m_pen(QPen(Qt::black, 5, Qt::SolidLine)),
 m_slice(nullptr),
 m_paintingItem(nullptr),
-m_state(0),
+m_state(Operation::None),
 m_anchorItem(nullptr),
 m_paintNavigationView(false)
 {
 	setScene(new QGraphicsScene(this));
+
 	scale(m_scaleFactor, m_scaleFactor);
+
 	connect(scene(), &QGraphicsScene::selectionChanged, this, &SliceWidget::selectionChanged);
+
 	setTransformationAnchor(QGraphicsView::NoAnchor);
+
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
 	setDragMode(QGraphicsView::RubberBandDrag);
-	setOperation(Operation::Move);
+
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-	m_anchorItem = new QGraphicsPixmapItem(createAnchorItemPixmap());
+
+	const auto pixel = createAnchorItemPixmap();
+	m_anchorItem = new QGraphicsPixmapItem(pixel);
+	//const auto p = pixel.size();
+	//const QPointF point(p.width()/2.0,p.height()/2.0);
+	//m_anchorItem->setTransformOriginPoint(point);
+	
 	m_anchorItem->setVisible(false);
+
 	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
 void SliceWidget::setMarks(const QList<QGraphicsItem*>& items)
 {
-	set_mark_helper_(items);
+	setMarkHelper(items);
 }
 void SliceWidget::wheelEvent(QWheelEvent *event) {
-	//const auto numDegrees = -event->delta() / 8.0;
-	//const auto numSteps = numDegrees / 15.0;
-	//const auto factor = std::pow(1.125, numSteps);
-	//scale(factor, factor);
-	//event->accept();
-	//QGraphicsView::wheelEvent(event);
-	qDebug() << "wheelEvent in SliceWidget";
-	//event->accept();
+	event->accept();
 }
 void SliceWidget::focusInEvent(QFocusEvent* event)
 {
@@ -77,9 +83,11 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 	render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
 	p0.end();
 	const auto & navigationRect = thumbnail.rect();
-	const double f1 = navigationRect.width() / scRect.width(), f2 = navigationRect.height() / scRect.height();
+	const auto f1 = navigationRect.width() / scRect.width(), f2 = navigationRect.height() / scRect.height();
 	QPainter p(&thumbnail);
-	p.setPen(QPen(Qt::red, 2));
+
+	p.setPen(QPen(Qt::red, 2));			// TODO:: There may be a bug
+
 	p.drawRect(QRect(
 		f1 * (viewRectInScene.x() - scRect.x()),			//transform from view rectangle to thumbnail rectangle
 		f2 * (viewRectInScene.y() - scRect.y()),
@@ -116,7 +124,7 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 		auto * itm = qgraphicsitem_cast<SliceItem*>(item);
 		if (itm == m_slice) {	 // Operations must perform on slice item.
 
-			if(button == Qt::RightButton) {			// ignore right button event
+			if (button == Qt::RightButton) {			// ignore right button event
 				event->accept();
 				return;
 			}
@@ -138,21 +146,16 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 				event->accept();
 				return;
 			}
-			else if (m_state == Operation::Selection) { 
+			else if (m_state == Operation::Selection) {
 
 				// Selecting items automatically by calling default event handler of the QGraphicsView
 				return QGraphicsView::mousePressEvent(event);
 			}
-			else if (m_state == Operation::Move) {
-
-				// Do nothing
-				event->accept();
-				return;
-			}
 			else if (m_state == Operation::None) {
-
 				// Set Anchor
-				m_anchorItem->setPos(itemPoint);
+				const auto siz = m_anchorItem->pixmap().size();
+				const auto originItemPoint = QPointF(siz.width()/2.0,siz.height()/2.0);
+				m_anchorItem->setPos(itemPoint-originItemPoint);
 				m_anchorItem->setVisible(true);
 				event->accept();
 				return;
@@ -160,8 +163,6 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 
 		}
 	}
-
-	//QGraphicsView::mousePressEvent(event);
 	event->accept();
 	return;
 }
@@ -169,56 +170,26 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	// Note that the returned value for event->button() is always Qt::NoButton for mouse move events.
+	const auto viewPos = event->pos();
+	//const auto scenePos = mapToScene(viewPos);
 
-	if (m_state == None)
-		return;
-
-	if(event->button() == Qt::RightButton) {
+	if (event->buttons() == Qt::RightButton) {		// Move
+		const auto delta = viewPos - m_prevViewPoint;
+		m_prevViewPoint = viewPos;
+		translate(delta.x(), delta.y());
+		emit viewMoved(delta);
 		event->accept();
 		return;
 	}
-
-	if (m_state == Operation::Paint)		// on drawing a mark
+	else if (m_state == Operation::Paint)		// Drawing a mark
 	{
 		if (m_currentPaintingSlice != nullptr)
 		{
-			const auto viewPos = event->pos();
 			m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)));
 			m_paintViewPointsBuffer << viewPos;
 			event->accept();
 			return;
 		}
-	}
-	else if (m_state == Operation::Move)	//move the slice
-	{
-		qDebug() << "Slice Moved";
-		const auto currentScenePoint = event->pos();
-		const auto delta = currentScenePoint - m_prevViewPoint;
-		m_prevViewPoint = currentScenePoint;
-		//resetTransform();
-		//translate(1,1);
-		translate(delta.x(), delta.y());
-		//translate(delta);
-
-		emit viewMoved(delta);
-		//qDebug() << delta << " " << sceneRect() << " " << rect();
-		//auto items = scene()->items();
-		//for (const auto & item : items)
-		//{
-		//	SliceItem * sliceItem = qgraphicsitem_cast<SliceItem*>(item);
-		//	if (sliceItem == m_slice)
-		//	{
-		//		//Moving range need to be restrict in sceneRect so as to prevent the change of the scene bounding rect.
-		//		auto rect = sliceItem->mapRectToScene(sliceItem->boundingRect());
-		//		rect.translate(delta.x(), delta.y());	
-		//		if (sceneRect().contains(rect) == false)
-		//			return;
-		//		sliceItem->setPos(sliceItem->pos() + delta);
-		//		emit sliceMoved(delta);
-		//		return;
-		//	}
-		//}
-		//return QGraphicsView::mouseMoveEvent(event);
 	}
 	else if (m_state == Operation::Selection)
 	{
@@ -234,7 +205,7 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 	if (m_state == None)
 		return;
 
-	if(event->button() == Qt::RightButton) {
+	if (event->button() == Qt::RightButton) {
 		event->accept();
 		return;
 	}
@@ -242,8 +213,7 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 	Qt::MouseButton button = event->button();
 	if (m_state == Operation::Paint)			//create a mark
 	{
-		//Q_ASSERT_X(m_currentPaintingSlice,"SliceView::mouseReleaseEvent", "null pointer");
-		if(m_currentPaintingSlice == nullptr) {
+		if (m_currentPaintingSlice == nullptr) {
 			event->accept();
 			return;
 		}
@@ -265,19 +235,23 @@ void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, Slice
 	if (sliceItem == nullptr)
 	{
 		sliceItem = new SliceItem(QPixmap::fromImage(inImage));
+
 		(sliceItem)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
+
 		sliceItem->setPos(pos);
 		m_anchorItem->setParentItem(sliceItem);
 		scene()->addItem(sliceItem);
 		/**
 		 *We need to give a exactly scene rect according to the image size for efficiency rendering.
-		 *We assumpt that the size of rect of the scene is two times larger than the size of image.
+		 *We assume that the size of rect of the scene is two times larger than the size of image.
 		 */
-		QRect rect = inImage.rect();
+		auto rect = inImage.rect();
 		//auto rectInView = mapFromScene(rect).boundingRect();
 		translate(rect.width() / 2, rect.height() / 2);
+
 		rect.adjust(-rect.width(), -rect.height(), 0, 0);
-		scene()->setSceneRect(rect);
+
+		scene()->setSceneRect(QRectF(-10000,-10000,20000,20000));
 	}
 	else
 	{
@@ -318,7 +292,7 @@ QGraphicsItem * SliceWidget::createMarkItem()
 
 QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 {
-	int length = 12;
+	const auto length = 12;
 	QRect target(0, 0, length, length);
 
 	QPixmap pixmap(target.size());
@@ -340,7 +314,7 @@ QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 }
 
 inline
-void SliceWidget::set_mark_helper_(
+void SliceWidget::setMarkHelper(
 	const QList<QGraphicsItem*>& items)
 {
 	foreach(QGraphicsItem * item, items)
@@ -352,9 +326,8 @@ void SliceWidget::set_mark_helper_(
 }
 
 
-
 inline
-void SliceWidget::clear_slice_marks_helper_(SliceItem * slice)
+void SliceWidget::clearSliceMarksHelper(SliceItem * slice)
 {
 	if (slice == nullptr)
 	{
@@ -370,32 +343,42 @@ void SliceWidget::clear_slice_marks_helper_(SliceItem * slice)
 void SliceWidget::setImage(const QImage& image)
 {
 	//set_image_helper(image);
-	QSize size = image.size();
-	QPoint pos = QPoint(-size.width() / 2, -size.height() / 2);
+	const auto size = image.size();
+	const auto pos = QPoint(-size.width()/2, -size.height() / 2);
 	setImageHelper(pos, image, m_slice, &m_image);
 }
 
 void SliceWidget::clearSliceMarks()
 {
-	clear_slice_marks_helper_(m_slice);
+	clearSliceMarksHelper(m_slice);
 }
 
 QList<QGraphicsItem*> SliceWidget::selectedItems() const
 {
+	Q_ASSERT_X(scene(), "SliceWidget::selectedItems", "null pointer");
 	return scene()->selectedItems();
 }
 
 int SliceWidget::selectedItemCount() const
 {
+	Q_ASSERT_X(scene(), "SliceWidget::selectedItems", "null pointer");
 	return scene()->selectedItems().size();
 }
 
 void SliceWidget::moveSlice(const QPointF& dir)
 {
+	Q_ASSERT_X(m_slice, "SliceWidget::moveSlice", "null pointer");
 	m_slice->moveBy(dir.x(), dir.y());
 }
 
 QSize SliceWidget::sizeHint() const
 {
-	return m_image.size();
+	//const auto pSize = parentWidget()->size();
+
+	const auto maxLength = std::max(m_image.width(), m_image.height());
+
+	if (maxLength < 800)
+		return m_image.size();
+	return m_image.size().scaled(800, 800, Qt::KeepAspectRatio);
+
 }

@@ -16,6 +16,7 @@ class QLabel;
 class QGroupBox;
 
 class SliceEditorWidget;
+class TitledSliderWidthDoubleSpinBox;
 
 class Histogram:public QWidget
 {
@@ -24,7 +25,6 @@ public:
     explicit Histogram(QWidget *parent = nullptr);
     explicit Histogram(QWidget *parent, const QImage & image);
     void setImage(const QImage & image);
-	void setPixmap(QPixmap * pixmap);
     QVector<int> getHist()const;
     QSize sizeHint()const override;
     int getMinimumCursorValue()const;
@@ -79,21 +79,20 @@ private slots:
     void resetOriginalImage();
     void filterImage();
 
-
 signals:
     void minValueChanged(int value);
     void maxValueChanged(int value);
 
 protected slots:
 	void updateDataModel()override;
-
 private:
 	void initWidgets();
 	void init();
 	void createWidgets();
 	void createConnections();
-
     void histEqualizeImage();
+	void updateContrastAndBrightness();
+
     void updateParameterLayout(const QString & text);
 
 	//SliceEditorWidget * m_sliceWidget;
@@ -108,6 +107,10 @@ private:
     QSpinBox * m_histNumSpinBox;
     TitledSliderWithSpinBox * m_minSlider;
     TitledSliderWithSpinBox * m_maxSlider;
+
+	TitledSliderWidthDoubleSpinBox * m_contrastFactor;
+	TitledSliderWidthDoubleSpinBox * m_brightnessFactor;
+
 
     QGroupBox * m_filterGroupBox;
     QGridLayout * m_filterLayout;

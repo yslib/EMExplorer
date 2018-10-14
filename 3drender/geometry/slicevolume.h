@@ -103,7 +103,6 @@ public:
 
 	~SliceVolume();
 
-
 private slots:
 	void windowSizeChanged(int w, int h);
 

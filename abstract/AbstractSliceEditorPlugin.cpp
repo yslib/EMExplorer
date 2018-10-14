@@ -14,7 +14,8 @@ AbstractSliceEditorPlugin::AbstractSliceEditorPlugin(
 }
 
 
-int AbstractSliceEditorPlugin::currentIndex(SliceType type) const {
+int AbstractSliceEditorPlugin::currentIndex(SliceType type) const 
+{
 	Q_ASSERT_X(m_sliceEditor, "AbstractPlugin::currentIndex", "null pointer");
 	return m_sliceEditor->currentSliceIndex(type);
 }

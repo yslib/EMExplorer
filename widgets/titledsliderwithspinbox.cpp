@@ -73,24 +73,24 @@ int TitledSliderWithSpinBox::value() const
 	return m_slider->value();
 }
 
-void TitledSliderWithSpinBox::setEnabled(bool enabled)
-{
-	m_slider->setEnabled(enabled);
-	m_spinBox->setEnabled(enabled);
-}
+//void TitledSliderWithSpinBox::setEnabled(bool enabled)
+//{
+//	m_slider->setEnabled(enabled);
+//	m_spinBox->setEnabled(enabled);
+//}
 
 void TitledSliderWithSpinBox::setOrientation(Qt::Orientation orientation)
 {
 	createLayout(orientation);
 }
 
-bool TitledSliderWithSpinBox::blockSignals(bool block)
-{
-	bool old1 = m_slider->blockSignals(block);
-	bool old2 = m_spinBox->blockSignals(block);
-	Q_ASSERT(old1 == old2);
-	return old1;
-}
+//bool TitledSliderWithSpinBox::blockSignals(bool block)
+//{
+//	bool old1 = m_slider->blockSignals(block);
+//	bool old2 = m_spinBox->blockSignals(block);
+//	Q_ASSERT(old1 == old2);
+//	return old1;
+//}
 
 void TitledSliderWithSpinBox::createConnections() const
 {
@@ -127,4 +127,103 @@ void TitledSliderWithSpinBox::createLayout(Qt::Orientation orientation)
 	}
 }
 
+TitledSliderWidthDoubleSpinBox::TitledSliderWidthDoubleSpinBox(const QString& title, Qt::Orientation orientation,QWidget* parent) {
+	m_layout = new QHBoxLayout;
+	m_label = new QLabel(title,this);
+	m_slider = new QSlider(orientation,this);
+	m_spinBox = new QDoubleSpinBox(this);
 
+	m_layout->addWidget(m_label);
+	m_layout->addWidget(m_slider);
+	m_layout->addWidget(m_spinBox);
+
+	connect(m_slider, &QSlider::valueChanged, [this](int value) {
+		const auto newValue = value * m_spinBox->singleStep();
+		m_spinBox->blockSignals(true);
+		m_spinBox->setValue(newValue);
+		m_spinBox->blockSignals(false);
+		emit valueChanged(newValue);
+	});
+
+	connect(m_spinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double value) {
+		const auto newValue = m_spinBox->value() / m_spinBox->singleStep();
+		m_spinBox->blockSignals(true);
+		m_slider->setValue(newValue);
+		m_spinBox->blockSignals(false);
+		emit valueChanged(newValue);
+	});
+	setLayout(m_layout);
+	updateSliderProperty();
+}
+
+void TitledSliderWidthDoubleSpinBox::setMinimum(double value)
+{
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	m_spinBox->setMinimum(value);
+	updateSliderProperty();
+}
+
+void TitledSliderWidthDoubleSpinBox::setMaximum(double value)
+{
+
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	m_spinBox->setMaximum(value);
+	updateSliderProperty();
+}
+
+void TitledSliderWidthDoubleSpinBox::setValue(double value) {
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	m_spinBox->setValue(value);
+}
+
+void TitledSliderWidthDoubleSpinBox::setRange(double min, double max)
+{
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	m_spinBox->setRange(min, max);
+	updateSliderProperty();
+}
+
+void TitledSliderWidthDoubleSpinBox::setSingleStep(double step)
+{
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	m_spinBox->setSingleStep(step);
+	updateSliderProperty();
+}
+
+double TitledSliderWidthDoubleSpinBox::singleStep() const {
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	return m_spinBox->singleStep();
+}
+
+void TitledSliderWidthDoubleSpinBox::setText(const QString& text) 
+{
+	Q_ASSERT_X(m_label, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	m_label->setText(text);
+}
+double TitledSliderWidthDoubleSpinBox::minimum() const 
+{
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	return m_spinBox->minimum();
+	
+}
+double TitledSliderWidthDoubleSpinBox::maximum() const 
+{
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	return m_spinBox->maximum();
+}
+double TitledSliderWidthDoubleSpinBox::value() const 
+{
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "null pointer");
+	return m_spinBox->value();
+}
+
+void TitledSliderWidthDoubleSpinBox::updateSliderProperty() const{
+
+	Q_ASSERT_X(m_spinBox, "TitiledSliderWidthDoubleSpinBox", "spin box null pointer");
+	Q_ASSERT_X(m_slider, "TitledSliderWithDoubleSpinBox", "slider null pointer");
+
+	m_slider->setMinimum(0);
+	const auto ticks = static_cast<int>(m_spinBox->maximum() / m_spinBox->singleStep());
+	m_slider->setMaximum(ticks);
+
+}

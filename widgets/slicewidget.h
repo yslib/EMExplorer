@@ -39,27 +39,22 @@ public:
 		 */
 		Paint = 1,
 		/*
-		 * This action moves the slice when drag the slice item.
-		 */
-		Move = 2,
-		/*
 		 * This action will select marks by clicking the item or dragging a rubber.
 		 */
-		Selection = 4
+		Selection = 2
 	};
 
 	SliceWidget(QWidget * parent = nullptr);
 	void setMarks(const QList<QGraphicsItem *> & items);
 public slots:
 
-	inline void setOperation(int func);
+	inline void setOperation(int state);
 
 	void setImage(const QImage & image);
 
 	inline void setPen(const QPen & pen);
 
 	inline void setNavigationViewEnabled(bool enabled);
-
 
 	inline QPen pen()const;
 
@@ -72,6 +67,7 @@ public slots:
 	void moveSlice(const QPointF & dir);
 
 	QSize sizeHint()const override;
+
 
 protected:
 
@@ -102,11 +98,11 @@ signals:
 
 private:
 
-	inline static void clear_slice_marks_helper_(SliceItem * slice);
+	inline static void clearSliceMarksHelper(SliceItem * slice);
 
 	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
 
-	inline  void set_mark_helper_(const QList<QGraphicsItem*>& items);
+	inline  void setMarkHelper(const QList<QGraphicsItem*>& items);
 
 	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
 
@@ -144,7 +140,6 @@ private:
 inline void SliceWidget::setOperation(int state)
 {
 	Q_ASSERT_X(state == Operation::Paint || 
-		state == Operation::Move || 
 		state == Operation::Selection||
 		state == Operation::None,
 		"SliceView::setFunction", "state must be exclusive");

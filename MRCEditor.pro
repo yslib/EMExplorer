@@ -19,7 +19,7 @@ HEADERS +=./widgets/doubleslider.h \
     ./widgets/TF1DEditor.h \
     ./widgets/TF1DMappingCanvas.h \
     ./widgets/TF1DTextureCanvas.h \
-    ./abstract/abstractplugin.h \
+    ./abstract/AbstractSliceEditorPlugin.h \
     ./widgets/histogramwidget.h \
     ./widgets/sliceeditorwidget.h \
     ./widgets/mainwindow.h \
@@ -58,12 +58,14 @@ HEADERS +=./widgets/doubleslider.h \
     3drender/geometry/renderobject.h \
     algorithm/triangulate.h \
     algorithm/subdivion.h \
-    widgets/slicecontrolwidget.h
+    widgets/slicecontrolwidget.h \
+    widgets/slicemainwindow.h \
+    widgets/volumemainwindow.h
 SOURCES +=./widgets/doubleslider.cpp \
     ./widgets/TF1DEditor.cpp \
     ./widgets/TF1DMappingCanvas.cpp \
     ./widgets/TF1DTextureCanvas.cpp \
-    ./abstract/abstractplugin.cpp \
+    ./abstract/AbstractSliceEditorPlugin.cpp \
     ./abstract/abstractslicedatamodel.cpp \
     ./model/categoryitem.cpp \
     ./widgets/histogramwidget.cpp \
@@ -97,7 +99,9 @@ SOURCES +=./widgets/doubleslider.cpp \
     3drender/geometry/renderobject.cpp \
     algorithm/triangulate.cpp \
     algorithm/subdivion.cpp \
-    widgets/slicecontrolwidget.cpp
+    widgets/slicecontrolwidget.cpp \
+    widgets/slicemainwindow.cpp \
+    widgets/volumemainwindow.cpp
 RESOURCES += resources.qrc
 
 

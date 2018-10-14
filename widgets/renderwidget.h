@@ -111,7 +111,7 @@ signals:
 	void			requireTransferFunction();
 	void		    windowResized(int w, int h);
 public slots:
-	void			updateTransferFunction(const float * func, bool updated);
+	void			updateTransferFunction(const float * func);
 	void			updateMarkMesh();
 	void			setTopSlice(int value) { Q_D(RenderWidget); d->topSliceIndex = value; update(); }
 	void			setRightSlice(int value) { Q_D(RenderWidget); d->rightSliceIndex = value; update(); }

@@ -14,32 +14,32 @@
 #include <QLineEdit>
 #include <QToolButton>
 
-RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* parent)
+RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* parent)
 	:QWidget(parent)
-	,m_widget(nullptr)
+	, m_widget(nullptr)
 {
 	//volume info
 	m_volumeInfoGroup = new QGroupBox(QStringLiteral("Volume Info"));
-	QVBoxLayout * volumeInfoVLayout = new QVBoxLayout;
+	auto * volumeInfoVLayout = new QVBoxLayout;
 	//m_volumeSizeLabel = new QLabel(QStringLiteral("Slice Size"));
 	m_volumeSpacingLabel = new QLabel(QStringLiteral("Spacing"));
 	m_xSpacingSpinBox = new QDoubleSpinBox(this);
 	m_xSpacingSpinBox->setRange(0.1, 10.0);
 	m_xSpacingSpinBox->setSingleStep(0.1);
-	connect(m_xSpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->xSpacing = value;emit optionsChanged();});
+	connect(m_xSpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->xSpacing = value; emit optionsChanged(); });
 
 	m_ySpacingSpinBox = new QDoubleSpinBox(this);
 	m_ySpacingSpinBox->setRange(0.1, 10.0);
 	m_ySpacingSpinBox->setSingleStep(0.1);
-	
 
-	connect(m_ySpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->ySpacing = value;emit optionsChanged(); });
+
+	connect(m_ySpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->ySpacing = value; emit optionsChanged(); });
 	m_zSpacingSpinBox = new QDoubleSpinBox(this);
 	m_zSpacingSpinBox->setRange(0.1, 10.0);
 	m_zSpacingSpinBox->setSingleStep(0.1);
-	
-	connect(m_zSpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->zSpacing = value;emit optionsChanged();});
-	QHBoxLayout * volumeInfoHLayout = new QHBoxLayout;
+
+	connect(m_zSpacingSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->zSpacing = value; emit optionsChanged(); });
+	auto * volumeInfoHLayout = new QHBoxLayout;
 	//vLayout->addWidget(m_volumeSizeLabel);
 	//vLayout->addWidget(m_volumeSpacingLabel);
 	volumeInfoHLayout->addWidget(m_volumeSpacingLabel);
@@ -57,9 +57,9 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_ambientLabel = new QLabel(QStringLiteral("ambient"));
 	m_ambientSpinBox = new QDoubleSpinBox;
 	m_ambientSpinBox->setRange(0, 1.0);
-	
+
 	m_ambientSpinBox->setSingleStep(0.01);
-	connect(m_ambientSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->ambient = value; emit optionsChanged(); });
+	connect(m_ambientSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->ambient = value; emit optionsChanged(); });
 
 
 	ambientHLayout->addWidget(m_ambientLabel);
@@ -73,7 +73,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_diffuseSpinBox->setRange(0, 1.0);
 
 	m_diffuseSpinBox->setSingleStep(0.01);
-	connect(m_ambientSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->diffuse = value; emit optionsChanged(); });
+	connect(m_ambientSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->diffuse = value; emit optionsChanged(); });
 	diffuseHLayout->addWidget(m_diffuseLabel);
 	diffuseHLayout->addWidget(m_diffuseSpinBox);
 	lightingVLayout->addLayout(diffuseHLayout);
@@ -84,9 +84,9 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_shininessLabel = new QLabel(QStringLiteral("shininess"));
 	m_shininessSpinBox = new QDoubleSpinBox;
 	m_shininessSpinBox->setRange(0, 100);
-	
+
 	m_shininessSpinBox->setSingleStep(1);
-	connect(m_shininessSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->shininess = value; emit optionsChanged(); });
+	connect(m_shininessSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->shininess = value; emit optionsChanged(); });
 	shininessHLayout->addWidget(m_shininessLabel);
 	shininessHLayout->addWidget(m_shininessSpinBox);
 	lightingVLayout->addLayout(shininessHLayout);
@@ -96,9 +96,9 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_specularLabel = new QLabel(QStringLiteral("specular"));
 	m_specularSpinBox = new  QDoubleSpinBox;
 	m_specularSpinBox->setRange(0, 1.0);
-	
+
 	m_specularSpinBox->setSingleStep(0.01);
-	connect(m_specularSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&,this](double value) {m_renderOptions->specular = value; emit optionsChanged(); });
+	connect(m_specularSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&, this](double value) {m_renderOptions->specular = value; emit optionsChanged(); });
 	specularHLayout->addWidget(m_specularLabel);
 	specularHLayout->addWidget(m_specularSpinBox);
 	lightingVLayout->addLayout(specularHLayout);
@@ -112,7 +112,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_renderTypeCCBox->addItem(QStringLiteral("DVR"));
 	m_renderTypeCCBox->addItem(QStringLiteral("FillMesh"));
 
-	connect(m_renderTypeCCBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged),this,&RenderParameterWidget::renderTypeChanged);
+	connect(m_renderTypeCCBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), this, &RenderParameterWidget::renderTypeChanged);
 
 	auto renderTypeHLayout = new QHBoxLayout;
 	renderTypeHLayout->addWidget(m_renderTypeCCBox);
@@ -141,23 +141,23 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	tfTextureWidget->setFixedWidth(200);
 	//tfTextureWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-	const auto slot = [tfTextureWidget]() {tfTextureWidget->update();};
-	connect(tfMappingCanvas, &TF1DMappingCanvas::changed,slot);
-	connect(tfMappingCanvas, &TF1DMappingCanvas::loadTransferFunction,slot);
-	connect(tfMappingCanvas, &TF1DMappingCanvas::saveTransferFunction,slot);
-	connect(tfMappingCanvas, &TF1DMappingCanvas::resetTransferFunction,slot);
-	connect(tfMappingCanvas, &TF1DMappingCanvas::toggleInteraction,slot);
+	const auto slot = [tfTextureWidget]() {tfTextureWidget->update(); };
+	connect(tfMappingCanvas, &TF1DMappingCanvas::changed, slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::loadTransferFunction, slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::saveTransferFunction, slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::resetTransferFunction, slot);
+	connect(tfMappingCanvas, &TF1DMappingCanvas::toggleInteraction, slot);
 
 	tfWidgetHLayout->addWidget(tfTextureWidget, 4, Qt::AlignLeft);
-	tfWidgetHLayout->addWidget(m_tfButton,1,Qt::AlignLeft);
+	tfWidgetHLayout->addWidget(m_tfButton, 1, Qt::AlignLeft);
 
 	m_transferFunctionGroupBox->setLayout(tfWidgetHLayout);
-	connect(m_tfEditor, &TF1DEditor::TF1DChanged,this,&RenderParameterWidget::transferFunctionChanged);
+	connect(m_tfEditor, &TF1DEditor::TF1DChanged, this, &RenderParameterWidget::transferFunctionChanged);
 
 
 	m_meshGroup = new QGroupBox(QStringLiteral("Mesh"));
 	m_meshUpdateButton = new QPushButton(QStringLiteral("Update Mesh"));
-	connect(m_meshUpdateButton, &QPushButton::clicked, this,&RenderParameterWidget::markUpdated);
+	connect(m_meshUpdateButton, &QPushButton::clicked, this, &RenderParameterWidget::markUpdated);
 	auto meshVLayout = new QVBoxLayout;
 	meshVLayout->addWidget(m_meshUpdateButton);
 	m_meshGroup->setLayout(meshVLayout);
@@ -185,7 +185,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	m_phiValueLabel = new QLabel;
 	m_phiValueLabel->setText(QStringLiteral("0"));
 	auto gridLayout = new QGridLayout;
-	gridLayout->addWidget(m_radLabel,0, 0);
+	gridLayout->addWidget(m_radLabel, 0, 0);
 	gridLayout->addWidget(m_radSlider, 0, 1);
 	gridLayout->addWidget(m_radValueLabel, 0, 2);
 	gridLayout->addWidget(m_thetaLabel, 1, 0);
@@ -206,18 +206,19 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget,QWidget* pare
 	//mainVLayout->addWidget(m_markListGroup);
 	mainVLayout->addWidget(m_transferFunctionGroupBox);
 	mainVLayout->addWidget(m_meshGroup);
-	
+
 	mainVLayout->addStretch();
 	setLayout(mainVLayout);
 
 	setRenderWidget(widget);
+
 }
 
 
 
 void RenderParameterWidget::radialSliderChanged(int value) {
 	const auto rad = value * 0.01;
-	m_radValueLabel->setText(QString::number(rad,'f',2));
+	m_radValueLabel->setText(QString::number(rad, 'f', 2));
 	m_renderOptions->sliceNormal.setX(rad);
 	emit optionsChanged();
 }
@@ -225,7 +226,7 @@ void RenderParameterWidget::radialSliderChanged(int value) {
 void RenderParameterWidget::thetaSliderChanged(int value)
 {
 	const auto theta = static_cast<double>(value);
-	m_thetaValueLabel->setText(QString::number(theta, 'f',0));
+	m_thetaValueLabel->setText(QString::number(theta, 'f', 0));
 	m_renderOptions->sliceNormal.setY(theta);
 	emit optionsChanged();
 }
@@ -240,12 +241,12 @@ void RenderParameterWidget::phiSliderChanged(int value)
 }
 
 void RenderParameterWidget::transferFunctionChanged() {
-	QScopedPointer<float, QScopedPointerArrayDeleter<float>> tfuncs(new float[256 * 4]);
-	if (m_tfEditor == nullptr)
+
+	if (m_tfEditor == nullptr || m_widget == nullptr)
 		return;
+	QScopedPointer<float, QScopedPointerArrayDeleter<float>> tfuncs(new float[256 * 4]);
 	m_tfEditor->getTransferFunction(tfuncs.data(), 256, 1.0);
-	Q_ASSERT_X(m_widget, "&TF1DEditor::TF1DChange", "m_widget != nullptr");
-	m_widget->updateTransferFunction(tfuncs.data(), true);
+	m_widget->updateTransferFunction(tfuncs.data());
 }
 
 void RenderParameterWidget::renderTypeChanged(const QString& text) {
@@ -256,6 +257,7 @@ void RenderParameterWidget::renderTypeChanged(const QString& text) {
 	else if (text == QStringLiteral("FillMesh")) {
 		m_renderOptions->mode = RenderMode(RenderMode::SliceTexture&RenderMode::FillMesh);
 	}
+
 	emit optionsChanged();
 }
 
@@ -270,13 +272,15 @@ void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 	if (m_widget == widget)
 		return;
 	disconnect(this, nullptr, m_widget, nullptr);
-	m_widget = widget;
-	connect(this, &RenderParameterWidget::optionsChanged, m_widget, [this]() {m_widget->update();});
-	connect(this, &RenderParameterWidget::markUpdated, m_widget, &RenderWidget::updateMark);
 
-	m_renderOptions = m_widget != nullptr?widget->options():QSharedPointer<RenderOptions>();
+	m_widget = widget;
+	connect(this, &RenderParameterWidget::optionsChanged, m_widget, [this]() {m_widget->update(); });
+	connect(this, &RenderParameterWidget::markUpdated, m_widget, &RenderWidget::updateMark);
+	connect(m_widget, &RenderWidget::requireTransferFunction, this, &RenderParameterWidget::transferFunctionChanged);
+
+	m_renderOptions = m_widget != nullptr ? widget->options() : QSharedPointer<RenderOptions>();
 	setEnabled(m_widget != nullptr);
-	
+
 	m_xSpacingSpinBox->setValue(1.0);
 	m_ySpacingSpinBox->setValue(1.0);
 	m_zSpacingSpinBox->setValue(1.0);
@@ -287,4 +291,12 @@ void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 	m_radSlider->setValue(0);
 	m_thetaSlider->setValue(0);
 	m_phiSlider->setValue(90);
+}
+
+QSharedPointer<float> RenderParameterWidget::transferFunction() const {
+	if (m_tfEditor == nullptr)
+		return QSharedPointer<float>();
+	QSharedPointer<float> tfuncs(new float[256 * 4], [](float * d) {delete[] d; });
+	m_tfEditor->getTransferFunction(tfuncs.data(), 256, 1.0);
+	return tfuncs;
 }

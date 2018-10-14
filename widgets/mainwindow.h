@@ -39,7 +39,6 @@ public:
 protected:
 	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
 private:
-
 	enum FocusState {
 		FocusInTopSliceView = 1,
 		FocusInRightSliceView = 2,
@@ -48,29 +47,20 @@ private:
 		FocusInSliceWidget = 16,
 		FocusInSliceView = FocusInTopSliceView | FocusInRightSliceView | FocusInFrontSliceView,
 	};
-
 	void createWidget();
 	void createMenu();
 	void createActions();
 	void createStatusBar();
 	void createMarkTreeView();
-
 	void createSliceEditorPlugins();
-
-
 	bool saveMark();
-
 	void saveAs();
-
 	void writeSettingsForDockWidget(QDockWidget *dock, QSettings* settings);
 	void readSettingsForDockWidget(QDockWidget * dock, QSettings* settings);
-
 	void writeSettingsForImageView(SliceEditorWidget * view, QSettings * settings);
 	void readSettingsForImageView(SliceEditorWidget * view, QSettings * settings);
-
 	void readSettings();
 	void writeSettings();
-
 	void setDefaultLayout();
 	void setParallelLayout();
 
@@ -131,7 +121,6 @@ private:
 	QButtonGroup * m_markButtonGroup;
 	QToolButton *m_markAction;
 	QToolButton *m_markSelectionAction;
-	QToolButton *m_sliceMoveAction;
 	QToolButton *m_anchorAction;
 
 	QToolButton *m_markDeletionAction;

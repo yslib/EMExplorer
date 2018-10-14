@@ -24,9 +24,8 @@ public:
     int minimum()const;
     int maximum()const;
     int value()const;
-	void setEnabled(bool enabled);
+	//void setEnabled(bool enabled);
     void setOrientation(Qt::Orientation orientation);
-	bool blockSignals(bool block);
 
 public slots:
     void setValue(int value);
@@ -45,8 +44,25 @@ private:
 class TitledSliderWidthDoubleSpinBox:public QWidget{
   Q_OBJECT
 public:
-    explicit TitledSliderWidthDoubleSpinBox(QWidget * parent = nullptr):QWidget(parent){
-
-    }
+	TitledSliderWidthDoubleSpinBox(const QString & title,Qt::Orientation orientation,QWidget * parent = nullptr);
+	void setMinimum(double value);
+	void setMaximum(double value);
+	void setValue(double value);
+	void setRange(double min, double max);
+	void setSingleStep(double step);
+	double singleStep() const;
+	void setText(const QString & text);
+	double minimum()const;
+	double maximum()const;
+	double value()const;
+signals:
+	void valueChanged(double value);
+private:
+	void updateSliderProperty()const;
+private:
+	QHBoxLayout * m_layout;
+	QDoubleSpinBox * m_spinBox;
+	QSlider * m_slider;
+	QLabel * m_label;
 };
 #endif // LABELSLIDERWITHSPINBOX_H

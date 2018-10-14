@@ -14,6 +14,7 @@ QT_END_NAMESPACE
 class DoubleSlider;
 class TF1DMappingCanvas;
 class TF1DTextureCanvas;
+//class GPUVolume;
 
 class TF1DEditor : public QWidget {
 	Q_OBJECT
@@ -121,6 +122,13 @@ protected:
     int maximumIntensity; ///< maximum intensity that can occur in the dataset
 
 	QString curTFFile;
+
+	//GPUVolume * m_volume;
+
+	// Voxel Histogram
+	QScopedPointer<double, QScopedPointerArrayDeleter<double>> m_voxelHistogram;
+	double m_maxCountOfHistogram;
+
 };
 
 #endif

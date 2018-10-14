@@ -34,10 +34,6 @@ void SliceEditorWidget::createConnections()
 
 	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 
-	//connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
-	//connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
-	//connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::updateDeleteAction);
-
 	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
@@ -142,13 +138,12 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 	if(watched == m_topView) {
 		if(event->type() == QEvent::Wheel) {
 			const auto e = static_cast<QWheelEvent*>(event);
-			qDebug() << "Mouse Wheel Event";
 			if (e->delta() > 0)
 				zoomIn();
 			else
 				zoomOut();
 			event->accept();
-			return false;
+			return true;
 		}
 	}else if(watched == m_rightView) {
 		if(event->type() == QEvent::Wheel) {
@@ -158,7 +153,7 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 			else
 				zoomOut();
 			event->accept();
-			return false;
+			return true;
 		}
 		
 	}else if(watched == m_frontView) {
@@ -169,7 +164,7 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 			else
 				zoomOut();
 			event->accept();
-			return false;
+			return true;
 		}
 	}
 	return false;
@@ -239,6 +234,7 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	mark->setData(MarkProperty::VisibleState, QVariant::fromValue(true));
 	//slicetype, sliceindex, categoryname, name, color, categorycolor, visible state
 	int index;
+
 	QColor color;
 	index = currentSliceIndex(type);
 	switch (type)
@@ -406,6 +402,7 @@ MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noe
 			*success = false;
 		return nullptr;
 	}
+
 	detachMarkModel();
 	auto t = m_markModel;
 	installMarkModel(model);

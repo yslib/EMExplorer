@@ -337,6 +337,8 @@ void HistogramWidget::initWidgets() {
 	m_maxSlider->setValue(255);
 	m_maxSlider->blockSignals(false);
 
+	m_contrastFactor->setValue(1.0);
+	m_brightnessFactor->setValue(1.0);
 
 }
 
@@ -353,8 +355,6 @@ void HistogramWidget::init() {
 	// reset histogram with original image
 	m_hist->setImage(curImg);
 
-
-
 }
 
 void HistogramWidget::histEqualizeImage()
@@ -367,8 +367,8 @@ void HistogramWidget::histEqualizeImage()
 
 	Q_ASSERT_X(oriImage.isNull() == false, "HistogramViewer::updateImage", "null image");
 	unsigned char *image = oriImage.bits();
-	int width = oriImage.width();
-	int height = oriImage.height();
+	const auto width = oriImage.width();
+	const auto height = oriImage.height();
 
     //memory buffer is shared between CImg and QImage
     cimg_library::CImg<unsigned char> equalizedImage(image,width,height,1,1,true);
@@ -404,6 +404,55 @@ void HistogramWidget::histEqualizeImage()
 	setCurrentImage(sliceType(),oriImage);
 }
 
+void HistogramWidget::updateContrastAndBrightness() 
+{
+	const auto brightness = m_brightnessFactor->value();
+	const auto contrast = m_contrastFactor->value();
+
+
+	auto image = originalImage(sliceType(),currentIndex(sliceType())).copy();		// There need to use copy(), think why.
+
+	const auto width = image.width();
+	const auto height = image.height();
+	//unsigned char * imageData = image.bits();
+
+
+	cimg_library::CImg<unsigned char> imageHelper(
+		image.bits(),
+		image.bytesPerLine(),			// QImage requires 32-bit aligned for each scanLine, but CImg don't.
+		height, 
+		1, 
+		true);							// Share data
+
+	const auto mean = imageHelper.mean();
+
+	//QImage newImage(width, height, QImage::Format_Grayscale8);
+
+
+#pragma omp parallel for
+	for(auto h = 0;h < height;++h) {
+		const auto scanLine = image.scanLine(h);
+		for(auto w = 0;w<width;++w) {
+			auto t = scanLine[w] - mean;
+
+			t *= contrast; //Adjust contrast
+			t += mean * brightness; // Adjust brightness
+
+			scanLine[w] = (t > 255.0) ? (255) : (t<0.0 ? (0):(t));
+
+		}
+	}
+
+	setCurrentImage(sliceType(), image);
+
+	m_hist->setImage(image);			//Note:: this variable is no longer the original image.
+	SliceItem * item = sliceItem(sliceType());
+	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
+	//qDebug() << item->pos();
+	item->setPixmap(QPixmap::fromImage(image));
+
+}
+
 
 void HistogramWidget::createWidgets()
 {
@@ -420,11 +469,26 @@ void HistogramWidget::createWidgets()
     m_minSlider = new TitledSliderWithSpinBox(this,QStringLiteral("Min:"));
     m_maxSlider = new TitledSliderWithSpinBox(this,QStringLiteral("Max:"));
 
+	m_contrastFactor = new TitledSliderWidthDoubleSpinBox(QStringLiteral("Contrast"), Qt::Horizontal, this);
+	m_contrastFactor->setRange(0, 5);
+	m_contrastFactor->setSingleStep(0.1);
+	m_contrastFactor->setValue(1.0);
+	connect(m_contrastFactor, &TitledSliderWidthDoubleSpinBox::valueChanged, [this](double value) {updateContrastAndBrightness();});
+	m_brightnessFactor = new TitledSliderWidthDoubleSpinBox(QStringLiteral("Brightness"), Qt::Horizontal, this);
+	m_brightnessFactor->setRange(0, 5);
+	m_brightnessFactor->setSingleStep(0.1);
+	m_brightnessFactor->setValue(1.0);
+	connect(m_brightnessFactor, &TitledSliderWidthDoubleSpinBox::valueChanged, [this](double value) {updateContrastAndBrightness(); });
+
+
     m_histogramLayout->addWidget(m_hist,0,0,1,2);
     m_histogramLayout->addWidget(m_histNumLabel,1,0);
     m_histogramLayout->addWidget(m_histNumSpinBox,1,1);
-    m_histogramLayout->addWidget(m_minSlider,2,0,1,2);
-    m_histogramLayout->addWidget(m_maxSlider,3,0,1,2);
+	m_histogramLayout->addWidget(m_minSlider, 2, 0, 1, 2);
+	m_histogramLayout->addWidget(m_maxSlider, 3, 0, 1, 2);
+	m_histogramLayout->addWidget(m_contrastFactor, 4, 0,1,2);
+	m_histogramLayout->addWidget(m_brightnessFactor, 5,0,1,2);
+
 
     m_filterLabel = new QLabel(QStringLiteral("Filters:"),this);
     m_filterComboBox = new QComboBox(this);
@@ -486,8 +550,6 @@ void HistogramWidget::createConnections()
 	connect(m_filterButton, &QPushButton::clicked, this, &HistogramWidget::filterImage);
 
 	connect(m_filterComboBox, QOverload<const QString &>::of(&QComboBox::activated), [=](const QString & text) {
-		//    qDebug()<<"Signal:QComboxBox::activated";
-		//    updateParameterLayout(text);
 		Q_UNUSED(text);
 	});
 	connect(m_filterComboBox, &QComboBox::currentTextChanged, [=](const QString & text) {
