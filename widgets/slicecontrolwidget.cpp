@@ -84,7 +84,7 @@ SliceControlWidget::SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWid
 	m_stopAction->setToolTip(QStringLiteral("Stop"));
 	m_stopAction->setCheckable(true);
 	m_stopAction->setChecked(true);
-	m_stopAction->setIcon(QIcon(":icons/resources/icons/quad.png"));
+	m_stopAction->setIcon(QIcon(":icons/resources/icons/pause.png"));
 	m_stopAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	connect(m_stopAction, &QToolButton::toggled, [this](bool enable) {m_sliceTimer->stop(); });
 	auto hStopActionLayout = new QHBoxLayout;

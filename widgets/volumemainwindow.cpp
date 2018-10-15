@@ -29,7 +29,7 @@ VolumeMainWindow::VolumeMainWindow(QWidget *parent) : QMainWindow(parent)
 
 	m_toolBar = addToolBar(QStringLiteral("toolbar1"));
 	auto action = m_controlDockWidget->toggleViewAction();
-	action->setIcon(QIcon(""));
+	action->setIcon(QIcon(":icons/resources/icons/control_panel.png"));
 	action->setToolTip(QStringLiteral("Display Contorl Panel"));
 	m_toolBar->addAction(action);
 	setCentralWidget(m_volumeWidget);

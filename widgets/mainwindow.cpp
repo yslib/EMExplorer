@@ -48,10 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	//	{QStringLiteral("v"), QStringLiteral("Open a window which only has a volume view.")},
 	//	{QStringLiteral("m"), QStringLiteral("Run marking function for view slice window.")}
 	//});
-
 	//m_parser->process(*qApp);
-
-
 
 	setWindowTitle("Window");
 
@@ -335,7 +332,6 @@ void MainWindow::readSettingsForImageView(SliceEditorWidget * view, QSettings * 
 	view->setFrontSliceVisible(settings->value(QStringLiteral("frontvisible"), true).toBool());
 	view->setPen(settings->value(QStringLiteral("pen"), QVariant::fromValue(QPen(Qt::black, 5, Qt::SolidLine))).value<QPen>());
 	settings->endGroup();
-
 }
 
 void MainWindow::readSettings()
@@ -349,7 +345,7 @@ void MainWindow::readSettings()
 
 
 	readSettingsForDockWidget(m_profileViewDockWidget, &settings);
-	//readSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	readSettingsForDockWidget(m_treeViewDockWidget, &settings);
 	readSettingsForDockWidget(m_markInfoDockWidget, &settings);
 	readSettingsForImageView(m_imageView, &settings);
 	readSettingsForDockWidget(m_volumeViewDockWidget, &settings);
@@ -364,7 +360,7 @@ void MainWindow::writeSettings()
 	settings.endGroup();
 
 	writeSettingsForDockWidget(m_profileViewDockWidget, &settings);
-	//writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
 	writeSettingsForDockWidget(m_markInfoDockWidget, &settings);
 	writeSettingsForImageView(m_imageView, &settings);
 	writeSettingsForDockWidget(m_volumeViewDockWidget, &settings);
@@ -372,21 +368,29 @@ void MainWindow::writeSettings()
 
 void MainWindow::setDefaultLayout()
 {
-	addDockWidget(Qt::LeftDockWidgetArea, m_profileViewDockWidget);
-	addDockWidget(Qt::RightDockWidgetArea,m_controlDockWidget);
-	splitDockWidget(m_profileViewDockWidget,m_imageViewDockWidget,Qt::Horizontal);
-	tabifyDockWidget(m_imageViewDockWidget,m_volumeViewDockWidget);
-	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget,Qt::Vertical);
-	splitDockWidget(m_profileViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
+	splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	tabifyDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget);
+	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	tabifyDockWidget(m_markInfoDockWidget, m_profileViewDockWidget);
 }
 
 void MainWindow::setParallelLayout() {
-	addDockWidget(Qt::LeftDockWidgetArea, m_profileViewDockWidget);
+	//addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	//tabifyDockWidget(m_treeViewDockWidget,m_profileViewDockWidget);
+	//addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
+	//splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	//splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
+	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+
+	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
 	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
-	splitDockWidget(m_profileViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
-//	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
-	splitDockWidget(m_profileViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
+	tabifyDockWidget(m_markInfoDockWidget, m_profileViewDockWidget);
 }
 
 void MainWindow::pixelViewActionTriggered()
@@ -468,7 +472,7 @@ void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 	m_volumeControlWidget->setVisible(state & (FocusInVolumeView));
 	m_sliceToolControlWidget->setVisible(state & (FocusInSliceWidget | FocusInSliceView));
 	m_sliceControlWidget->setVisible(state&(FocusInVolumeView|FocusInSliceWidget|FocusInSliceView));
-	m_treeView->setVisible(state&(FocusInSliceWidget | FocusInSliceView));
+	//m_treeViewDockWidget->setVisible(state&(FocusInSliceWidget | FocusInSliceView));
 }
 
 void MainWindow::updateActionsBySelectionInSliceView(){
@@ -526,7 +530,13 @@ void MainWindow::createWidget()
 	m_viewMenu->addAction(m_markInfoDockWidget->toggleViewAction());
 
 	// MarkTreeView
-	m_treeView = new MarkManagerWidget;
+	m_treeView = new MarkManagerWidget(this);
+	m_treeViewDockWidget = new QDockWidget(QStringLiteral("Mark Manager"));
+	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_treeViewDockWidget->setWidget(m_treeView);
+	m_treeViewDockWidget->setMinimumSize(300, 0);
+	m_treeViewDockWidget->setMaximumSize(300, 10000);
+	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 
 
 	//ImageCanvas  centralWidget
@@ -536,6 +546,7 @@ void MainWindow::createWidget()
 	m_imageView->setFocusPolicy(Qt::ClickFocus);
 	m_imageViewDockWidget->setWidget(m_imageView);
 	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_viewMenu->addAction(m_imageViewDockWidget->toggleViewAction());
 	connect(m_imageViewDockWidget, &QDockWidget::visibilityChanged, [this](bool enable) {if(enable)updateActionsAndControlPanelByWidgetFocus(FocusInSliceWidget); });
 	connect(m_imageView, &SliceEditorWidget::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
 	connect(m_imageView, &SliceEditorWidget::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
@@ -562,7 +573,7 @@ void MainWindow::createWidget()
 	layout->addWidget(m_sliceControlWidget);
 	layout->addWidget(m_volumeControlWidget);
 	layout->addWidget(m_sliceToolControlWidget);
-	layout->addWidget(m_treeView);
+	//layout->addWidget(m_treeView);
 	layout->addStretch(1);
 	m_scrollAreaWidget = new QScrollArea(this);
 	m_scrollAreaWidget->setLayout(layout);
@@ -645,7 +656,7 @@ void MainWindow::createWidget()
 	m_anchorAction->setToolTip(QStringLiteral("Anchor"));
 	m_anchorAction->setCheckable(true);
 	m_anchorAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_anchorAction->setIcon(QIcon(":icons/resources/icons/voteModel.png"));
+	m_anchorAction->setIcon(QIcon(":icons/resources/icons/anchor.png"));
 	m_anchorAction->setChecked(true);
 	m_markButtonGroup->addButton(m_anchorAction);
 	m_toolBar->addWidget(m_anchorAction);
@@ -669,7 +680,7 @@ void MainWindow::createWidget()
 	m_pixelViewAction = new QToolButton(this);
 	m_pixelViewAction->setToolTip(QStringLiteral("Pixel View"));
 	m_pixelViewAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
-	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/VPSelect.png"));
+	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/picker.png"));
 	connect(m_pixelViewAction, &QToolButton::clicked, this, &MainWindow::pixelViewActionTriggered);
 	m_toolBar->addWidget(m_pixelViewAction);
 
@@ -727,13 +738,13 @@ void MainWindow::createActions()
 	});
 
 	//set default action
-	m_setDefaultLayoutAction = new QAction(QIcon(":/icons/resources/icons/grid.png"),QStringLiteral("Default Layout"),this);
+	m_setDefaultLayoutAction = new QAction(QIcon(":/icons/resources/icons/tab_layout.png"),QStringLiteral("Default Layout"),this);
 	m_setDefaultLayoutAction->setToolTip(QStringLiteral("Default Layout"));
 	m_toolBar->addAction(m_setDefaultLayoutAction);
 	connect(m_setDefaultLayoutAction, &QAction::triggered, this, &MainWindow::setDefaultLayout);
 
 	// Set Parallel Layout Action
-	m_parallelLayoutAction = new QAction(QIcon(":/icons/resources/icons/arrowLeftRight.png"), QStringLiteral("Parallel Layout"), this);
+	m_parallelLayoutAction = new QAction(QIcon(":/icons/resources/icons/parallel_layout.png"), QStringLiteral("Parallel Layout"), this);
 	m_parallelLayoutAction->setToolTip(QStringLiteral("Parallel Layout"));
 	m_toolBar->addAction(m_parallelLayoutAction);
 	connect(m_parallelLayoutAction, &QAction::triggered, this, &MainWindow::setParallelLayout);

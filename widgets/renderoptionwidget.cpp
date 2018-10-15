@@ -125,7 +125,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* par
 	m_transferFunctionGroupBox = new QGroupBox("Transfer Function");
 	auto tfWidgetHLayout = new QHBoxLayout;
 	m_tfButton = new QToolButton(this);
-	m_tfButton->setIcon(QIcon(QStringLiteral(":icons/resources/icons/histogram.png")));
+	m_tfButton->setIcon(QIcon(QStringLiteral(":icons/resources/icons/tf.png")));
 	m_tfButton->setToolTip(QStringLiteral("1D Transfer function"));
 	connect(m_tfButton, &QToolButton::clicked, this, &RenderParameterWidget::tfButtonClicked);
 	m_tfButton->setStyleSheet("QToolButton::menu-indicator{image: none;}");

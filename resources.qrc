@@ -19,12 +19,9 @@
         <file>resources/icons/banana.png</file>
         <file>resources/icons/boundingBox.png</file>
         <file>resources/icons/clear.png</file>
-        <file>resources/icons/colorize.png</file>
-        <file>resources/icons/defaultView.png</file>
         <file>resources/icons/eraser.png</file>
         <file>resources/icons/grid.png</file>
         <file>resources/icons/histogram.png</file>
-        <file>resources/icons/histogramLog.png</file>
         <file>resources/icons/imageOpen.png</file>
         <file>resources/icons/nextVP.png</file>
         <file>resources/icons/open1.png</file>
@@ -38,6 +35,14 @@
         <file>resources/icons/volumeOpen.png</file>
         <file>resources/icons/voteModel.png</file>
         <file>resources/icons/VPSelect.png</file>
+        <file>resources/icons/anchor.png</file>
+        <file>resources/icons/control_panel.png</file>
+        <file>resources/icons/default_view.png</file>
+        <file>resources/icons/parallel_layout.png</file>
+        <file>resources/icons/picker.png</file>
+        <file>resources/icons/tab_layout.png</file>
+        <file>resources/icons/tf.png</file>
+        <file>resources/icons/pause.png</file>
     </qresource>
     <qresource prefix="/shaders">
         <file>resources/shaders/position_f.glsl</file>

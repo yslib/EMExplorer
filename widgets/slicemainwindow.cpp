@@ -1,16 +1,15 @@
 #include "slicemainwindow.h"
-
 #include "widgets/sliceeditorwidget.h"
 #include "widgets/slicecontrolwidget.h"
 
 #include <QDockWidget>
 #include <QToolBar>
 #include <QToolButton>
+#include <QMessageBox>
 
 #include "model/mrcdatamodel.h"
 #include "model/mrc.h"
 #include "model/markmodel.h"
-#include <QMessageBox>
 
 SliceMainWindow::SliceMainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -29,7 +28,7 @@ SliceMainWindow::SliceMainWindow(QWidget *parent) : QMainWindow(parent)
 	m_toolBar = addToolBar(QStringLiteral("toolbar1"));
 
 	m_sliceControlViewToggleAction = m_controlDockWidget->toggleViewAction();
-	m_sliceControlViewToggleAction->setIcon(QIcon(""));
+	m_sliceControlViewToggleAction->setIcon(QIcon(":icons/resources/icons/control_panel.png"));
 
 	// Zoom In Action
 	m_zoomInAction = new QToolButton(this);
@@ -63,7 +62,7 @@ SliceMainWindow::SliceMainWindow(QWidget *parent) : QMainWindow(parent)
 	m_pixelViewAction = new QToolButton(this);
 	m_pixelViewAction->setToolTip(QStringLiteral("Pixel View"));
 	m_pixelViewAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
-	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/VPSelect.png"));
+	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/picker.png"));
 	connect(m_pixelViewAction, &QToolButton::clicked, this, &SliceMainWindow::pixelViewActionTriggered);
 	m_toolBar->addWidget(m_pixelViewAction);
 
