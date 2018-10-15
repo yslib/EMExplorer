@@ -1,36 +1,60 @@
+#include "widgets/slicemainwindow.h"
+#include "widgets/volumemainwindow.h"
 #include "widgets/mainwindow.h"
+
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QTimer>
+
 
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
-    QApplication a(argc, argv);
+	QApplication a(argc, argv);
 
 	QCommandLineParser parser;
-
-	parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
-
-	const QCommandLineOption mrcFileOptions(QStringLiteral("mrc"), QStringLiteral("MRC file path"),QStringLiteral("path"));
-	const QCommandLineOption markFileOptions(QStringLiteral("mark"), QStringLiteral("Mark file Path"),QStringLiteral("path"));
-	parser.addOption(mrcFileOptions);
-	parser.addOption(markFileOptions);
+	parser.addOptions({
+			{QStringLiteral("f"), QStringLiteral("Slice data or marks data file path."), QStringLiteral("path")},	// An option with value
+			{QStringLiteral("s"), QStringLiteral("Open a main window which only has slice view.")},					// An option
+			{QStringLiteral("v"), QStringLiteral("Open a window which only has a volume view.")},
+			{QStringLiteral("m"), QStringLiteral("Mark data file path"),QStringLiteral("path")},
+			{QStringLiteral("l"), QStringLiteral("Open a slice window which has marking function")}
+		});
 
 	parser.process(a);
 
-	const QString mrcPath = parser.value(mrcFileOptions);
-	const QString markPath = parser.value(markFileOptions);
+	if (parser.isSet("s")) {
+		SliceMainWindow w;
+		if (parser.isSet("f")) {
+			w.open(parser.value("f"));
+			if (parser.isSet("m")) {
+				w.openMark(parser.value("m"));
+			}
+		}
+		w.show();
+		return a.exec();
+	}
+	else if (parser.isSet("v")) {
+		VolumeMainWindow w;
+		// Note:
+		// OpenGL context is initialized when event loop starts, so a delayed operation using context needs to be performed
+		if (parser.isSet("f")) {
+			QTimer::singleShot(10, [&w, &parser]() {w.open(parser.value("f")); });
+			if (parser.isSet("m")) {
+				QTimer::singleShot(15, [&w, &parser]() {w.open(parser.value("m")); });
+			}
+		}
 
-    MainWindow w;
-    w.show();
-
-	if(mrcPath.isEmpty() == false) {
-		w.open(mrcPath);
-		w.openMark(markPath);
+		w.show();
+		return a.exec();
+	}
+	else {
+		MainWindow w;
+		w.show();
+		return a.exec();
 	}
 
-    return a.exec();
 }

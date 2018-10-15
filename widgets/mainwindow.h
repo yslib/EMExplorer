@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QMainWindow>
 #include "model/mrcdatamodel.h"
+
 enum class SliceType;
 QT_BEGIN_NAMESPACE
 class QTableView;
@@ -14,17 +15,18 @@ class QToolButton;
 class QButtonGroup;
 QT_END_NAMESPACE
 class SliceEditorWidget;
+class SliceToolWidget;
+class SliceControlWidget;
+
 class MarkModel;
 class ProfileWidget;
+
 class MRC;
 class MarkManagerWidget;
 class MarkInfoWidget;
 class RenderParameterWidget;
 class TF1DEditor;
 class RenderWidget;
-class SliceToolWidget;
-class SliceControlWidget;
-
 
 
 class MainWindow : public QMainWindow
@@ -35,10 +37,11 @@ public:
 	void open(const QString& fileName);
 	void openMark(const QString & fileName);
 	bool eventFilter(QObject* watched, QEvent* event) override;
-	~MainWindow();
+	~MainWindow() = default;
 protected:
 	void closeEvent(QCloseEvent* event)Q_DECL_OVERRIDE;
 private:
+
 	enum FocusState {
 		FocusInTopSliceView = 1,
 		FocusInRightSliceView = 2,
@@ -47,11 +50,15 @@ private:
 		FocusInSliceWidget = 16,
 		FocusInSliceView = FocusInTopSliceView | FocusInRightSliceView | FocusInFrontSliceView,
 	};
+
+	void initializeForSliceViewWindow();
+	void initializeForVolumeViewWindow();
+	void initializeForSliceWithMarkingViewWindow();
+
 	void createWidget();
 	void createMenu();
 	void createActions();
 	void createStatusBar();
-	void createMarkTreeView();
 	void createSliceEditorPlugins();
 	bool saveMark();
 	void saveAs();
@@ -67,7 +74,6 @@ private:
 	void pixelViewActionTriggered();
 	void histogramViewActionTriggered();
 
-	void toolBarActionsTriggered(QAction * action);
 
 	void updateActionsAndControlPanelByWidgetFocus(FocusState state);
 	void updateActionsBySelectionInSliceView();
@@ -83,7 +89,9 @@ private:
 	RenderWidget * m_volumeView;
 
 	RenderParameterWidget * m_volumeControlWidget;
+
 	SliceToolWidget * m_sliceToolControlWidget;
+
 	SliceControlWidget * m_sliceControlWidget;
 	QScrollArea * m_scrollAreaWidget;
 	QDockWidget * m_controlDockWidget;
@@ -109,7 +117,7 @@ private:
 
 	// Tool Bar
 	QToolBar *m_toolBar;
-		
+
 	// Actions
 	QAction * m_openAction;
 	QAction * m_saveAction;
@@ -118,7 +126,7 @@ private:
 	QAction * m_parallelLayoutAction;
 
 	//
-	QButtonGroup * m_markButtonGroup;
+	QButtonGroup *m_markButtonGroup;
 	QToolButton *m_markAction;
 	QToolButton *m_markSelectionAction;
 	QToolButton *m_anchorAction;
@@ -126,7 +134,7 @@ private:
 	QToolButton *m_markDeletionAction;
 	QToolButton *m_zoomInAction;
 	QToolButton *m_zoomOutAction;
-	QToolButton * m_resetAction;
+	QToolButton *m_resetAction;
 
 	//QHash<QAction*,QToolButton*> m_pluginButtons;
 
@@ -136,6 +144,8 @@ private:
 
 	// State
 	FocusState m_currentFocus;
+
+	//QScopedPointer<QCommandLineParser> m_parser;
 
 };
 

@@ -420,6 +420,8 @@ MarkModel * SliceEditorWidget::markModel()
 SliceEditorWidget::~SliceEditorWidget()
 {
 	delete d_ptr;
+	if (m_markModel != nullptr)
+		delete m_markModel;
 }
 
 

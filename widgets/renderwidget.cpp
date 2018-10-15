@@ -205,6 +205,7 @@ void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 	updateVolumeData();
 
 	emit requireTransferFunction();
+
 	emit dataModelChanged();
 
 	update();
@@ -498,6 +499,7 @@ void RenderWidget::updateMark() {
 	{
 		return;
 	}
+
 	Q_D(RenderWidget);
 
 	m_markMeshes.clear();
@@ -514,7 +516,7 @@ void RenderWidget::updateMark() {
 	for (const auto & c : cates) {
 		const auto meshes = m_markModel->markMesh(c);
 		/**
-		 *This is a low efficient operation because color of category could not be retrieved
+		 *	This is a low efficient operation because color of category could not be retrieved
 		 *  directly by category item, which is not stored color when created.
 		 *  TODO:: The issue would be addressed soon.
 		*/
@@ -542,8 +544,6 @@ void RenderWidget::updateMark() {
 
 	}
 	doneCurrent();
-
-	
 }
 
 void RenderWidget::updateVolumeData()
@@ -567,13 +567,6 @@ void RenderWidget::updateVolumeData()
 	m_volume.reset(new SliceVolume(m_dataModel, I, VolumeFormat(), this));
 	makeCurrent();
 	m_volume->initializeGLResources();
-
-	const auto s = size();
-
-	//emit windowResized(s.width(), s.height());			// A bullshit design
-
-
-
 	doneCurrent();
 }
 

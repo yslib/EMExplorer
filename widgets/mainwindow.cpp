@@ -11,6 +11,7 @@
 #include <QToolButton>
 #include <QEvent>
 #include <QButtonGroup>
+#include <QCommandLineParser>
 
 #include "mainwindow.h"
 #include "model/mrc.h"
@@ -28,28 +29,49 @@
 #include "widgets/pixelwidget.h"
 #include "widgets/histogramwidget.h"
 
+
 //QSize imageSize(500, 500);
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent)
 	,m_toolBar(nullptr)
+	//,m_parser(nullptr)
 {
 	//These functions need to be called in order.
-	setWindowTitle("MRC Marker");
+
+	// Parsing command line parameters
+
+	//m_parser.reset(new QCommandLineParser);
+
+	//m_parser->addOptions({
+	//	{QStringLiteral("f"), QStringLiteral("Slice data or marks data files path."), QStringLiteral("path")},	// An option with value
+	//	{QStringLiteral("s"), QStringLiteral("Open a main window which only has slice view.")},					// An option
+	//	{QStringLiteral("v"), QStringLiteral("Open a window which only has a volume view.")},
+	//	{QStringLiteral("m"), QStringLiteral("Run marking function for view slice window.")}
+	//});
+
+	//m_parser->process(*qApp);
+
+
+
+	setWindowTitle("Window");
+
 	createActions();
+
 	createMenu();
+
 	createWidget();
+
 	setDefaultLayout();
+
 	createStatusBar();
+
 	resize(1650, 1080);
 
-	//readSettings();
 	updateActionsAndControlPanelByWidgetFocus(static_cast<FocusState>(0));
 	updateActionsBySelectionInSliceView();
 	setUnifiedTitleAndToolBarOnMac(true);
 }
-MainWindow::~MainWindow()
-{
-}
+
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
@@ -73,9 +95,22 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	//writeSettings();
 }
 
+void MainWindow::initializeForSliceViewWindow() 
+{
+	setWindowTitle(QStringLiteral("Slice View"));
+
+
+
+}
+
+void MainWindow::initializeForVolumeViewWindow() {
+	setWindowTitle(QStringLiteral("Volume Render"));
+
+}
+
+
 void MainWindow::open(const QString& fileName)
 {
-
 
 	if (fileName.isEmpty())
 		return;
@@ -147,7 +182,7 @@ void MainWindow::openMark(const QString & fileName)
 		const auto model = m_imageView->markModel();
 		if (model == nullptr || model->dirty() == false)
 		{
-			auto newModel = new MarkModel(fileName);
+			const auto newModel = new MarkModel(fileName);
 			bool success;
 
 			auto t = m_imageView->takeMarkModel(newModel, &success);
@@ -415,12 +450,6 @@ void MainWindow::histogramViewActionTriggered() {
 }
 
 
-
-void MainWindow::toolBarActionsTriggered(QAction* action) {
-	///TODO::
-	return;
-}
-
 void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 
 	//static FocusState s_state = static_cast<FocusState>(0);
@@ -462,6 +491,10 @@ void MainWindow::sliceViewSelected(SliceType type) {
 	}
 }
 
+void MainWindow::initializeForSliceWithMarkingViewWindow() {
+	
+}
+
 void MainWindow::createWidget()
 {
 	setDockOptions(QMainWindow::AnimatedDocks);
@@ -474,8 +507,8 @@ void MainWindow::createWidget()
 		w->deleteLater();
 
 	// ProfileView
-	m_profileView = new ProfileWidget(this);
 
+	m_profileView = new ProfileWidget(this);
 	m_profileViewDockWidget = new QDockWidget(QStringLiteral("MRC Info"));
 	m_profileViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_profileViewDockWidget->setWidget(m_profileView);
@@ -485,7 +518,6 @@ void MainWindow::createWidget()
 
 	// MarkInfoWIdget
 	m_markInfoWidget = new MarkInfoWidget(this);
-
 	m_markInfoDockWidget = new QDockWidget(QStringLiteral("Mark Info"));
 	m_markInfoDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_markInfoDockWidget->setWidget(m_markInfoWidget);
@@ -505,8 +537,6 @@ void MainWindow::createWidget()
 	m_imageViewDockWidget->setWidget(m_imageView);
 	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	connect(m_imageViewDockWidget, &QDockWidget::visibilityChanged, [this](bool enable) {if(enable)updateActionsAndControlPanelByWidgetFocus(FocusInSliceWidget); });
-
-
 	connect(m_imageView, &SliceEditorWidget::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
 	connect(m_imageView, &SliceEditorWidget::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
 	connect(m_imageView, &SliceEditorWidget::viewFocus, this, &MainWindow::sliceViewSelected);
@@ -526,7 +556,6 @@ void MainWindow::createWidget()
 	m_volumeControlWidget = new RenderParameterWidget(m_volumeView, this);
 	m_sliceToolControlWidget = new SliceToolWidget(m_imageView, this);
 	m_sliceControlWidget = new SliceControlWidget(m_imageView, m_volumeView, this);
-
 
 
 	auto layout = new QVBoxLayout;
@@ -549,7 +578,8 @@ void MainWindow::createWidget()
 	connect(m_imageView, &SliceEditorWidget::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
 
 
-	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "null pointer");
+	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "m_toolBar null pointer");
+
 	m_toolBar->addSeparator();
 	// Zoom In Action
 	m_zoomInAction = new QToolButton(this);
@@ -574,12 +604,9 @@ void MainWindow::createWidget()
 	m_resetAction->setIcon(QIcon(":icons/resources/icons/reset.png"));
 	connect(m_resetAction, &QToolButton::clicked, m_imageView, &SliceEditorWidget::resetZoom);
 	m_toolBar->addWidget(m_resetAction);
-
 	m_toolBar->addSeparator();
 
-
 	m_markButtonGroup = new QButtonGroup(this);
-
 	// Mark Pen Action
 	m_markAction = new QToolButton(this);
 	m_markAction->setToolTip(QStringLiteral("Mark"));
@@ -587,16 +614,15 @@ void MainWindow::createWidget()
 	m_markAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	m_markAction->setIcon(QIcon(":icons/resources/icons/mark.png"));
 	m_markAction->setCheckable(true);
-
-	m_markButtonGroup->addButton(m_markAction);
-
 	connect(m_markAction, &QToolButton::toggled, [this](bool enable)
 	{
 			m_imageView->topView()->setOperation(SliceWidget::Paint);
 			m_imageView->rightView()->setOperation(SliceWidget::Paint);
 			m_imageView->frontView()->setOperation(SliceWidget::Paint);
 	});
+
 	m_toolBar->addWidget(m_markAction);
+	m_markButtonGroup->addButton(m_markAction);
 
 	// Selection Tool Button
 	m_markSelectionAction = new QToolButton(this);
@@ -637,7 +663,6 @@ void MainWindow::createWidget()
 	m_markDeletionAction->setIcon(QIcon(":icons/resources/icons/delete.png"));
 	connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); m_imageView->deleteSelectedMarks(); });
 	m_toolBar->addWidget(m_markDeletionAction);
-
 	m_toolBar->addSeparator();
 
 	// Pixel View ToolButton
@@ -645,7 +670,6 @@ void MainWindow::createWidget()
 	m_pixelViewAction->setToolTip(QStringLiteral("Pixel View"));
 	m_pixelViewAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
 	m_pixelViewAction->setIcon(QIcon(":icons/resources/icons/VPSelect.png"));
-	/// TODO:: connect
 	connect(m_pixelViewAction, &QToolButton::clicked, this, &MainWindow::pixelViewActionTriggered);
 	m_toolBar->addWidget(m_pixelViewAction);
 
@@ -654,7 +678,6 @@ void MainWindow::createWidget()
 	m_histogramAction->setToolTip(QStringLiteral("Histogram"));
 	m_histogramAction->setStyleSheet("QToolButton::menu-indicator{image:none;}");
 	m_histogramAction->setIcon(QIcon(":icons/resources/icons/histogram.png"));
-	/// TODO:: connect
 	connect(m_histogramAction, &QToolButton::clicked, this, &MainWindow::histogramViewActionTriggered);
 	m_toolBar->addWidget(m_histogramAction);
 
@@ -670,18 +693,15 @@ void MainWindow::createMenu()
 
 	//View menu
 	m_viewMenu = menuBar()->addMenu(QStringLiteral("View"));
-
 }
 
 void MainWindow::createActions()
 {
+	// open action
 	m_openAction = new QAction(QIcon(":/icons/resources/icons/open.png"), QStringLiteral("Open"), this);
 	m_openAction->setToolTip(QStringLiteral("Open MRC file"));
-
 	m_toolBar = addToolBar(QStringLiteral("Tools"));
-
 	m_toolBar->addAction(m_openAction);
-
 	connect(m_openAction, &QAction::triggered, [this]() {
 		open(QFileDialog::getOpenFileName(this,
 		QStringLiteral("OpenFile"),
@@ -725,16 +745,7 @@ void MainWindow::createStatusBar()
 	m_statusBar->showMessage(QStringLiteral("Ready"));
 }
 
-void MainWindow::createMarkTreeView()
-{
-	//m_treeView = new MarkTreeView;
-	//m_treeViewDockWidget = new QDockWidget(QStringLiteral("MarkManager"));
-	//m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	//m_treeViewDockWidget->setWidget(m_treeView);
-	//addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
-	//m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 
-}
 
 void MainWindow::createSliceEditorPlugins() {
 	
@@ -743,7 +754,7 @@ void MainWindow::createSliceEditorPlugins() {
 
 AbstractSliceDataModel * MainWindow::replaceSliceModel(AbstractSliceDataModel * model)
 {
-	auto old = m_imageView->sliceModel();
+	const auto old = m_imageView->sliceModel();
 	m_imageView->takeSliceModel(model);
 	return old;
 }
@@ -763,11 +774,11 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 {
 	QAbstractTableModel * model = nullptr;
 	model = new MRCInfoTableModel(mrc.propertyCount(), 2, this);
-	for (int i = 0; i < mrc.propertyCount(); i++)
+	for (auto i = 0; i < mrc.propertyCount(); i++)
 	{
 		model->setData(model->index(i, 0), QVariant::fromValue(QString::fromStdString(mrc.propertyName(i))), Qt::DisplayRole);
-		//qDebug()<<QString::fromStdString(mrc.propertyName(i));
-		MRC::DataType type = mrc.propertyType(i);
+		
+		const auto type = mrc.propertyType(i);
 		QVariant value;
 		if (type == MRC::DataType::Integer32)
 		{
@@ -781,7 +792,6 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 		{
 			value.setValue(mrc.property<MRC::MRCInt8>(i));
 		}
-		//qDebug()<<value;
 		model->setData(model->index(i, 1), value, Qt::DisplayRole);
 	}
 	return model;
