@@ -1,4 +1,6 @@
 #include "volume.h"
+
+#include <cstring>              // included for std::memcpy
 #define GLERROR(str)									\
 	{													\
 		GLenum err;										\

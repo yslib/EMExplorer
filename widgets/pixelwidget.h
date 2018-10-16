@@ -2,7 +2,7 @@
 #define PIXELVIWER_H
 //#include <QLineEdit>
 
-#include "abstract/AbstractSliceEditorPlugin.h"
+#include "abstract/abstractsliceeditorplugin.h"
 
 
 class QLabel;

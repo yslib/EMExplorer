@@ -1,4 +1,5 @@
-#include "Triangulate.h"
+#include "triangulate.h"
+
 #include "model/markitem.h"
 #include <QGraphicsItem>
 #include <cmath>

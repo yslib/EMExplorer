@@ -2,6 +2,8 @@
 #include "widgets/renderwidget.h"
 #include "widgets/renderoptionwidget.h"
 
+#include <cstring>   // for std::memcpy
+
 const static int faceIndex[] = { 1, 3, 7, 5, 0, 4, 6, 2, 2, 6, 7, 3, 0, 1, 5, 4, 4, 5, 7, 6, 0, 2, 3, 1 };
 static const float xCoord = 1.0, yCoord = 1.0, zCoord = 1.0;
 static float positionVert[] = {
