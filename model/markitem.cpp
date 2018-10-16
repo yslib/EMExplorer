@@ -1,8 +1,10 @@
 #include "markitem.h"
 #include "model/treeitem.h"
+
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QDebug>
+#include <cmath>
 
 //StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type, bool visible) : QGraphicsItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible)
 //{

@@ -8,6 +8,8 @@
 #include <QPainter>
 #include <QToolTip>
 #include <QMessageBox>
+#include <cmath>
+
 #include "TF1DMappingCanvas.h"
 #include "3drender/geometry/volume.h"
 
@@ -205,8 +207,8 @@ void TF1DMappingCanvas::paintEvent(QPaintEvent* event)
     xRange[1] = 1.f;
 
     QVector2D origin = wtos(QVector2D(0.f, 0.f));
-    origin.setX(floor(origin.x()) + 0.5f);
-    origin.setY(floor(origin.y()) + 0.5f);
+    origin.setX(std::floor(origin.x()) + 0.5f);
+    origin.setY(std::floor(origin.y()) + 0.5f);
 
     paint.setRenderHint(QPainter::Antialiasing, true);
 

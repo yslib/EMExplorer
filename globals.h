@@ -59,16 +59,4 @@ namespace MarkProperty
 	};
 }
 
-class ResourceException:public std::exception
-{
-public:
-	ResourceException():exception("Allocation for resources faild.",1){}
-};
-class FileOpenException:public std::exception
-{
-public:
-	FileOpenException() :exception("Opening file failed", 2){}
-};
-
-
 #endif // GLOBALS_H

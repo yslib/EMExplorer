@@ -187,7 +187,7 @@ protected:
 
 	// Returns the value to which the input value is being mapped.
     // The procedures handles missing keys and out-of-range values gracefully.
-	QColor TF1DMappingCanvas::getMappingForValue(float value) const;
+    QColor getMappingForValue(float value) const;
 
 
 protected:

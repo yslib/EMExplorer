@@ -380,12 +380,12 @@ bool SliceVolume::render() {
 		glfuncs->glEnable(GL_BLEND);
 		glfuncs->glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA);
 		glfuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glfuncs->glEnable(GL_TEXTURE_RECTANGLE_NV);
+        glfuncs->glEnable(GL_TEXTURE_RECTANGLE);
 		glfuncs->glEnable(GL_TEXTURE_3D);
 		m_currentShader->load(this);
 		QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
 		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
-		glfuncs->glDisable(GL_TEXTURE_RECTANGLE_NV);
+        glfuncs->glDisable(GL_TEXTURE_RECTANGLE);
 		glfuncs->glDisable(GL_TEXTURE_3D);
 		glfuncs->glDisable(GL_BLEND);
 		m_currentShader->release();
@@ -401,7 +401,7 @@ void SliceVolume::setFramebufferSize(int w, int h) {
 
 	if (m_fbo != nullptr)
 		delete m_fbo;
-	m_fbo = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE_NV, GL_RGBA32F_ARB);
+    m_fbo = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
 	m_fbo->addColorAttachment(w, h);
 
 	static QVector<QVector2D> rayCastingVB = {

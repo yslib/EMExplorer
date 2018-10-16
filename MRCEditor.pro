@@ -4,11 +4,10 @@
 
 TEMPLATE = app
 TARGET = MRCEditor
-DESTDIR = ./debug
 QT += core opengl gui widgets
-CONFIG += debug console
-DEFINES += _UNICODE WIN64 QT_DEPRECATED_WARNINGS QT_CHARTS_LIB QT_OPENGL_LIB QT_WIDGETS_LIB
 DEPENDPATH += .
+
+CONFIG+= c++14 sdk_no_version_check
 
 
 QMAKE_CXXFLAGS+= -openmp

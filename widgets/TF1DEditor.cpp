@@ -1,12 +1,16 @@
+#include <cmath>
+
 #include <QFileDialog>
 #include <QLayout>
 #include <QSpinBox>
 #include <QToolButton>
+#include <QDebug>
+
+
 #include "TF1DEditor.h"
 #include "TF1DMappingCanvas.h"
 #include "doubleslider.h"
 #include "TF1DTextureCanvas.h"
-#include <QDebug>
 
 TF1DEditor::TF1DEditor(QWidget *parent)
 	: QWidget(parent)

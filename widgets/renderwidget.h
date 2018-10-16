@@ -23,6 +23,7 @@ class QOpenGLShaderProgram;
 class SliceVolume;
 class QMenu;
 class GPUVolume;
+class QOpenGLFramebufferObject;
 
 
 enum RenderMode {

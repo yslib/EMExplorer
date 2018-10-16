@@ -4,6 +4,7 @@
 
 #include <QVector3D>
 #include <iostream>
+#include <cmath>
 
 
 GradientCalculator::GradientCalculator(QObject* parent):QObject(parent),m_ready(false) {}
@@ -44,9 +45,9 @@ unsigned char* GradientCalculator::data3() const {
 QVector3D GradientCalculator::triCubicIntpGrad(const unsigned char* pData, double px, double py, double pz)
 {
 	double ulo, vlo, wlo;
-	const double ut = modf(px, &ulo);
-	const double vt = modf(py, &vlo);
-	const double wt = modf(pz, &wlo);
+    const double ut = std::modf(px, &ulo);
+    const double vt = std::modf(py, &vlo);
+    const double wt = std::modf(pz, &wlo);
 
 	int		xlo = int(ulo);
 	int		ylo = int(vlo);

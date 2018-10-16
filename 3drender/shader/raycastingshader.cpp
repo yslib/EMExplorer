@@ -84,8 +84,8 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 	this->setUniformValue("othoMatrix", otho);
 
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->volumeTexId());
-	this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE_NV, data->startPosTexIdx());
-	this->setUniformSampler("texEndPos", GL_TEXTURE1, GL_TEXTURE_RECTANGLE_NV, data->endPosTexIdx());
+    this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE, data->startPosTexIdx());
+    this->setUniformSampler("texEndPos", GL_TEXTURE1, GL_TEXTURE_RECTANGLE, data->endPosTexIdx());
 	this->setUniformSampler("texTransfunc", GL_TEXTURE2, GL_TEXTURE_1D, data->transferFunctionsTexId());
 	this->setUniformSampler("texGradient", GL_TEXTURE4, GL_TEXTURE_3D, data->gradientTexId());
 
