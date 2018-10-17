@@ -1,5 +1,5 @@
 #version 330
-#extension GL_ARB_texture_rectangle : enable
+//#extension GL_ARB_texture_rectangle : enable
 
 // struct LIGHT_SOURCE {
 //     vec3 position_;        // light position in world space

@@ -6,13 +6,26 @@
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QTimer>
-
+#include <QSurfaceFormat>
 
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
+
+    // For macOS, QSurfaceFormat muse be set before QApplication created
+    QSurfaceFormat fmt;
+    //fmt.setMajorVersion(3);
+    //fmt.setMinorVersion(2);
+
+    fmt.setVersion(3,2);
+    fmt.setDepthBufferSize(24);
+    fmt.setStencilBufferSize(8);
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(fmt);
+
+
 	QApplication a(argc, argv);
 
 	QCommandLineParser parser;

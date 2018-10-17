@@ -1,5 +1,5 @@
-#version 150
-#extension GL_ARB_explicit_attrib_location : enable
+#version 330
+//#extension GL_ARB_explicit_attrib_location : enable
 layout (location = 0 ) in vec2 vertex;
 layout (location = 1 ) in vec2 tex;
 out vec2 textureRectCoord;
