@@ -6,7 +6,7 @@
 #include <QAbstractItemView>
 
 #include "titledsliderwithspinbox.h"
-#include "abstract/AbstractSliceEditorPlugin.h"
+#include "abstract/abstractsliceeditorplugin.h"
 
 
 class QMouseEvent;

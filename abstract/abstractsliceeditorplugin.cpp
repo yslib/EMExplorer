@@ -1,4 +1,4 @@
-#include "AbstractSliceEditorPlugin.h"
+#include "abstractsliceeditorplugin.h"
 #include "model/sliceitem.h"
 #include "widgets/slicewidget.h"
 #include "abstractslicedatamodel.h"
