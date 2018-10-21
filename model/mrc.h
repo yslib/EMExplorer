@@ -432,7 +432,7 @@ public:
 	DataType propertyType(int index)const;
 	template<typename T> T property(int index)const;
 	template<typename T> T * data()const;
-	template<typename T> auto dataWithType()const;
+    //template<typename T> auto dataWithType()const;
 	DataType dataType()const;
 	std::string info()const;
 	virtual ~MRC()noexcept;

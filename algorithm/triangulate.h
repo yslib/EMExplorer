@@ -67,20 +67,20 @@ Q_DECLARE_METATYPE(QSharedPointer<Triangulate>);
 Q_DECLARE_METATYPE(QVector<QSharedPointer<Triangulate>>);
 
 
-inline auto & tanslateVector(const QVector<QPointF> & vec, int start, int index) {
+inline auto  tanslateVector(const QVector<QPointF> & vec, int start, int index)->const QPointF& {
 	int size = vec.size();
 	Q_ASSERT_X(size > start, "translateVector", "out of range");
 	return vec[(start + size+index)%size];
 }
 
 
-inline auto distanceSquare(float x1,float y1,float z1,float x2,float y2,float z2) {
+inline auto distanceSquare(float x1,float y1,float z1,float x2,float y2,float z2)->double {
 	return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2);
 }
-inline auto distanceSquare(const QPointF & p1,float z1,const QPointF & p2,float z2) {
+inline auto distanceSquare(const QPointF & p1,float z1,const QPointF & p2,float z2)->double {
 	return distanceSquare(p1.x(), p1.y(), z1, p2.x(), p2.y(), z2);
 }
-inline auto distanceSquare(const QVector3D & v1,const QVector3D & v2) {
+inline auto distanceSquare(const QVector3D & v1,const QVector3D & v2)->double {
 	return distanceSquare(v1.x(), v1.y(), v1.z(), v2.x(), v2.y(), v2.z());
 }
 void triangulate(const QVector<QPointF> & upper, const QVector<QPointF> & lower,float density);
