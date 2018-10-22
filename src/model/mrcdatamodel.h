@@ -1,0 +1,24 @@
+#ifndef MRCDATAMODEL_H
+#define MRCDATAMODEL_H
+#include <QSharedPointer>
+#include "src/abstract/abstractslicedatamodel.h"
+
+
+class MRC;
+
+class MRCDataModel:public AbstractSliceDataModel
+{
+public:
+    MRCDataModel(const QSharedPointer<MRC> & data);
+    QImage originalTopSlice(int index) const Q_DECL_OVERRIDE;
+    QImage originalRightSlice(int index) const Q_DECL_OVERRIDE;
+    QImage originalFrontSlice(int index) const Q_DECL_OVERRIDE;
+	unsigned char * data() Q_DECL_OVERRIDE;
+	const unsigned char * constData() const Q_DECL_OVERRIDE;
+    inline int topSliceCount() const Q_DECL_OVERRIDE;
+    inline int rightSliceCount() const Q_DECL_OVERRIDE;
+    inline int frontSliceCount() const Q_DECL_OVERRIDE;
+private:
+    QSharedPointer<MRC> m_d;
+};
+#endif // MRCDATAMODEL_H

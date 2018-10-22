@@ -1,97 +1,104 @@
 TEMPLATE = app
 TARGET = MRCEditor
 QT += core opengl gui widgets
-DEPENDPATH += .
+
+INCLUDEPATH += src
+ # source file name prefix
+DEPENDPATH += src
+
+# header file name prefix
+MY_PREFIX_DIR = src
+
 
 QMAKE_CXXFLAGS+= -openmp
 QMAKE_LFLAGS+= -openmp
 
 
-HEADERS +=./widgets/doubleslider.h \
-    ./widgets/TF1DEditor.h \
-    ./widgets/TF1DMappingCanvas.h \
-    ./widgets/TF1DTextureCanvas.h \
-    ./abstract/abstractsliceeditorplugin.h \
-    ./widgets/histogramwidget.h \
-    ./widgets/sliceeditorwidget.h \
-    ./widgets/mainwindow.h \
-    ./widgets/markcategorydialog.h \
-    ./widgets/markinfowidget.h \
-    ./model/markmodel.h \
-    ./widgets/fileinfowidget.h \
-    ./widgets/pixelwidget.h \
-    ./widgets/profilewidget.h \
-    ./widgets/slicewidget.h \
-    ./widgets/titledsliderwithspinbox.h \
-    ./widgets/zoomwidget.h \
-    ./algorithm/CImg.h \
-    ./widgets/TF1DMappingKey.h \
-    ./abstract/abstractslicedatamodel.h \
-    ./3drender/geometry/camera.h \
-    ./model/categoryitem.h \
-    ./globals.h \
-    ./model/markitem.h \
-    ./widgets/marktreeviewwidget.h \
-    ./model/mrc.h \
-    ./model/mrcdatamodel.h \
-    ./model/sliceitem.h \
-    ./model/treeitem.h \
-    ./widgets/renderwidget.h \
-    ./widgets/renderoptionwidget.h \
-    ./widgets/slicetoolwidget.h \
-    ./3drender/shader/shaderdatainterface.h \
-    ./3drender/shader/shaderprogram.h \
-    ./algorithm/gradientcalculator.h \
-    ./3drender/shader/raycastingshader.h \
-    ./3drender/geometry/mesh.h \
-    ./3drender/geometry/geometry.h \
-    ./3drender/geometry/volume.h \
-    3drender/geometry/slicevolume.h \
-    3drender/geometry/renderobject.h \
-    algorithm/triangulate.h \
-    algorithm/subdivion.h \
-    widgets/slicecontrolwidget.h \
-    widgets/slicemainwindow.h \
-    widgets/volumemainwindow.h
-SOURCES +=./widgets/doubleslider.cpp \
-    ./widgets/TF1DEditor.cpp \
-    ./widgets/TF1DMappingCanvas.cpp \
-    ./widgets/TF1DTextureCanvas.cpp \
-    ./abstract/abstractsliceeditorplugin.cpp \
-    ./abstract/abstractslicedatamodel.cpp \
-    ./model/categoryitem.cpp \
-    ./widgets/histogramwidget.cpp \
-    ./widgets/sliceeditorwidget.cpp \
-    ./main.cpp \
-    ./widgets/mainwindow.cpp \
-    ./widgets/markcategray.cpp \
-    ./widgets/markinfowidget.cpp \
-    ./model/markitem.cpp \
-    ./model/markmodel.cpp \
-    ./widgets/marktreeviewwidget.cpp \
-    ./model/mrc.cpp \
-    ./model/mrcdatamodel.cpp \
-    ./widgets/fileinfowidget.cpp \
-    ./widgets/pixelwidget.cpp \
-    ./widgets/profilewidget.cpp \
-    ./model/sliceitem.cpp \
-    ./widgets/slicewidget.cpp \
-    ./widgets/titledsliderwithspinbox.cpp \
-    ./model/treeitem.cpp \
-    ./widgets/renderwidget.cpp \
-    ./widgets/zoomwidget.cpp \
-    ./widgets/renderoptionwidget.cpp \
-    ./widgets/slicetoolwidget.cpp \
-    ./algorithm/gradientcalculator.cpp \
-    ./3drender/shader/shaderprogram.cpp \
-    ./3drender/shader/raycastingshader.cpp \
-    ./3drender/geometry/mesh.cpp \
-    ./3drender/geometry/volume.cpp \
-    3drender/geometry/slicevolume.cpp \
-    3drender/geometry/renderobject.cpp \
-    algorithm/triangulate.cpp \
-    algorithm/subdivion.cpp \
-    widgets/slicecontrolwidget.cpp \
-    widgets/slicemainwindow.cpp \
-    widgets/volumemainwindow.cpp
+HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
+    $${MY_PREFIX_DIR}/widgets/TF1DEditor.h\
+    $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.h\
+    $${MY_PREFIX_DIR}/widgets/TF1DTextureCanvas.h\
+    $${MY_PREFIX_DIR}/abstract/abstractsliceeditorplugin.h\
+    $${MY_PREFIX_DIR}/widgets/histogramwidget.h\
+    $${MY_PREFIX_DIR}/widgets/sliceeditorwidget.h\
+    $${MY_PREFIX_DIR}/widgets/mainwindow.h\
+    $${MY_PREFIX_DIR}/widgets/markcategorydialog.h\
+    $${MY_PREFIX_DIR}/widgets/markinfowidget.h\
+    $${MY_PREFIX_DIR}/model/markmodel.h\
+    $${MY_PREFIX_DIR}/widgets/fileinfowidget.h\
+    $${MY_PREFIX_DIR}/widgets/pixelwidget.h\
+    $${MY_PREFIX_DIR}/widgets/profilewidget.h\
+    $${MY_PREFIX_DIR}/widgets/slicewidget.h \
+    $${MY_PREFIX_DIR}/widgets/titledsliderwithspinbox.h \
+    $${MY_PREFIX_DIR}/widgets/zoomwidget.h \
+    $${MY_PREFIX_DIR}/algorithm/CImg.h \
+    $${MY_PREFIX_DIR}/widgets/TF1DMappingKey.h \
+    $${MY_PREFIX_DIR}/abstract/abstractslicedatamodel.h\
+    $${MY_PREFIX_DIR}/3drender/geometry/camera.h \
+    $${MY_PREFIX_DIR}/model/categoryitem.h \
+    $${MY_PREFIX_DIR}/globals.h \
+    $${MY_PREFIX_DIR}/model/markitem.h \
+    $${MY_PREFIX_DIR}/widgets/marktreeviewwidget.h \
+    $${MY_PREFIX_DIR}/model/mrc.h \
+    $${MY_PREFIX_DIR}/model/mrcdatamodel.h \
+    $${MY_PREFIX_DIR}/model/sliceitem.h \
+    $${MY_PREFIX_DIR}/model/treeitem.h \
+    $${MY_PREFIX_DIR}/widgets/renderwidget.h \
+    $${MY_PREFIX_DIR}/widgets/renderoptionwidget.h \
+    $${MY_PREFIX_DIR}/widgets/slicetoolwidget.h \
+    $${MY_PREFIX_DIR}/3drender/shader/shaderdatainterface.h \
+    $${MY_PREFIX_DIR}/3drender/shader/shaderprogram.h \
+    $${MY_PREFIX_DIR}/algorithm/gradientcalculator.h \
+    $${MY_PREFIX_DIR}/3drender/shader/raycastingshader.h \
+    $${MY_PREFIX_DIR}/3drender/geometry/mesh.h \
+    $${MY_PREFIX_DIR}/3drender/geometry/geometry.h \
+    $${MY_PREFIX_DIR}/3drender/geometry/volume.h \
+    $${MY_PREFIX_DIR}/3drender/geometry/slicevolume.h \
+    $${MY_PREFIX_DIR}/3drender/geometry/renderobject.h \
+    $${MY_PREFIX_DIR}/algorithm/triangulate.h \
+    $${MY_PREFIX_DIR}/algorithm/subdivion.h \
+    $${MY_PREFIX_DIR}/widgets/slicecontrolwidget.h \
+    $${MY_PREFIX_DIR}/widgets/slicemainwindow.h \
+    $${MY_PREFIX_DIR}/widgets/volumemainwindow.h
+SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
+    $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
+    $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
+    $${MY_PREFIX_DIR}/widgets/TF1DTextureCanvas.cpp \
+    $${MY_PREFIX_DIR}/abstract/abstractsliceeditorplugin.cpp \
+    $${MY_PREFIX_DIR}/abstract/abstractslicedatamodel.cpp \
+    $${MY_PREFIX_DIR}/model/categoryitem.cpp \
+    $${MY_PREFIX_DIR}/widgets/histogramwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/sliceeditorwidget.cpp \
+    $${MY_PREFIX_DIR}/main.cpp \
+    $${MY_PREFIX_DIR}/widgets/mainwindow.cpp \
+    $${MY_PREFIX_DIR}/widgets/markcategray.cpp \
+    $${MY_PREFIX_DIR}/widgets/markinfowidget.cpp \
+    $${MY_PREFIX_DIR}/model/markitem.cpp \
+    $${MY_PREFIX_DIR}/model/markmodel.cpp \
+    $${MY_PREFIX_DIR}/widgets/marktreeviewwidget.cpp \
+    $${MY_PREFIX_DIR}/model/mrc.cpp \
+    $${MY_PREFIX_DIR}/model/mrcdatamodel.cpp \
+    $${MY_PREFIX_DIR}/widgets/fileinfowidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/pixelwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/profilewidget.cpp \
+    $${MY_PREFIX_DIR}/model/sliceitem.cpp \
+    $${MY_PREFIX_DIR}/widgets/slicewidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/titledsliderwithspinbox.cpp \
+    $${MY_PREFIX_DIR}/model/treeitem.cpp \
+    $${MY_PREFIX_DIR}/widgets/renderwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/zoomwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/renderoptionwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/slicetoolwidget.cpp \
+    $${MY_PREFIX_DIR}/algorithm/gradientcalculator.cpp \
+    $${MY_PREFIX_DIR}/3drender/shader/shaderprogram.cpp \
+    $${MY_PREFIX_DIR}/3drender/shader/raycastingshader.cpp \
+    $${MY_PREFIX_DIR}/3drender/geometry/mesh.cpp \
+    $${MY_PREFIX_DIR}/3drender/geometry/volume.cpp \
+    $${MY_PREFIX_DIR}/3drender/geometry/slicevolume.cpp \
+    $${MY_PREFIX_DIR}/3drender/geometry/renderobject.cpp \
+    $${MY_PREFIX_DIR}/algorithm/triangulate.cpp \
+    $${MY_PREFIX_DIR}/algorithm/subdivion.cpp \
+    $${MY_PREFIX_DIR}/widgets/slicecontrolwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/slicemainwindow.cpp \
+    $${MY_PREFIX_DIR}/widgets/volumemainwindow.cpp
 RESOURCES += resources.qrc
