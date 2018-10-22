@@ -10,11 +10,15 @@
 #include "categoryitem.h"
 #include "algorithm/triangulate.h"
 
-/*
-*New data Model
-*/
 
 
+/**
+ * \brief This is a helper function
+ * 
+ * 
+ * \param index \a from which get internal pointer
+ * \return return a non-null pointer if the \a index is valid or return \a nullptr
+ */
 TreeItem* MarkModel::getItemHelper(const QModelIndex& index) const
 {
 	if (index.isValid())
@@ -24,6 +28,13 @@ TreeItem* MarkModel::getItemHelper(const QModelIndex& index) const
 	}
 	return m_rootItem;
 }
+
+/**
+ * \brief 
+ * \param root 
+ * \param display 
+ * \return 
+ */
 QModelIndex MarkModel::modelIndexHelper(const QModelIndex& root, const QString& display)const
 {
 	int c = rowCount(root);
@@ -54,12 +65,18 @@ QModelIndex MarkModel::modelIndexHelper(const QModelIndex& root, const QString& 
 	}
 	return QModelIndex();
 }
+/**
+*	\brief 
+*	\param category 
+*	\return return a \a QModelIndex represents the \a category
+*	
+*	\internal 
+*	\note This can be implement by a hash table, which is more efficient.
+*/
 QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 {
-	/*
-	 * This can be implement by a hash table, which is more efficient.
-	 */
-	int c = rowCount();	//children number of root. It's category				
+
+	auto c = rowCount();	//children number of root. It's category				
 	for (int i = 0; i < c; i++)
 	{
 		auto id = index(i, 0);
@@ -74,9 +91,17 @@ QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 	}
 	return QModelIndex();
 }
+
+
+/**
+ * \brief 
+ * \param category 
+ * \param color 
+ * \return 
+ */
 QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor& color)
 {
-	int c = rowCount();
+	const auto c = rowCount();
 	beginInsertRows(QModelIndex(), c, c);
 	QVector<QVariant> d{ QVariant::fromValue(__Internal_Categroy_Type_{new CategoryItem(category,color)}) };
 	auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
@@ -86,6 +111,13 @@ QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor& 
 	return createIndex(c, 0, p);
 }
 
+/**
+ * \overload 
+ * 
+ * \brief 
+ * \param info 
+ * \return 
+ */
 QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info) 
 {
 	int c = rowCount();
@@ -99,6 +131,10 @@ QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info)
 }
 
 
+/**
+ * \brief 
+ * \param mark 
+ */
 void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
 {
 	int index = mark->data(MarkProperty::SliceIndex).toInt();
@@ -118,6 +154,11 @@ void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
 	(*markList)[index].append(mark);
 	setDirty();
 }
+
+/**
+ * \brief 
+ * \param mark 
+ */
 void MarkModel::removeMarkInSliceHelper(QGraphicsItem * mark)
 {
 	int index = mark->data(MarkProperty::SliceIndex).toInt();
@@ -136,6 +177,11 @@ void MarkModel::removeMarkInSliceHelper(QGraphicsItem * mark)
 	}
 	setDirty();
 }
+
+/**
+ * \brief 
+ * \param mark 
+ */
 void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 {
 	//Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
@@ -157,10 +203,16 @@ void MarkModel::updateMarkVisibleHelper(MarkModel::__Internal_Mark_Type_& mark)
 	index = m_view->currentSliceIndex(static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()));
 	if (index != mark->data(MarkProperty::SliceIndex).toInt())
 		return;
-	bool visible = mark->data(MarkProperty::VisibleState).toBool();
+	const auto visible = mark->data(MarkProperty::VisibleState).toBool();
 	mark->setVisible(visible);
 	setDirty();
 }
+
+/**
+ * \brief 
+ * \param cate 
+ * \return 
+ */
 bool MarkModel::updateMeshMarkHelper(const QString& cate)
 {
 	QList<StrokeMarkItem*> meshMark;
@@ -256,12 +308,9 @@ QSharedPointer<CategoryItem> MarkModel::categoryItem(const QString & cate) const
 	return item->data(0).value<QSharedPointer<CategoryItem>>();
 }
 
-
-/*
- * 
- */
 /**
- * \brief Note: This function is for testing now, Because it will perform a 
+ * \internal
+ * \brief This function is for testing now, Because it will perform a 
  *				time-consuming update process every time when it is called.
  * \param cate 
  * \return 
@@ -282,6 +331,12 @@ QVector<QSharedPointer<Triangulate>> MarkModel::markMesh(const QString& cate)
 	return QVector<QSharedPointer<Triangulate>>();
 }
 
+/**
+ * \interal
+ * \brief This is a internal helper function
+ * 
+ * This function is used to initialize and identify whether mark model and slice model match
+ */
 void MarkModel::initSliceMarkContainerHelper()
 {
 	Q_ASSERT_X(m_identity.isValid() == true, 
@@ -291,6 +346,14 @@ void MarkModel::initSliceMarkContainerHelper()
 	m_frontSliceVisibleMarks.resize(m_identity.frontSliceCount());
 }
 
+/**
+ * \internal
+ * \brief This is a internal helper function
+ * 
+ * This function is used to sort marks by their position and divide them into several groups
+ * \param marks Mass marks
+ * \return Mark groups returned by the functions
+ */
 QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> & marks)
 {
 	/* TODO::
@@ -338,6 +401,17 @@ QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> 
 	return meshes;
 }
 
+/**
+ * \internal 
+ * \brief This is a private constructor
+ * 
+ * A mark model can only be constructed by SliceEditorWidget
+ * \param dataModel Slice data need to be marked
+ * \param view 
+ * \param root 
+ * \param parent 
+ * \sa SliceEditorWidget
+ */
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	SliceEditorWidget * view,
 	TreeItem * root,
@@ -352,6 +426,13 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	initSliceMarkContainerHelper();
 }
 
+
+/**
+ * \internal 
+ * \fn MarkModel::MarkModel(const QString & fileName)
+ * \brief This is a private constructor
+ * \param fileName Mark file name need to be opened
+ */
 MarkModel::MarkModel(const QString & fileName):
 m_rootItem(nullptr),
 m_dataModel(nullptr),
@@ -396,6 +477,11 @@ m_dirty(false)
 		}
 	}
 }
+/**
+ * \brief This is destructor of MarkModel
+ * 
+ * 
+ */
 MarkModel::~MarkModel()
 {
 	if (m_rootItem != nullptr)
@@ -406,6 +492,12 @@ MarkModel::~MarkModel()
 }
 
 
+/**
+ * \brief Add marks \a marks by an existing \a category
+ * \param category 
+ * \param marks A QList contains a series of QGraphicsItem*
+ * \return return true if adding marks is successful or return false
+ */
 bool MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& marks)
 {
 	auto i = categoryIndexHelper(category);
@@ -442,6 +534,12 @@ bool MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 	return true;
 }
 
+/**
+ * \brief Add a category
+ * 
+ * \param info Include all information needed by creating a category
+ * \return return \a true if adding is successful or return \a false
+ */
 bool MarkModel::addCategory(const CategoryInfo & info)
 {
 	auto i = categoryIndexHelper(info.name);
@@ -454,6 +552,11 @@ bool MarkModel::addCategory(const CategoryInfo & info)
 	return false;
 }
 
+/**
+ * \brief Retrieve marks by \a category
+ * \param category 
+ * \return return a QList contains the marks covered by \a category
+ */
 QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
 {
 	auto id = categoryIndexHelper(category);
@@ -474,6 +577,11 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & category)const
 	return res;
 }
 
+/**
+ * \brief Remove a specified mark \a mark
+ * \param mark A specified mark needs to be removed
+ * \return return \a true if deleting is success or return \a false
+ */
 bool MarkModel::removeMark(QGraphicsItem* mark)
 {
 	QString category = mark->data(MarkProperty::CategoryName).toString();
@@ -511,6 +619,11 @@ bool MarkModel::removeMark(QGraphicsItem* mark)
 	return true;
 }
 
+/**
+ * \brief 
+ * \param marks 
+ * \return return the numbers of deleted marks
+ */
 int MarkModel::removeMarks(const QList<QGraphicsItem*>& marks)
 {
 	int success = 0;
@@ -520,6 +633,14 @@ int MarkModel::removeMarks(const QList<QGraphicsItem*>& marks)
 			success++;
 	return success;
 }
+
+
+/**
+ * \brief Save current marks contained in the mark model
+ * \param fileName 
+ * \param format 
+ * \return return \a true if saving successes or return \a false
+ */
 bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 {
 	if(format == MarkFormat::Binary)
@@ -576,6 +697,12 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 	return false;
 }
 
+/**
+ * \brief 
+ * \param index 
+ * \param role 
+ * \return 
+ */
 QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)

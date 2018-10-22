@@ -520,7 +520,12 @@ void RenderWidget::updateMark() {
 		 *  directly by category item, which is not stored color when created.
 		 *  TODO:: The issue would be addressed soon.
 		*/
-		const QColor color = m_markModel->marks(c)[0]->data(MarkProperty::CategoryColor).value<QColor>();		//Temporarily
+
+		auto markLists = m_markModel->marks(c);
+		if(markLists.isEmpty() == true)
+			continue;
+
+		const QColor color = markLists[0]->data(MarkProperty::CategoryColor).value<QColor>();		//Temporarily
 		for (const auto & mesh : meshes) {
 
 			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
