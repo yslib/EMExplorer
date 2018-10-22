@@ -9,6 +9,7 @@
 #include "abstract/abstractsliceeditorplugin.h"
 
 
+
 class QMouseEvent;
 class QComboBox;
 class QPushButton;
