@@ -38,6 +38,7 @@ void SliceEditorWidget::createConnections()
 	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
 
+
 	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
 	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
 	connect(m_frontView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Front); });
@@ -274,7 +275,7 @@ void SliceEditorWidget::deleteSelectedMarks()
 
 void SliceEditorWidget::markSingleSelectionHelper()
 {
-	int count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
+	const auto count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
 	if (count != 1)
 		return;
 	QGraphicsItem * item = nullptr;
@@ -284,7 +285,7 @@ void SliceEditorWidget::markSingleSelectionHelper()
 		item = m_rightView->selectedItems()[0];
 	else if (m_frontView->selectedItemCount() == 1)
 		item = m_frontView->selectedItems()[0];
-	emit markSeleteced(item);
+	emit markSelected(item);
 }
 
 

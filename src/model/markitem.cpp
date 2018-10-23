@@ -181,6 +181,29 @@ void StrokeMarkItem::updateLength()
 	setData(MarkProperty::Length, length);
 }
 
+/**
+ * \brief This is a item state change handler
+ * 
+ * This handler can receive many state change of the item. You can hand these change in this function
+ * 
+ * \param change 
+ * \param value 
+ * \return 
+ * 
+ * \warning Some member functions can not be called in this handler or it will cause recursively calls
+ */
+QVariant StrokeMarkItem::itemChange(GraphicsItemChange change, const QVariant& value) {
+	if(change == GraphicsItemChange::ItemSelectedChange) {
+		qDebug() << "QGraphicsItemChange::ItemSelectedChange" << " " << value;
+		return value;
+	}
+	else if (change == GraphicsItemChange::ItemSelectedHasChanged) {
+		qDebug() << "ItemSelectedHasChanged" << " " << value;
+		return value;
+	}
+	return QGraphicsPolygonItem::itemChange(change, value);
+}
+
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item)
 {
 	if (item == nullptr || item->type() != ItemTypes::StrokeMark)

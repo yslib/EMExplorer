@@ -1,8 +1,3 @@
-/// \brief 
-///
-///
-///
-
 
 
 #ifndef MARKMODEL_H
@@ -45,6 +40,7 @@ class StrokeMarkItem;
  */
 class MarkModel :public QAbstractItemModel
 {
+	Q_OBJECT
 
 	enum 
 	{
@@ -54,8 +50,7 @@ class MarkModel :public QAbstractItemModel
 	typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
 	typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
 	typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
-
-	Q_OBJECT
+	
 	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
 	//state member
 	const AbstractSliceDataModel * m_dataModel;
@@ -87,7 +82,6 @@ class MarkModel :public QAbstractItemModel
 
 	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
 	void initSliceMarkContainerHelper();
-	void createContextMenu();
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
 
 	//Functions used by ImageView
@@ -146,7 +140,8 @@ public:
 	 */
 	MarkModel(const QString & fileName);
 
-	virtual ~MarkModel();
+	//bool eventFilter(QObject* watched, QEvent* event) override;
+
 
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
@@ -169,13 +164,21 @@ public:
 	bool addMarks(const QString& category, const QList<QGraphicsItem*>& marks);			//set dirty
 	bool addCategory(const CategoryInfo& info);											//set dirty
 
+	
+
 
 	QList<QGraphicsItem*> marks(const QString & category)const;
 	QList<QGraphicsItem*> marks()const;													//This is time-consuming operation
+
 	QStringList categoryText()const;
+	QList<QModelIndex> categoryModelIndices()const;
+
+
 	QList<QSharedPointer<CategoryItem>> categoryItems()const;
 	QSharedPointer<CategoryItem> categoryItem(const QString & cate)const;
 	QVector<QSharedPointer<Triangulate>> markMesh(const QString& cate);
+
+
 
 	bool removeMark(QGraphicsItem* mark);			//set dirty
 	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
@@ -185,9 +188,24 @@ public:
 	inline bool dirty()const;
 	inline void resetDirty();
 
+
+	virtual ~MarkModel();
+
 	friend class MarkManagerWidget;
 };
 
+
+
+/**
+ * \brief Filters events if this object has been installed as an event filter for the watched object.
+ * 
+ *  The filter is used to filter the focus event on 
+ * \param watched 
+ * \param event 
+ * \warning Warning: If you delete the receiver object in this function, be sure to return true. Otherwise, 
+ * Qt will forward the event to the deleted object and the program might crash.
+ * \return 
+ */
 
 
 /**

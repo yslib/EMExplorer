@@ -230,6 +230,7 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 
 
+
 void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
 	if (sliceItem == nullptr)

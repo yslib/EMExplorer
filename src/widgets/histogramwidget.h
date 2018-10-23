@@ -15,7 +15,6 @@ class QComboBox;
 class QPushButton;
 class QLabel;
 class QGroupBox;
-
 class SliceEditorWidget;
 class TitledSliderWidthDoubleSpinBox;
 

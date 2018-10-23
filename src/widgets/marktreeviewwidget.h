@@ -7,6 +7,10 @@ class QAction;
 class QMenu;
 class TreeItem;
 
+/**
+ * \brief This class is used to view \a MarkModel
+ * 
+ */
 class MarkManagerWidget:public QTreeView
 {
 public:

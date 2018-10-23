@@ -132,26 +132,67 @@ public:
 	//QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
 	~SliceEditorWidget();
 signals:
+
+	/**
+	 * \brief This signal is emitted when top slice changed
+	 * \param index The new current top slice index
+	 */
 	void topSliceChanged(int index);
+
+	/**
+	 * \brief This signal is emitted when right slice changed
+	 * \param index The new current right slice index
+	 */
 	void rightSliceChanged(int index);
+
+	/**
+	 * \brief This signal is emitted when front slice changed
+	 * \param index The new current front slice index
+	 */
 	void frontSliceChanged(int index);
 
+	/**
+	 * \brief This signal is emitted when slice data model changed
+	 */
 	void dataModelChanged();
+
+	/**
+	 * \brief This signal is emitted when mark model changed
+	 */
 	void markModelChanged();
 
+	/**
+	 * \brief 
+	 * \param point 
+	 */
 	void topSliceSelected(const QPoint & point);
+
+	/**
+	 * \brief 
+	 * \param point 
+	 */
 	void rightSliceSelected(const QPoint & point);
+
+	/**
+	 * \brief 
+	 * \param point 
+	 */
 	void frontSliceSelected(const QPoint & point);
 
 	void viewFocus(SliceType type);
 
 	void markModified();
+
 	void markSaved();
-	void markSeleteced(QGraphicsItem * item);
+
+	void markSelected(QGraphicsItem * item);
+
+	void marksSelected(QList<QGraphicsItem*> items);
 	
-protected:
+
 
 private:
+
 	enum class PlayDirection {
 		Forward,
 		Backward

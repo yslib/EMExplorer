@@ -68,6 +68,9 @@
 //	PolyMarkItem(QPolygonF poly, QGraphicsItem * parent = nullptr, int index = -1, const QString & name = QString(), const QColor & color = Qt::black, SliceType type = SliceType::Top, bool visible = true) :QGraphicsPolygonItem(poly, parent){}
 //};
 //
+
+
+
 typedef QList<QPair<MarkProperty::Property, QString>> MarkPropertyInfo;
 Q_DECLARE_METATYPE(MarkPropertyInfo)
 
@@ -82,11 +85,14 @@ public:
 private:
 	void createPropertyInfo();
 	void updateLength();
+protected:
+	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 };
 
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item);
 QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item);
 Q_DECLARE_METATYPE(QSharedPointer<QGraphicsItem>);
+
 inline QDataStream& operator<<(QDataStream& stream, const QSharedPointer<QGraphicsItem>& item)
 {
 	stream << item.data();
@@ -100,4 +106,33 @@ inline QDataStream& operator>>(QDataStream& stream, QSharedPointer<QGraphicsItem
 	item.reset(ptr);
 	return stream;
 }
+
+
+///**
+// * \internal 
+// * \brief This class represents a mark drawn by user on the slice.
+// * 
+// * The StrokeItem inherits from QGraphicsItem directly which is different from StrokeMarkItem
+// * 
+// */
+//
+//class NewStrokeMarkItemPrivate {
+//public:
+//
+//};
+//
+//
+//class NewStrokeMarkItem:public QGraphicsItem {
+//public:
+//	enum {Type = StrokeMark};
+//	NewStrokeMarkItem(const QPolygonF & path, QGraphicsItem * parent = nullptr);
+//	NewStrokeMarkItem(QGraphicsItem * parent = nullptr);
+//	int type() const override { return Type; }
+//	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+//	void appendPoint(const QPointF & p);
+//private:
+//	void createPropertInfo();
+//	void updateLength();
+//};
+
 #endif // ABSTRACTMARKITEM_H

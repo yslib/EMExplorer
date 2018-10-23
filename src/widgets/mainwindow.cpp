@@ -586,7 +586,7 @@ void MainWindow::createWidget()
 	m_viewMenu->addAction(m_controlDockWidget->toggleViewAction());
 
 
-	connect(m_imageView, &SliceEditorWidget::markSeleteced, m_markInfoWidget, &MarkInfoWidget::setMark);
+	connect(m_imageView, &SliceEditorWidget::markSelected, m_markInfoWidget, &MarkInfoWidget::setMark);
 
 
 	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "m_toolBar null pointer");

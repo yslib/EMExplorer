@@ -91,8 +91,8 @@ private:
 	RenderParameterWidget * m_volumeControlWidget;
 
 	SliceToolWidget * m_sliceToolControlWidget;
-
 	SliceControlWidget * m_sliceControlWidget;
+
 	QScrollArea * m_scrollAreaWidget;
 	QDockWidget * m_controlDockWidget;
 

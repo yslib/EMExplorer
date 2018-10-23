@@ -86,14 +86,37 @@ protected:
 	void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
 
 signals:
+
+	/**
+	 * \brief The signals is emitted when the slice is selected
+	 * \param point The position selected on the slice
+	 */
 	void sliceSelected(const QPoint & point);
 
+	/**
+	 * \brief The signals is emitted when the slice is selected
+	 */
 	void sliceSelected();
 
+	/**
+	 * \brief The signals is emitted when the new mark item is added
+	 * 
+	 * The exact time this signals emits is when the last point 
+	 * append at the item in \a mouseReleaseEvent()
+	 * \param item The new added item
+	 */
 	void markAdded(QGraphicsItem * item);
 
+
+	/**
+	 * \brief This signals is emitted when the slice is dragged by mouse
+	 * \param delta The position difference between movement.
+	 */
 	void viewMoved(const QPointF & delta);
 
+	/**
+	 * \brief This signals is emitted when the number of selected mark items changed.
+	 */
 	void selectionChanged();
 
 private:

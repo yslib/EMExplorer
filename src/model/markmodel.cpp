@@ -509,15 +509,15 @@ bool MarkModel::addMarks(const QString & category, const QList<QGraphicsItem*>& 
 		i = categoryAddHelper(category,color);
 	}
 
-	int r = rowCount(i);
-	int c = marks.size();
+	const auto r = rowCount(i);
+	const auto c = marks.size();
 	beginInsertRows(i, r, r + c - 1);
 	auto item = getItemHelper(i);
 	Q_ASSERT_X(item != m_rootItem,
 		"MarkModel::addMark", "insert error");
 
 
-	int n = 0;
+	auto n = 0;
 	QList<TreeItem*> list;
 	for (auto m : marks)
 	{
