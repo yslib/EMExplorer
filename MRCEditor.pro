@@ -59,7 +59,8 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/algorithm/subdivion.h \
     $${MY_PREFIX_DIR}/widgets/slicecontrolwidget.h \
     $${MY_PREFIX_DIR}/widgets/slicemainwindow.h \
-    $${MY_PREFIX_DIR}/widgets/volumemainwindow.h
+    $${MY_PREFIX_DIR}/widgets/volumemainwindow.h \
+    $${MY_PREFIX_DIR}/model/instanceitem.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
@@ -100,5 +101,6 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/algorithm/subdivion.cpp \
     $${MY_PREFIX_DIR}/widgets/slicecontrolwidget.cpp \
     $${MY_PREFIX_DIR}/widgets/slicemainwindow.cpp \
-    $${MY_PREFIX_DIR}/widgets/volumemainwindow.cpp
+    $${MY_PREFIX_DIR}/widgets/volumemainwindow.cpp \
+    $${MY_PREFIX_DIR}/model/instanceitem.cpp
 RESOURCES += resources.qrc

@@ -42,14 +42,15 @@ class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
 
-	enum 
+		enum
 	{
-		MeshRole = Qt::ItemDataRole::UserRole + 1
+		MeshRole = Qt::ItemDataRole::UserRole + 1,
+		MetaDataRole = Qt::ItemDataRole::UserRole + 2,
 	};
 
-	typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
-	typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
-	typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
+	//typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
+	//typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
+	//typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
 	
 	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
 	//state member
@@ -64,23 +65,23 @@ class MarkModel :public QAbstractItemModel
 
 	//Need te be serialized
 	SliceDataIdentityTester m_identity;
-	TreeItem * m_rootItem;
+	RootTreeItem * m_rootItem;
 
 	//Helper functions
 	TreeItem* getItemHelper(const QModelIndex& index) const;
-	QModelIndex modelIndexHelper(const QModelIndex& root, const QString& display)const;
+	//QModelIndex modelIndexHelper(const QModelIndex& root, const QString& display)const;
 	QModelIndex categoryIndexHelper(const QString& category)const;
 	QModelIndex categoryAddHelper(const QString& category, const QColor& color);		//set dirty
 	QModelIndex categoryAddHelper(const CategoryInfo & info);							//set setdirty
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);									//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);
-	void updateMarkVisibleHelper(__Internal_Mark_Type_& mark);							//set dirty
+	void updateMarkVisibleHelper(QGraphicsItem * mark);							//set dirty
 	bool updateMeshMarkHelper(const QString& cate);
 	void detachFromView();
 
 
-	static void retrieveDataFromTreeItemHelper(const TreeItem * root, TreeItemType type,int column, QVector<QVariant> & data);
+	static void retrieveDataFromTreeItemHelper(TreeItem* root, TreeItemType type, int column, QVector<QVariant> & data, int role);
 	void initSliceMarkContainerHelper();
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
 
@@ -90,7 +91,9 @@ class MarkModel :public QAbstractItemModel
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
 	const MarkSliceList & frontSliceVisibleMarks()const { return m_frontSliceVisibleMarks; }
 
-	MarkModel(AbstractSliceDataModel * dataModel,SliceEditorWidget * view, TreeItem * root ,QObject * parent = nullptr);
+	MarkModel(AbstractSliceDataModel * dataModel,
+		SliceEditorWidget * view, 
+		QObject * parent = nullptr);
 
 	enum {MagicNumber = 1827635234};
 
@@ -160,22 +163,22 @@ public:
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 	//Custom functions for accessing and setting data
-	inline bool addMark(const QString& category, QGraphicsItem* mark);					//set dirty
-	bool addMarks(const QString& category, const QList<QGraphicsItem*>& marks);			//set dirty
+	inline bool addMark(const QString& text, QGraphicsItem* mark);					//set dirty
+	bool addMarks(const QString& text, const QList<QGraphicsItem*>& marks);			//set dirty
 	bool addCategory(const CategoryInfo& info);											//set dirty
 
 	
 
 
-	QList<QGraphicsItem*> marks(const QString & category)const;
+	QList<QGraphicsItem*> marks(const QString & text)const;
 	QList<QGraphicsItem*> marks()const;													//This is time-consuming operation
 
 	QStringList categoryText()const;
 	QList<QModelIndex> categoryModelIndices()const;
 
 
-	QList<QSharedPointer<CategoryItem>> categoryItems()const;
-	QSharedPointer<CategoryItem> categoryItem(const QString & cate)const;
+	//QList<QSharedPointer<CategoryItem>> categoryItems()const;
+	//QSharedPointer<CategoryItem> categoryItem(const QString & cate)const;
 	QVector<QSharedPointer<Triangulate>> markMesh(const QString& cate);
 
 
@@ -210,11 +213,11 @@ public:
 
 /**
  * \brief 
- * \param category 
+ * \param text 
  * \param mark 
  * \return 
  */
-inline bool MarkModel::addMark(const QString& category, QGraphicsItem* mark){return addMarks(category, QList<QGraphicsItem*>{mark});}
+inline bool MarkModel::addMark(const QString& text, QGraphicsItem* mark){return addMarks(text, QList<QGraphicsItem*>{mark});}
 
 /**
  * \brief 

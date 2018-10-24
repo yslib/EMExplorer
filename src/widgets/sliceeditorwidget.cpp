@@ -210,7 +210,7 @@ int SliceEditorWidget::currentIndexHelper(SliceType type)
 MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractSliceDataModel * d)
 {
 	return new MarkModel(d, view,
-		new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
+		//new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
 		nullptr);
 }
 
@@ -222,11 +222,12 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 	Q_ASSERT_X(m_markModel, "SliceEditorWidget::markAddedHelper", "m_markModel != nullptr");
 
 	const auto cate = d_ptr->state->currentCategory;
-	const auto cateItem = m_markModel->categoryItem(cate);
 
-	Q_ASSERT_X(cateItem != nullptr, "SliceEditorWidget::markAddedHelper", "cateItem != nullptr");
+	//const auto cateItem = m_markModel->categoryItem(cate);
 
-	const QVariant categoryColor = QVariant::fromValue<QColor>(cateItem->categoryInfo().color);
+	//Q_ASSERT_X(cateItem != nullptr, "SliceEditorWidget::markAddedHelper", "cateItem != nullptr");
+
+	const QVariant categoryColor = QVariant::fromValue<QColor>(Qt::blue);
 
 
 	mark->setData(MarkProperty::SliceType, QVariant::fromValue(static_cast<int>(type)));

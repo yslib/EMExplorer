@@ -32,8 +32,8 @@ QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
 {
 	if (item == nullptr)
 		return stream;
-	stream << item->m_type;
-	stream << item->m_data;
+	//stream << item->m_type;
+	//stream << item->m_data;
 	stream << item->m_children;
 	return stream;
 }
@@ -57,7 +57,7 @@ QDataStream & operator>>(QDataStream & stream, TreeItem *& item)
 		return stream;
 	QVector<QVariant> data;
 	stream >> data;
-	item = new TreeItem(data,type, nullptr);
+	//item = new TreeItem(data,type, nullptr);
 	stream >> item->m_children;
 
 	foreach(auto it,item->m_children)

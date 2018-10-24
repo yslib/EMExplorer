@@ -75,7 +75,7 @@ void MarkManagerWidget::updateAction()
 		auto d = static_cast<TreeItem*>(item.internalPointer());
 		Q_ASSERT_X(d, 
 			"MarkTreeView::updateAction", "null pointer");
-		if(d->type() == TreeItemType::Category)
+		if(d->type() == (int)TreeItemType::Category)
 		{
 			parents.insert(d);
 			m_deleteItems.insert(item);
@@ -89,9 +89,9 @@ void MarkManagerWidget::updateAction()
 		auto d = static_cast<TreeItem*>(item.internalPointer());
 		Q_ASSERT_X(d,
 			"MarkTreeView::updateAction", "null pointer");
-		if (d->type() == TreeItemType::Root)
+		if (d->type() == (int)TreeItemType::Root)
 			continue;
-		if (d->type() == TreeItemType::Mark)
+		if (d->type() == (int)TreeItemType::Mark)
 		{
 			if (parents.find(d->parentItem()) == parents.end())
 				m_deleteItems.insert(item);
