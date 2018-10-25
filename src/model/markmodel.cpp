@@ -2,13 +2,20 @@
 #include "widgets/sliceeditorwidget.h"
 #include "globals.h"
 #include "abstract/abstractslicedatamodel.h"
+
 #include "markitem.h"
-#include "model/treeitem.h"
+
+#include "model/roottreeitem.h"
+#include "model/categorytreeitem.h"
+#include "model/marktreeitem.h"
+
+#include "algorithm/triangulate.h"
+
 #include <QStyledItemDelegate>
 #include <QScopedPointer>
+#include <QAbstractItemView>
 #include <QPainter>
-#include "categoryitem.h"
-#include "algorithm/triangulate.h"
+#include <QDebug>
 
 
 
@@ -67,6 +74,7 @@ TreeItem* MarkModel::getItemHelper(const QModelIndex& index) const
 //	}
 //	return QModelIndex();
 //}
+
 /**
 *	\brief 
 *	\param category 
@@ -113,7 +121,7 @@ QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor &
 	//QVector<QVariant> d{ QVariant::fromValue(__Internal_Categroy_Type_{new CategoryItem(category,color)}) };
 	//auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
 
-	auto p = new CategoryTreeItem(CategoryItem(category,color), m_rootItem);
+	auto p = new CategoryTreeItem(CategoryItem(category,color), this,m_rootItem);
 	m_rootItem->appendChild(p);
 	endInsertRows();
 	setDirty();
@@ -131,7 +139,7 @@ QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info)
 {
 	const auto c = rowCount();
 	beginInsertRows(QModelIndex(), c, c);
-	const auto p = new CategoryTreeItem(CategoryItem(info),m_rootItem);
+	const auto p = new CategoryTreeItem(CategoryItem(info),this,m_rootItem);
 	m_rootItem->appendChild(p);
 	endInsertRows();
 	setDirty();
@@ -440,9 +448,11 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_dataModel(dataModel),
 	m_view(view),
 	m_dirty(false),
-	m_identity(dataModel)
+	m_identity(dataModel),
+	m_selectionModel(new QItemSelectionModel(this, this))
 {
-	m_rootItem = new RootTreeItem();
+	m_rootItem = new RootTreeItem(this);
+	
 	initSliceMarkContainerHelper();
 }
 
@@ -457,9 +467,10 @@ MarkModel::MarkModel(const QString & fileName):
 m_rootItem(nullptr),
 m_dataModel(nullptr),
 m_view(nullptr),
-m_dirty(false)
+m_dirty(false),
+m_selectionModel(new QItemSelectionModel(this, this))
 {
-	Q_ASSERT(false);			
+	Q_ASSERT(false);
 
 	//QFile file(fileName);
 	//file.open(QIODevice::ReadOnly);
@@ -511,6 +522,9 @@ MarkModel::~MarkModel()
 		delete m_rootItem;
 		m_rootItem = nullptr;
 	}
+	//if(m_selectionModel != nullptr) {		//It's trivial.
+	//	m_selectionModel->deleteLater();
+	//}
 }
 
 
@@ -545,10 +559,9 @@ bool MarkModel::addMarks(const QString & text, const QList<QGraphicsItem*> & mar
 	{
 		m->setData(MarkProperty::Name,text + QString("#%1").arg(r + n++));
 		addMarkInSliceHelper(m);
-		list.append(new StrokeMarkTreeItem(m, nullptr));
+		list.append(new StrokeMarkTreeItem(m,this, nullptr));
 	}
 	item->insertChildren(r, list);		//insert marks at the end
-
 	endInsertRows();
 	setDirty();
 	return true;
@@ -730,111 +743,10 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)
 		return QVariant();
-	if (role == Qt::DisplayRole||role == Qt::ToolTipRole)
-	{
-		auto * item = static_cast<TreeItem*>(index.internalPointer());
-		//auto d = item->data(index.column());
-
-
-		return item->data(index.column(), Qt::DisplayRole);
-
-		//switch (item->type())
-		//{
-		//case TreeItemType::Root:
-		//	return QVariant();
-		//case TreeItemType::Category:
-		//	if (index.column() == 0)
-		//	{
-		//		Q_ASSERT_X(d.canConvert<__Internal_Categroy_Type_>(),
-		//			"MarkModel::data", "convert failure");
-		//		return d.value<__Internal_Categroy_Type_>()->name();
-		//	}else if(index.column() == 1)
-		//	{
-		//		//display total count
-
-		//	}
-		//	return QVariant();
-		//case TreeItemType::Mark:
-
-		//	if(index.column() == 0)
-		//	{
-		//		Q_ASSERT_X(d.canConvert<__Internal_Mark_Type_>(),
-		//			"MarkModel::data", "convert failure");
-		//		const auto mark = d.value<__Internal_Mark_Type_>();
-
-		//		return QVariant::fromValue(mark->data(MarkProperty::Name).toString());
-		//	}
-		//	else if(index.column() == 1)
-		//	{
-		//		//display slice index
-		//		auto d = item->data(0);
-		//		const auto mark = d.value<__Internal_Mark_Type_>();
-		//		QString sliceType;
-		//		switch(static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
-		//		{
-		//		case SliceType::Top:
-		//			sliceType = QStringLiteral("Top:");
-		//			break;
-		//		case SliceType::Right:
-		//			sliceType = QStringLiteral("Right:");
-		//			break;
-		//		case SliceType::Front:
-		//			sliceType = QStringLiteral("Front:");
-		//			break;
-		//		}
-		//		//get slicetype and index
-		//		return sliceType+QString::number(mark->data(MarkProperty::SliceIndex).toInt());
-		//	}
-		//	return QVariant();
-		//}
-	}
-	if (role == Qt::CheckStateRole&&index.column() == 0)			//So far, we only consider the first column
-	{
-		auto * item = static_cast<TreeItem*>(index.internalPointer());
-		//auto d = item->data(index.column());
-
-		return item->data(index.column(), Qt::CheckStateRole);
-
-		//switch (item->type())
-		//{
-		//	case TreeItemType::Root:
-		//		return QVariant();
-		//	case TreeItemType::Category:
-		//		Q_ASSERT_X(d.canConvert<__Internal_Categroy_Type_>(),
-		//			"MarkModel::data", "convert failure");
-		//		return d.value<__Internal_Categroy_Type_>()->visible() ? Qt::Checked : Qt::Unchecked;
-		//	case TreeItemType::Mark:
-		//		Q_ASSERT_X(d.canConvert<__Internal_Mark_Type_>(),
-		//			"MarkModel::data", "convert failure");
-		//		const auto mark = d.value<__Internal_Mark_Type_>();
-		//	//get visible stats
-		//		return mark->data(MarkProperty::VisibleState).toBool() ? Qt::Checked : Qt::Unchecked;
-		//}
-	}
-	if(role == Qt::DecorationRole && index.column() == 0)
-	{
-		auto * item = static_cast<TreeItem*>(index.internalPointer());
-		//auto d = item->data(index.column());
-
-		return item->data(index.column(), Qt::DecorationRole);
-
-		//switch (item->type())
-		//{
-		//case TreeItemType::Root:
-		//	return QVariant();
-		//case TreeItemType::Category:
-		//	Q_ASSERT_X(d.canConvert<__Internal_Categroy_Type_>(),
-		//		"MarkModel::data", "convert failure");
-		//	return d.value<__Internal_Categroy_Type_>()->color();
-		//case TreeItemType::Mark:
-		//	Q_ASSERT_X(d.canConvert<__Internal_Mark_Type_>(),
-		//		"MarkModel::data", "convert failure");
-		//	const auto mark = d.value<__Internal_Mark_Type_>();
-		//	//get color
-		//	return mark->data(MarkProperty::Color);
-		//}
-	}
-	return QVariant();
+	auto * item = static_cast<TreeItem*>(index.internalPointer());
+	//auto d = item->data(index.column());
+	Q_ASSERT_X(item, "MarkModel::data", "null pointer");
+	return item->data(index.column(), role);
 }
 
 Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
@@ -851,40 +763,20 @@ Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 
 bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-	if (role == Qt::CheckStateRole && index.column() == 0)
-	{
-		const auto item = static_cast<TreeItem*>(index.internalPointer());
+	if (index.isValid() == false)
+		return false;
+	const auto item = static_cast<TreeItem*>(index.internalPointer());
+	Q_ASSERT_X(item, "MarkModel::data", "null pointer");
 
-		item->setData(index.column(), value, role);
-		//QVariant d = item->data(index.column());
-		//switch (item->type())
-		//{
-		//case TreeItemType::Root:
-		//	return false;
-		//case TreeItemType::Category:
-		//{
-		//	Q_ASSERT_X(d.canConvert<__Internal_Categroy_Type_>(),
-		//		"MarkModel::setData", "convert failure");
-		//	d.value<__Internal_Categroy_Type_>()->setVisible(value == Qt::Checked);
-		//	emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
-		//	//update child state recursively
-		//	int c = rowCount(index);
-		//	for (int i = 0; i < c; i++)
-		//		setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
-		//	return true;
-		//}
-		//case TreeItemType::Mark:
-		//	Q_ASSERT_X(d.canConvert<__Internal_Mark_Type_>(),
-		//		"MarkModel::setData", "convert failure");
-		//	auto mark = d.value<__Internal_Mark_Type_>();
-		//	const auto vis = (value == Qt::Checked);
-		//	mark->setData(MarkProperty::VisibleState, vis);
-		//	updateMarkVisibleHelper(mark);		//set dirty
-		//	emit dataChanged(index, index, QVector<int>{Qt::CheckStateRole});
-		//	return true;
-		//}
+	item->setData(index.column(), value, role);
+	if (role == Qt::CheckStateRole) {
+		const auto c = rowCount(index);
+		for (int i = 0; i < c; i++) {
+			setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
+		}
 	}
-	return false;
+	emit dataChanged(index, index, QVector<int>{role});
+	return true;
 }
 
 bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
@@ -958,8 +850,12 @@ QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) co
 {
 	if (parent.isValid() == true && parent.column() != 0)
 		return QModelIndex();
-	TreeItem * parentItem = getItemHelper(parent);
-	TreeItem * childItem = parentItem->child(row);
+	const auto parentItem = getItemHelper(parent);
+	const auto childItem = parentItem->child(row);
+
+	//Add QModelIndex to TreeItem * here
+
+
 	if (childItem == nullptr)
 		return QModelIndex();
 	else
@@ -992,9 +888,11 @@ int MarkModel::rowCount(const QModelIndex & parent) const
 
 int MarkModel::columnCount(const QModelIndex & parent) const
 {
-	if (parent.isValid() == false)
+	if (parent.isValid() == false) {
 		return m_rootItem->columnCount();
-	return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+	}
+	const auto item = static_cast<TreeItem*>(parent.internalPointer());
+	return item->columnCount();
 }
 
 QDataStream & operator<<(QDataStream & stream, const CategoryItem & item)

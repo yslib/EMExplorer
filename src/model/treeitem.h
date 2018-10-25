@@ -3,8 +3,10 @@
 #include <QVector>
 #include <QVariant>
 #include <QDataStream>
-#include "categoryitem.h"
+#include <QDebug>
+//#include "categorytreeitem.h"
 #include "markitem.h"
+#include <QAbstractItemModel>
 
 enum  TreeItemType
 {
@@ -12,6 +14,8 @@ enum  TreeItemType
 	Category,
 	Mark
 };
+
+
 QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
 QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 
@@ -59,27 +63,32 @@ class TreeItem
 {
 	PTR_TYPE(TreeItem) m_parent;
 	QVector<PTR_TYPE(TreeItem)> m_children;
-
-
+	QAbstractItemModel * m_model;
 public:
-	explicit TreeItem(PTR_TYPE(TreeItem)parent = nullptr) :m_parent(parent){}
+	explicit TreeItem(QAbstractItemModel * model,PTR_TYPE(TreeItem)parent = nullptr) :
+	m_parent(nullptr),
+	m_model(nullptr)
+	{
+		m_parent = parent;
+		m_model = model;
+	}
 	virtual ~TreeItem();
 
+	void setItemModel(QAbstractItemModel * model) {m_model = model;}
+	QAbstractItemModel* itemModel()const { return m_model; }
 	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
 	TreeItem* parentItem()const { return m_parent; };
 	TreeItem* child(int row)const { return m_children.value(row); }
+
+	virtual QAbstractItemModel* infoModel()const = 0;
 
 	/**
 	* \brief Get the index of the node
 	* 
 	* \return return the index in its parent's children
 	*/
-	int row() const {
-		if (m_parent != nullptr)
-			return m_parent->m_children.indexOf(const_cast<TreeItem*>(this));
-		return 0;
-	}
+	int row() const;
 
 	int childCount()const { return m_children.size(); }
 
@@ -112,35 +121,14 @@ public:
 	//}
 
 
-	bool insertChildren(int position, const QList<TreeItem*> & children)
-	{
-		if (position < 0 || position > m_children.size())
-			return false;
-		for (auto item : children)
-			item->setParentItem(this);
-		//std::copy(children.begin(), children.end(), m_children.begin() + position);
-		for(auto row = 0; row<children.size(); row++)
-		{
-			m_children.insert(position, children[row]);
-		}
-		return true;
-	}
-
+	bool insertChildren(int position, const QList<TreeItem*>& children);
 
 
 	virtual bool insertColumns(int position, int columns) = 0;
 
-	bool removeChildren(int position, int count)noexcept
-	{
-		if (position < 0 || position >= m_children.size())
-			return false;
-		for (auto i = 0; i < count; i++)
-			delete m_children.takeAt(position);
-		return true;
-	}
+	bool removeChildren(int position, int count) noexcept;
 
 	virtual bool removeColumns(int position, int columns) = 0;
-
 
 	/**
 	* \brief To make implementation of the model easier, we return true
@@ -149,7 +137,6 @@ public:
 	* \param value
 	* \return
 	*/
-
 
 	virtual bool setData(int column, const QVariant & value, int role = Qt::DisplayRole) = 0;
 
@@ -162,117 +149,7 @@ public:
 };
 
 
-class RootTreeItem: public TreeItem {
-
-public:
-	RootTreeItem():TreeItem(nullptr){}
-	QVariant data(int column, int role) const override {return QVariant();}
-	int columnCount() const override { return 1; }
-	bool insertColumns(int position, int columns) override 
-	{
-		Q_UNUSED(position);
-		Q_UNUSED(columns); 
-		return false; 
-	}
-	bool removeColumns(int position, int columns) override 
-	{
-		Q_UNUSED(position);
-		Q_UNUSED(columns);
-		return false; 
-	}
-	bool setData(int column, const QVariant& value, int role) override { return false; }
-	int type() const override { return TreeItemType::Root; }
-	void * metaData()override { return nullptr; }
-};
 
 
-class CategoryTreeItem:public TreeItem {
-	CategoryItem m_categoryItem;
-public:
-	CategoryTreeItem(const CategoryItem & categoryItem,TreeItem * parent):TreeItem(parent),m_categoryItem(categoryItem) {
-	}
-	QVariant data(int column, int role) const override {
-		if (column >= 1)
-			return false;
-		if(role == Qt::DisplayRole) {
-			return m_categoryItem.name();
-		}else if(role == Qt::DecorationRole) {
-			return m_categoryItem.color();
-		}
-	}
-
-	int columnCount() const override {return 1;}
-	bool setData(int column, const QVariant& value, int role) override {
-		if (column >= columnCount())
-			return false;
-		if(role == Qt::DisplayRole) {
-			m_categoryItem.setName(value.toString());
-			return true;
-		}
-		return false;
-	}
-	bool insertColumns(int position, int columns) override {
-		Q_UNUSED(position);
-		Q_UNUSED(columns); 
-		return false; 
-	}
-	bool removeColumns(int position, int columns) override {
-		Q_UNUSED(position);
-		Q_UNUSED(columns); 
-		return false; 
-	}
-	int type() const override { return TreeItemType::Category; }
-	void * metaData() override { return static_cast<void*>(&m_categoryItem);}
-
-};
-
-
-class StrokeMarkTreeItem:public TreeItem {
-	
-	QGraphicsItem * m_markItem;
-
-public:
-	StrokeMarkTreeItem(QGraphicsItem * markItem,TreeItem * parent):TreeItem(parent),m_markItem(nullptr)
-	{
-		m_markItem = markItem;
-	}
-	QVariant data(int column, int role) const override {
-		if (column >= columnCount())
-			return QVariant();
-		if(role == Qt::DisplayRole && column == 1) 
-		{
-			return m_markItem->data(MarkProperty::Name);
-		}
-		return QVariant();
-	}
-	bool insertColumns(int position, int columns) override {
-		Q_UNUSED(position);
-		Q_UNUSED(columns);
-		return false;
-	}
-	bool removeColumns(int position, int columns) override 
-	{
-		Q_UNUSED(position);
-		Q_UNUSED(columns);
-		return false;
-	}
-	int columnCount() const override 
-	{
-		return 2;
-	}
-	bool setData(int column, const QVariant& value, int role) override {
-		if (column >= columnCount())
-			return false;
-	}
-	int type() const override { return TreeItemType::Mark; }
-
-	void * metaData() override { return static_cast<void*>(m_markItem); }
-	
-	~StrokeMarkTreeItem() 
-	{
-		delete m_markItem;
-	}
-
-};
 
 #endif // TREEITEM_H

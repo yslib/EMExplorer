@@ -23,6 +23,8 @@ MarkManagerWidget::MarkManagerWidget(QWidget * parent) :QTreeView(parent)
 	createMenu();
 }
 
+
+
 void MarkManagerWidget::contextMenuEvent(QContextMenuEvent* event)
 {
 	updateAction();

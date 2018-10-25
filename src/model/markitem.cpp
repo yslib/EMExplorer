@@ -148,6 +148,18 @@ void StrokeMarkItem::appendPoint(const QPointF& p)
 }
 
 
+/**
+ * \brief This function is used to set a handler to handle some state change of the item from external
+ * 
+ * Because QGraphicsItem and its subclasses don't inherit from QObject, they can't emit any signals to 
+ * notify any other object. On a count of this, a call back function need to be employed manually.
+ * \param handler This is a type of \a std::function<>
+ */
+void StrokeMarkItem::setItemChangeHandler(
+	std::function<QVariant(QGraphicsItem::GraphicsItemChange, const QVariant&)> handler) {
+	m_itemChangeHandler = handler;
+}
+
 void StrokeMarkItem::createPropertyInfo()
 {
 	const MarkPropertyInfo propertyInfos = {
@@ -193,14 +205,8 @@ void StrokeMarkItem::updateLength()
  * \warning Some member functions can not be called in this handler or it will cause recursively calls
  */
 QVariant StrokeMarkItem::itemChange(GraphicsItemChange change, const QVariant& value) {
-	if(change == GraphicsItemChange::ItemSelectedChange) {
-		qDebug() << "QGraphicsItemChange::ItemSelectedChange" << " " << value;
-		return value;
-	}
-	else if (change == GraphicsItemChange::ItemSelectedHasChanged) {
-		qDebug() << "ItemSelectedHasChanged" << " " << value;
-		return value;
-	}
+	if(m_itemChangeHandler != nullptr)
+		return m_itemChangeHandler(change,value);
 	return QGraphicsPolygonItem::itemChange(change, value);
 }
 

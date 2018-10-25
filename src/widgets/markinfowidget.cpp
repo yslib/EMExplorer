@@ -8,6 +8,8 @@
 
 //#include "markitem.h"
 
+
+//In c++, functions in an anonymous namespace are equivalent to be qualified by static, which have a local scope
 namespace
 {
 	QString propertyToString(const QVariant & var,MarkProperty::Property type)
@@ -75,31 +77,33 @@ namespace
 }
 
 
-MarkInfoWidget::MarkInfoWidget(QWidget * parent):QTableWidget(parent)
+MarkInfoWidget::MarkInfoWidget(QWidget * parent):QTableView(parent)
 {
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	setShowGrid(false);
+	setShowGrid(true);
+	setAlternatingRowColors(true);
 }
 
-void MarkInfoWidget::setMark(QGraphicsItem* item)
-{
-	if (item == nullptr)
-		return;
-	auto var = item->data(MarkProperty::PropertyInfo);
-	bool flag = var.canConvert<MarkPropertyInfo>();
-	if (!flag)
-		return;
-	auto propertyInfo = item->data(MarkProperty::PropertyInfo).value<MarkPropertyInfo>();
+//void MarkInfoWidget::setMark(QGraphicsItem* item)
+//{
+//	Q_ASSERT(false);
+	//if (item == nullptr)
+	//	return;
+	//auto var = item->data(MarkProperty::PropertyInfo);
+	//bool flag = var.canConvert<MarkPropertyInfo>();
+	//if (!flag)
+	//	return;
+	//auto propertyInfo = item->data(MarkProperty::PropertyInfo).value<MarkPropertyInfo>();
 
-	clearContents();
-	setColumnCount(2);
-	setRowCount(propertyInfo.count());
+	//clearContents();
+	//setColumnCount(2);
+	//setRowCount(propertyInfo.count());
 
-	for(int i=0;i<propertyInfo.size();i++)
-	{
-		const auto & p = propertyInfo[i];
-		setItem(i, 0, new QTableWidgetItem(p.second));
-		setItem(i, 1, tableViewItem(item->data(p.first),p.first));
-	}
-}
+	//for(int i=0;i<propertyInfo.size();i++)
+	//{
+	//	const auto & p = propertyInfo[i];
+	//	setItem(i, 0, new QTableWidgetItem(p.second));
+	//	setItem(i, 1, tableViewItem(item->data(p.first),p.first));
+	//}
+//}

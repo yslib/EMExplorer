@@ -8,7 +8,7 @@
 #include "globals.h"
 #include "abstract/abstractslicedatamodel.h"
 #include "model/markmodel.h"
-#include "model/categoryitem.h"
+#include "model/categorytreeitem.h"
 #include "histogramwidget.h"
 #include "pixelwidget.h"
 #include "sliceeditorwidget.h"

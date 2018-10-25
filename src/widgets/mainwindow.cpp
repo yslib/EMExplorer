@@ -133,7 +133,7 @@ void MainWindow::open(const QString& fileName)
 	auto m = m_imageView->markModel();
 	m->deleteLater();
 	auto t = m_imageView->takeSliceModel(sliceModel);
-	m_volumeView->setDataModel(sliceModel);
+	//m_volumeView->setDataModel(sliceModel);
 	m_volumeView->setMarkModel(m_imageView->markModel());		//Add at 2018.09.17
 	delete t;
 	m_treeView->setModel(m_imageView->markModel());
@@ -538,6 +538,10 @@ void MainWindow::createWidget()
 	m_treeViewDockWidget->setMaximumSize(300, 10000);
 	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
 
+	connect(m_treeView, &MarkManagerWidget::clicked, [this](const QModelIndex & index) {
+		const auto item = static_cast<TreeItem *>(index.internalPointer());
+		m_markInfoWidget->setModel(item->infoModel());
+	});
 
 	//ImageCanvas  centralWidget
 	m_imageViewDockWidget = new QDockWidget(QStringLiteral("Slice View"));
@@ -586,7 +590,7 @@ void MainWindow::createWidget()
 	m_viewMenu->addAction(m_controlDockWidget->toggleViewAction());
 
 
-	connect(m_imageView, &SliceEditorWidget::markSelected, m_markInfoWidget, &MarkInfoWidget::setMark);
+	//connect(m_imageView, &SliceEditorWidget::markSelected, m_markInfoWidget, &MarkInfoWidget::setMark);
 
 
 	Q_ASSERT_X(m_toolBar, "MainWindow::createWidget", "m_toolBar null pointer");

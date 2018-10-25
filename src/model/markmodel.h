@@ -7,11 +7,14 @@
 
 #include "model/treeitem.h"
 #include "abstract/abstractslicedatamodel.h"
-#include <QGraphicsItem>
+
+
+//#include "treeitem.h"
 
 //#include <QDataStream>
 
 
+class TreeItem;
 struct CategoryInfo;
 QT_BEGIN_NAMESPACE
 class QGraphicsItem;
@@ -19,11 +22,16 @@ QT_END_NAMESPACE
 class QGraphicsItem;
 class SliceEditorWidget;
 class AbstractSliceDataModel;
-class TreeItem;
+class RootTreeItem;
 class CategoryItem;
+
 class Triangulate;
+
 class StrokeMarkItem;
 
+class QItemSelectionModel;
+
+enum TreeItemType;
 
 
 /**
@@ -56,6 +64,9 @@ class MarkModel :public QAbstractItemModel
 	//state member
 	const AbstractSliceDataModel * m_dataModel;
 	const SliceEditorWidget * m_view;
+
+	QItemSelectionModel * const m_selectionModel;
+
 	bool m_dirty;
 
 	//a copy from TreeItem
@@ -167,7 +178,8 @@ public:
 	bool addMarks(const QString& text, const QList<QGraphicsItem*>& marks);			//set dirty
 	bool addCategory(const CategoryInfo& info);											//set dirty
 
-	
+
+	QItemSelectionModel * selctionModelOfThisModel()const { return m_selectionModel; };
 
 
 	QList<QGraphicsItem*> marks(const QString & text)const;

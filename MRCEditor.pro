@@ -35,7 +35,7 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/widgets/TF1DMappingKey.h \
     $${MY_PREFIX_DIR}/abstract/abstractslicedatamodel.h\
     $${MY_PREFIX_DIR}/3drender/geometry/camera.h \
-    $${MY_PREFIX_DIR}/model/categoryitem.h \
+    $${MY_PREFIX_DIR}/model/categorytreeitem.h \
     $${MY_PREFIX_DIR}/globals.h \
     $${MY_PREFIX_DIR}/model/markitem.h \
     $${MY_PREFIX_DIR}/widgets/marktreeviewwidget.h \
@@ -60,14 +60,17 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/widgets/slicecontrolwidget.h \
     $${MY_PREFIX_DIR}/widgets/slicemainwindow.h \
     $${MY_PREFIX_DIR}/widgets/volumemainwindow.h \
-    $${MY_PREFIX_DIR}/model/instanceitem.h
+    $${MY_PREFIX_DIR}/model/instanceitem.h \
+    $${MY_PREFIX_DIR}/model/roottreeitem.h \
+    src/model/marktreeitem.h \
+    src/model/iteminfomodel.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DTextureCanvas.cpp \
     $${MY_PREFIX_DIR}/abstract/abstractsliceeditorplugin.cpp \
     $${MY_PREFIX_DIR}/abstract/abstractslicedatamodel.cpp \
-    $${MY_PREFIX_DIR}/model/categoryitem.cpp \
+    $${MY_PREFIX_DIR}/model/categorytreeitem.cpp \
     $${MY_PREFIX_DIR}/widgets/histogramwidget.cpp \
     $${MY_PREFIX_DIR}/widgets/sliceeditorwidget.cpp \
     $${MY_PREFIX_DIR}/main.cpp \
@@ -102,5 +105,8 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/slicecontrolwidget.cpp \
     $${MY_PREFIX_DIR}/widgets/slicemainwindow.cpp \
     $${MY_PREFIX_DIR}/widgets/volumemainwindow.cpp \
-    $${MY_PREFIX_DIR}/model/instanceitem.cpp
+    $${MY_PREFIX_DIR}/model/instanceitem.cpp \
+    $${MY_PREFIX_DIR}/model/roottreeitem.cpp \
+    src/model/marktreeitem.cpp \
+    src/model/iteminfomodel.cpp
 RESOURCES += resources.qrc

@@ -20,6 +20,32 @@ TreeItem::~TreeItem()
 	qDeleteAll(m_children);
 }
 
+int TreeItem::row() const {
+	if (m_parent != nullptr)
+		return m_parent->m_children.indexOf(const_cast<TreeItem*>(this));
+	return 0;
+}
+
+bool TreeItem::insertChildren(int position, const QList<TreeItem*>& children) {
+	if (position < 0 || position > m_children.size())
+		return false;
+	for (auto item : children)
+		item->setParentItem(this);
+	//std::copy(children.begin(), children.end(), m_children.begin() + position);
+	for (auto row = 0; row < children.size(); row++) {
+		m_children.insert(position, children[row]);
+	}
+	return true;
+}
+
+bool TreeItem::removeChildren(int position, int count) noexcept {
+	if (position < 0 || position >= m_children.size())
+		return false;
+	for (auto i = 0; i < count; i++)
+		delete m_children.takeAt(position);
+	return true;
+}
+
 /**
 * \brief Note:The stream operator would serialized the 
 * \brief TreeItem to a binary file underly the stream	recursively.

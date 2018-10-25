@@ -15,7 +15,6 @@ class MarkManagerWidget:public QTreeView
 {
 public:
     MarkManagerWidget(QWidget * parent = nullptr);
-
 protected:
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
 private:

@@ -24,7 +24,7 @@ signals:
 	void itemSelected(const QString & text);
 	void itemChanged(const QString & text);
 private:
-	QTableView * m_tableView;
+	//QTableView * m_tableView;
 };
 
 class MRCInfoTableModel :public QAbstractTableModel
