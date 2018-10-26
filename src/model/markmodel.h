@@ -3,9 +3,10 @@
 #ifndef MARKMODEL_H
 #define MARKMODEL_H
 
-#include <QAbstractItemModel>
 
 #include "model/treeitem.h"
+#include "model/instanceitem.h"
+
 #include "abstract/abstractslicedatamodel.h"
 
 
@@ -88,6 +89,9 @@ class MarkModel :public QAbstractItemModel
 	QModelIndex categoryIndexHelper(const QString& category)const;
 	QModelIndex categoryAddHelper(const QString& category, const QColor& color);		//set dirty
 	QModelIndex categoryAddHelper(const CategoryInfo & info);							//set setdirty
+
+	QModelIndex instanceAddHelper(const QString & category,const QGraphicsItem * item);
+
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);									//set dirty
 	void removeMarkInSliceHelper(QGraphicsItem * mark);

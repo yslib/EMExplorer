@@ -1,8 +1,11 @@
 #include "instanceitem.h"
 
 
-InstanceTreeItem::InstanceTreeItem(const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
-	TreeItem(pModelIndex, parent) {
+InstanceTreeItem::InstanceTreeItem(const QString & text, const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
+	TreeItem(pModelIndex, parent),
+m_text(text),
+m_checkState(0)
+{
 
 }
 
@@ -17,9 +20,14 @@ QVariant InstanceTreeItem::data(int column, int role) const
 {
 	if(role == Qt::DisplayRole) {
 		if(column == 0) {
-
+			return m_text;
+		}
+	}else if(role == Qt::CheckStateRole) {
+		if(column == 0) {
+			return m_checkState == 1?Qt::Checked:Qt::Unchecked;
 		}
 	}
+	return QVariant();
 }
 
 /**
@@ -30,6 +38,18 @@ QVariant InstanceTreeItem::data(int column, int role) const
  * \return 
  */
 bool InstanceTreeItem::setData(int column, const QVariant& value, int role) {
+	if (role == Qt::EditRole) {
+		if (column == 0) {
+			m_text = value.toString();
+			return true;
+		}
+	}
+	else if (role == Qt::CheckStateRole) {
+		if (column == 0) {
+			m_checkState = (value == Qt::Checked ? 1 : 0);
+			return true;
+		}
+	}
 	return false;
 }
 

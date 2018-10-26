@@ -9,10 +9,11 @@
 
 enum  TreeItemType
 {
+	Empty,
 	Root,
 	Category,
-	Mark,
-	Empty
+	Instance,
+	Mark
 };
 QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
 QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
@@ -52,6 +53,14 @@ QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 	#define __INTERNAL_PTR_(x) (x.get())
 #endif
 
+
+class AbstractTreeItemMetaData {
+	void * m_internalPointer;
+public:
+	AbstractTreeItemMetaData();
+	void * internalPointer()const;
+
+};
 
 
 class TreeItem

@@ -20,9 +20,11 @@ public:
 
 class InstanceTreeItem:public TreeItem
 {
-
+	QString m_text;
+	QRect m_range;
+	quint8 m_checkState;
 public:
-    InstanceTreeItem(const QPersistentModelIndex & pModelIndex,TreeItem * parent);
+    InstanceTreeItem(const QString & text, const QPersistentModelIndex & pModelIndex,TreeItem * parent);
 	QVariant data(int column, int role) const override;
 	bool setData(int column, const QVariant& value, int role) override;
 	int columnCount() const override;
@@ -31,7 +33,10 @@ public:
 	bool removeColumns(int position, int columns) override;
 	void * metaData() override;
 	QAbstractItemModel * infoModel() const override { return nullptr; }
-	
+
+	QRect boundingBox()const { return m_range; }
+	void setBoundingBox(const QRect & rect) { m_range = rect; }
+
 };
 
 #endif // INSTANCEITEM_H

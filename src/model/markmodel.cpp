@@ -147,6 +147,36 @@ QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info)
 {
 	return categoryAddHelper(info.name, info.color);
 }
+QModelIndex MarkModel::instanceAddHelper(const QString & category,const QGraphicsItem * item)
+{
+	auto cIndex = categoryIndexHelper(category);
+	Q_ASSERT_X(cIndex.isValid(), "MarkModel::instanceAddHelper", "index is invalid");
+
+	const auto nChild = rowCount(cIndex);
+	const auto itemRect = item->boundingRect().toRect();
+
+	QModelIndex best;
+	double maxArea = 0;
+	for(auto i = 0;i<nChild;i++) {
+		const auto iIndex = index(i, 0, cIndex);
+		const auto item = getItemHelper(iIndex);
+		if(item->type() == TreeItemType::Instance) {
+			const auto instanceItem = static_cast<InstanceTreeItem*>(item);
+			const auto rect = instanceItem->boundingBox();
+
+			const auto intersected = rect.intersected(itemRect);
+			const auto area =  intersected.width()*intersected.height();
+			if(maxArea < area) {
+				best = iIndex;
+				maxArea = area;
+			}
+		}
+	}
+	if(best.isValid() == false) {
+		return QModelIndex();
+	}
+	return best;
+}
 /**
  * \brief 
  * \param mark 
@@ -537,13 +567,12 @@ MarkModel::~MarkModel()
 bool MarkModel::addMarks(const QString & text, const QList<QGraphicsItem*> & marks)
 {
 	auto i = categoryIndexHelper(text);
-	if (i.isValid() == false)
-	{
-		return false;
-		const auto var = marks[0]->data(MarkProperty::CategoryColor);
-		const auto color = var.canConvert<QColor>() ? var.value<QColor>() : Qt::black;
-		i = categoryAddHelper(text,color);
-	}
+	Q_ASSERT_X(i.isValid(), "MarkModel::addMarks", "index is invalid");
+
+	//if (i.isValid() == false)
+	//{
+	//	return false;
+	//}
 
 	const auto r = rowCount(i);
 	const auto c = marks.size();
@@ -552,38 +581,18 @@ bool MarkModel::addMarks(const QString & text, const QList<QGraphicsItem*> & mar
 	insertRows(r, c, i);
 
 	// Get index of new inserted rows
-
 	QVector<QModelIndex> newIndices;
 	for(int k=0;k<c;k++) 
 		newIndices << MarkModel::index(k + r, 0,i);
 
 	// Set data
-
 	for(int k=0;k < c;k++) {
 		const auto p = new StrokeMarkTreeItem(marks[k], newIndices[k], nullptr);
 		setData(newIndices[k], QVariant::fromValue(static_cast<void*>(p)), TreeItemRole);
 	}
 
-	//beginInsertRows(i, r, r + c - 1);
-
-	//auto item = getItemHelper(i);
-	//Q_ASSERT_X(item != m_rootItem,
-	//	"MarkModel::addMark", "insert error");
 
 
-	//auto n = 0;
-	//QVector<TreeItem*> list;
-	//for (auto m : marks)
-	//{
-	//	m->setData(MarkProperty::Name,text + QString("#%1").arg(r + n++));
-	//	addMarkInSliceHelper(m);
-	//	list.append(new StrokeMarkTreeItem(m,this, nullptr));
-	//}
-
-	//item->insertChildren(r, list);		//insert marks at the end
-	//endInsertRows();
-
-	//setDirty();
 	return true;
 }
 
