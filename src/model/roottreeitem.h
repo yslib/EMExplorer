@@ -20,6 +20,7 @@ public:
 	int type() const override { return TreeItemType::Root; }
 	void * metaData()override { return nullptr; }
 	QAbstractItemModel * infoModel() const override { return nullptr; }
+	
 };
 
 

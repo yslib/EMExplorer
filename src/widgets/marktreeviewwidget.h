@@ -2,21 +2,25 @@
 #define MARKTREEVIEW_H
 
 #include <QTreeView>
+#include <QTableView>
 
 class QAction;
 class QMenu;
 class TreeItem;
+class QGraphicsItem;
 
 /**
  * \brief This class is used to view \a MarkModel
  * 
  */
-class MarkManagerWidget:public QTreeView
+class MarkTreeView:public QTreeView
 {
+	Q_OBJECT
 public:
-    MarkManagerWidget(QWidget * parent = nullptr);
+    MarkTreeView(QWidget * parent = nullptr);
 protected:
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
+	void currentChanged(const QModelIndex& current, const QModelIndex& previous) override;
 private:
 	QMenu * m_menu;
 	QAction * m_markDeleteAction;
@@ -31,6 +35,39 @@ private:
 
 	void onDeleteAction();
 	void onRenameAction();
+
+signals:
+	void currentIndexChanged(const QModelIndex & current);
 };
+
+
+
+
+class TreeNodeInfoView :public QTableView
+{
+	Q_OBJECT
+public:
+	TreeNodeInfoView(QWidget * parent = nullptr);
+public slots:
+};
+
+
+
+/**
+ * \brief 
+ */
+
+class MarkManager:public QWidget {
+	Q_OBJECT
+	MarkTreeView * m_treeView;
+	TreeNodeInfoView * m_infoView;
+public:
+	MarkManager(QWidget * parent = nullptr);
+	void setMarkModel(MarkModel * model);
+private slots:
+	void treeViewClicked(const QModelIndex & index);
+	void treeViewCurrentIndexChanged(const QModelIndex & index);
+};
+
 
 #endif // MARKTREEVIEW_H

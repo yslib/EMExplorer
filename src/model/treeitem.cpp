@@ -15,6 +15,19 @@ QDataStream& operator>>(QDataStream& stream, TreeItemType& type)
 	return stream;
 }
 
+void TreeItem::updateChildQPersistentModelIndex(TreeItem*item,int row) {
+	Q_ASSERT_X(item, "TreeItem::updateChildQPersistentModelIndex", "null pointer");
+	const auto m = m_persistentModelIndex.model();
+	if(m == nullptr) {
+		item->m_persistentModelIndex = QModelIndex();
+		qDebug() << "QPersistentModelIndex created invalid";
+	}else {
+		
+		item->m_persistentModelIndex = m->index(row,0,m_persistentModelIndex);
+		qDebug() << item->persistentModelIndex().isValid();
+	}
+}
+
 TreeItem::~TreeItem()
 {
 	qDeleteAll(m_children);
@@ -28,6 +41,17 @@ const QAbstractItemModel* TreeItem::itemModel() const {
 	return m_persistentModelIndex.model();
 }
 
+/**
+ * \brief 
+ * \param child 
+ */
+void TreeItem::appendChild(TreeItem* child) {
+	Q_ASSERT_X(child, "TreeItem::appendChild", "null pointer");
+
+	child->setParentItem(this);
+	m_children.append(child);
+	updateChildQPersistentModelIndex(child, m_children.size() - 1);
+}
 
 
 /**
@@ -44,17 +68,24 @@ const QAbstractItemModel* TreeItem::itemModel() const {
  * if it's not a \a nullptr. The ownership of the old child pointer is returned to the caller and its parent 
  * item is set as \a nullptr.
  */
-TreeItem * TreeItem::takeChild(int row, TreeItem * child, bool * takeSuccess)
+TreeItem * TreeItem::takeChild(int row, TreeItem * child, bool * takeSuccess)noexcept
 {
+	Q_ASSERT_X(child, "TreeItem::appendChild", "null pointer");
+
 	if (row >= m_children.size()) {
 		if (takeSuccess != nullptr)
 			*takeSuccess = false;
 		return nullptr;
 	}
-	const auto c = m_children[row];
-	c->setParentItem(nullptr);
 
+	const auto c = m_children[row];
+	if(c != nullptr)
+		c->setParentItem(nullptr);
+	child->setParentItem(this);
 	m_children[row] = child;
+
+	updateChildQPersistentModelIndex(child, row);
+
 	if (takeSuccess != nullptr)
 		*takeSuccess = true;
 	return c;
@@ -76,6 +107,7 @@ bool TreeItem::insertChildren(int position, const QVector<TreeItem*>& children) 
 		
 	//std::copy(children.begin(), children.end(), m_children.begin() + position);
 	for (auto row = 0; row < children.size(); row++) {
+		Q_ASSERT_X(children[row],"TreeItem::insertChildren","null pointer");
 		m_children.insert(position, children[row]);
 	}
 	return true;
@@ -109,9 +141,11 @@ QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
 
 /**
 * \brief Note:The stream operator would modified the item pointer whenever possible.
-* \brief If the pointer is nullptr, the function will apply constrcution to the 
-* \brief pointer-reference and if the pointer is not empty,the function will
-* \brief reconstruct it to satisfied with the binary file underlying the stream
+* 
+*  If the pointer is nullptr, the function will apply constrcution to the 
+*  pointer-reference and if the pointer is not empty,the function will
+*  reconstruct it to satisfied with the binary file underlying the stream
+
 * \param Reference of QDataStream
 * \param Pointer to the reference of TreeItem
 * \return Reference of QDataStream

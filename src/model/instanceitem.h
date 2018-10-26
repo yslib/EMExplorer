@@ -3,6 +3,8 @@
 
 #include "model/treeitem.h"
 
+class InstanceMetaData;
+
 class InstanceTreeItemInfoModel:public QAbstractItemModel {
 
 public:

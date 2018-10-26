@@ -160,7 +160,6 @@ public:
 
 	//bool eventFilter(QObject* watched, QEvent* event) override;
 
-
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
@@ -222,7 +221,7 @@ public:
 
 	virtual ~MarkModel();
 
-	friend class MarkManagerWidget;
+	friend class MarkTreeView;
 };
 
 

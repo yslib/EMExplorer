@@ -7,9 +7,19 @@ InstanceTreeItem::InstanceTreeItem(const QPersistentModelIndex& pModelIndex, Tre
 }
 
 
+/**
+ * \brief 
+ * \param column 
+ * \param role 
+ * \return 
+ */
 QVariant InstanceTreeItem::data(int column, int role) const
 {
-	return QVariant();
+	if(role == Qt::DisplayRole) {
+		if(column == 0) {
+
+		}
+	}
 }
 
 /**
@@ -65,7 +75,9 @@ bool InstanceTreeItem::removeColumns(int position, int columns) {
  */
 void* InstanceTreeItem::metaData() { return nullptr; }
 
-InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(QObject * parent)
+
+
+InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(QObject * parent) :QAbstractItemModel(parent)
 {
 
 }

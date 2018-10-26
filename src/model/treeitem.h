@@ -61,6 +61,9 @@ class TreeItem
 	//QAbstractItemModel * m_model;
 
 	QPersistentModelIndex m_persistentModelIndex;
+
+	void updateChildQPersistentModelIndex(TreeItem * item,int row);
+
 public:
 	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
 	m_parent(nullptr)
@@ -83,7 +86,9 @@ public:
 	 */
 	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
 
-	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
+	void setPersistentModelIndex(const QPersistentModelIndex & pIndex) { m_persistentModelIndex = pIndex; }
+
+	void appendChild(TreeItem* child);
 
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
 
@@ -91,7 +96,7 @@ public:
 
 	TreeItem* child(int row)const { return m_children.value(row); }
 
-	TreeItem* takeChild(int row, TreeItem * child = nullptr,bool * takeSuccess = nullptr);
+	TreeItem* takeChild(int row, TreeItem * child = nullptr,bool * takeSuccess = nullptr)noexcept;
 
 	int childCount()const { return m_children.size(); }
 

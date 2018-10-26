@@ -20,11 +20,12 @@
 
 
 /**
- * \brief This is a helper function
+ * \brief This is a helper function to get the internal data structure from \a index
  * 
  * 
- * \param index \a from which get internal pointer
- * \return return a non-null pointer if the \a index is valid or return \a nullptr
+ * \param index \a Either an invalid index or a valid index with 
+ * internal pointer refer to root tree item gives the pointer refer to root item
+ * \return Returns a non-null pointer anyway
  */
 TreeItem* MarkModel::getItemHelper(const QModelIndex& index) const
 {
@@ -135,18 +136,17 @@ QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor &
 }
 
 /**
- * \overload 
+ * \overload
  * 
  * \brief 
  * \param info 
  * \return 
  */
+
 QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info) 
 {
 	return categoryAddHelper(info.name, info.color);
 }
-
-
 /**
  * \brief 
  * \param mark 
@@ -452,7 +452,7 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_selectionModel(new QItemSelectionModel(this, this))
 {
 	m_rootItem = new RootTreeItem(QModelIndex(),nullptr);
-	
+	m_rootItem->setPersistentModelIndex(createIndex(0, 0, m_rootItem));
 	initSliceMarkContainerHelper();
 }
 
@@ -822,25 +822,33 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 		const auto r = index.row();
 		const auto parentModelIndex = parent(index);
 		const auto item = getItemHelper(parentModelIndex);
-		delete item->takeChild(index.row(), static_cast<TreeItem*>(value.value<void*>()), nullptr);
 
-	} else {							
-										//Insert normally.
+		const auto newItem = static_cast<TreeItem*>(value.value<void*>());
+		delete item->takeChild(index.row(), newItem, nullptr);
+
+		// Update the internal pointer refer to exact data
+		const auto newIndex = createIndex(index.row(), index.column(), newItem);
+		qDebug() << "row:" << newIndex.row() << " " << newIndex.column() << " " << newItem;
+		emit dataChanged(newIndex,newIndex, QVector<int>{role});
+		return true;
+
+	} else {							//Insert normally.
+										
 		const auto item = getItemHelper(index);
 		Q_ASSERT_X(item, "MarkModel::data", "null pointer");
 		if (item == nullptr) return false;
-		const auto success = item->setData(index.column(), value, role);
-		return success;
+		item->setData(index.column(), value, role);
+
+		if (role == Qt::CheckStateRole) {	// The modification on CheckStateRole will be applied recursively.
+			const auto c = rowCount(index);
+			for (int i = 0; i < c; i++) {
+				setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
+			}
+		}
+		emit dataChanged(index, index, QVector<int>{role});
+		return true;
 	}
 
-	if (role == Qt::CheckStateRole) {	// The modification on CheckStateRole will be applied recursively.
-		const auto c = rowCount(index);
-		for (int i = 0; i < c; i++) {
-			setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
-		}
-	}
-	emit dataChanged(index, index, QVector<int>{role});
-	return true;
 }
 
 bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
@@ -919,9 +927,11 @@ QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) co
 QModelIndex MarkModel::parent(const QModelIndex & index) const
 {
 	//Index points to a root item
-	if (index.isValid() == false)return QModelIndex();
-
 	TreeItem * item = getItemHelper(index);
+
+	if (index.isValid() == false || item == m_rootItem)return QModelIndex();
+
+
 	TreeItem * parentItem = item->parentItem();
 
 	//If index points to a child item of root item

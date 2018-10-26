@@ -22,12 +22,10 @@ class MarkModel;
 class ProfileWidget;
 
 class MRC;
-class MarkManagerWidget;
-class MarkInfoWidget;
+class MarkManager;
 class RenderParameterWidget;
 class TF1DEditor;
 class RenderWidget;
-
 
 class MainWindow : public QMainWindow
 {
@@ -102,12 +100,9 @@ private:
 	QDockWidget * m_profileViewDockWidget;
 	ProfileWidget * m_profileView;
 
-	QDockWidget * m_treeViewDockWidget;
-	MarkManagerWidget * m_treeView;
-
-	QDockWidget * m_markInfoDockWidget;
-	MarkInfoWidget * m_markInfoWidget;
-
+	MarkManager * m_markManager;
+	QDockWidget * m_markManagerDockWidget;
+	
 	//Menu
 	QMenu * m_fileMenu;
 	QMenu * m_viewMenu;

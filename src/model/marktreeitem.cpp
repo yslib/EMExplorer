@@ -14,18 +14,19 @@ StrokeMarkTreeItem(QGraphicsItem* markItem, const QPersistentModelIndex & pIndex
 			auto stroke = static_cast<StrokeMarkItem*>(m_markItem);
 			// Add state change handler
 			stroke->setItemChangeHandler([this](QGraphicsItem::GraphicsItemChange change,const QVariant & value)->QVariant {
-				if(this->persistentModelIndex().isValid() == false) {
+				if(this->persistentModelIndex().isValid() == false) 
+				{
 					qWarning("QPersistentModelIndex is invalid");
 				}
-				else if(change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
+				else if (change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
 					///TODO:: Notify that the item is going to be selected.
 					qDebug() << "Item is going to be selected\n";
 					const auto model = persistentModelIndex().model();
 					//This is a bad design. But there is a no better remedy so far.
 					const auto markModel = static_cast<const MarkModel*>(model);
-					if(markModel != nullptr) {
+					if (markModel != nullptr) {
 						const auto selectionModel = markModel->selctionModelOfThisModel();
-						selectionModel->select(persistentModelIndex(), QItemSelectionModel::Select);
+						selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Current);
 					}
 				}
 				return value;
@@ -213,4 +214,29 @@ QModelIndex MarkItemInfoModel::parent(const QModelIndex & child) const
  */
 bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 	return false;
+}
+
+/**
+ * \brief Reimplemented from QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role)
+ * 
+ * Returns the data for the given role and section in the header with the specified orientation.
+ * For horizontal headers, the section number corresponds to the column number. Similarly,
+ *  for vertical headers, the section number corresponds to the row number.
+ * \param section 
+ * \param orientation 
+ * \param role 
+ * \return 
+ */
+QVariant MarkItemInfoModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if(role == Qt::DisplayRole) {
+		if(orientation == Qt::Horizontal) {
+			if(section == 0) {
+				return QStringLiteral("Preperty Name");
+			}else if(section == 1) {
+				return QStringLiteral("Value");
+			}
+		}
+	}
+	return QVariant();
 }

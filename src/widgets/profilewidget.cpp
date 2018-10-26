@@ -9,7 +9,8 @@
 ProfileWidget::ProfileWidget(QWidget* parent): QTableView(parent)
 {
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	setShowGrid(false);
+	//setShowGrid(false);
+	setAlternatingRowColors(true);
 }
 
 QAbstractItemModel * ProfileWidget::takeModel(QAbstractItemModel* m)

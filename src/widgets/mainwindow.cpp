@@ -11,7 +11,6 @@
 #include <QToolButton>
 #include <QEvent>
 #include <QButtonGroup>
-#include <QCommandLineParser>
 
 #include "mainwindow.h"
 #include "model/mrc.h"
@@ -20,7 +19,6 @@
 #include "model/mrcdatamodel.h"
 #include "model/markmodel.h"
 #include "widgets/marktreeviewwidget.h"
-#include "widgets/markinfowidget.h"
 #include "widgets/renderoptionwidget.h"
 #include "widgets/slicetoolwidget.h"
 #include "widgets/renderwidget.h"
@@ -136,7 +134,9 @@ void MainWindow::open(const QString& fileName)
 	//m_volumeView->setDataModel(sliceModel);
 	m_volumeView->setMarkModel(m_imageView->markModel());		//Add at 2018.09.17
 	delete t;
-	m_treeView->setModel(m_imageView->markModel());
+	//m_treeView->setModel(m_imageView->markModel());
+	m_markManager->setMarkModel(m_imageView->markModel());
+	//m_treeView->setSelectionModel(m_imageView->markModel()->selctionModelOfThisModel());
 	auto d = m_profileView->takeModel(infoModel);
 	d->deleteLater();
 }
@@ -183,7 +183,8 @@ void MainWindow::openMark(const QString & fileName)
 			bool success;
 
 			auto t = m_imageView->takeMarkModel(newModel, &success);
-			m_treeView->setModel(newModel);
+			//m_treeView->setModel(newModel);
+			m_markManager->setMarkModel(newModel);
 			//add mark model to 3d renderwidget
 			m_volumeView->setMarkModel(newModel);	//Add at 2018.09.17
 			t->deleteLater();
@@ -217,7 +218,8 @@ void MainWindow::openMark(const QString & fileName)
 			auto newModel = new MarkModel(fileName);
 			bool success;
 			auto t = m_imageView->takeMarkModel(newModel, &success);
-			m_treeView->setModel(newModel);
+			//m_treeView->setModel(newModel);
+			m_markManager->setMarkModel(newModel);
 			m_volumeView->setMarkModel(newModel);		//Add at 2018.09.17
 			t->deleteLater();
 			if (success == false)
@@ -345,8 +347,9 @@ void MainWindow::readSettings()
 
 
 	readSettingsForDockWidget(m_profileViewDockWidget, &settings);
-	readSettingsForDockWidget(m_treeViewDockWidget, &settings);
-	readSettingsForDockWidget(m_markInfoDockWidget, &settings);
+	//readSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	//readSettingsForDockWidget(m_markInfoDockWidget, &settings);
+	readSettingsForDockWidget(m_markManagerDockWidget, &settings);
 	readSettingsForImageView(m_imageView, &settings);
 	readSettingsForDockWidget(m_volumeViewDockWidget, &settings);
 
@@ -360,20 +363,20 @@ void MainWindow::writeSettings()
 	settings.endGroup();
 
 	writeSettingsForDockWidget(m_profileViewDockWidget, &settings);
-	writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
-	writeSettingsForDockWidget(m_markInfoDockWidget, &settings);
+	//writeSettingsForDockWidget(m_treeViewDockWidget, &settings);
+	//writeSettingsForDockWidget(m_markInfoDockWidget, &settings);
+	writeSettingsForDockWidget(m_markManagerDockWidget, &settings);
 	writeSettingsForImageView(m_imageView, &settings);
 	writeSettingsForDockWidget(m_volumeViewDockWidget, &settings);
 }
 
 void MainWindow::setDefaultLayout()
 {
-	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	addDockWidget(Qt::LeftDockWidgetArea, m_markManagerDockWidget);
 	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
-	splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	splitDockWidget(m_markManagerDockWidget, m_imageViewDockWidget, Qt::Horizontal);
 	tabifyDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget);
-	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
-	tabifyDockWidget(m_markInfoDockWidget, m_profileViewDockWidget);
+	tabifyDockWidget(m_markManagerDockWidget, m_profileViewDockWidget);
 }
 
 void MainWindow::setParallelLayout() {
@@ -385,12 +388,11 @@ void MainWindow::setParallelLayout() {
 	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
 	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
 
-	addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
+	addDockWidget(Qt::LeftDockWidgetArea, m_markManagerDockWidget);
 	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
-	splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
+	splitDockWidget(m_markManagerDockWidget, m_imageViewDockWidget, Qt::Horizontal);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
-	splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
-	tabifyDockWidget(m_markInfoDockWidget, m_profileViewDockWidget);
+	tabifyDockWidget(m_markManagerDockWidget, m_profileViewDockWidget);
 }
 
 void MainWindow::pixelViewActionTriggered()
@@ -520,28 +522,16 @@ void MainWindow::createWidget()
 	m_profileViewDockWidget->setMaximumSize(300, 10000);
 	m_viewMenu->addAction(m_profileViewDockWidget->toggleViewAction());
 
-	// MarkInfoWIdget
-	m_markInfoWidget = new MarkInfoWidget(this);
-	m_markInfoDockWidget = new QDockWidget(QStringLiteral("Mark Info"));
-	m_markInfoDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	m_markInfoDockWidget->setWidget(m_markInfoWidget);
-	m_markInfoDockWidget->setMinimumSize(300, 0);
-	m_markInfoDockWidget->setMaximumSize(300, 10000);
-	m_viewMenu->addAction(m_markInfoDockWidget->toggleViewAction());
 
-	// MarkTreeView
-	m_treeView = new MarkManagerWidget(this);
-	m_treeViewDockWidget = new QDockWidget(QStringLiteral("Mark Manager"));
-	m_treeViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-	m_treeViewDockWidget->setWidget(m_treeView);
-	m_treeViewDockWidget->setMinimumSize(300, 0);
-	m_treeViewDockWidget->setMaximumSize(300, 10000);
-	m_viewMenu->addAction(m_treeViewDockWidget->toggleViewAction());
+	// markManager
+	m_markManager = new MarkManager(this);
+	m_markManagerDockWidget = new QDockWidget(QStringLiteral("Mark Manager"));
+	m_markManagerDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+	m_markManagerDockWidget->setWidget(m_markManager);
+	m_markManagerDockWidget->setMinimumSize(300, 0);
+	m_markManagerDockWidget->setMaximumSize(300, 10000);
+	m_viewMenu->addAction(m_markManagerDockWidget->toggleViewAction());
 
-	connect(m_treeView, &MarkManagerWidget::clicked, [this](const QModelIndex & index) {
-		const auto item = static_cast<TreeItem *>(index.internalPointer());
-		m_markInfoWidget->setModel(item->infoModel());
-	});
 
 	//ImageCanvas  centralWidget
 	m_imageViewDockWidget = new QDockWidget(QStringLiteral("Slice View"));
