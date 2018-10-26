@@ -50,10 +50,14 @@ class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
 
-		enum
+	/**
+	 * \brief 
+	 */
+	enum MarkModelItemRole
 	{
 		MeshRole = Qt::ItemDataRole::UserRole + 1,
 		MetaDataRole = Qt::ItemDataRole::UserRole + 2,
+		TreeItemRole = Qt::ItemDataRole::UserRole + 3
 	};
 
 	//typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
@@ -158,20 +162,32 @@ public:
 
 
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
+
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
+
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex())const Q_DECL_OVERRIDE;
+
 	QModelIndex parent(const QModelIndex&index)const Q_DECL_OVERRIDE;
+
 	int rowCount(const QModelIndex & parent = QModelIndex())const Q_DECL_OVERRIDE;
+
 	int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
 
 	// Read-only tree models only need to provide the above functions.
 	// The following functions provide support for editing and resizing.
 	Qt::ItemFlags flags(const QModelIndex & index)const Q_DECL_OVERRIDE;
+
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
+
 	bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
+
 	bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
+
 	bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
+
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
+
 
 	//Custom functions for accessing and setting data
 	inline bool addMark(const QString& text, QGraphicsItem* mark);					//set dirty

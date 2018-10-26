@@ -12,7 +12,6 @@ class MarkInfoWidget:public QTableView
 public:
 	MarkInfoWidget(QWidget * parent = nullptr);
 public slots:
-	//void setMark(QGraphicsItem * item);
 };
 
 #endif // MARKINFOWIDGET_H

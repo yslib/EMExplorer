@@ -20,7 +20,7 @@ class InstanceTreeItem:public TreeItem
 {
 
 public:
-    InstanceTreeItem(QAbstractItemModel * model,TreeItem * parent);
+    InstanceTreeItem(const QPersistentModelIndex & pModelIndex,TreeItem * parent);
 	QVariant data(int column, int role) const override;
 	bool setData(int column, const QVariant& value, int role) override;
 	int columnCount() const override;

@@ -67,9 +67,9 @@ Qt::ItemFlags CategoryTreeItemInfoModel::flags(const QModelIndex& index) const
  * \param categoryItem The information necessarily needed by a \a CategroyTreeItem
  * \param parent Pointer references a parent TreeItem
  */
-CategoryTreeItem::CategoryTreeItem(const CategoryItem& categoryItem,QAbstractItemModel * model,TreeItem* parent): TreeItem(model,parent),
+CategoryTreeItem::CategoryTreeItem(const CategoryItem& categoryItem,const QPersistentModelIndex & pIndex,TreeItem* parent): TreeItem(pIndex,parent),
                                                                                         m_categoryItem(categoryItem) {
-	
+
 }
 
 

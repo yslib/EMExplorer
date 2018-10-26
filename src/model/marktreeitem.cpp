@@ -1,9 +1,38 @@
 #include "marktreeitem.h"
+#include "markmodel.h"
+#include <QAbstractItemView>
 
 StrokeMarkTreeItem::
-StrokeMarkTreeItem(QGraphicsItem* markItem, QAbstractItemModel* model, TreeItem* parent): TreeItem(model, parent),
+StrokeMarkTreeItem(QGraphicsItem* markItem, const QPersistentModelIndex & pIndex, TreeItem* parent): TreeItem(pIndex, parent),
                                                                                           m_markItem(nullptr),m_infoModel(nullptr) {
 	m_markItem = markItem;
+	if(m_markItem != nullptr) {
+
+		//A manually RTTI still should be need to identify a what exact type the pointer is.
+		if(m_markItem->type() == StrokeMark) {
+			
+			auto stroke = static_cast<StrokeMarkItem*>(m_markItem);
+			// Add state change handler
+			stroke->setItemChangeHandler([this](QGraphicsItem::GraphicsItemChange change,const QVariant & value)->QVariant {
+				if(this->persistentModelIndex().isValid() == false) {
+					qWarning("QPersistentModelIndex is invalid");
+				}
+				else if(change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
+					///TODO:: Notify that the item is going to be selected.
+					qDebug() << "Item is going to be selected\n";
+					const auto model = persistentModelIndex().model();
+					//This is a bad design. But there is a no better remedy so far.
+					const auto markModel = static_cast<const MarkModel*>(model);
+					if(markModel != nullptr) {
+						const auto selectionModel = markModel->selctionModelOfThisModel();
+						selectionModel->select(persistentModelIndex(), QItemSelectionModel::Select);
+					}
+				}
+				return value;
+			});
+		}
+	}
+
 	m_infoModel = new MarkItemInfoModel(markItem,nullptr);
 }
 

@@ -15,7 +15,6 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex& parent) const override;
 	int rowCount(const QModelIndex& parent) const override;
 	QModelIndex parent(const QModelIndex& child) const override;
-
 	bool setData(const QModelIndex& index, const QVariant& value, int role) override;
 };
 
@@ -24,10 +23,9 @@ public:
 class StrokeMarkTreeItem :public TreeItem {
 
 	QGraphicsItem * m_markItem;
-
 	QAbstractItemModel * m_infoModel;
 public:
-	StrokeMarkTreeItem(QGraphicsItem* markItem, QAbstractItemModel* model, TreeItem* parent);
+	StrokeMarkTreeItem(QGraphicsItem* markItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
 
 	QVariant data(int column, int role) const override;
 

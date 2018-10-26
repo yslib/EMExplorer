@@ -20,17 +20,60 @@ TreeItem::~TreeItem()
 	qDeleteAll(m_children);
 }
 
+const QAbstractItemModel* TreeItem::itemModel() const {
+	if(m_persistentModelIndex.isValid() == false) 
+	{
+		return nullptr;
+	}
+	return m_persistentModelIndex.model();
+}
+
+
+
+/**
+ * \brief This function replace the old child node with a new one.
+ * 
+ * \param row The row number of the old child node in the \a TreeItem
+ * \param child The new child node that will replace the old one.
+ * \param takeSuccess success flag pointer. If it's not a null pointer, the reference is set as \a true 
+ * when substitution is successful otherwise it is set as \a false.
+ * 
+ * \return Return tje old child node pointer
+ * 
+ * \note If \a row is larger than the child number, nothing will be done. \a takeSuccess will be set as \a false
+ * if it's not a \a nullptr. The ownership of the old child pointer is returned to the caller and its parent 
+ * item is set as \a nullptr.
+ */
+TreeItem * TreeItem::takeChild(int row, TreeItem * child, bool * takeSuccess)
+{
+	if (row >= m_children.size()) {
+		if (takeSuccess != nullptr)
+			*takeSuccess = false;
+		return nullptr;
+	}
+	const auto c = m_children[row];
+	c->setParentItem(nullptr);
+
+	m_children[row] = child;
+	if (takeSuccess != nullptr)
+		*takeSuccess = true;
+	return c;
+}
+
 int TreeItem::row() const {
 	if (m_parent != nullptr)
 		return m_parent->m_children.indexOf(const_cast<TreeItem*>(this));
 	return 0;
 }
 
-bool TreeItem::insertChildren(int position, const QList<TreeItem*>& children) {
+bool TreeItem::insertChildren(int position, const QVector<TreeItem*>& children) {
 	if (position < 0 || position > m_children.size())
 		return false;
-	for (auto item : children)
+	for (auto item : children) {
+		if(item != nullptr)
 		item->setParentItem(this);
+	}
+		
 	//std::copy(children.begin(), children.end(), m_children.begin() + position);
 	for (auto row = 0; row < children.size(); row++) {
 		m_children.insert(position, children[row]);

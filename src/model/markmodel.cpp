@@ -116,15 +116,21 @@ QModelIndex MarkModel::categoryIndexHelper(const QString& category)const
 QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor & color)
 {
 	const auto c = rowCount();
-	beginInsertRows(QModelIndex(), c, c);
+	const auto success = insertRows(c, 1, QModelIndex());
+	if (success == false)
 
-	//QVector<QVariant> d{ QVariant::fromValue(__Internal_Categroy_Type_{new CategoryItem(category,color)}) };
-	//auto p = new TreeItem(d, TreeItemType::Category, m_rootItem);
+		return QModelIndex();
 
-	auto p = new CategoryTreeItem(CategoryItem(category,color), this,m_rootItem);
-	m_rootItem->appendChild(p);
-	endInsertRows();
-	setDirty();
+	const auto newIndex = MarkModel::index(c, 0, QModelIndex());
+
+	const auto p = new CategoryTreeItem(CategoryItem(category,color), newIndex,m_rootItem);
+
+	MarkModel::setData(newIndex, QVariant::fromValue(static_cast<void*>(p)),TreeItemRole);
+
+	//m_rootItem->appendChild(p);
+
+	//endInsertRows();
+	//setDirty();
 	return createIndex(c, 0, p);
 }
 
@@ -137,13 +143,7 @@ QModelIndex MarkModel::categoryAddHelper(const QString& category, const QColor &
  */
 QModelIndex MarkModel::categoryAddHelper(const CategoryInfo& info) 
 {
-	const auto c = rowCount();
-	beginInsertRows(QModelIndex(), c, c);
-	const auto p = new CategoryTreeItem(CategoryItem(info),this,m_rootItem);
-	m_rootItem->appendChild(p);
-	endInsertRows();
-	setDirty();
-	return createIndex(c, 0, p);
+	return categoryAddHelper(info.name, info.color);
 }
 
 
@@ -451,7 +451,7 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_identity(dataModel),
 	m_selectionModel(new QItemSelectionModel(this, this))
 {
-	m_rootItem = new RootTreeItem(this);
+	m_rootItem = new RootTreeItem(QModelIndex(),nullptr);
 	
 	initSliceMarkContainerHelper();
 }
@@ -547,23 +547,43 @@ bool MarkModel::addMarks(const QString & text, const QList<QGraphicsItem*> & mar
 
 	const auto r = rowCount(i);
 	const auto c = marks.size();
-	beginInsertRows(i, r, r + c - 1);
-	auto item = getItemHelper(i);
-	Q_ASSERT_X(item != m_rootItem,
-		"MarkModel::addMark", "insert error");
 
+	// Insert rows
+	insertRows(r, c, i);
 
-	auto n = 0;
-	QList<TreeItem*> list;
-	for (auto m : marks)
-	{
-		m->setData(MarkProperty::Name,text + QString("#%1").arg(r + n++));
-		addMarkInSliceHelper(m);
-		list.append(new StrokeMarkTreeItem(m,this, nullptr));
+	// Get index of new inserted rows
+
+	QVector<QModelIndex> newIndices;
+	for(int k=0;k<c;k++) 
+		newIndices << MarkModel::index(k + r, 0,i);
+
+	// Set data
+
+	for(int k=0;k < c;k++) {
+		const auto p = new StrokeMarkTreeItem(marks[k], newIndices[k], nullptr);
+		setData(newIndices[k], QVariant::fromValue(static_cast<void*>(p)), TreeItemRole);
 	}
-	item->insertChildren(r, list);		//insert marks at the end
-	endInsertRows();
-	setDirty();
+
+	//beginInsertRows(i, r, r + c - 1);
+
+	//auto item = getItemHelper(i);
+	//Q_ASSERT_X(item != m_rootItem,
+	//	"MarkModel::addMark", "insert error");
+
+
+	//auto n = 0;
+	//QVector<TreeItem*> list;
+	//for (auto m : marks)
+	//{
+	//	m->setData(MarkProperty::Name,text + QString("#%1").arg(r + n++));
+	//	addMarkInSliceHelper(m);
+	//	list.append(new StrokeMarkTreeItem(m,this, nullptr));
+	//}
+
+	//item->insertChildren(r, list);		//insert marks at the end
+	//endInsertRows();
+
+	//setDirty();
 	return true;
 }
 
@@ -734,7 +754,9 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 }
 
 /**
- * \brief 
+ * \brief Reimplemented from QAbstractItemModel::data(const QModelIndex & index,int role)
+ * 
+ * Available \a role includes all enums in \a Qt::ItemDataRole
  * \param index 
  * \param role 
  * \return 
@@ -743,12 +765,16 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)
 		return QVariant();
-	auto * item = static_cast<TreeItem*>(index.internalPointer());
-	//auto d = item->data(index.column());
+	const auto item = getItemHelper(index);
 	Q_ASSERT_X(item, "MarkModel::data", "null pointer");
 	return item->data(index.column(), role);
 }
 
+/**
+ * \brief 
+ * \param index 
+ * \return 
+ */
 Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 {
 	if (index.isValid() == false)		//root
@@ -761,15 +787,53 @@ Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 	//return 0;
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::setData(const QModelIndex & index, const QVariant & value, int role)
+ * 
+ * 
+ * Available \a role includes all enums in \a Qt::ItemDataRole.
+ * 
+ * There are some customized roles besides above.
+ * \a MetaDataRole means that this function call will set \a value as the meta data field of \a TreeItem*, which
+ * is the exact data stored in the \a TreeItem. 
+ * \a TreeItemRole means that this function call will set \a value as the specific instance of \a TreeItem in 
+ * the node represented by \a index. \a Under this situation, the type of internal data in \a value should be \a void*
+ * and the value of \a column() of \a index is ignored 
+ * 
+ * 
+ * \param index
+ * \param value 
+ * \param role 
+ * 
+ * \return Returns \a true if this call is successful otherwise return \a false.
+ * 
+ * \note If \a role is Qt::CheckStateRole, the function will be called recursively to apply the same setting
+ * for its children
+ * 
+ * \warning When \a role is TreeItemRole, the old \a TreeItem* pointer would be deleted at once.
+ * \sa TreeItem, Qt::ItemDataRole, MarkModelItemRole
+ */
 bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
-	if (index.isValid() == false)
-		return false;
-	const auto item = static_cast<TreeItem*>(index.internalPointer());
-	Q_ASSERT_X(item, "MarkModel::data", "null pointer");
 
-	item->setData(index.column(), value, role);
-	if (role == Qt::CheckStateRole) {
+	if(role == TreeItemRole) {			
+										//Insert specially. column of the index is ignored.
+
+		const auto r = index.row();
+		const auto parentModelIndex = parent(index);
+		const auto item = getItemHelper(parentModelIndex);
+		delete item->takeChild(index.row(), static_cast<TreeItem*>(value.value<void*>()), nullptr);
+
+	} else {							
+										//Insert normally.
+		const auto item = getItemHelper(index);
+		Q_ASSERT_X(item, "MarkModel::data", "null pointer");
+		if (item == nullptr) return false;
+		const auto success = item->setData(index.column(), value, role);
+		return success;
+	}
+
+	if (role == Qt::CheckStateRole) {	// The modification on CheckStateRole will be applied recursively.
 		const auto c = rowCount(index);
 		for (int i = 0; i < c; i++) {
 			setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
@@ -781,56 +845,54 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 
 bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
 {
+	const auto item = getItemHelper(parent);
+	if (item == nullptr)
+		return false;
 	beginInsertColumns(parent, column, column + count - 1);
-	//insert same columns at same position from the top of the tree to down recursively
-	const auto success = m_rootItem->insertColumns(column, count);
+	const auto success =item->insertColumns(column, count);
 	endInsertColumns();
 	return success;
 }
 
 bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 {
+	const auto item = getItemHelper(parent);
+	if (item == nullptr)
+		return false;
 	beginRemoveColumns(parent, column, column + count - 1);
-	const auto success = m_rootItem->removeColumns(column, count);
+	const auto success = item->insertColumns(column, count);
 	endRemoveColumns();
-
-	if (m_rootItem->columnCount() == 0)
-		removeRows(0, rowCount());
 	return success;
 }
 
+/**
+ * \brief 
+ * \param row 
+ * \param count 
+ * \param parent 
+ * \return 
+ */
 bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 {
-	//TreeItem * item = getItemHelper(parent);
-	//beginInsertRows(parent, row, count + row - 1);
-	////the number of inserted column is the same as the root, i.e 2
-	//TreeItemType type;
-	//switch (item->type())
-	//{
-	//case TreeItemType::Root:
-	//	type = TreeItemType::Category;
-	//	break;
-	//case TreeItemType::Category:
-	//	type = TreeItemType::Mark;
-	//	break;
-	//case TreeItemType::Mark:
-	//	return false;
-	//default:
-	//	return false;
-	//}
-	//bool success = item->insertChildren(row, count, columnCount(),type);
+	const auto item = getItemHelper(parent);
+	beginInsertRows(parent, row, count + row - 1);
 
-	//endInsertRows();
-	//return success;
-	return false;
+	QVector<TreeItem*> children;
+	for(auto i = 0;i<count;i++) 
+	{
+		children << new EmptyTreeItem(QPersistentModelIndex(QModelIndex()), item);
+	}
+	const auto success = item->insertChildren(row,children);
+	endInsertRows();
+	setDirty();
+	return success;
 }
 
 bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
-	TreeItem * item = getItemHelper(parent);
-	bool success = true;
+	const auto item = getItemHelper(parent);
 	beginRemoveRows(parent, row, row + count - 1);
-	success = item->removeChildren(row, count);
+	const auto success = item->removeChildren(row, count);
 	endRemoveRows();
 	return success;
 }
@@ -848,18 +910,10 @@ QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int rol
 
 QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
 {
-	if (parent.isValid() == true && parent.column() != 0)
-		return QModelIndex();
 	const auto parentItem = getItemHelper(parent);
 	const auto childItem = parentItem->child(row);
-
 	//Add QModelIndex to TreeItem * here
-
-
-	if (childItem == nullptr)
-		return QModelIndex();
-	else
-		return createIndex(row, column, childItem);
+	return createIndex(row, column, childItem);
 }
 
 QModelIndex MarkModel::parent(const QModelIndex & index) const

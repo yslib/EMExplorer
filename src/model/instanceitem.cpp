@@ -1,8 +1,11 @@
 #include "instanceitem.h"
 
-InstanceTreeItem::InstanceTreeItem(QAbstractItemModel* model, TreeItem* parent):TreeItem(model,parent) {
-	
+
+InstanceTreeItem::InstanceTreeItem(const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
+	TreeItem(pModelIndex, parent) {
+
 }
+
 
 QVariant InstanceTreeItem::data(int column, int role) const
 {

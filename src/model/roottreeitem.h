@@ -5,11 +5,13 @@
 
 /**
  * \brief This class represents the root node in the mark tree view
+ * 
+ * The class is trivial for necessity.
  */
 class RootTreeItem : public TreeItem {
 
 public:
-	RootTreeItem(QAbstractItemModel * model) :TreeItem(model,nullptr) {}
+	RootTreeItem(const QPersistentModelIndex & pIndex,TreeItem * parent) :TreeItem(pIndex,parent) {}
 	QVariant data(int column, int role) const override { return QVariant(); }
 	int columnCount() const override { return 1; }
 	bool insertColumns(int position, int columns) override{Q_UNUSED(position);Q_UNUSED(columns);return false;}
@@ -19,5 +21,6 @@ public:
 	void * metaData()override { return nullptr; }
 	QAbstractItemModel * infoModel() const override { return nullptr; }
 };
+
 
 #endif // ROOTTREEITEM_H

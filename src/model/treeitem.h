@@ -1,28 +1,23 @@
 #ifndef TREEITEM_H
 #define TREEITEM_H
-#include <QVector>
-#include <QVariant>
-#include <QDataStream>
+
 #include <QDebug>
 //#include "categorytreeitem.h"
 #include "markitem.h"
 #include <QAbstractItemModel>
+//#include "categorytreeitem.h"
 
 enum  TreeItemType
 {
 	Root,
 	Category,
-	Mark
+	Mark,
+	Empty
 };
-
-
 QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
 QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 
 #define RAW_POINTER_TYPE
-
-
-
 
 #define PTR_TYPE(TYPE) __PTR_TYPE_(TYPE)
 #define INTERNAL_PTR(x) __INTERNAL_PTR_(x)
@@ -63,38 +58,65 @@ class TreeItem
 {
 	PTR_TYPE(TreeItem) m_parent;
 	QVector<PTR_TYPE(TreeItem)> m_children;
-	QAbstractItemModel * m_model;
+	//QAbstractItemModel * m_model;
+
+	QPersistentModelIndex m_persistentModelIndex;
 public:
-	explicit TreeItem(QAbstractItemModel * model,PTR_TYPE(TreeItem)parent = nullptr) :
-	m_parent(nullptr),
-	m_model(nullptr)
+	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
+	m_parent(nullptr)
 	{
 		m_parent = parent;
-		m_model = model;
+		m_persistentModelIndex = pIndex;
 	}
 	virtual ~TreeItem();
 
-	void setItemModel(QAbstractItemModel * model) {m_model = model;}
-	QAbstractItemModel* itemModel()const { return m_model; }
-	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
-	void setParentItem(TreeItem * parent) { m_parent = parent; }
-	TreeItem* parentItem()const { return m_parent; };
-	TreeItem* child(int row)const { return m_children.value(row); }
-
-	virtual QAbstractItemModel* infoModel()const = 0;
+	const QAbstractItemModel* itemModel() const;
 
 	/**
-	* \brief Get the index of the node
-	* 
-	* \return return the index in its parent's children
-	*/
-	int row() const;
+	 * \brief Returns the model index refers to the item in the model
+	 * 
+	 * A QPersistentModelIndex is ensured that you can access the item referred by the it at any time
+	 * as long as the item can be accessed by the model.
+	 * \return 
+	 * 
+	 * \sa QPersistentModelIndex
+	 */
+	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
+
+	void appendChild(TreeItem * child) { child->setParentItem(this); m_children.append(child); }
+
+	void setParentItem(TreeItem * parent) { m_parent = parent; }
+
+	TreeItem* parentItem()const { return m_parent; };
+
+	TreeItem* child(int row)const { return m_children.value(row); }
+
+	TreeItem* takeChild(int row, TreeItem * child = nullptr,bool * takeSuccess = nullptr);
 
 	int childCount()const { return m_children.size(); }
+
+	bool insertChildren(int position, const QVector<TreeItem*>& children);
+
+	bool removeChildren(int position, int count) noexcept;
+
+	int row() const;
+
+	virtual QAbstractItemModel* infoModel()const = 0;
 
 	virtual int columnCount()const = 0;
 
 	virtual QVariant data(int column = 0, int role = Qt::DisplayRole)const = 0;
+
+	virtual bool insertColumns(int position, int columns) = 0;
+
+	virtual bool removeColumns(int position, int columns) = 0;
+
+
+	virtual bool setData(int column, const QVariant & value, int role = Qt::DisplayRole) = 0;
+
+	virtual int type()const = 0;
+
+	virtual void * metaData() = 0;
 
 	//void setCommonData(const QVariant & value) { m_commonData = value; }
 	/**
@@ -119,30 +141,6 @@ public:
 	//	}
 	//	return true;
 	//}
-
-
-	bool insertChildren(int position, const QList<TreeItem*>& children);
-
-
-	virtual bool insertColumns(int position, int columns) = 0;
-
-	bool removeChildren(int position, int count) noexcept;
-
-	virtual bool removeColumns(int position, int columns) = 0;
-
-	/**
-	* \brief To make implementation of the model easier, we return true
-	* \brief to indicate whether the data was set successfully, or false if an invalid column
-	* \param column
-	* \param value
-	* \return
-	*/
-
-	virtual bool setData(int column, const QVariant & value, int role = Qt::DisplayRole) = 0;
-
-	virtual int type()const = 0;
-	virtual void * metaData() = 0;
-
 	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);
 	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
 
@@ -150,6 +148,32 @@ public:
 
 
 
+
+/**
+ * \brief This instance of the class represents a empty node in mark tree view
+ */
+class EmptyTreeItem:public TreeItem {
+public:
+	EmptyTreeItem(const QPersistentModelIndex & pModelIndex, TreeItem * parent):TreeItem(pModelIndex,parent){}
+	QVariant data(int column, int role) const override { return QVariant{}; }
+	bool setData(int column, const QVariant& value, int role) override { return false; }
+	int columnCount() const override { return 1; }
+	int type() const override { return TreeItemType::Empty; };
+	bool insertColumns(int position, int columns) override {
+		Q_UNUSED(position);
+		Q_UNUSED(columns);
+		return false;
+	}
+	bool removeColumns(int position, int columns) override {
+		Q_UNUSED(position);
+		Q_UNUSED(columns);
+		return false;
+	}
+
+	void * metaData() override { return nullptr; }
+
+	QAbstractItemModel * infoModel() const override { return nullptr; }
+};
 
 
 #endif // TREEITEM_H
