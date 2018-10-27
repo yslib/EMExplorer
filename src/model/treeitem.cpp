@@ -97,6 +97,11 @@ int TreeItem::row() const {
 	return 0;
 }
 
+void TreeItem::setCurrentSelected(bool selected)
+{
+
+}
+
 bool TreeItem::insertChildren(int position, const QVector<TreeItem*>& children) {
 	if (position < 0 || position > m_children.size())
 		return false;
@@ -104,7 +109,7 @@ bool TreeItem::insertChildren(int position, const QVector<TreeItem*>& children) 
 		if(item != nullptr)
 		item->setParentItem(this);
 	}
-		
+
 	//std::copy(children.begin(), children.end(), m_children.begin() + position);
 	for (auto row = 0; row < children.size(); row++) {
 		Q_ASSERT_X(children[row],"TreeItem::insertChildren","null pointer");

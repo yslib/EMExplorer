@@ -1,5 +1,7 @@
 #include "instanceitem.h"
 
+#include "algorithm/triangulate.h"
+
 
 /**
  * \internal
@@ -144,7 +146,8 @@ bool InstanceTreeItem::insertColumns(int position, int columns) {
  * \param columns 
  * \return 
  */
-bool InstanceTreeItem::removeColumns(int position, int columns) {
+bool InstanceTreeItem::removeColumns(int position, int columns)
+{
 
 	return false;
 }
@@ -166,7 +169,8 @@ QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {
 			marks << static_cast<StrokeMarkItem*>(item->metaData());
 		}
 	}
-	auto tri = QSharedPointer<Triangulate>::create(new Triangulate(marks));
+	auto tri = QSharedPointer<Triangulate>(new Triangulate(marks));
+	tri->triangulate();
 	return tri;
 }
 

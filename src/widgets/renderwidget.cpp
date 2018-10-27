@@ -214,7 +214,9 @@ void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 void RenderWidget::setMarkModel(MarkModel* model)
 {
 	m_markModel = model;
+
 	updateMark();
+
 	//emit markModelChanged();
 	emit markModelChanged();
 	update();
@@ -222,7 +224,7 @@ void RenderWidget::setMarkModel(MarkModel* model)
 
 //ShaderDataInterface
 
-GPUVolume* RenderWidget::volume() const 
+GPUVolume* RenderWidget::volume() const
 {
 	return m_volume.data();
 }
@@ -438,9 +440,9 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 
 /**
  * \brief Reimplemented from QOpenGLWidget::mouseReleaseEvent(QMouseEvent * event)
- * 
+ *
  * This event handler is used to implement the mouse picking feature.
- * \param event 
+ * \param event
  */
 void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 	Q_D(RenderWidget);
@@ -501,7 +503,7 @@ void RenderWidget::setFrontSliceVisible(bool check) {
 
 void RenderWidget::updateMark() {
 
-	if (m_markModel == nullptr || m_dataModel == nullptr) 
+	if (m_markModel == nullptr || m_dataModel == nullptr)
 	{
 		return;
 	}
@@ -509,7 +511,7 @@ void RenderWidget::updateMark() {
 	Q_D(RenderWidget);
 
 	m_markMeshes.clear();
-	const auto cates = m_markModel->categoryText();
+	//const auto cates = m_markModel->categoryText();
 	makeCurrent();
 
 	const auto z = m_dataModel->topSliceCount();
@@ -518,25 +520,11 @@ void RenderWidget::updateMark() {
 	QMatrix4x4 trans;
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
-
-	for (const auto & c : cates) {
-		const auto meshes = m_markModel->markMesh(c);
-
-
-		/**
-		 *	This is a low efficient operation because color of category could not be retrieved
-		 *  directly by category item, which is not stored color when created.
-		 *  TODO:: The issue would be addressed soon.
-		*/
-
-
-		auto markLists = m_markModel->marks(c);
-		if(markLists.isEmpty() == true)
-			continue;
-
-		const QColor color = markLists[0]->data(MarkProperty::CategoryColor).value<QColor>();		//Temporarily
-		for (const auto & mesh : meshes) {
-
+	{
+		const auto instances = m_markModel->treeItems(QModelIndex(), TreeItemType::Instance);
+		const QColor color = Qt::red;
+		for (const auto & inst : instances) {
+			const auto mesh = static_cast<InstanceTreeItem*>(inst)->mesh();
 			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
 			const auto v = mesh->vertices();
 			const auto idx = mesh->indices();
@@ -555,7 +543,6 @@ void RenderWidget::updateMark() {
 			m_markMeshes.push_back(ptr);
 			m_markColor.push_back(color);
 		}
-
 	}
 	doneCurrent();
 }

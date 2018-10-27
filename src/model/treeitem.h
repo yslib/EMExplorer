@@ -69,8 +69,11 @@ class TreeItem
 	PTR_TYPE(TreeItem) m_parent;
 	QVector<PTR_TYPE(TreeItem)> m_children;
 	QPersistentModelIndex m_persistentModelIndex;
+
 	void updateChildQPersistentModelIndex(TreeItem * item,int row);
+
 	void setPersistentModelIndex(const QPersistentModelIndex & pIndex) { m_persistentModelIndex = pIndex; }
+
 public:
 	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
 	m_parent(nullptr)
@@ -110,6 +113,8 @@ public:
 	bool removeChildren(int position, int count) noexcept;
 
 	int row() const;
+
+	virtual void setCurrentSelected(bool selected);
 
 	virtual QAbstractItemModel* infoModel()const = 0;
 

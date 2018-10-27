@@ -219,6 +219,7 @@ void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
 		break;
 	}
 	(*markList)[index].append(mark);
+
 	setDirty();
 }
 
@@ -255,24 +256,13 @@ void MarkModel::updateMarkVisibleHelper(QGraphicsItem * mark)
 	if (m_view == nullptr)
 		return;
 	int index = -1;
-	//switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
-	//{
-	//case SliceType::Top:
-	//	index = m_view->topSliceIndex();
-	//		break;
-	//case SliceType::Right:
-	//	index = m_view->rightSliceIndex();
-	//		break;
-	//case SliceType::Front:
-	//	index = m_view->frontSliceIndex();
-	//		break;
-	//}
+
 	index = m_view->currentSliceIndex(static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()));
 	if (index != mark->data(MarkProperty::SliceIndex).toInt())
 		return;
+
 	const auto visible = mark->data(MarkProperty::VisibleState).toBool();
 	mark->setVisible(visible);
-
 	setDirty();
 }
 
@@ -638,12 +628,10 @@ bool MarkModel::addMark(const QString & text, QGraphicsItem * mark)
 	insertRows(r, 1, i);
 
 	// Get index of new inserted rows
-
 	// Set data
 	const auto newIndex = MarkModel::index(r, 0, i);
 	const auto p = new StrokeMarkTreeItem(mark, newIndex, nullptr);
 	setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), TreeItemRole);
-
 	return true;
 }
 
@@ -1001,6 +989,8 @@ Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
  *
  * \warning When \a role is TreeItemRole, the old \a TreeItem* pointer would be deleted at once.
  * \sa TreeItem, Qt::ItemDataRole, MarkModelItemRole
+ * 
+ * \internal
  */
 bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
@@ -1013,6 +1003,11 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 		const auto item = _hlp_internalPointer(parentModelIndex);
 
 		const auto newItem = static_cast<TreeItem*>(value.value<void*>());
+
+		if(newItem->type() == TreeItemType::Mark)		// If it is a mark, add to slice mark cache.
+		{
+			addMarkInSliceHelper(static_cast<QGraphicsItem*>(newItem->metaData()));
+		}
 
 		delete item->takeChild(index.row(), newItem, nullptr);
 
@@ -1031,12 +1026,18 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 		if (item == nullptr) return false;
 		item->setData(index.column(), value, role);
 
+		if(item->type() == TreeItemType::Mark) 
+		{
+			updateMarkVisibleHelper(static_cast<QGraphicsItem*>(item->metaData()));
+		}
+
 		if (role == Qt::CheckStateRole) {	// The modification on CheckStateRole will be applied recursively.
 			const auto c = rowCount(index);
 			for (int i = 0; i < c; i++) {
 				setData(MarkModel::index(i, 0, index), value, Qt::CheckStateRole);
 			}
 		}
+
 		emit dataChanged(index, index, QVector<int>{role});
 		return true;
 	}

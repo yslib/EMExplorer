@@ -79,7 +79,7 @@ bool StrokeMarkTreeItem::setData(int column, const QVariant& value, int role) {
 	}
 	else if (role == Qt::CheckStateRole) {
 		m_markItem->setData(MarkProperty::VisibleState, value == Qt::Checked ? true : false);
-		m_markItem->setVisible(value == Qt::Checked ? true : false);
+		//m_markItem->setVisible(value == Qt::Checked ? true : false);
 		return true;
 	}
 }
@@ -105,7 +105,6 @@ StrokeMarkTreeItem::~StrokeMarkTreeItem()
 	delete m_markItem;
 	m_infoModel->deleteLater();
 }
-
 
 
 /**
