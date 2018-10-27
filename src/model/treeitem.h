@@ -15,6 +15,7 @@ enum  TreeItemType
 	Instance,
 	Mark
 };
+
 QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
 QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 
@@ -67,12 +68,9 @@ class TreeItem
 {
 	PTR_TYPE(TreeItem) m_parent;
 	QVector<PTR_TYPE(TreeItem)> m_children;
-	//QAbstractItemModel * m_model;
-
 	QPersistentModelIndex m_persistentModelIndex;
-
 	void updateChildQPersistentModelIndex(TreeItem * item,int row);
-
+	void setPersistentModelIndex(const QPersistentModelIndex & pIndex) { m_persistentModelIndex = pIndex; }
 public:
 	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
 	m_parent(nullptr)
@@ -94,8 +92,6 @@ public:
 	 * \sa QPersistentModelIndex
 	 */
 	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
-
-	void setPersistentModelIndex(const QPersistentModelIndex & pIndex) { m_persistentModelIndex = pIndex; }
 
 	void appendChild(TreeItem* child);
 
@@ -157,11 +153,8 @@ public:
 	//}
 	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);
 	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
-
+	friend class MarkModel;
 };
-
-
-
 
 /**
  * \brief This instance of the class represents a empty node in mark tree view

@@ -2,6 +2,7 @@
 #define INSTANCEITEM_H
 
 #include "model/treeitem.h"
+#include "algorithm/triangulate.h"
 
 class InstanceMetaData;
 
@@ -23,7 +24,13 @@ class InstanceTreeItem:public TreeItem
 	QString m_text;
 	QRect m_range;
 	quint8 m_checkState;
+
+	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
+
+
 public:
+
+	// Inherit from TreeItem
     InstanceTreeItem(const QString & text, const QPersistentModelIndex & pModelIndex,TreeItem * parent);
 	QVariant data(int column, int role) const override;
 	bool setData(int column, const QVariant& value, int role) override;
@@ -34,8 +41,12 @@ public:
 	void * metaData() override;
 	QAbstractItemModel * infoModel() const override { return nullptr; }
 
+
 	QRect boundingBox()const { return m_range; }
 	void setBoundingBox(const QRect & rect) { m_range = rect; }
+	bool visible()const { return m_checkState == 1 ? true : false; }
+
+	QSharedPointer<Triangulate> mesh()const;
 
 };
 

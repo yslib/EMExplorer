@@ -131,7 +131,7 @@ void MainWindow::open(const QString& fileName)
 	auto m = m_imageView->markModel();
 	m->deleteLater();
 	auto t = m_imageView->takeSliceModel(sliceModel);
-	//m_volumeView->setDataModel(sliceModel);
+	m_volumeView->setDataModel(sliceModel);
 	m_volumeView->setMarkModel(m_imageView->markModel());		//Add at 2018.09.17
 	delete t;
 	//m_treeView->setModel(m_imageView->markModel());

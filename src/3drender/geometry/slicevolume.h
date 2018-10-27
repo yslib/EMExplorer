@@ -32,7 +32,7 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	SliceShader								*m_sliceShader;
 	RayCastingShader						*m_currentShader;
 	QOpenGLFramebufferObject				*m_fbo;
-	QOpenGLTexture							*m_gradientTexture;
+	//QOpenGLTexture							*m_gradientTexture;
 	QOpenGLTexture							*m_volumeTexture;
 
 	QOpenGLBuffer							m_axisAlignedSliceVBO;
@@ -40,7 +40,7 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
 	QOpenGLBuffer							m_rayCastingTextureVBO;
 
-	GradientCalculator						m_gradCalc;
+	//GradientCalculator						m_gradCalc;
 
 
 	int										m_topSlice;

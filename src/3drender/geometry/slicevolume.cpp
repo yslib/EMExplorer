@@ -30,30 +30,31 @@ static float positionVert[] = {
 
 void SliceVolume::loadDataAndGradientToTexture() {
 
-	if (m_gradCalc.hasData() == false)
-		return;
-	if (m_gradCalc.ready() == false)
-		m_gradCalc.calcGradent();		//Time-consuming
+	//if (m_gradCalc.hasData() == false)
+	//	return;
+	//if (m_gradCalc.ready() == false)
+	//	m_gradCalc.calcGradent();		//Time-consuming
 
-	const auto d = m_gradCalc.data3();
+	//const auto d = m_gradCalc.data3();
+
 	const auto z = zLength();
 	const auto y = yLength();
 	const auto x = xLength();
 	//m_gradientTexture.destroy();
 	if(m_initialized == true)
 		return;
-	if(m_gradientTexture == nullptr) {
-		m_gradientTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
-		m_gradientTexture->setMagnificationFilter(QOpenGLTexture::Linear);
-		m_gradientTexture->setMinificationFilter(QOpenGLTexture::Linear);
-		m_gradientTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
-		m_gradientTexture->setSize(x, y, z);
-		m_gradientTexture->setFormat(QOpenGLTexture::RGB8_UNorm);
-		m_gradientTexture->allocateStorage();
-		m_gradientTexture->setData(QOpenGLTexture::RGB, QOpenGLTexture::UInt8, d);
-	}else {
-		
-	}
+	//if(m_gradientTexture == nullptr) {
+	//	m_gradientTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
+	//	m_gradientTexture->setMagnificationFilter(QOpenGLTexture::Linear);
+	//	m_gradientTexture->setMinificationFilter(QOpenGLTexture::Linear);
+	//	m_gradientTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
+	//	m_gradientTexture->setSize(x, y, z);
+	//	m_gradientTexture->setFormat(QOpenGLTexture::RGB8_UNorm);
+	//	m_gradientTexture->allocateStorage();
+	//	m_gradientTexture->setData(QOpenGLTexture::RGB, QOpenGLTexture::UInt8, d);
+	//}else {
+	//	
+	//}
 
 	if(m_volumeTexture == nullptr) {
 		m_volumeTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
@@ -81,7 +82,8 @@ unsigned SliceVolume::endPosTexIdx() const {
 	return m_fbo->textures()[1];
 }
 unsigned SliceVolume::gradientTexId() const {
-	return m_gradientTexture->textureId();
+	return 0;
+	//return m_gradientTexture->textureId();
 }
 float SliceVolume::rayStep() const {
 	Q_ASSERT_X(m_renderer, "SliceVolume::rayStep", "null pointer");
@@ -162,11 +164,11 @@ QSize SliceVolume::windowSize() const {
 SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
 	GPUVolume(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount(), trans, fmt)
 	, m_fbo(nullptr)
-	, m_gradientTexture(nullptr)
+	//, m_gradientTexture(nullptr)
 	, m_positionVBO(QOpenGLBuffer::VertexBuffer)
 	, m_volumeTexture(nullptr)
 	, m_positionEBO(QOpenGLBuffer::IndexBuffer)
-	, m_gradCalc(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount())
+//	, m_gradCalc(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount())
 	, m_renderer(renderer)
 	, m_sliceMode(false)
 	, m_frontSliceVisible(true)
@@ -275,8 +277,8 @@ void SliceVolume::destroyGLResources()
 	m_axisAlignedSliceVAO.destroy();
 	m_axisAlignedSliceVBO.destroy();
 
-	delete m_gradientTexture;
-	m_gradientTexture = nullptr;
+//	delete m_gradientTexture;
+//	m_gradientTexture = nullptr;
 
 	delete m_volumeTexture;
 	m_volumeTexture = nullptr;

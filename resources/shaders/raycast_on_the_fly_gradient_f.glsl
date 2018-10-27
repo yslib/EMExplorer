@@ -21,8 +21,6 @@ uniform float ka;
 uniform float kd;
 uniform float shininess;
 uniform float ks;
-//uniform vec3 lightPos;
-//uniform vec3 viewDir;
 uniform vec3 lightdir;
 uniform vec3 halfway;
 in vec2 textureRectCoord;
@@ -34,9 +32,9 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 
 	//º∆À„Ã›∂»
 	vec3 N;
-	N.x = (texture3D(texVolume, samplePos+vec3(step,0,0) ).w - texture3D(texVolume, samplePos+vec3(-step,0,0) ).w) - 1.0;
-	N.y = (texture3D(texVolume, samplePos+vec3(0,step,0) ).w - texture3D(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
-	N.z = (texture3D(texVolume, samplePos+vec3(0,0,step) ).w - texture3D(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
+	N.x = (texture(texVolume, samplePos+vec3(step,0,0) ).w - texture(texVolume, samplePos+vec3(-step,0,0) ).w) - 1.0;
+	N.y = (texture(texVolume, samplePos+vec3(0,step,0) ).w - texture(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
+	N.z = (texture(texVolume, samplePos+vec3(0,0,step) ).w - texture(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
 
 	//vec3 N = texture(texVolume, samplePos).xyz;
 	N = N * 2.0 - 1.0;

@@ -84,13 +84,16 @@ class MarkModel :public QAbstractItemModel
 	RootTreeItem * m_rootItem;
 
 	//Helper functions
-	TreeItem* getItemHelper(const QModelIndex& index) const;
+	TreeItem* _hlp_internalPointer(const QModelIndex& index) const;
 	//QModelIndex modelIndexHelper(const QModelIndex& root, const QString& display)const;
-	QModelIndex categoryIndexHelper(const QString& category)const;
-	QModelIndex categoryAddHelper(const QString& category, const QColor& color);		//set dirty
-	QModelIndex categoryAddHelper(const CategoryInfo & info);							//set setdirty
+	QModelIndex _hlp_categoryIndex(const QString& category)const;
+	QModelIndex _hlp_categoryAdd(const QString& category, const QColor& color);		//set dirty
+	QModelIndex _hlp_categoryAdd(const CategoryInfo & info);							//set setdirty
 
-	QModelIndex instanceAddHelper(const QString & category,const QGraphicsItem * item);
+	//void _hlp_index(const QModelIndex & parent,int type,QList<QModelIndex> * indices);
+
+	QModelIndex _hlp_instanceFind(const QString & category,const QGraphicsItem * item);
+	QModelIndex _hlp_instanceAdd(const QString & category, const QGraphicsItem* mark);
 
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(QGraphicsItem * mark);									//set dirty
@@ -99,8 +102,10 @@ class MarkModel :public QAbstractItemModel
 	bool updateMeshMarkHelper(const QString& cate);
 	void detachFromView();
 
-
 	static void retrieveDataFromTreeItemHelper(TreeItem* root, TreeItemType type, int column, QVector<QVariant> & data, int role);
+	static void _hlp_retrieveTreeItem(TreeItem * parent, TreeItemType type, QList<TreeItem*>* items);
+	QModelIndex _hlp_indexByItem(TreeItem* parent, TreeItem * item);
+
 	void initSliceMarkContainerHelper();
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
 
@@ -144,121 +149,82 @@ public:
 		Raw			///< Save mark as raw format which is easily accessed by any other raw format reader
 	};
 
-	/**
-	 * \brief A deleted constructor 
-	 * 
-	 * \a MarkModel is not allowed constructed neither out of a instance of \a SliceEditorWidget nor
-	 *  without any parameters. 
-	 */
 	MarkModel() = delete;
-
-	/**
-	 * \overload
-	 * \brief Constructs a mark model with a \a fileName
-	 *
-	 * Creates a mark model from a saved one.
-	 * \param fileName mark model file path on disk
-	 * \sa 
-	 */
 	MarkModel(const QString & fileName);
 
+
 	//bool eventFilter(QObject* watched, QEvent* event) override;
-
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
-
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
-
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex())const Q_DECL_OVERRIDE;
-
 	QModelIndex parent(const QModelIndex&index)const Q_DECL_OVERRIDE;
-
 	int rowCount(const QModelIndex & parent = QModelIndex())const Q_DECL_OVERRIDE;
-
 	int columnCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
-
 
 	// Read-only tree models only need to provide the above functions.
 	// The following functions provide support for editing and resizing.
+
 	Qt::ItemFlags flags(const QModelIndex & index)const Q_DECL_OVERRIDE;
 
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
-
 	bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-
 	bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 	bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 
-
 	//Custom functions for accessing and setting data
-	inline bool addMark(const QString& text, QGraphicsItem* mark);					//set dirty
-	bool addMarks(const QString& text, const QList<QGraphicsItem*>& marks);			//set dirty
-	bool addCategory(const CategoryInfo& info);											//set dirty
+
+	bool addMark(const QString& text, QGraphicsItem* mark);					
+	bool addMarks(const QString& text, const QList<QGraphicsItem*>& marks);			
+	bool addCategory(const CategoryInfo& info);
 
 
-	QItemSelectionModel * selctionModelOfThisModel()const { return m_selectionModel; };
+	QList<TreeItem*> treeItems(const QModelIndex & parent, int type);
 
+	QModelIndex indexByItem(TreeItem * item);
+	bool insertTreeItem(TreeItem* item, const QModelIndex & parent);
+	bool insertTreeItems(const QList<TreeItem*>& items, const QModelIndex & parent);
+	bool removeTreeItem(TreeItem* item);
+	bool removeTreeItems(const QList<TreeItem*> & items);
+
+	//bool save(const QString & fileName,const QModelIndex & parent);
+	
+	QItemSelectionModel * selctionModelOfThisModel()const {return m_selectionModel;};
 
 	QList<QGraphicsItem*> marks(const QString & text)const;
 	QList<QGraphicsItem*> marks()const;													//This is time-consuming operation
-
 	QStringList categoryText()const;
 	QList<QModelIndex> categoryModelIndices()const;
-
-
-	//QList<QSharedPointer<CategoryItem>> categoryItems()const;
-	//QSharedPointer<CategoryItem> categoryItem(const QString & cate)const;
 	QVector<QSharedPointer<Triangulate>> markMesh(const QString& cate);
-
-
-
-	bool removeMark(QGraphicsItem* mark);			//set dirty
-	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		//set dirty
+	bool removeMark(QGraphicsItem* mark);			
+	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		
 	inline int markCount(const QString & category)const;
+
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
 	inline void setDirty();
 	inline bool dirty()const;
 	inline void resetDirty();
-
-
 	virtual ~MarkModel();
 
-	friend class MarkTreeView;
+	//friend class MarkTreeView;
 };
 
 
 
-/**
- * \brief Filters events if this object has been installed as an event filter for the watched object.
- * 
- *  The filter is used to filter the focus event on 
- * \param watched 
- * \param event 
- * \warning Warning: If you delete the receiver object in this function, be sure to return true. Otherwise, 
- * Qt will forward the event to the deleted object and the program might crash.
- * \return 
- */
 
-
-/**
- * \brief 
- * \param text 
- * \param mark 
- * \return 
- */
-inline bool MarkModel::addMark(const QString& text, QGraphicsItem* mark){return addMarks(text, QList<QGraphicsItem*>{mark});}
 
 /**
  * \brief 
  * \param category 
  * \return 
  */
-inline int MarkModel::markCount(const QString & category)const{return rowCount(categoryIndexHelper(category));}
+inline int MarkModel::markCount(const QString & category)const{return rowCount(_hlp_categoryIndex(category));}
 
 /**
- * \brief Sets dirty  
+ * \brief Sets dirty
+ * 
+ * This function will emit modified() signal
  */
 inline void MarkModel::setDirty() { m_dirty = true; emit modified(); }
 
@@ -270,6 +236,8 @@ inline bool MarkModel::dirty()const{return m_dirty;}
 
 /**
  * \brief 
+ * 
+ * This function will emit saved() signal
  */
 inline void MarkModel::resetDirty() { m_dirty = false; emit saved(); }
 
@@ -280,5 +248,5 @@ inline void MarkModel::resetDirty() { m_dirty = false; emit saved(); }
  */
 inline bool MarkModel::checkMatchHelper(const AbstractSliceDataModel* dataModel) const{return m_identity == SliceDataIdentityTester::createTester(dataModel);}
 
-
 #endif // MARKMODEL_H
+

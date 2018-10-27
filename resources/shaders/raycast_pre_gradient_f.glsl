@@ -32,11 +32,11 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 {
 	vec3 shadedValue=vec3(0,0,0);
 
- ////计算梯度
- //	vec3 N;
- //	N.x = (texture3D(texVolume, samplePos+vec3(step,0,0) ).w - texture3D(texVolume, samplePos+vec3(-step,0,0) ).w) - 1.0;
- //	N.y = (texture3D(texVolume, samplePos+vec3(0,step,0) ).w - texture3D(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
- //	N.z = (texture3D(texVolume, samplePos+vec3(0,0,step) ).w - texture3D(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
+ //计算梯度
+ 	//vec3 N;
+	//N.x = (texture(texVolume, samplePos+vec3(step,0,0) ).w - texture(texVolume, samplePos+vec3(-step,0,0) ).w) - 1.0;
+	//N.y = (texture(texVolume, samplePos+vec3(0,step,0) ).w - texture(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
+	//N.z = (texture(texVolume, samplePos+vec3(0,0,step) ).w - texture(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
 
 	vec3 N = texture(texGradient, samplePos).xyz;
 	//vec3 N = texture(texVolume, samplePos).xyz;

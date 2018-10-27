@@ -64,8 +64,8 @@ static const char * positionVertShaderSource =
 
 RayCastingShader::RayCastingShader() :ShaderProgram()
 {
-	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/raycast_pre_gradient_v.glsl");
-    addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/raycast_pre_gradient_f.glsl");
+	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/raycast_on_the_fly_gradient_v_glsl");
+    addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/raycast_on_the_fly_gradient_f.glsl");
 	link();
 }
 void RayCastingShader::load(const ShaderDataInterface* data)

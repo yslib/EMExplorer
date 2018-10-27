@@ -436,15 +436,21 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	update();
 }
 
+/**
+ * \brief Reimplemented from QOpenGLWidget::mouseReleaseEvent(QMouseEvent * event)
+ * 
+ * This event handler is used to implement the mouse picking feature.
+ * \param event 
+ */
 void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 	Q_D(RenderWidget);
 	if (d->enablePickingMode == true) {
 		d->enableStartPicking = true;
-		repaint();
+		repaint();			// Paint the object into the color frame buffer immediately.
 		const auto & p = event->pos();
 		d->selectedObjectId = selectMesh(p.x(), p.y());
 		d->enableStartPicking = false;
-		repaint();
+		repaint();			// Show the result immediately
 	}
 	update();
 }
@@ -515,11 +521,14 @@ void RenderWidget::updateMark() {
 
 	for (const auto & c : cates) {
 		const auto meshes = m_markModel->markMesh(c);
+
+
 		/**
 		 *	This is a low efficient operation because color of category could not be retrieved
 		 *  directly by category item, which is not stored color when created.
 		 *  TODO:: The issue would be addressed soon.
 		*/
+
 
 		auto markLists = m_markModel->marks(c);
 		if(markLists.isEmpty() == true)

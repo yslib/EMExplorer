@@ -153,6 +153,7 @@ private:
 
 	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
 	QList<QColor>							m_markColor;
+
 	QScopedPointer<SliceVolume>				m_volume;
 
 
