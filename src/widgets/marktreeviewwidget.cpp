@@ -241,6 +241,7 @@ m_infoView(nullptr)
 	auto layout = new QVBoxLayout;
 	layout->addWidget(m_treeView);
 	layout->addWidget(m_infoView);
+
 	layout->setStretchFactor(m_treeView, 7);
 	layout->setStretchFactor(m_infoView, 3);
 
@@ -265,7 +266,7 @@ void MarkManager::setMarkModel(MarkModel * model)
 	m_treeView->setModel(model);
 
 	// update selectionModel
-	m_treeView->setSelectionModel(model->selctionModelOfThisModel());
+	m_treeView->setSelectionModel(model->selectionModelOfThisModel());
 
 }
 

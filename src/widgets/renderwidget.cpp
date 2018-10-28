@@ -213,10 +213,11 @@ void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 
 void RenderWidget::setMarkModel(MarkModel* model)
 {
+	
+	disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
 	m_markModel = model;
-
+	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
 	updateMark();
-
 	//emit markModelChanged();
 	emit markModelChanged();
 	update();
@@ -263,8 +264,8 @@ void RenderWidget::initializeGL()
 	if (m_volume != nullptr)
 		m_volume->initializeGLResources();
 
-	for (auto & item : m_markMeshes)
-		item->initializeGLResources();
+	for (auto & item : m_integration)
+		item.mesh->initializeGLResources();
 
 	// mesh shader
 
@@ -344,14 +345,18 @@ void RenderWidget::paintGL()
 		if (d->enableStartPicking == true) {
 			m_pickFBO->bind();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 			m_selectShader->bind();
 			m_selectShader->setUniformValue("viewMatrix", viewMatrix);
 			m_selectShader->setUniformValue("projMatrix", m_proj);
 			m_selectShader->setUniformValue("modelMatrix", world);
-			for (int i = 0; i < m_markMeshes.size(); i++) {
-				const auto color = idToColor(i);
-				m_selectShader->setUniformValue("pickColor", color);
-				m_markMeshes[i]->render();
+
+			for (int i = 0; i < m_integration.size(); i++) {
+				if(m_integration[i].visible == true) {
+					const auto color = idToColor(i);
+					m_selectShader->setUniformValue("pickColor", color);
+					m_integration[i].mesh->render();
+				}
 			}
 			m_selectShader->release();
 			m_pickFBO->release();
@@ -365,9 +370,12 @@ void RenderWidget::paintGL()
 		m_meshShader->setUniformValue("lightPos", cameraPos);
 		m_meshShader->setUniformValue("viewPos", cameraPos);
 
-		for (int i = 0; i < m_markMeshes.size(); i++) {
+		for (int i = 0; i < m_integration.size(); i++) {
 
-			QColor color = m_markColor[i];
+			if (m_integration[i].visible == false)
+				continue;
+
+			QColor color = m_integration[i].color;
 
 			if (i == d->selectedObjectId) {
 				//glClear(GL_STENCIL_BUFFER_BIT);
@@ -376,7 +384,7 @@ void RenderWidget::paintGL()
 
 				//glStencilFunc(GL_ALWAYS, 1, 0xFF);
 				//glStencilMask(0xFF);
-				color = m_markColor[i].lighter(150);
+				color = m_integration[i].color.lighter(150);
 				//m_meshShader->setUniformValue("objectColor", color);
 				//m_markMeshes[i]->render();
 
@@ -387,7 +395,7 @@ void RenderWidget::paintGL()
 				m_meshShader->setUniformValue("outlining", false);
 				m_meshShader->setUniformValue("objectColor", color);
 				m_meshShader->setUniformValue("modelMatrix", world);
-				m_markMeshes[i]->render();
+				m_integration[i].mesh->render();
 				//glStencilMask(0xFF);
 				//glEnable(GL_DEPTH_TEST);
 				//glDisable(GL_STENCIL_TEST);
@@ -396,7 +404,7 @@ void RenderWidget::paintGL()
 				m_meshShader->setUniformValue("outlining", false);
 				m_meshShader->setUniformValue("objectColor", color);
 				m_meshShader->setUniformValue("modelMatrix", world);
-				m_markMeshes[i]->render();
+				m_integration[i].mesh->render();
 			}
 
 
@@ -451,12 +459,18 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 		repaint();			// Paint the object into the color frame buffer immediately.
 		const auto & p = event->pos();
 		d->selectedObjectId = selectMesh(p.x(), p.y());
+
+		const auto index = m_query.toIndex(d->selectedObjectId);
+		//qDebug() << index;
+
+		m_markModel->selectionModelOfThisModel()->clear();
+		m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Current);
+		m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Select);
 		d->enableStartPicking = false;
 		repaint();			// Show the result immediately
 	}
 	update();
 }
-
 
 void RenderWidget::updateTransferFunction(const float * func)
 {
@@ -501,31 +515,51 @@ void RenderWidget::setFrontSliceVisible(bool check) {
 	}
 }
 
+void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role)
+{
+	if (begin != end || begin.isValid() ==false)
+		return;
+	if(role[0] == Qt::CheckStateRole) {
+		const auto id = m_query.toId(begin);
+		if(id != -1) {
+			const auto item = static_cast<InstanceTreeItem*>(begin.internalPointer());
+			m_integration[id].visible = item->visible();
+			update();
+		}
+	}
+
+}
+
 void RenderWidget::updateMark() {
 
+	Q_D(RenderWidget);
 	if (m_markModel == nullptr || m_dataModel == nullptr)
 	{
 		return;
 	}
 
-	Q_D(RenderWidget);
-
-	m_markMeshes.clear();
+	
+	m_integration.clear();
+	m_query.clear();
 	//const auto cates = m_markModel->categoryText();
 	makeCurrent();
 
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
+
 	QMatrix4x4 trans;
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
+
 	{
 		const auto instances = m_markModel->treeItems(QModelIndex(), TreeItemType::Instance);
 		const QColor color = Qt::red;
 		for (const auto & inst : instances) {
 			const auto mesh = static_cast<InstanceTreeItem*>(inst)->mesh();
+
 			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
+
 			const auto v = mesh->vertices();
 			const auto idx = mesh->indices();
 			const auto nV = mesh->vertexCount();
@@ -540,10 +574,13 @@ void RenderWidget::updateMark() {
 				d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
 				this));
 			ptr->initializeGLResources();
-			m_markMeshes.push_back(ptr);
-			m_markColor.push_back(color);
+			m_integration.push_back({ptr,color,true});
+
+			const auto id = m_integration.size() - 1;
+			m_query.addQueryPair(inst->persistentModelIndex(), id);
 		}
 	}
+
 	doneCurrent();
 }
 
@@ -602,8 +639,8 @@ void RenderWidget::cleanup()
 	if (m_volume != nullptr)
 		m_volume->destroyGLResources();
 
-	for (auto & mesh : m_markMeshes)
-		mesh->destoryGLResources();
+	for (auto & inte : m_integration)
+		inte.mesh->destoryGLResources();
 
 	delete m_meshShader;
 	m_meshShader = nullptr;

@@ -181,8 +181,8 @@ public:
 
 
 	QList<TreeItem*> treeItems(const QModelIndex & parent, int type);
-
 	QModelIndex indexByItem(TreeItem * item);
+
 	bool insertTreeItem(TreeItem* item, const QModelIndex & parent);
 	bool insertTreeItems(const QList<TreeItem*>& items, const QModelIndex & parent);
 	bool removeTreeItem(TreeItem* item);
@@ -190,7 +190,7 @@ public:
 
 	//bool save(const QString & fileName,const QModelIndex & parent);
 	
-	QItemSelectionModel * selctionModelOfThisModel()const {return m_selectionModel;};
+	QItemSelectionModel * selectionModelOfThisModel()const {return m_selectionModel;};
 
 	QList<QGraphicsItem*> marks(const QString & text)const;
 	QList<QGraphicsItem*> marks()const;													//This is time-consuming operation

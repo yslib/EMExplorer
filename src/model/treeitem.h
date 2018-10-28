@@ -116,6 +116,7 @@ public:
 
 	virtual void setCurrentSelected(bool selected);
 
+
 	virtual QAbstractItemModel* infoModel()const = 0;
 
 	virtual int columnCount()const = 0;

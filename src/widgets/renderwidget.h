@@ -13,7 +13,7 @@
 //#include "renderoptionwidget.h"
 
 #include <QOpenGLTexture>
-
+#include <QTreeView>
 
 
 class MarkModel;
@@ -59,6 +59,17 @@ struct RenderOptions {
 	}
 };
 
+
+struct MeshIntegration 
+{
+	QSharedPointer<TriangleMesh> mesh;
+	QColor color;
+	bool visible;
+	MeshIntegration(const QSharedPointer<TriangleMesh> & amesh,const QColor & acolor,bool avisible):mesh(amesh),color(acolor),visible(avisible){}
+};
+
+
+
 class RenderWidgetPrivate {
 	Q_DECLARE_PUBLIC(RenderWidget);
 	RenderWidget * const q_ptr;
@@ -81,6 +92,54 @@ public:
 	QSharedPointer<RenderOptions> options;
 	QPoint lastMousePos;
 	QMatrix4x4 volumeNormalTransform;
+
+};
+
+class ItemQueryId {
+	QHash<QPersistentModelIndex, int>		m_index2Id;
+	QHash<int, QPersistentModelIndex>       m_id2Index;
+public:
+	ItemQueryId(){}
+	void addQueryPair(const QPersistentModelIndex & index, int id) {
+
+
+		m_index2Id[index] = id;
+		m_id2Index[id] = index;
+	}
+	void removeQueryPair(int id) {
+		const auto itr = m_id2Index.constFind(id);
+		if (itr == m_id2Index.constEnd())
+			return;
+		m_index2Id.remove(*itr);
+		m_id2Index.remove(id);
+	}
+	void removeQueryPair(const QPersistentModelIndex & index) {
+		const auto itr = m_index2Id.constFind(index);
+		if (itr == m_index2Id.constEnd())
+			return;
+		m_id2Index.remove(*itr);
+		m_index2Id.remove(index);
+	}
+	const QPersistentModelIndex & toIndex(int id)const {
+		const auto itr = m_id2Index.constFind(id);
+		if(itr != m_id2Index.constEnd()) {
+			return *itr;
+		}
+		return QPersistentModelIndex();
+
+	}
+	int toId(const QPersistentModelIndex & index)const {
+		const auto itr = m_index2Id.constFind(index);
+		if (itr != m_index2Id.constEnd()) {
+			return *itr;
+		}
+		return -1;
+	}
+
+	void clear() {
+		m_id2Index.clear();
+		m_index2Id.clear();
+	}
 
 };
 //class RenderWidgetPrivate;
@@ -124,6 +183,7 @@ public slots:
 	void			setFrontSliceVisible(bool check);
 private slots:
 	void			updateMark();
+	void			markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role);
 private:
 	RenderWidgetPrivate* const d_ptr;
 	Q_DECLARE_PRIVATE(RenderWidget);
@@ -151,8 +211,8 @@ private:
 	//QMenu									*m_contextMenu;
 	//Mark Mesh
 
-	QList<QSharedPointer<TriangleMesh>>     m_markMeshes;
-	QList<QColor>							m_markColor;
+	QList<MeshIntegration>					m_integration;
+	ItemQueryId								m_query;
 
 	QScopedPointer<SliceVolume>				m_volume;
 
@@ -182,4 +242,6 @@ inline QSharedPointer<RenderOptions> RenderWidget::options()const
 	//Q_D(RenderWidget);
 	return d_ptr->options;
 }
+
+
 #endif // VOLUMEWIDGET_H

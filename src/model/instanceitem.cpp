@@ -63,10 +63,11 @@ QVector<QList<StrokeMarkItem*>> InstanceTreeItem::refactorMarks(QList<StrokeMark
 
 InstanceTreeItem::InstanceTreeItem(const QString & text, const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
 	TreeItem(pModelIndex, parent),
-m_text(text),
-m_checkState(1)
+m_infoModel(nullptr)
 {
-
+	m_infoModel = new InstanceTreeItemInfoModel(nullptr);
+	m_infoModel->m_text = text;
+	m_infoModel->m_checkState = 1;
 }
 
 
@@ -80,11 +81,11 @@ QVariant InstanceTreeItem::data(int column, int role) const
 {
 	if(role == Qt::DisplayRole) {
 		if(column == 0) {
-			return m_text;
+			return m_infoModel->m_text;
 		}
 	}else if(role == Qt::CheckStateRole) {
 		if(column == 0) {
-			return m_checkState == 1?Qt::Checked:Qt::Unchecked;
+			return m_infoModel->m_checkState == 1?Qt::Checked:Qt::Unchecked;
 		}
 	}
 	return QVariant();
@@ -100,13 +101,13 @@ QVariant InstanceTreeItem::data(int column, int role) const
 bool InstanceTreeItem::setData(int column, const QVariant& value, int role) {
 	if (role == Qt::EditRole) {
 		if (column == 0) {
-			m_text = value.toString();
+			m_infoModel->m_text = value.toString();
 			return true;
 		}
 	}
 	else if (role == Qt::CheckStateRole) {
 		if (column == 0) {
-			m_checkState = (value == Qt::Checked ? 1 : 0);
+			m_infoModel->m_checkState = (value == Qt::Checked ? 1 : 0);
 			return true;
 		}
 	}
@@ -182,6 +183,35 @@ InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(QObject * parent) :QAbstrac
 
 QVariant InstanceTreeItemInfoModel::data(const QModelIndex & index, int role) const
 {
+	if(role == Qt::DisplayRole) {
+		const auto r = index.row();
+		const auto c = index.column();
+		if(r == 0) {
+			if(c == 0) {
+				return QStringLiteral("Name");
+			}
+			if(c == 1) {
+				return m_text;
+			}
+		}
+		if(r == 1) {
+			if( c == 0) {
+				return QStringLiteral("Region");
+			}
+			if( c == 1) {
+				return m_range;
+			}
+		}
+		if(r == 2) {
+			if( c == 0) {
+				return QStringLiteral("Visible");
+			}
+			if(c == 1) {
+				return m_checkState == 1 ? true : false;
+			}
+		}
+
+	}
 	return QVariant();
 }
 
@@ -189,14 +219,17 @@ int InstanceTreeItemInfoModel::columnCount(const QModelIndex& parent) const { re
 
 QModelIndex InstanceTreeItemInfoModel::index(int row, int column, const QModelIndex & parent) const
 {
-	return QModelIndex();
+	if(parent.isValid() == false) {
+		return createIndex(row, column);
+	}
+	return QModelIndex{};
 }
 
-int InstanceTreeItemInfoModel::rowCount(const QModelIndex& parent) const { return 1; }
+int InstanceTreeItemInfoModel::rowCount(const QModelIndex& parent) const { return 3; }
 
 QModelIndex InstanceTreeItemInfoModel::parent(const QModelIndex & child) const
 {
-	return QModelIndex();
+	return QModelIndex{};
 }
 
 bool InstanceTreeItemInfoModel::setData(const QModelIndex & index, const QVariant & value, int role)

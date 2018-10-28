@@ -8,6 +8,8 @@ class InstanceMetaData;
 
 class InstanceTreeItemInfoModel:public QAbstractItemModel {
 
+
+
 public:
 
 	InstanceTreeItemInfoModel(QObject * parent = nullptr);
@@ -17,14 +19,19 @@ public:
 	int rowCount(const QModelIndex& parent) const override;
 	QModelIndex parent(const QModelIndex& child) const override;
 	bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+
+	QString m_text;
+	QRect m_range;
+	quint8 m_checkState;
 };
 
 class InstanceTreeItem:public TreeItem
 {
-	QString m_text;
-	QRect m_range;
-	quint8 m_checkState;
+	//QString m_text;
+	//QRect m_range;
+	//quint8 m_checkState;
 
+	InstanceTreeItemInfoModel * m_infoModel;
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
 
 
@@ -39,12 +46,12 @@ public:
 	bool insertColumns(int position, int columns) override;
 	bool removeColumns(int position, int columns) override;
 	void * metaData() override;
-	QAbstractItemModel * infoModel() const override { return nullptr; }
+	QAbstractItemModel * infoModel() const override { return m_infoModel; }
 
 
-	QRect boundingBox()const { return m_range; }
-	void setBoundingBox(const QRect & rect) { m_range = rect; }
-	bool visible()const { return m_checkState == 1 ? true : false; }
+	QRect boundingBox()const { return m_infoModel->m_range; }
+	void setBoundingBox(const QRect & rect) { m_infoModel->m_range = rect; }
+	bool visible()const { return m_infoModel->m_checkState == 1 ? true : false; }
 
 	QSharedPointer<Triangulate> mesh()const;
 

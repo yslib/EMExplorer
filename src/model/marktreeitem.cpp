@@ -25,8 +25,11 @@ StrokeMarkTreeItem(QGraphicsItem* markItem, const QPersistentModelIndex & pIndex
 					//This is a bad design. But there is a no better remedy so far.
 					const auto markModel = static_cast<const MarkModel*>(model);
 					if (markModel != nullptr) {
-						const auto selectionModel = markModel->selctionModelOfThisModel();
+						const auto selectionModel = markModel->selectionModelOfThisModel();
+						//selectionModel->clear();
 						selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Current);
+						//selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Select);
+
 					}
 				}
 				return value;
