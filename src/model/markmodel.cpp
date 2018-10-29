@@ -143,7 +143,7 @@ QModelIndex MarkModel::_hlp_categoryAdd(const CategoryInfo& info)
 {
 	return _hlp_categoryAdd(info.name, info.color);
 }
-QModelIndex MarkModel::_hlp_instanceFind(const QString & category, const QGraphicsItem * item)
+QModelIndex MarkModel::_hlp_instanceFind(const QString & category, const StrokeMarkItem * item)
 {
 	auto cIndex = _hlp_categoryIndex(category);
 	Q_ASSERT_X(cIndex.isValid(), "MarkModel::instanceAddHelper", "index is invalid");
@@ -173,7 +173,7 @@ QModelIndex MarkModel::_hlp_instanceFind(const QString & category, const QGraphi
 	}
 	return best;
 }
-QModelIndex MarkModel::_hlp_instanceAdd(const QString & category, const QGraphicsItem* mark)
+QModelIndex MarkModel::_hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark)
 {
 	auto cIndex = _hlp_categoryIndex(category);
 	Q_ASSERT_X(cIndex.isValid(), "MarkModel::instanceFindHelper", "invalid index");
@@ -202,7 +202,7 @@ QModelIndex MarkModel::_hlp_instanceAdd(const QString & category, const QGraphic
  * \brief
  * \param mark
  */
-void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
+void MarkModel::addMarkInSliceHelper(StrokeMarkItem * mark)
 {
 	int index = mark->data(MarkProperty::SliceIndex).toInt();
 	MarkSliceList * markList;
@@ -227,7 +227,7 @@ void MarkModel::addMarkInSliceHelper(QGraphicsItem * mark)
  * \brief
  * \param mark
  */
-void MarkModel::removeMarkInSliceHelper(QGraphicsItem * mark)
+void MarkModel::removeMarkInSliceHelper(StrokeMarkItem * mark)
 {
 	int index = mark->data(MarkProperty::SliceIndex).toInt();
 	auto type = static_cast<SliceType>(mark->data(MarkProperty::SliceType).value<int>());
@@ -250,7 +250,7 @@ void MarkModel::removeMarkInSliceHelper(QGraphicsItem * mark)
  * \brief
  * \param mark
  */
-void MarkModel::updateMarkVisibleHelper(QGraphicsItem * mark)
+void MarkModel::updateMarkVisibleHelper(StrokeMarkItem * mark)
 {
 	//Q_ASSERT_X(m_view,"MarkModel::updateMarkVisible_Helper","null pointer");
 	if (m_view == nullptr)
@@ -273,13 +273,13 @@ void MarkModel::updateMarkVisibleHelper(QGraphicsItem * mark)
  */
 bool MarkModel::updateMeshMarkHelper(const QString& cate)
 {
-	QList<StrokeMarkItem*> meshMark;
-	auto oldMark = MarkModel::marks(cate);
-	for (const auto om : oldMark) {
-		if (om->type() == ItemTypes::StrokeMark) {					// Manually RTTI
-			meshMark << static_cast<StrokeMarkItem*>(om);
-		}
-	}
+	//QList<StrokeMarkItem*> meshMark;
+	auto meshMark = MarkModel::marks(cate);
+	//for (const auto om : oldMark) {
+	//	if (om->type() == ItemTypes::StrokeMark) {					// Manually RTTI
+	//		meshMark << static_cast<StrokeMarkItem*>(om);
+	//	}
+	//}
 	auto item = _hlp_internalPointer(_hlp_categoryIndex(cate));
 
 
@@ -612,7 +612,7 @@ MarkModel::~MarkModel()
 }
 
 
-bool MarkModel::addMark(const QString & text, QGraphicsItem * mark)
+bool MarkModel::addMark(const QString & text, StrokeMarkItem* mark)
 {
 	//auto i = categoryIndexHelper(text);
 
@@ -641,7 +641,7 @@ bool MarkModel::addMark(const QString & text, QGraphicsItem * mark)
  * \param marks A QList contains a series of QGraphicsItem*
  * \return return true if adding marks is successful or return false
  */
-bool MarkModel::addMarks(const QString & text, const QList<QGraphicsItem*> & marks)
+bool MarkModel::addMarks(const QString & text, const QList<StrokeMarkItem*> & marks)
 {
 	auto i = _hlp_categoryIndex(text);
 	Q_ASSERT_X(i.isValid(), "MarkModel::addMarks", "index is invalid");
@@ -786,7 +786,7 @@ bool MarkModel::removeTreeItems(const QList<TreeItem*>& items)
  * \param text
  * \return return a QList contains the marks covered by \a category
  */
-QList<QGraphicsItem*> MarkModel::marks(const QString & text)const
+QList<StrokeMarkItem*> MarkModel::marks(const QString& text) const
 {
 	auto id = _hlp_categoryIndex(text);
 	int r = rowCount(id);
@@ -795,13 +795,13 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & text)const
 		"MarkModel::addMark", "insert error");
 	Q_ASSERT_X(item->type() == TreeItemType::Category,			//There should be TreeItemType::Category ???
 		"MarkModel::marks", "type error");
-	QList<QGraphicsItem*> res;
+	QList<StrokeMarkItem*> res;
 	for (int i = 0; i < r; i++)
 	{
 		Q_ASSERT_X(item->child(i)->type() == TreeItemType::Mark,
 			"MarkModel::marks", "convert failed");
 		const auto d = item->child(i)->metaData();
-		res.append(static_cast<QGraphicsItem*>(d));
+		res.append(static_cast<StrokeMarkItem*>(d));
 	}
 	return res;
 }
@@ -811,7 +811,7 @@ QList<QGraphicsItem*> MarkModel::marks(const QString & text)const
  * \param mark A specified mark needs to be removed
  * \return return \a true if deleting is success or return \a false
  */
-bool MarkModel::removeMark(QGraphicsItem * mark)
+bool MarkModel::removeMark(StrokeMarkItem * mark)
 {
 	const auto category = mark->data(MarkProperty::CategoryName).toString();
 	auto id = _hlp_categoryIndex(category);
@@ -855,7 +855,7 @@ bool MarkModel::removeMark(QGraphicsItem * mark)
  * \param marks
  * \return return the numbers of deleted marks
  */
-int MarkModel::removeMarks(const QList<QGraphicsItem*>& marks)
+int MarkModel::removeMarks(const QList<StrokeMarkItem*>& marks)
 {
 	int success = 0;
 	auto func = std::bind(&MarkModel::removeMark, this, std::placeholders::_1);
@@ -907,7 +907,7 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 			slice = m_dataModel->originalTopSlice(sliceCount);
 			QPainter p(&slice);
 			foreach(const auto & item, items) {
-				auto mark = qgraphicsitem_cast<StrokeMarkItem*>(item);
+				auto mark = qgraphicsitem_cast<StrokeMarkItem*>(item);				///TODO::
 				if (mark != nullptr) {
 					const auto & poly = mark->polygon();
 					auto pen = mark->pen();
@@ -1006,7 +1006,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 
 		if(newItem->type() == TreeItemType::Mark)		// If it is a mark, add to slice mark cache.
 		{
-			addMarkInSliceHelper(static_cast<QGraphicsItem*>(newItem->metaData()));
+			addMarkInSliceHelper(static_cast<StrokeMarkItem*>(newItem->metaData()));
 		}
 
 		delete item->takeChild(index.row(), newItem, nullptr);
@@ -1028,7 +1028,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 
 		if(item->type() == TreeItemType::Mark) 
 		{
-			updateMarkVisibleHelper(static_cast<QGraphicsItem*>(item->metaData()));
+			updateMarkVisibleHelper(static_cast<StrokeMarkItem*>(item->metaData()));
 		}
 
 		if (role == Qt::CheckStateRole) {	// The modification on CheckStateRole will be applied recursively.

@@ -39,6 +39,7 @@ class SliceWidget;
 class RenderWidget;
 class SliceToolWidget;
 class CategoryInfo;
+class StrokeMarkItem;
 
 class SliceScene :public QGraphicsScene
 {
@@ -182,12 +183,12 @@ signals:
 	void viewFocus(SliceType type);
 
 	void markModified();
-
+	
 	void markSaved();
 
-	void markSelected(QGraphicsItem * item);
+	void markSelected(StrokeMarkItem * item);
 
-	void marksSelected(QList<QGraphicsItem*> items);
+	void marksSelected(QList<StrokeMarkItem*> items);
 	
 
 
@@ -211,7 +212,7 @@ private:
 	//void detachSliceModel();
 	inline bool contains(const QWidget* widget, const QPoint& pos);
 
-	void markAddedHelper(SliceType type, QGraphicsItem * mark);
+	void markAddedHelper(SliceType type, StrokeMarkItem* mark);
 	
 	void markSingleSelectionHelper();
 

@@ -5,10 +5,10 @@
 
 class MarkItemInfoModel :public QAbstractItemModel
 {
-	QGraphicsItem * m_markItem;
+	StrokeMarkItem * m_markItem;
 
 public:
-	explicit MarkItemInfoModel(QGraphicsItem * mark,QObject * parent);
+	explicit MarkItemInfoModel(StrokeMarkItem * mark,QObject * parent);
 
 	QVariant data(const QModelIndex& index, int role) const override;
 	int columnCount(const QModelIndex& parent) const override;
@@ -23,10 +23,10 @@ public:
 
 class StrokeMarkTreeItem :public TreeItem {
 
-	QGraphicsItem * m_markItem;
+	StrokeMarkItem* m_markItem;
 	QAbstractItemModel * m_infoModel;
 public:
-	StrokeMarkTreeItem(QGraphicsItem* markItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
+	StrokeMarkTreeItem(StrokeMarkItem* markItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
 
 	QVariant data(int column, int role) const override;
 

@@ -264,10 +264,8 @@ void MarkManager::setMarkModel(MarkModel * model)
 		return;
 
 	m_treeView->setModel(model);
-
 	// update selectionModel
 	m_treeView->setSelectionModel(model->selectionModelOfThisModel());
-
 }
 
 /**

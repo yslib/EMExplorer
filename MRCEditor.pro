@@ -62,8 +62,9 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/widgets/volumemainwindow.h \
     $${MY_PREFIX_DIR}/model/instanceitem.h \
     $${MY_PREFIX_DIR}/model/roottreeitem.h \
-    src/model/marktreeitem.h \
-    src/model/iteminfomodel.h
+    $${MY_PREFIX_DIR}/model/marktreeitem.h \
+    $${MY_PREFIX_DIR}/model/iteminfomodel.h \
+    $${MY_PREFIX_DIR}/model/strokeitem.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
@@ -107,6 +108,7 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/volumemainwindow.cpp \
     $${MY_PREFIX_DIR}/model/instanceitem.cpp \
     $${MY_PREFIX_DIR}/model/roottreeitem.cpp \
-    src/model/marktreeitem.cpp \
-    src/model/iteminfomodel.cpp
+    $${MY_PREFIX_DIR}/model/marktreeitem.cpp \
+    $${MY_PREFIX_DIR}/model/iteminfomodel.cpp \
+    $${MY_PREFIX_DIR}/model/strokeitem.cpp
 RESOURCES += resources.qrc

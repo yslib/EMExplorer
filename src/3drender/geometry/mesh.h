@@ -2,10 +2,7 @@
 #define MESH_H
 #include <memory>
 #include <vector>
-#include <QMatrix4x4>
-#include <QVector2D>
 
-#include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include "3drender/shader/shaderdatainterface.h"
@@ -20,11 +17,11 @@ typedef QMatrix4x4 Transform3;
 class RenderWidget;
 
 class TriangleMesh{
+
 	std::unique_ptr<Point3f[]> m_vertices;
 	std::unique_ptr<Vector3f[]> m_normals;
 	std::unique_ptr<Point2f[]> m_textures;
 	int m_nVertex;
-
 	std::vector<int> m_vertexIndices;
 	int m_nTriangles;
 
@@ -34,13 +31,13 @@ class TriangleMesh{
 	QOpenGLBuffer m_ebo;
 	QOpenGLVertexArrayObject m_vao;
 	QVector3D m_centroid;
-
 	RenderWidget * m_renderer;
 
 	bool m_created;
 	bool m_poly;
-
 public:
+
+
 	TriangleMesh(const Point3f * vertices,		// Vertex array
 		const Vector3f * normals,				// Normal vector array
 		const Point2f * textures,				// Texture coordinates array
@@ -48,6 +45,7 @@ public:
 		const int * vertexIndices,				// Vertex index array
 		int nTriangles,							// The number of triangle the mesh has
 		const Transform3 & trans,RenderWidget * widget)noexcept;
+
 
 	bool initializeGLResources();
 

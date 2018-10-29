@@ -65,7 +65,7 @@ class MarkModel :public QAbstractItemModel
 	//typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
 	//typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
 	
-	using MarkSliceList = QVector<QList<QGraphicsItem*>>;
+	using MarkSliceList = QVector<QList<StrokeMarkItem*>>;
 	//state member
 	const AbstractSliceDataModel * m_dataModel;
 	const SliceEditorWidget * m_view;
@@ -92,13 +92,13 @@ class MarkModel :public QAbstractItemModel
 
 	//void _hlp_index(const QModelIndex & parent,int type,QList<QModelIndex> * indices);
 
-	QModelIndex _hlp_instanceFind(const QString & category,const QGraphicsItem * item);
-	QModelIndex _hlp_instanceAdd(const QString & category, const QGraphicsItem* mark);
+	QModelIndex _hlp_instanceFind(const QString & category,const StrokeMarkItem * item);
+	QModelIndex _hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark);
 
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
-	void addMarkInSliceHelper(QGraphicsItem * mark);									//set dirty
-	void removeMarkInSliceHelper(QGraphicsItem * mark);
-	void updateMarkVisibleHelper(QGraphicsItem * mark);							//set dirty
+	void addMarkInSliceHelper(StrokeMarkItem * mark);									//set dirty
+	void removeMarkInSliceHelper(StrokeMarkItem* mark);
+	void updateMarkVisibleHelper(StrokeMarkItem * mark);							//set dirty
 	bool updateMeshMarkHelper(const QString& cate);
 	void detachFromView();
 
@@ -175,8 +175,8 @@ public:
 
 	//Custom functions for accessing and setting data
 
-	bool addMark(const QString& text, QGraphicsItem* mark);					
-	bool addMarks(const QString& text, const QList<QGraphicsItem*>& marks);			
+	bool addMark(const QString& text, StrokeMarkItem* mark);
+	bool addMarks(const QString& text, const QList<StrokeMarkItem*>& marks);
 	bool addCategory(const CategoryInfo& info);
 
 
@@ -192,13 +192,13 @@ public:
 	
 	QItemSelectionModel * selectionModelOfThisModel()const {return m_selectionModel;};
 
-	QList<QGraphicsItem*> marks(const QString & text)const;
+	QList<StrokeMarkItem*> marks(const QString& text) const;
 	QList<QGraphicsItem*> marks()const;													//This is time-consuming operation
 	QStringList categoryText()const;
 	QList<QModelIndex> categoryModelIndices()const;
 	QVector<QSharedPointer<Triangulate>> markMesh(const QString& cate);
-	bool removeMark(QGraphicsItem* mark);			
-	int removeMarks(const QList<QGraphicsItem*>& marks = QList<QGraphicsItem*>());		
+	bool removeMark(StrokeMarkItem* mark);
+	int removeMarks(const QList<StrokeMarkItem*>& marks = QList<StrokeMarkItem*>());
 	inline int markCount(const QString & category)const;
 
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);

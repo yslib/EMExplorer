@@ -45,7 +45,7 @@ public:
 	};
 
 	SliceWidget(QWidget * parent = nullptr);
-	void setMarks(const QList<QGraphicsItem *> & items);
+	void setMarks(const QList<StrokeMarkItem *> & items);
 public slots:
 
 	inline void setOperation(int state);
@@ -60,7 +60,7 @@ public slots:
 
 	void clearSliceMarks();
 
-	QList<QGraphicsItem*> selectedItems()const;
+	QList<StrokeMarkItem*> selectedItems() const;
 
 	int selectedItemCount()const;
 
@@ -105,7 +105,7 @@ signals:
 	 * append at the item in \a mouseReleaseEvent()
 	 * \param item The new added item
 	 */
-	void markAdded(QGraphicsItem * item);
+	void markAdded(StrokeMarkItem * item);
 
 
 	/**
@@ -125,7 +125,7 @@ private:
 
 	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
 
-	inline  void setMarkHelper(const QList<QGraphicsItem*>& items);
+	inline  void setMarkHelper(const QList<StrokeMarkItem*>& items);
 
 	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
 

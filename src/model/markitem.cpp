@@ -156,7 +156,7 @@ void StrokeMarkItem::appendPoint(const QPointF& p)
  * \param handler This is a type of \a std::function<>
  */
 void StrokeMarkItem::setItemChangeHandler(
-	std::function<QVariant(QGraphicsItem::GraphicsItemChange, const QVariant&)> handler) {
+	std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)> handler) {
 	m_itemChangeHandler = handler;
 }
 
@@ -206,7 +206,7 @@ void StrokeMarkItem::updateLength()
  */
 QVariant StrokeMarkItem::itemChange(GraphicsItemChange change, const QVariant& value) {
 	if(m_itemChangeHandler != nullptr)
-		return m_itemChangeHandler(change,value);
+		return m_itemChangeHandler(this,change,value);
 	return QGraphicsPolygonItem::itemChange(change, value);
 }
 

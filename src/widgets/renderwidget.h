@@ -95,14 +95,13 @@ public:
 
 };
 
+
 class ItemQueryId {
 	QHash<QPersistentModelIndex, int>		m_index2Id;
 	QHash<int, QPersistentModelIndex>       m_id2Index;
 public:
 	ItemQueryId(){}
 	void addQueryPair(const QPersistentModelIndex & index, int id) {
-
-
 		m_index2Id[index] = id;
 		m_id2Index[id] = index;
 	}
@@ -135,12 +134,10 @@ public:
 		}
 		return -1;
 	}
-
 	void clear() {
 		m_id2Index.clear();
 		m_index2Id.clear();
 	}
-
 };
 //class RenderWidgetPrivate;
 
@@ -156,10 +153,13 @@ public:
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
 	FocusCamera     camera()const { return m_camera; }
 	QSharedPointer<RenderOptions> options()const;
+
 	GPUVolume*	    volume()const;
 
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
+
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
+
 	~RenderWidget();
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
@@ -184,6 +184,7 @@ public slots:
 private slots:
 	void			updateMark();
 	void			markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role);
+	void			markModelOfSelectionModelCurrentChanged(const QModelIndex & current, const QModelIndex & previous);
 private:
 	RenderWidgetPrivate* const d_ptr;
 	Q_DECLARE_PRIVATE(RenderWidget);

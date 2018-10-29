@@ -69,11 +69,8 @@ class TreeItem
 	PTR_TYPE(TreeItem) m_parent;
 	QVector<PTR_TYPE(TreeItem)> m_children;
 	QPersistentModelIndex m_persistentModelIndex;
-
 	void updateChildQPersistentModelIndex(TreeItem * item,int row);
-
 	void setPersistentModelIndex(const QPersistentModelIndex & pIndex) { m_persistentModelIndex = pIndex; }
-
 public:
 	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
 	m_parent(nullptr)
@@ -84,7 +81,6 @@ public:
 	virtual ~TreeItem();
 
 	const QAbstractItemModel* itemModel() const;
-
 	/**
 	 * \brief Returns the model index refers to the item in the model
 	 * 
@@ -95,45 +91,25 @@ public:
 	 * \sa QPersistentModelIndex
 	 */
 	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
-
 	void appendChild(TreeItem* child);
-
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
-
 	TreeItem* parentItem()const { return m_parent; };
-
 	TreeItem* child(int row)const { return m_children.value(row); }
-
 	TreeItem* takeChild(int row, TreeItem * child = nullptr,bool * takeSuccess = nullptr)noexcept;
-
 	int childCount()const { return m_children.size(); }
-
 	bool insertChildren(int position, const QVector<TreeItem*>& children);
-
 	bool removeChildren(int position, int count) noexcept;
-
 	int row() const;
 
 	virtual void setCurrentSelected(bool selected);
-
-
 	virtual QAbstractItemModel* infoModel()const = 0;
-
 	virtual int columnCount()const = 0;
-
 	virtual QVariant data(int column = 0, int role = Qt::DisplayRole)const = 0;
-
 	virtual bool insertColumns(int position, int columns) = 0;
-
 	virtual bool removeColumns(int position, int columns) = 0;
-
-
 	virtual bool setData(int column, const QVariant & value, int role = Qt::DisplayRole) = 0;
-
 	virtual int type()const = 0;
-
 	virtual void * metaData() = 0;
-
 	//void setCommonData(const QVariant & value) { m_commonData = value; }
 	/**
 	*	All above methods are necessary for a read-only TreeView.

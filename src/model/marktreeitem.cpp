@@ -1,43 +1,48 @@
 #include "marktreeitem.h"
 #include "markmodel.h"
 #include <QAbstractItemView>
+#include <QGraphicsScene>
 
 StrokeMarkTreeItem::
-StrokeMarkTreeItem(QGraphicsItem* markItem, const QPersistentModelIndex & pIndex, TreeItem* parent): TreeItem(pIndex, parent),
-                                                                                          m_markItem(nullptr),m_infoModel(nullptr) {
+StrokeMarkTreeItem(StrokeMarkItem* markItem, const QPersistentModelIndex & pIndex, TreeItem* parent) : TreeItem(pIndex, parent),
+m_markItem(nullptr), m_infoModel(nullptr) {
 	m_markItem = markItem;
-	if(m_markItem != nullptr) {
+	if (m_markItem != nullptr) {
 
-		//A manually RTTI still should be need to identify a what exact type the pointer is.
-		if(m_markItem->type() == StrokeMark) {
-			
-			auto stroke = static_cast<StrokeMarkItem*>(m_markItem);
-			// Add state change handler
-			stroke->setItemChangeHandler([this](QGraphicsItem::GraphicsItemChange change,const QVariant & value)->QVariant {
-				if(this->persistentModelIndex().isValid() == false) 
+
+		auto stroke = static_cast<StrokeMarkItem*>(m_markItem);
+		// Add state change handler
+		stroke->setItemChangeHandler([this](StrokeMarkItem * mark,QGraphicsItem::GraphicsItemChange change, const QVariant & value)->QVariant {
+
+			if (this->persistentModelIndex().isValid() == false)
+			{
+				qWarning("QPersistentModelIndex is invalid");
+			}
+			else if (change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
+				
+				if(value.toBool() == false)			//The item is presently selected. Do nothing
 				{
-					qWarning("QPersistentModelIndex is invalid");
+					return value;
 				}
-				else if (change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
-					///TODO:: Notify that the item is going to be selected.
-					qDebug() << "Item is going to be selected\n";
-					const auto model = persistentModelIndex().model();
-					//This is a bad design. But there is a no better remedy so far.
-					const auto markModel = static_cast<const MarkModel*>(model);
-					if (markModel != nullptr) {
-						const auto selectionModel = markModel->selectionModelOfThisModel();
-						//selectionModel->clear();
-						selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Current);
-						//selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Select);
 
-					}
+				const auto model = persistentModelIndex().model();
+				//This is a bad design. But there is a no better remedy so far.
+				const auto markModel = static_cast<const MarkModel*>(model);
+
+				if (markModel != nullptr) {
+					const auto selectionModel = markModel->selectionModelOfThisModel();
+					
+					mark->scene()->clearSelection();
+					
+					selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Current);
+					//selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Select);
 				}
-				return value;
-			});
-		}
+			}
+			return value;
+		});
 	}
 
-	m_infoModel = new MarkItemInfoModel(markItem,nullptr);
+	m_infoModel = new MarkItemInfoModel(markItem, nullptr);
 }
 
 QVariant StrokeMarkTreeItem::data(int column, int role) const {
@@ -89,7 +94,7 @@ bool StrokeMarkTreeItem::setData(int column, const QVariant& value, int role) {
 
 /**
  * \brief Returns the information about the tree item.
- * \return 
+ * \return
  */
 int StrokeMarkTreeItem::type() const { return TreeItemType::Mark; }
 
@@ -97,13 +102,15 @@ int StrokeMarkTreeItem::type() const { return TreeItemType::Mark; }
  * \brief Returns meta data in the tree item
  * \return A void * pointer. You need to cast it to a specified type before using it.
  */
-void* StrokeMarkTreeItem::metaData() 
-{ return static_cast<void*>(m_markItem); }
+void* StrokeMarkTreeItem::metaData()
+{
+	return static_cast<void*>(m_markItem);
+}
 
 /**
  * \brief Destroys the stroke mark tree item.
  */
-StrokeMarkTreeItem::~StrokeMarkTreeItem() 
+StrokeMarkTreeItem::~StrokeMarkTreeItem()
 {
 	delete m_markItem;
 	m_infoModel->deleteLater();
@@ -112,28 +119,28 @@ StrokeMarkTreeItem::~StrokeMarkTreeItem()
 
 /**
  * \brief Constructs a \a MarkItemInfoModel object.
- * \param mark 
- * \param parent 
+ * \param mark
+ * \param parent
  */
-MarkItemInfoModel::MarkItemInfoModel(QGraphicsItem * mark, QObject * parent):m_markItem(nullptr),QAbstractItemModel(parent)
+MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem * mark, QObject * parent) :m_markItem(nullptr), QAbstractItemModel(parent)
 {
 	m_markItem = mark;
 }
 
 /**
  * \brief Returns the data located in \a index
- * \param index 
- * \param role 
- * \return 
- * 
+ * \param index
+ * \param role
+ * \return
+ *
  * \Note:
  *	This is a 5 by 2 table. Color, Name, SliceIndex,SliceType, Visible State, Length are included.
  */
 QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 {
-	if(m_markItem == nullptr)
+	if (m_markItem == nullptr)
 		return QVariant();
-	if(role == Qt::DisplayRole) {
+	if (role == Qt::DisplayRole) {
 		const auto r = index.row();
 		const auto c = index.column();
 		const static QString tableHeaders[] = {
@@ -143,9 +150,10 @@ QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 			QStringLiteral("Slice Type") ,
 			QStringLiteral("Visible"),
 			QStringLiteral("Length:") };
-		if(c == 0) {
+		if (c == 0) {
 			return tableHeaders[r];
-		}else if(c == 1) {
+		}
+		else if (c == 1) {
 			switch (r) {
 			case 0:return m_markItem->data(MarkProperty::Color);
 			case 1:return m_markItem->data(MarkProperty::Name);
@@ -161,9 +169,9 @@ QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 }
 
 /**
- * \brief 
- * \param parent 
- * \return 
+ * \brief
+ * \param parent
+ * \return
  */
 int MarkItemInfoModel::columnCount(const QModelIndex & parent) const
 {
@@ -171,24 +179,24 @@ int MarkItemInfoModel::columnCount(const QModelIndex & parent) const
 }
 
 /**
- * \brief 
- * \param row 
- * \param column 
- * \param parent 
- * \return 
+ * \brief
+ * \param row
+ * \param column
+ * \param parent
+ * \return
  */
 QModelIndex MarkItemInfoModel::index(int row, int column, const QModelIndex & parent) const
 {
-	if(parent.isValid() == false) {
+	if (parent.isValid() == false) {
 		return createIndex(row, column);
 	}
 	return QModelIndex{};
 }
 
 /**
- * \brief 
- * \param parent 
- * \return 
+ * \brief
+ * \param parent
+ * \return
  */
 int MarkItemInfoModel::rowCount(const QModelIndex & parent) const
 {
@@ -208,11 +216,11 @@ QModelIndex MarkItemInfoModel::parent(const QModelIndex & child) const
 }
 
 /**
- * \brief 
- * \param index 
- * \param value 
- * \param role 
- * \return 
+ * \brief
+ * \param index
+ * \param value
+ * \param role
+ * \return
  */
 bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value, int role) {
 	return false;
@@ -220,22 +228,23 @@ bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value,
 
 /**
  * \brief Reimplemented from QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role)
- * 
+ *
  * Returns the data for the given role and section in the header with the specified orientation.
  * For horizontal headers, the section number corresponds to the column number. Similarly,
  *  for vertical headers, the section number corresponds to the row number.
- * \param section 
- * \param orientation 
- * \param role 
- * \return 
+ * \param section
+ * \param orientation
+ * \param role
+ * \return
  */
 QVariant MarkItemInfoModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if(role == Qt::DisplayRole) {
-		if(orientation == Qt::Horizontal) {
-			if(section == 0) {
+	if (role == Qt::DisplayRole) {
+		if (orientation == Qt::Horizontal) {
+			if (section == 0) {
 				return QStringLiteral("Preperty Name");
-			}else if(section == 1) {
+			}
+			else if (section == 1) {
 				return QStringLiteral("Value");
 			}
 		}

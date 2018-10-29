@@ -4,6 +4,7 @@
 //#include <QVariant>
 //#include <QList>
 #include <QAbstractGraphicsShapeItem>
+#include <QPersistentModelIndex>
 #include <qcoreapplication.h>
 
 //#include <QtContainerFwd>
@@ -72,10 +73,14 @@
 
 
 typedef QList<QPair<MarkProperty::Property, QString>> MarkPropertyInfo;
+
+
+
 Q_DECLARE_METATYPE(MarkPropertyInfo)
 
 class StrokeMarkItem :public QGraphicsPolygonItem {
-	std::function<QVariant(QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
+	std::function<QVariant(StrokeMarkItem* mark,QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
+	QPersistentModelIndex m_modelIndex;
 public:
 	enum {Type = StrokeMark};
 	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
@@ -83,14 +88,18 @@ public:
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;
 	void appendPoint(const QPointF & p);
 	int type() const override { return Type; }
-
-	void setItemChangeHandler(std::function<QVariant(QGraphicsItem::GraphicsItemChange,const QVariant &)> handler);
+	void setItemChangeHandler(std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)> handler);
+	QPersistentModelIndex modelIndex()const { return m_modelIndex; }
 private:
 	void createPropertyInfo();
 	void updateLength();
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+
+	friend class MarkTreeItem;
 };
+
+
 
 QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item);
 QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item);

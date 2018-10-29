@@ -18,6 +18,7 @@ m_state(Operation::None),
 m_anchorItem(nullptr),
 m_paintNavigationView(false)
 {
+
 	setScene(new QGraphicsScene(this));
 
 	scale(m_scaleFactor, m_scaleFactor);
@@ -45,7 +46,7 @@ m_paintNavigationView(false)
 	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
-void SliceWidget::setMarks(const QList<QGraphicsItem*>& items)
+void SliceWidget::setMarks(const QList<StrokeMarkItem*>& items)
 {
 	setMarkHelper(items);
 }
@@ -316,7 +317,7 @@ QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 
 inline
 void SliceWidget::setMarkHelper(
-	const QList<QGraphicsItem*>& items)
+	const QList<StrokeMarkItem*>& items)
 {
 	foreach(QGraphicsItem * item, items)
 	{
@@ -354,10 +355,14 @@ void SliceWidget::clearSliceMarks()
 	clearSliceMarksHelper(m_slice);
 }
 
-QList<QGraphicsItem*> SliceWidget::selectedItems() const
+QList<StrokeMarkItem*> SliceWidget::selectedItems() const
 {
 	Q_ASSERT_X(scene(), "SliceWidget::selectedItems", "null pointer");
-	return scene()->selectedItems();
+	const auto items = scene()->selectedItems();
+	QList<StrokeMarkItem*> marks;
+	for (const auto item : items)
+		marks << qgraphicsitem_cast<StrokeMarkItem*>(item);
+	return marks;
 }
 
 int SliceWidget::selectedItemCount() const

@@ -213,10 +213,14 @@ void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 
 void RenderWidget::setMarkModel(MarkModel* model)
 {
-	
-	disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
+	if(m_markModel != nullptr && m_markModel != model) {
+		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
+		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::markModelOfSelectionModelCurrentChanged);
+	}
+
 	m_markModel = model;
 	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
+	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::markModelOfSelectionModelCurrentChanged);
 	updateMark();
 	//emit markModelChanged();
 	emit markModelChanged();
@@ -459,10 +463,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 		repaint();			// Paint the object into the color frame buffer immediately.
 		const auto & p = event->pos();
 		d->selectedObjectId = selectMesh(p.x(), p.y());
-
 		const auto index = m_query.toIndex(d->selectedObjectId);
-		//qDebug() << index;
-
 		m_markModel->selectionModelOfThisModel()->clear();
 		m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Current);
 		m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Select);
@@ -528,6 +529,16 @@ void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelI
 		}
 	}
 
+}
+
+void RenderWidget::markModelOfSelectionModelCurrentChanged(const QModelIndex& current,
+	const QModelIndex& previous) {
+	const auto id = m_query.toId(current);
+	if(id != -1) {
+		Q_D(RenderWidget);
+		d->selectedObjectId = id;
+		update();
+	}
 }
 
 void RenderWidget::updateMark() {

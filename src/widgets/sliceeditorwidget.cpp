@@ -28,9 +28,9 @@ void SliceEditorWidget::createConnections()
 	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::rightSliceSelected);
 	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::frontSliceSelected);
 
-	connect(m_topView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Top, mark); });
-	connect(m_rightView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Right, mark); });
-	connect(m_frontView, &SliceWidget::markAdded, [this](QGraphicsItem* mark) {markAddedHelper(SliceType::Front, mark); });
+	connect(m_topView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Top, mark); });
+	connect(m_rightView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Right, mark); });
+	connect(m_frontView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Front, mark); });
 
 	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 
@@ -214,7 +214,7 @@ MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractS
 		nullptr);
 }
 
-void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
+void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 {
 	//Q_ASSERT_X(m_panel, "ImageCanvas::markAddedHelper", "null pointer");
 
@@ -261,7 +261,8 @@ void SliceEditorWidget::markAddedHelper(SliceType type, QGraphicsItem * mark)
 void SliceEditorWidget::deleteSelectedMarks()
 {
 	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
-	QList<QGraphicsItem*> items;
+	QList<StrokeMarkItem*> items;
+
 	if (m_topView != nullptr)
 		foreach(auto item, m_topView->selectedItems())
 		items << item;
@@ -271,6 +272,7 @@ void SliceEditorWidget::deleteSelectedMarks()
 	if (m_frontView != nullptr)
 		foreach(auto item, m_frontView->selectedItems())
 		items << item;
+
 	m_markModel->removeMarks(items);
 }
 
@@ -286,7 +288,12 @@ void SliceEditorWidget::markSingleSelectionHelper()
 		item = m_rightView->selectedItems()[0];
 	else if (m_frontView->selectedItemCount() == 1)
 		item = m_frontView->selectedItems()[0];
-	emit markSelected(item);
+
+	if(item->type() == StrokeMark) {
+		emit markSelected(static_cast<StrokeMarkItem*>(item));
+	}else {
+		emit markSelected(nullptr);
+	}
 }
 
 

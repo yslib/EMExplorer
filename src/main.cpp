@@ -11,6 +11,8 @@
 
 int main(int argc, char *argv[])
 {
+
+
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
 
