@@ -156,7 +156,7 @@ void StrokeMarkItem::appendPoint(const QPointF& p)
  * \param handler This is a type of \a std::function<>
  */
 void StrokeMarkItem::setItemChangeHandler(
-	std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)> handler) {
+	const std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)>& handler) {
 	m_itemChangeHandler = handler;
 }
 

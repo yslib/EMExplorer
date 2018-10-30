@@ -535,8 +535,9 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_identity(dataModel),
 	m_selectionModel(new QItemSelectionModel(this, this))
 {
-	m_rootItem = new RootTreeItem(QModelIndex(), nullptr);
-	m_rootItem->setPersistentModelIndex(createIndex(0, 0, m_rootItem));
+	const auto root = new RootTreeItem(QModelIndex(), nullptr);
+	root->setPersistentModelIndex(createIndex(0, 0, m_rootItem));
+	m_rootItem = root;
 	initSliceMarkContainerHelper();
 }
 
@@ -1011,13 +1012,10 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 
 		delete item->takeChild(index.row(), newItem, nullptr);
 
-		// Update the internal pointer refer to exact data
+		// Update the internal pointer refer to underlying data
 		const auto newIndex = createIndex(index.row(), index.column(), newItem);
-		//qDebug() << "row:" << newIndex.row() << " " << newIndex.column() << " " << newItem;
-
 		emit dataChanged(newIndex, newIndex, QVector<int>{role});
 		return true;
-
 	}
 	else {							//Insert normally.
 

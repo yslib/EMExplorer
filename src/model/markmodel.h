@@ -119,7 +119,7 @@ class MarkModel :public QAbstractItemModel
 		SliceEditorWidget * view, 
 		QObject * parent = nullptr);
 
-	enum {MagicNumber = 1827635234};
+	enum {MagicNumber = 1823615231};
 
 	friend class SliceEditorWidget;
 signals:

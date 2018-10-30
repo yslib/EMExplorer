@@ -215,16 +215,20 @@ void RenderWidget::setMarkModel(MarkModel* model)
 {
 	if(m_markModel != nullptr && m_markModel != model) {
 		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
-		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::markModelOfSelectionModelCurrentChanged);
+		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
+		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
 	}
 
 	m_markModel = model;
 	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
-	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::markModelOfSelectionModelCurrentChanged);
+	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
+	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
+
 	updateMark();
 	//emit markModelChanged();
 	emit markModelChanged();
-	update();
+
+	update();		// Repaint immediately
 }
 
 //ShaderDataInterface
@@ -462,11 +466,11 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 		d->enableStartPicking = true;
 		repaint();			// Paint the object into the color frame buffer immediately.
 		const auto & p = event->pos();
+		const auto previous = d->selectedObjectId;
 		d->selectedObjectId = selectMesh(p.x(), p.y());
-		const auto index = m_query.toIndex(d->selectedObjectId);
-		m_markModel->selectionModelOfThisModel()->clear();
-		m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Current);
-		m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Select);
+
+	
+		_slot_currentMeshChanged(d->selectedObjectId, previous);
 		d->enableStartPicking = false;
 		repaint();			// Show the result immediately
 	}
@@ -521,7 +525,7 @@ void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelI
 	if (begin != end || begin.isValid() ==false)
 		return;
 	if(role[0] == Qt::CheckStateRole) {
-		const auto id = m_query.toId(begin);
+		const auto id = m_query.query(begin);
 		if(id != -1) {
 			const auto item = static_cast<InstanceTreeItem*>(begin.internalPointer());
 			m_integration[id].visible = item->visible();
@@ -531,14 +535,66 @@ void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelI
 
 }
 
-void RenderWidget::markModelOfSelectionModelCurrentChanged(const QModelIndex& current,
+/**
+ * \brief 
+ * \param current 
+ * \param previous 
+ */
+void RenderWidget::_slot_currentMeshChanged(int current, int previous)
+{
+	const auto index = m_query.query(current);
+	m_markModel->selectionModelOfThisModel()->clear();
+	m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Current);
+	m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::Select);
+	qDebug() << "Fuck???";
+}
+
+/**
+ * \brief 
+ * \param current 
+ * \param previous 
+ */
+void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& current,
 	const QModelIndex& previous) {
-	const auto id = m_query.toId(current);
-	if(id != -1) {
-		Q_D(RenderWidget);
-		d->selectedObjectId = id;
-		update();
+
+	
+	const auto treeItem = static_cast<TreeItem*>(current.internalPointer());
+	if(treeItem != nullptr) {
+		if (treeItem->type() == TreeItemType::Mark) {
+
+			// The parent item of a mark item, which should be a mesh item should also be selected
+			const auto parent = m_markModel->parent(current);
+			if (static_cast<TreeItem*>(parent.internalPointer())->type() == TreeItemType::Instance) {
+				const auto id = m_query.query(parent);
+				if (id != -1) {
+					Q_D(RenderWidget);
+					d->selectedObjectId = id;
+					update();
+				}
+			}
+
+		}
+		else {		// Mesh item is selected
+			qDebug() << "Fuck!!!";
+			const auto id = m_query.query(current);
+			if (id != -1) {
+				Q_D(RenderWidget);
+				d->selectedObjectId = id;
+				update();
+			}
+		}
 	}
+
+}
+
+/**
+ * \brief 
+ * \param selected 
+ * \param deselected 
+ */
+void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
+{
+
 }
 
 void RenderWidget::updateMark() {

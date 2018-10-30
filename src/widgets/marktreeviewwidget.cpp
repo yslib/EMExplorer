@@ -37,10 +37,17 @@ void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
  * 
  *   
  */
+
 void MarkTreeView::currentChanged(const QModelIndex& current, const QModelIndex& previous) 
 {
 	QTreeView::currentChanged(current, previous);
-	emit currentIndexChanged(current);
+	emit currentIndexChanged(current,previous);
+}
+
+void MarkTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
+{
+	QTreeView::selectionChanged(selected, deselected);
+	emit selectionIndexChanged(selected, deselected);
 }
 
 void MarkTreeView::createMenu()
@@ -233,18 +240,14 @@ m_infoView(nullptr)
 {
 	m_infoView = new TreeNodeInfoView(this);
 	m_treeView = new MarkTreeView(this);
-	
-
-	connect(m_treeView, &MarkTreeView::clicked, this, &MarkManager::treeViewClicked);
 	connect(m_treeView, &MarkTreeView::currentIndexChanged, this, &MarkManager::treeViewCurrentIndexChanged);
-
+//	connect(m_treeView, &MarkTreeView::selectionIndexChanged, this, &MarkManager::treeViewSelectionIndexChanged);
+	//connect(m_treeView, &MarkTreeView::clicked, this, &MarkManager::treeViewClicked);
 	auto layout = new QVBoxLayout;
 	layout->addWidget(m_treeView);
 	layout->addWidget(m_infoView);
-
 	layout->setStretchFactor(m_treeView, 7);
 	layout->setStretchFactor(m_infoView, 3);
-
 	setWindowTitle(QStringLiteral("Mark Manager"));
 	setLayout(layout);
 }
@@ -268,17 +271,17 @@ void MarkManager::setMarkModel(MarkModel * model)
 	m_treeView->setSelectionModel(model->selectionModelOfThisModel());
 }
 
-/**
- * \brief 
- * \param index 
- */
-void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & index)
+void MarkManager::treeViewSelectionIndexChanged(const QItemSelection & selected, const QModelIndex & deselected)
 {
+
+}
+
+void MarkManager::treeViewClicked(const QModelIndex& index) {
 	const auto item = static_cast<TreeItem *>(index.internalPointer());
 	if (item != nullptr) {
 		m_infoView->setModel(item->infoModel());
-		if(item->type() == TreeItemType::Mark) {
-			const auto m = static_cast<QGraphicsItem*>(item->metaData());
+		if (item->type() == TreeItemType::Mark) {
+			const auto m = static_cast<StrokeMarkItem*>(item->metaData());
 			m->setSelected(true);
 		}
 	}
@@ -286,11 +289,19 @@ void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & index)
 
 /**
  * \brief 
- * \param index 
+ * \param current 
  */
-void MarkManager::treeViewClicked(const QModelIndex& index){
-	const auto item = static_cast<TreeItem *>(index.internalPointer());
-	if (item != nullptr)
+void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous)
+{
+	Q_UNUSED(previous);
+	const auto item = static_cast<TreeItem *>(current.internalPointer());
+	if (item != nullptr) {
 		m_infoView->setModel(item->infoModel());
+		if(item->type() == TreeItemType::Mark) {
+			const auto m = static_cast<StrokeMarkItem*>(item->metaData());
+			m->setSelected(true);
+		}
+	}
 }
+
 

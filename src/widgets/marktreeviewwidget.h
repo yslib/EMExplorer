@@ -21,6 +21,7 @@ public:
 protected:
 	void contextMenuEvent(QContextMenuEvent* event) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) override;
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
 private:
 	QMenu * m_menu;
 	QAction * m_markDeleteAction;
@@ -32,16 +33,13 @@ private:
 	void createMenu();
 	void createAction();
 	void updateAction();
-
 	void onDeleteAction();
 	void onRenameAction();
 
 signals:
-	void currentIndexChanged(const QModelIndex & current);
+	void currentIndexChanged(const QModelIndex & current,const QModelIndex & previous);
+	void selectionIndexChanged(const QItemSelection & selected, const QItemSelection & deselected);
 };
-
-
-
 
 class TreeNodeInfoView :public QTableView
 {
@@ -49,8 +47,8 @@ class TreeNodeInfoView :public QTableView
 public:
 	TreeNodeInfoView(QWidget * parent = nullptr);
 public slots:
-};
 
+};
 
 
 /**
@@ -65,8 +63,9 @@ public:
 	MarkManager(QWidget * parent = nullptr);
 	void setMarkModel(MarkModel * model);
 private slots:
+	void treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous);
+	void treeViewSelectionIndexChanged(const QItemSelection & selected, const QModelIndex & deselected);
 	void treeViewClicked(const QModelIndex & index);
-	void treeViewCurrentIndexChanged(const QModelIndex & index);
 };
 
 

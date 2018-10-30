@@ -9,7 +9,7 @@
  * The class is trivial for necessity.
  */
 class RootTreeItem : public TreeItem {
-
+	void setPersistentModelIndex(const QPersistentModelIndex & index) {setModelIndex(index);}
 public:
 	RootTreeItem(const QPersistentModelIndex & pIndex,TreeItem * parent) :TreeItem(pIndex,parent) {}
 	QVariant data(int column, int role) const override { return QVariant(); }
@@ -21,6 +21,8 @@ public:
 	void * metaData()override { return nullptr; }
 	QAbstractItemModel * infoModel() const override { return nullptr; }
 	
+
+	friend class MarkModel;
 };
 
 

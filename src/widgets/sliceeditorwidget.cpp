@@ -21,6 +21,97 @@ inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos
 }
 
 
+void SliceEditorWidget::_slot_markSelected(StrokeMarkItem* mark) {
+
+	const auto selectionModel = m_markModel->selectionModelOfThisModel();
+	Q_ASSERT(selectionModel);
+
+	const auto index = mark->modelIndex();
+	selectionModel->clearSelection();
+	selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+	//selectionModel->select(m_markModel->parent(index),QItemSelectionModel::Select);
+}
+
+/**
+ * \brief 
+ * \param current 
+ * \param previous 
+ */
+void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous)
+{
+
+	const auto item1 = static_cast<TreeItem*>(current.internalPointer());
+	if(item1 != nullptr) {
+		if (item1->type() == TreeItemType::Mark) {
+			const auto mark = static_cast<StrokeMarkItem*>(item1->metaData());
+			mark->setSelected(true);
+		}
+		else if (item1->type() == TreeItemType::Instance) {
+			// Set all children of the item as selection
+
+			QList<QModelIndex> markIndices;
+			const auto nChild = m_markModel->rowCount(current);
+			for (int i = 0; i < nChild; i++) {
+				markIndices << m_markModel->index(i, 0, current);
+			}
+
+			this->blockSignals(true);
+			for (auto index : markIndices) {
+				const auto item = static_cast<TreeItem*>(index.internalPointer());
+				if (item->type() == TreeItemType::Mark) {
+					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
+					mark->setSelected(true);
+					/* This will emit selectionChange signal from SliceWidget and will invoke
+					 * SliceEditorWidget::_slot_markSelected again so as to call this function recursively,
+					 * so at the begining, signal is blocked first
+					 */
+				}
+			}
+			this->blockSignals(false);
+
+		}
+	}
+
+
+	const auto item2 = static_cast<TreeItem*>(previous.internalPointer());
+	if(item2 != nullptr) {
+		if (item2->type() == TreeItemType::Mark) {
+			const auto mark = static_cast<StrokeMarkItem*>(item2->metaData());
+			mark->setSelected(false);
+		}
+		else if (item2->type() == TreeItemType::Instance) {
+			// Set all children of the item as deselection
+			QList<QModelIndex> markIndices;
+			const auto nChild = m_markModel->rowCount(current);
+			for (int i = 0; i < nChild; i++) {
+				markIndices << m_markModel->index(i, 0, current);
+			}
+
+			this->blockSignals(true);
+			for (auto index : markIndices) {
+				const auto item = static_cast<TreeItem*>(index.internalPointer());
+				if (item->type() == TreeItemType::Mark) {
+					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
+					mark->setSelected(false);
+					/* This will emit selectionChange signal from SliceWidget and will invoke
+					 * SliceEditorWidget::_slot_markSelected again so as to call this function recursively,
+					 * so at the begining, signal is blocked first
+					 */
+				}
+			}
+			this->blockSignals(false);
+
+		}
+	}
+	
+
+}
+
+void SliceEditorWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
+{
+
+}
+
 void SliceEditorWidget::createConnections()
 {
 	//forward selected signals
@@ -42,6 +133,8 @@ void SliceEditorWidget::createConnections()
 	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
 	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
 	connect(m_frontView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Front); });
+
+	connect(this, &SliceEditorWidget::markSelected, this, &SliceEditorWidget::_slot_markSelected);
 }
 
 void SliceEditorWidget::updateActions()
@@ -75,8 +168,20 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	Q_ASSERT_X(m_sliceModel,
 		"ImageView::updateMarkModel", "null pointer");
 
+	if(m_markModel != nullptr) {
+		// disconnect old signals
+		disconnect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);  //TODO:: This function will be removed in the future
+		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
+		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
+	}
 	m_markModel = model;
-	connect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);
+
+	if(m_markModel != nullptr) {
+		// connect new signals 
+		connect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);  //TODO:: This function will be removed in the future
+		connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged,this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
+		connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged,this,&SliceEditorWidget::_slot_selectionChanged_selectionModel);
+	}
 
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
@@ -124,7 +229,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_frontView = new SliceWidget(this);
 	m_frontView->installEventFilter(this);
 	m_frontView->setNavigationViewEnabled(false);
-	
+
 	createConnections();
 	updateActions();
 
@@ -136,8 +241,8 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 }
 
 bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
-	if(watched == m_topView) {
-		if(event->type() == QEvent::Wheel) {
+	if (watched == m_topView) {
+		if (event->type() == QEvent::Wheel) {
 			const auto e = static_cast<QWheelEvent*>(event);
 			if (e->delta() > 0)
 				zoomIn();
@@ -146,8 +251,9 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 			event->accept();
 			return true;
 		}
-	}else if(watched == m_rightView) {
-		if(event->type() == QEvent::Wheel) {
+	}
+	else if (watched == m_rightView) {
+		if (event->type() == QEvent::Wheel) {
 			const auto e = static_cast<QWheelEvent*>(event);
 			if (e->delta() > 0)
 				zoomIn();
@@ -156,9 +262,10 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 			event->accept();
 			return true;
 		}
-		
-	}else if(watched == m_frontView) {
-		if(event->type() == QEvent::Wheel) {
+
+	}
+	else if (watched == m_frontView) {
+		if (event->type() == QEvent::Wheel) {
 			const auto e = static_cast<QWheelEvent*>(event);
 			if (e->delta() > 0)
 				zoomIn();
@@ -255,7 +362,12 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 	mark->setData(MarkProperty::Color, color);
 	Q_ASSERT_X(m_markModel != nullptr,
 		"mark_create_helper_", "null pointer");
+
 	m_markModel->addMark(cate, mark);
+}
+
+void SliceEditorWidget::markDeleteHelper(SliceType type, StrokeMarkItem * mark)
+{
 }
 
 void SliceEditorWidget::deleteSelectedMarks()
@@ -281,22 +393,15 @@ void SliceEditorWidget::markSingleSelectionHelper()
 	const auto count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
 	if (count != 1)
 		return;
-	QGraphicsItem * item = nullptr;
+	StrokeMarkItem * item = nullptr;
 	if (m_topView->selectedItemCount() == 1)
 		item = m_topView->selectedItems()[0];
 	else if (m_rightView->selectedItemCount() == 1)
 		item = m_rightView->selectedItems()[0];
 	else if (m_frontView->selectedItemCount() == 1)
 		item = m_frontView->selectedItems()[0];
-
-	if(item->type() == StrokeMark) {
-		emit markSelected(static_cast<StrokeMarkItem*>(item));
-	}else {
-		emit markSelected(nullptr);
-	}
+	emit markSelected(item);
 }
-
-
 
 SliceWidget* SliceEditorWidget::focusOn()
 {
@@ -382,6 +487,12 @@ AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel
 	emit dataModelChanged();
 	return t;
 }
+/**
+ * \brief 
+ * \param model 
+ * \param success 
+ * \return 
+ */
 MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noexcept
 {
 	//check the model
@@ -402,18 +513,19 @@ MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noe
 		updateActions();
 		if (success != nullptr)
 			*success = true;
+		emit markModelChanged();
 		return t;
 	}
-	if (model->checkMatchHelper(m_sliceModel) == false)
+	if (model->checkMatchHelper(m_sliceModel) == false)		// Check whether the new mark model match the current data model
 	{
-
 		if (success != nullptr)
 			*success = false;
 		return nullptr;
 	}
 
 	detachMarkModel();
-	auto t = m_markModel;
+
+	const auto t = m_markModel;		//old 
 	installMarkModel(model);
 	updateActions();
 	if (success != nullptr)

@@ -4,6 +4,8 @@
 #include <QList>
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QItemSelection>
+#include "algorithm/bimap.h"
 
 enum class SliceType;
 QT_BEGIN_NAMESPACE
@@ -131,7 +133,7 @@ public:
 
 	//QSize sizeHint() const Q_DECL_OVERRIDE { return {800,800}; }
 	//QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
-	~SliceEditorWidget();
+    ~SliceEditorWidget()override;
 signals:
 
 	/**
@@ -182,15 +184,25 @@ signals:
 
 	void viewFocus(SliceType type);
 
-	void markModified();
 	
-	void markSaved();
+	void markModified();	///< Useful??
+	
+	void markSaved();		///< Useful???
+	//
 
 	void markSelected(StrokeMarkItem * item);
 
 	void marksSelected(QList<StrokeMarkItem*> items);
-	
 
+	void instanceSelected(const QModelIndex & index);
+
+private slots:
+
+	void _slot_markSelected(StrokeMarkItem * mark);
+
+	void _slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous);
+
+	void _slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
 
 private:
 
@@ -208,16 +220,12 @@ private:
 
 	void installMarkModel(MarkModel* model);
 	void updateSliceModel();
-	void detachMarkModel();
+	void detachMarkModel();				///TODO:: In the future, this function will be removed
 	//void detachSliceModel();
 	inline bool contains(const QWidget* widget, const QPoint& pos);
-
 	void markAddedHelper(SliceType type, StrokeMarkItem* mark);
-	
+	void markDeleteHelper(SliceType type, StrokeMarkItem* mark);
 	void markSingleSelectionHelper();
-
-	//void setCategoryManagerHelper(const QVector<QPair<QString, QColor>> & cates);
-	//void addCategoryManagerHelper(const QString & name, const QColor & color);
 	void changeSliceHelper(int value, SliceType type);
 	int currentIndexHelper(SliceType type);
 
@@ -227,35 +235,19 @@ private:
 
 	SliceEditorWidgetPrivate * const d_ptr;
 	Q_DECLARE_PRIVATE(SliceEditorWidget);
-
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
-
+    BiMap<StrokeMarkItem*,QPersistentModelIndex> m_query;
 	//main layout
 	QGridLayout *m_layout;
 	SliceWidget * m_topView;
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
-
-
-
-
-	//ContextMenu
-	//QMenu *m_contextMenu;
-	//QAction * m_zoomIn;
-	//QAction * m_zoomOut;
-
-	//QWidget * m_menuWidget;
-
 };
 
 //inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
 inline AbstractSliceDataModel * SliceEditorWidget::sliceModel()const { return m_sliceModel; }
-
 inline SliceWidget * SliceEditorWidget::topView()const { return m_topView; }
 inline SliceWidget * SliceEditorWidget::rightView()const { return m_rightView; }
 inline SliceWidget * SliceEditorWidget::frontView()const { return m_frontView; }
-
-
-
 #endif // IMAGEVIEWER_H

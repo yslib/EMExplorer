@@ -83,12 +83,12 @@ class StrokeMarkItem :public QGraphicsPolygonItem {
 	QPersistentModelIndex m_modelIndex;
 public:
 	enum {Type = StrokeMark};
-	StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
-	StrokeMarkItem(QGraphicsItem * parent = nullptr);
+	explicit StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
+	explicit StrokeMarkItem(QGraphicsItem * parent = nullptr);
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;
 	void appendPoint(const QPointF & p);
 	int type() const override { return Type; }
-	void setItemChangeHandler(std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)> handler);
+	void setItemChangeHandler(const std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)>& handler);
 	QPersistentModelIndex modelIndex()const { return m_modelIndex; }
 private:
 	void createPropertyInfo();
@@ -96,7 +96,7 @@ private:
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
-	friend class MarkTreeItem;
+	friend class StrokeMarkTreeItem;		///< Member m_modelIndex
 };
 
 
