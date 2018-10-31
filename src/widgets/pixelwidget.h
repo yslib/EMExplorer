@@ -1,12 +1,15 @@
 #ifndef PIXELVIWER_H
 #define PIXELVIWER_H
-//#include <QLineEdit>
 
 #include "abstract/abstractsliceeditorplugin.h"
 
 
 class QLabel;
 class QLineEdit;
+
+/**
+ * \brief This is a widget used to give a pixel-level view for certain slice in SliceEditorWidget
+ */
 class PixelWidget:public AbstractSliceViewPlugin
 {
     Q_OBJECT

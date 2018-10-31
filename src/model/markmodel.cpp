@@ -512,14 +512,9 @@ QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> 
 }
 
 /**
- * \internal
  * \brief This is a private constructor
  *
- * A mark model can only be constructed by SliceEditorWidget
- * \param dataModel Slice data need to be marked
- * \param view
- * \param root
- * \param parent
+ * A mark model can only be constructed by SliceEditorWidget.
  * \sa SliceEditorWidget
  */
 MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
@@ -527,7 +522,7 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	//TreeItem * root,
 	QObject * parent) :
 	QAbstractItemModel(parent),
-	m_rootItem(nullptr),					///TODO::This 
+	m_rootItem(nullptr),
 	m_dataModel(dataModel),
 	m_view(view),
 	m_dirty(false),
@@ -540,11 +535,11 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 }
 
 
+
 /**
- * \internal
- * \fn MarkModel::MarkModel(const QString & fileName)
- * \brief This is a private constructor
- * \param fileName Mark file name need to be opened
+ * \brief Creates a mark model from a file.
+ * 
+ * \warning This function is not completed.
  */
 MarkModel::MarkModel(const QString & fileName) :
 	m_rootItem(nullptr),
@@ -594,8 +589,7 @@ MarkModel::MarkModel(const QString & fileName) :
 	//}
 }
 /**
- * \brief This is destructor of MarkModel
- *
+ * \brief Destroyes the mark model
  *
  */
 MarkModel::~MarkModel()
@@ -611,6 +605,9 @@ MarkModel::~MarkModel()
 }
 
 
+/**
+ * \brief  
+ */
 bool MarkModel::addMark(const QString & text, StrokeMarkItem* mark)
 {
 	//auto i = categoryIndexHelper(text);
@@ -666,9 +663,6 @@ bool MarkModel::addMarks(const QString & text, const QList<StrokeMarkItem*> & ma
 		const auto p = new StrokeMarkTreeItem(marks[k], newIndices[k], nullptr);
 		setData(newIndices[k], QVariant::fromValue(static_cast<void*>(p)), TreeItemRole);
 	}
-
-
-
 	return true;
 }
 

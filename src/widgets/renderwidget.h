@@ -109,13 +109,9 @@ public:
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
 	FocusCamera     camera()const { return m_camera; }
 	QSharedPointer<RenderOptions> options()const;
-
 	GPUVolume*	    volume()const;
-
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
-
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
-
     ~RenderWidget()override;
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
@@ -139,8 +135,7 @@ public slots:
 	void			setFrontSliceVisible(bool check);
 private slots:
 	void			updateMark();
-	void			markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role);
-
+	void			_slot_markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role);
 	void			_slot_currentMeshChanged(int current, int previous);
 	void			_slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous);
 	void			_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
@@ -198,6 +193,11 @@ inline int RenderWidget::colorToId(const QColor& color)
 {
 	return color.red() + color.green() * 255 + color.blue() * 255 * 255;
 }
+/**
+ * \brief Returns the options for rendering.
+ * 
+ * \sa RenderOptions
+ */
 inline QSharedPointer<RenderOptions> RenderWidget::options()const 
 {
 	//Q_D(RenderWidget);

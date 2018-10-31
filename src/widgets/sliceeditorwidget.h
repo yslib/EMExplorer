@@ -217,13 +217,11 @@ private:
 	void installMarkModel(MarkModel* model);
 
 	void markAddedHelper(SliceType type, StrokeMarkItem* mark);
-	void markDeleteHelper(SliceType type, StrokeMarkItem* mark);
-	void markSingleSelectionHelper();
+	void _slots_singleMarkSelectionChanged();
 
-	void changeSliceHelper(int value, SliceType type);
-	int currentIndexHelper(SliceType type) const;
+	//void changeSliceHelper(int value, SliceType type);
 	SliceWidget * focusOn();
-	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * d);
+	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * data);
 
 	// Data Members
 	SliceEditorWidgetPrivate * const d_ptr;

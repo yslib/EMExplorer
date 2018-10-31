@@ -38,8 +38,9 @@ enum TreeItemType;
 /**
  * \class MarkModel markmodel.h "model/markmodel.h"
  * 
- * \brief This class is used to represent the mark model created by marking
+ * \brief This class is used to represent the mark model created by marking.
  * 
+ * It inherits from \a QAbstractItemModel
  * 
  */
 class MarkModel :public QAbstractItemModel
@@ -140,6 +141,13 @@ public:
 		Raw			///< Save mark as raw format which is easily accessed by any other raw format reader
 	};
 
+	/**
+	 * \brief This is a deleted constructor.
+	 * 
+	 * An instance of MarkModel is not allowed to be created externally.
+	 * It only can be created from an instance of \a SliceEditorWidget automatically.
+	 * Because a mark model is tightly coupled with the \a SliceEditorWidget.
+	 */
 	MarkModel() = delete;
 	MarkModel(const QString & fileName);
 
@@ -206,29 +214,29 @@ public:
 
 
 /**
- * \brief 
- * \param category 
- * \return 
+ * \brief Returns the number of the marks belong to a specified category \a category
+ * 
  */
 inline int MarkModel::markCount(const QString & category)const{return rowCount(_hlp_categoryIndex(category));}
 
 /**
- * \brief Sets dirty
+ * \brief Sets dirty bit of the mark model
  * 
- * This function will emit modified() signal
+ * \note This function will emit modified() signal
  */
 inline void MarkModel::setDirty() { m_dirty = true; emit modified(); }
 
 /**
- * \brief 
- * \return 
+ * \brief Returns the dirty bit of the mark model
+ * 
+ * Returns \a true if the mark model is modified, otherwise returns \a false
  */
 inline bool MarkModel::dirty()const{return m_dirty;}
 
 /**
- * \brief 
+ * \brief Reset the dirty bit.
  * 
- * This function will emit saved() signal
+ * \note This function will emit saved() signal
  */
 inline void MarkModel::resetDirty() { m_dirty = false; emit saved(); }
 

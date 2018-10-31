@@ -21,7 +21,8 @@
  * The slot notifies other objects that use the same item selection model that the mark is set current
  * 
  * \note current and selected has subtle different semantics. You could learn it from Qt Documentation.
- * 
+ *  This is only for class internal use
+ *  
  * \sa QItemSelectionModel
  */
 void SliceEditorWidget::_slot_markSelected(StrokeMarkItem* mark) {
@@ -40,9 +41,9 @@ void SliceEditorWidget::_slot_markSelected(StrokeMarkItem* mark) {
  * \brief This slots is called when item is selected in other objects that use the same item selection model
  * 
  * \a current represents the newly current item after change, and the \a previous represents the old one.
- * 
- *
+
  * \note current and selected has subtle different semantics. You could learn it from Qt Documentation.
+ * This is only for class internal use
  *   
  */
 void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous)
@@ -133,6 +134,8 @@ void SliceEditorWidget::_slot_selectionChanged_selectionModel(const QItemSelecti
 
 /**
  * \brief Update states for all widgets that they are should be.
+ * 
+ * \note This is only for class internal use
  */
 void SliceEditorWidget::updateActions()
 {
@@ -144,8 +147,7 @@ void SliceEditorWidget::updateActions()
 }
 
 /**
- * \brief 
- * \param check 
+ * \brief This is a convenience function to set top slice visibility
  */
 void SliceEditorWidget::setTopSliceVisibility(bool check)
 {
@@ -154,8 +156,7 @@ void SliceEditorWidget::setTopSliceVisibility(bool check)
 }
 
 /**
- * \brief 
- * \param check 
+ * \brief This is a convenience function to set front slice visibility
  */
 void SliceEditorWidget::setFrontSliceVisibility(bool check)
 {
@@ -164,8 +165,7 @@ void SliceEditorWidget::setFrontSliceVisibility(bool check)
 }
 
 /**
- * \brief 
- * \param check 
+ * \brief This is a convenience function to set right slice visibility
  */
 void SliceEditorWidget::setRightSliceVisibility(bool check)
 {
@@ -174,8 +174,10 @@ void SliceEditorWidget::setRightSliceVisibility(bool check)
 }
 
 /**
- * \brief 
- * \param model 
+ * \brief This function is used to set the given \a model as the mark model
+ * 
+ * \sa MarkModel
+ * \note This is only for class internal use
  */
 void SliceEditorWidget::installMarkModel(MarkModel* model)
 {
@@ -201,16 +203,14 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	updateActions();
 }
 
-
-
-
 /**
- * \brief 
- * \param parent 
- * \param topSliceVisible 
- * \param rightSliceVisible 
- * \param frontSliceVisible 
- * \param model 
+ * \brief Constructs an instance of \a SliceEditorWidget
+ * 
+ * \param parent The parent widget pointer
+ * \param topSliceVisible The visibility of the top slice widget
+ * \param rightSliceVisible The visibility of the right slice widget
+ * \param frontSliceVisible The visibility of the front slice widget
+ * \param model Slice data model that is used to display
  */
 SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	bool topSliceVisible,
@@ -251,9 +251,9 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 
 	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 
-	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
-	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
-	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
+	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::_slots_singleMarkSelectionChanged);
+	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::_slots_singleMarkSelectionChanged);
+	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::_slots_singleMarkSelectionChanged);
 
 	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
 	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
@@ -322,64 +322,61 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 
 
 /**
- * \brief 
- * \param value 
- * \param type 
+ * \brief This is helper function that change the index of a given \a type type slice with the new given \a index
+ * 
+ * A lot of works need to be done for a slice change. First, the image must be retrieved from slice data model.
+ * And then, marks in the previous slice must be cleared
+ * 
+ * \sa SliceType
  */
-void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
-{
-	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
-	SliceWidget * view = nullptr;
-	std::function<QImage(int)> sliceGetter;
-	//TODO:: 
-	switch (type)
-	{
-	case SliceType::Top:
-		view = m_topView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
-		break;
-	case SliceType::Right:
-		view = m_rightView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice, m_sliceModel, std::placeholders::_1);
-		break;
-	case SliceType::Front:
-		view = m_frontView;
-		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
-		break;
-	default:
-		Q_ASSERT_X(false, "ImageView::updateSlice", "SliceType error.");
-	}
-	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true, "ImageView::updateSlice", "invalid bind");
-	view->setImage(sliceGetter(value));
-	view->clearSliceMarks();
-}
+//void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
+//{
+//	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
+//	SliceWidget * view = nullptr;
+//	std::function<QImage(int)> sliceGetter;
+//	//TODO:: 
+//	switch (type)
+//	{
+//	case SliceType::Top:
+//		view = m_topView;
+//		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+//		break;
+//	case SliceType::Right:
+//		view = m_rightView;
+//		sliceGetter = std::bind(&AbstractSliceDataModel::rightSlice, m_sliceModel, std::placeholders::_1);
+//		break;
+//	case SliceType::Front:
+//		view = m_frontView;
+//		sliceGetter = std::bind(&AbstractSliceDataModel::frontSlice, m_sliceModel, std::placeholders::_1);
+//		break;
+//	default:
+//		Q_ASSERT_X(false, "ImageView::updateSlice", "SliceType error.");
+//	}
+//	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true, "ImageView::updateSlice", "invalid bind");
+//	view->setImage(sliceGetter(value));
+//	view->clearSliceMarks();
+//}
+
 
 
 /**
- * \brief 
- * \param type 
- * \return 
- */
-int SliceEditorWidget::currentIndexHelper(SliceType type) const {
-	return currentSliceIndex(type);
-}
-
-/**
- * \brief Creates an instance of \a MarkModel. 
+ * \brief Creates an instance of \a MarkModel by a given \a SliceEditorWidget \a view and a \a AbstractSliceDataModel \a data
  * 
- * \param view 
- * \param d 
- * \return 
+ * \sa MarkModel SliceEditorWidget AbstractSliceDataModel
  * 
- * \sa MarkModel
+ * \note This is only for class internal use
  */
-MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractSliceDataModel * d)
+MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractSliceDataModel * data)
 {
-	return new MarkModel(d, view,
+	return new MarkModel(data, view,
 		//new TreeItem(QVector<QVariant>{QStringLiteral("Name"), QStringLiteral("Desc")}, TreeItemType::Root),
 		nullptr);
 }
 
+/**
+ * \brief This is a helper function used to add mark \a mark to a \a type type slice
+ * \note This is only for class internal use
+ */
 void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 {
 	//Q_ASSERT_X(m_panel, "ImageCanvas::markAddedHelper", "null pointer");
@@ -425,11 +422,9 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 	m_markModel->addMark(cate, mark);
 }
 
-void SliceEditorWidget::markDeleteHelper(SliceType type, StrokeMarkItem * mark)
-{
-
-}
-
+/**
+ * \brief Deletes the selected marks in three slice widget
+ */
 void SliceEditorWidget::deleteSelectedMarks()
 {
 	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
@@ -448,7 +443,15 @@ void SliceEditorWidget::deleteSelectedMarks()
 	m_markModel->removeMarks(items);
 }
 
-void SliceEditorWidget::markSingleSelectionHelper()
+/**
+ * \brief This is a slot
+ * 
+ *  This slot is called when selectionChanged signal of one of three slice widget emits.
+ *  It will emits the \sa markSelected(StrokeMarkItem * mark) signal to forward only one mark
+ *  
+ *  \sa markSelected(StrokeMarkItem * mark)
+ */
+void SliceEditorWidget::_slots_singleMarkSelectionChanged()
 {
 	const auto count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
 	if (count != 1)
@@ -586,9 +589,14 @@ void SliceEditorWidget::setPen(const QPen &pen)
 }
 
 /**
- * \brief 
- * \param model 
- * \return 
+ * \brief Replaces the old slice model with the given \a model and returns the old one.
+ * 
+ * The mark model corresponding to the slice model will be deleted once the old slice model is replaced, and a new mark model will be created.
+ * So it's caller's responsibility to save the corresponding mark model before the replacement takes place, and
+ * the old slice mark model and its ownership will be returned to the caller. Sets \a model as \a nullptr is equivalent to empty the slice data.
+ * 
+ * \note This function also emits dataModelChanged() signal
+ * 
  */
 AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel* model)
 {
@@ -607,11 +615,19 @@ AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel
 	emit dataModelChanged();
 	return t;
 }
+
 /**
- * \brief 
- * \param model 
- * \param success 
- * \return 
+ * \brief Replaces the old mark model with the given \a model and returns the old one. 
+ *	A flag \a success refers to is set as \a true when replacement is 
+ *	successful if it's not \a nullptr, otherwise it's set as \a false
+ *	
+ * A check would be applied for the given \a model in case that the mark model \a model 
+ * matches data model. If it don't match or the data model is empty, a flag \a success 
+ * refers to will be set as \a false and \a nullptr will be returned. Above two situations
+ * won't emit markModelChanged() signals. Others will emits markModelChanged() signal.
+ * \a model set as \a nullptr is equivalent to delete mark model and will emit markModelChanged() signal
+ * 
+ * \note This function also emits markModelChanged() signal
  */
 MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noexcept
 {

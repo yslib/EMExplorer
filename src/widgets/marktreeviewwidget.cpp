@@ -233,6 +233,9 @@ TreeNodeInfoView::TreeNodeInfoView(QWidget * parent) :QTableView(parent)
 
 
 
+/**
+ * \brief Construct a mark manager widget
+ */
 MarkManager::MarkManager(QWidget * parent):
 QWidget(parent),
 m_treeView(nullptr),
@@ -289,7 +292,6 @@ void MarkManager::treeViewClicked(const QModelIndex& index) {
 
 /**
  * \brief 
- * \param current 
  */
 void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous)
 {

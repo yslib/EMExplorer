@@ -238,9 +238,13 @@ qreal Histogram::getXofRightCursor()
     qreal x = m_maxValue*binWidth+binWidth/2;
     return x;
 }
-/*
- * HistogramViewer Definitions
-*/
+
+/**
+ * \brief Constructs a widgets used for image processing for certain 
+ * \a type type of slice in \a sliceEditor
+ * 
+ * \sa SliceEditorWidget
+ */
 HistogramWidget::HistogramWidget(SliceType type, SliceEditorWidget * sliceEditor,  QWidget * parent):
 AbstractSliceViewPlugin(type,sliceEditor,parent)
 {

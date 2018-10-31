@@ -175,6 +175,11 @@ static QVector<QVector3D> cubeVert =
 
 
 
+/**
+ * \brief Creates a widget for rendering
+ * 
+ * \note OpenGL 3.3 ProfileCore is needed.
+ */
 RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	MarkModel * markModel,
 
@@ -199,28 +204,35 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	//connect(widget, &RenderParameterWidget::markUpdated,this,&RenderWidget::updateMark);
 }
 
+/**
+ * \brief Sets the data model as the given \a model
+ * 
+ * \note This function will emit requireTransferFunction() signal and dataModelChanged() signal
+ */
 void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 {
 	m_dataModel = model;
 	updateVolumeData();
-
 	emit requireTransferFunction();
-
 	emit dataModelChanged();
-
 	update();
 }
 
+/**
+ * \brief Sets the slice model as the given \a model
+ * 
+ * \note This function will emit markModelChanged() signal
+ */
 void RenderWidget::setMarkModel(MarkModel* model)
 {
 	if(m_markModel != nullptr && m_markModel != model) {
-		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
+		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
 	}
 
 	m_markModel = model;
-	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::markModelDataChanged);
+	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
 	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
 	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
 
@@ -233,28 +245,37 @@ void RenderWidget::setMarkModel(MarkModel* model)
 
 //ShaderDataInterface
 
+/**
+ * \brief Returns the volume object
+ * 
+ * \sa GPUVolume
+ */
 GPUVolume* RenderWidget::volume() const
 {
 	return m_volume.data();
 }
 
+/**
+ * \brief Reimplemented from QOpenGLWidget::minimumSizeHint()
+ */
 QSize RenderWidget::minimumSizeHint() const
 {
 	return QSize(400, 300);
 }
 
+/**
+ * \brief Reimplemented from QOpenGLWidget::sizeHint()
+ */
 QSize RenderWidget::sizeHint() const
 {
 	return QSize(800, 600);
 }
 
-//void RenderWidget::addContextAction(QAction* action)
-//{
-//	m_contextMenu->addAction(action);
-//}
-
-
-
+/**
+ * \brief Reimplemented from QOpenGLWidget::initializeGL()
+ * 
+ * Initializes OpenGL related resources.
+ */
 void RenderWidget::initializeGL()
 {
 	if (initializeOpenGLFunctions() == false) {
@@ -299,6 +320,11 @@ void RenderWidget::initializeGL()
 
 //#define EXPORT_FBO_IMG
 
+/**
+ * \brief Reimplemented from QOpenGLWidget::resizeGL()
+ * 
+ * \note This function will emit windowResize(int w,int h) signal
+ */
 void RenderWidget::resizeGL(int w, int h)
 {
 	// Update projection matrices
@@ -314,6 +340,12 @@ void RenderWidget::resizeGL(int w, int h)
 
 	emit windowResized(w, h);
 }
+
+/**
+ * \brief Reimplemented from QOpenGLWidget::paintGL()
+ * 
+ * Rendering code here
+ */
 void RenderWidget::paintGL()
 {
 	//Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
@@ -477,6 +509,9 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 	update();
 }
 
+/**
+ * \brief Updates the transfer function that volume rendering uses
+ */
 void RenderWidget::updateTransferFunction(const float * func)
 {
 	makeCurrent();
@@ -498,6 +533,9 @@ void RenderWidget::updateTransferFunction(const float * func)
 
 
 
+/**
+ * \brief This property holds the visibility of the top slice when renders data with slice type render.
+ */
 void RenderWidget::setTopSliceVisible(bool check)
 {
 	if (m_volume != nullptr) {
@@ -505,6 +543,10 @@ void RenderWidget::setTopSliceVisible(bool check)
 		update();
 	}
 }
+
+/**
+ * \brief This property holds the visibility of the right slice when renders data with slice type render.
+ */
 void RenderWidget::setRightSliceVisible(bool check) {
 
 	if (m_volume != nullptr) {
@@ -512,6 +554,10 @@ void RenderWidget::setRightSliceVisible(bool check) {
 		update();
 	}
 }
+
+/**
+ * \brief This property holds the visibility of the front slice when renders data with slice type render.
+ */
 void RenderWidget::setFrontSliceVisible(bool check) {
 
 	if (m_volume != nullptr) {
@@ -520,7 +566,10 @@ void RenderWidget::setFrontSliceVisible(bool check) {
 	}
 }
 
-void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role)
+/**
+ * \brief This is a slot function
+ */
+void RenderWidget::_slot_markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role)
 {
 	if (begin != end || begin.isValid() ==false)
 		return;
@@ -536,9 +585,7 @@ void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelI
 }
 
 /**
- * \brief 
- * \param current 
- * \param previous 
+ * \brief This is a private slot function
  */
 void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 {
@@ -550,9 +597,7 @@ void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 }
 
 /**
- * \brief 
- * \param current 
- * \param previous 
+ * \brief This is a private slot function
  */
 void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& current,
 	const QModelIndex& previous) {
@@ -589,15 +634,16 @@ void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& curren
 }
 
 /**
- * \brief 
- * \param selected 
- * \param deselected 
+ * \brief This is a private slot function
  */
 void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
 {
 
 }
 
+/**
+ * \brief This is a private 
+ */
 void RenderWidget::updateMark() {
 
 	Q_D(RenderWidget);
@@ -605,7 +651,6 @@ void RenderWidget::updateMark() {
 	{
 		return;
 	}
-
 	
 	m_integration.clear();
 	m_query.clear();
@@ -652,6 +697,9 @@ void RenderWidget::updateMark() {
 	doneCurrent();
 }
 
+/**
+ * \brief 
+ */
 void RenderWidget::updateVolumeData()
 {
 	if (m_dataModel == nullptr)
@@ -675,15 +723,6 @@ void RenderWidget::updateVolumeData()
 	m_volume->initializeGLResources();
 	doneCurrent();
 }
-
-/**
- * \fn	void VolumeWidget::updateMarkData()
- *
- * \brief	Updates the mark data
- *
- * \author	Ysl
- * \date	2018.07.19
- */
 
 
 int RenderWidget::selectMesh(int x, int y)
@@ -722,6 +761,15 @@ void RenderWidget::cleanup()
 	doneCurrent();
 }
 
+/**
+ * \brief Destroyes the render widget.
+ * 
+ * \note disconnect the QOpenGLContext::aboutToBeDestroyed() signal from QOpenGLContext links to \a RenderWidget::cleanup() is necessary
+ * Because the context is not destroyed yet after the widget is destroyed. The signal still emits and will activate a empty slot and the 
+ * program will crash. 
+ * 
+ * \sa QOpenGLContext RenderWidget:cleanup()
+ */
 RenderWidget::~RenderWidget()
 {
 	cleanup();			//
@@ -732,5 +780,6 @@ RenderWidget::~RenderWidget()
 		Critical: The context will emit aboutToBeDestroyed() signal and will cause a crash
 		even after this class was destroyed if below disconnection had not been called
 	 */
+
 	disconnect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);
 }

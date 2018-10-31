@@ -8,8 +8,6 @@
 #include "titledsliderwithspinbox.h"
 #include "abstract/abstractsliceeditorplugin.h"
 
-
-
 class QMouseEvent;
 class QComboBox;
 class QPushButton;
@@ -65,6 +63,11 @@ private:
 };
 
 
+/**
+ * \brief This is a widget supply some image processing features for slice in \a SliceEditorWidget
+ * 
+ * \sa SliceEditorWidget
+ */
 class HistogramWidget:public AbstractSliceViewPlugin
 {
     Q_OBJECT

@@ -4,6 +4,11 @@
 #include <QDebug>
 #include <QLabel>
 
+/**
+ * \brief Constructs a widget used for pixel-level display for a certain \a type type in \a SliceEditorWidget
+ * 
+ * \sa SliceEditorWidget
+ */
 PixelWidget::PixelWidget(SliceType type,  SliceEditorWidget*widget, QWidget * parent) :
 	AbstractSliceViewPlugin(type,widget,parent)
 {

@@ -41,6 +41,9 @@ signals:
 	void selectionIndexChanged(const QItemSelection & selected, const QItemSelection & deselected);
 };
 
+/**
+ * \brief This is a class used to view mark and mesh information.
+ */
 class TreeNodeInfoView :public QTableView
 {
 	Q_OBJECT
@@ -50,11 +53,10 @@ public slots:
 
 };
 
-
 /**
- * \brief 
+ * \brief This is a class used to view marks in a tree view, mark and mesh information.
+ * 
  */
-
 class MarkManager:public QWidget {
 	Q_OBJECT
 	MarkTreeView * m_treeView;
