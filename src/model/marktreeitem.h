@@ -23,8 +23,17 @@ public:
 
 class StrokeMarkTreeItem :public TreeItem {
 
-	StrokeMarkItem* m_markItem;
+	StrokeMarkItem * m_markItem;
 	QAbstractItemModel * m_infoModel;
+
+protected:
+	void modelIndexChanged(const QPersistentModelIndex& index) override 
+	{
+		if(m_markItem != nullptr)
+		{
+			m_markItem->m_modelIndex = index;
+		}
+	}
 public:
 	StrokeMarkTreeItem(StrokeMarkItem* markItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
 
@@ -40,7 +49,7 @@ public:
 
 	int type() const override;
 
-	void* metaData() override;
+	void * metaData() override;
 
 	QAbstractItemModel * infoModel() const override { return m_infoModel; }
 

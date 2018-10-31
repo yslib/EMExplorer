@@ -8,33 +8,33 @@ StrokeMarkTreeItem(StrokeMarkItem* markItem, const QPersistentModelIndex & pInde
 m_markItem(nullptr), m_infoModel(nullptr) {
 	m_markItem = markItem;
 
-	if (m_markItem != nullptr) {
-		// Add state change handler
-		m_markItem->setItemChangeHandler([this](StrokeMarkItem * mark,QGraphicsItem::GraphicsItemChange change, const QVariant & value)->QVariant {
-			if (this->persistentModelIndex().isValid() == false)
-			{
-				qWarning("QPersistentModelIndex is invalid");
-			}
-			else if (change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
-				if(value.toBool() == false)			//The item is presently selected. Do nothing
-				{
-					return value;
-				}
-				const auto model = persistentModelIndex().model();
-				//This is a bad design. But there is a no better remedy so far.
-				const auto markModel = static_cast<const MarkModel*>(model);
-				if (markModel != nullptr) {
-					const auto selectionModel = markModel->selectionModelOfThisModel();
-					
-					mark->scene()->clearSelection();
-					selectionModel->clearSelection();
-					selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Current);
-					selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Select);
-				}
-			}
-			return value;
-		});
-	}
+	//if (m_markItem != nullptr) {
+	//	// Add state change handler
+	//	m_markItem->setItemChangeHandler([this](StrokeMarkItem * mark,QGraphicsItem::GraphicsItemChange change, const QVariant & value)->QVariant {
+	//		if (this->persistentModelIndex().isValid() == false)
+	//		{
+	//			qWarning("QPersistentModelIndex is invalid");
+	//		}
+	//		else if (change == QGraphicsItem::GraphicsItemChange::ItemSelectedChange) {
+	//			if(value.toBool() == false)			//The item is presently selected. Do nothing
+	//			{
+	//				return value;
+	//			}
+	//			const auto model = persistentModelIndex().model();
+	//			//This is a bad design. But there is a no better remedy so far.
+	//			const auto markModel = static_cast<const MarkModel*>(model);
+	//			if (markModel != nullptr) {
+	//				const auto selectionModel = markModel->selectionModelOfThisModel();
+	//				
+	//				mark->scene()->clearSelection();
+	//				selectionModel->clearSelection();
+	//				selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Current);
+	//				selectionModel->setCurrentIndex(persistentModelIndex(), QItemSelectionModel::Select);
+	//			}
+	//		}
+	//		return value;
+	//	});
+	//}
 
 	m_markItem->m_modelIndex = persistentModelIndex();
 

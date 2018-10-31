@@ -70,10 +70,17 @@ class TreeItem
 	QVector<PTR_TYPE(TreeItem)> m_children;
 	QPersistentModelIndex m_persistentModelIndex;
 	void updateChildQPersistentModelIndex(TreeItem * item,int row);
-
+	void updateModelIndex(const QPersistentModelIndex & index) 
+	{
+		m_persistentModelIndex = index;
+		modelIndexChanged(index);
+	}
 protected:
-	void setModelIndex(const QPersistentModelIndex & index) { m_persistentModelIndex = index; }
-
+	//void setModelIndex(const QPersistentModelIndex & index) { m_persistentModelIndex = index; }
+	virtual void modelIndexChanged(const QPersistentModelIndex & index) 
+	{
+		Q_UNUSED(index);
+	}
 public:
 	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
 	m_parent(nullptr)
@@ -141,7 +148,7 @@ public:
 	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
 
 
-	//friend class MarkModel;
+	friend class MarkModel;
 };
 
 /**

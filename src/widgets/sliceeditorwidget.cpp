@@ -23,12 +23,15 @@ inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos
 
 void SliceEditorWidget::_slot_markSelected(StrokeMarkItem* mark) {
 
+	qDebug() << "SliceEditorWidget::_slot_markSelected " << " SliceEdtiroWidget should be clicked";
+
 	const auto selectionModel = m_markModel->selectionModelOfThisModel();
 	Q_ASSERT(selectionModel);
-
 	const auto index = mark->modelIndex();
-	selectionModel->clearSelection();
-	selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+	if(index.isValid() == true) {
+		//selectionModel->clearSelection();
+		selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+	}
 	//selectionModel->select(m_markModel->parent(index),QItemSelectionModel::Select);
 }
 
@@ -43,12 +46,16 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 	const auto item1 = static_cast<TreeItem*>(current.internalPointer());
 	if(item1 != nullptr) {
 		if (item1->type() == TreeItemType::Mark) {
+
+			qDebug() << "SliceEditorWidget::_slot_currentChanged_selectionModel " << " Mark should be clicked from QTreeView";
+			this->blockSignals(true);
 			const auto mark = static_cast<StrokeMarkItem*>(item1->metaData());
 			mark->setSelected(true);
+			this->blockSignals(false);
 		}
 		else if (item1->type() == TreeItemType::Instance) {
 			// Set all children of the item as selection
-
+			qDebug() << "SliceEditorWidget::_slot_currentChanged_selectionModel " << " Instance should be clicked from RenderWidget";
 			QList<QModelIndex> markIndices;
 			const auto nChild = m_markModel->rowCount(current);
 			for (int i = 0; i < nChild; i++) {
@@ -56,9 +63,11 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 			}
 
 			this->blockSignals(true);
+			m_topView->scene()->clearSelection();
 			for (auto index : markIndices) {
 				const auto item = static_cast<TreeItem*>(index.internalPointer());
 				if (item->type() == TreeItemType::Mark) {
+					qDebug() << "Mark Selected";
 					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
 					mark->setSelected(true);
 					/* This will emit selectionChange signal from SliceWidget and will invoke
@@ -68,7 +77,6 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 				}
 			}
 			this->blockSignals(false);
-
 		}
 	}
 
@@ -77,14 +85,16 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 	if(item2 != nullptr) {
 		if (item2->type() == TreeItemType::Mark) {
 			const auto mark = static_cast<StrokeMarkItem*>(item2->metaData());
+			this->blockSignals(true);
 			mark->setSelected(false);
+			this->blockSignals(false);
 		}
 		else if (item2->type() == TreeItemType::Instance) {
 			// Set all children of the item as deselection
 			QList<QModelIndex> markIndices;
-			const auto nChild = m_markModel->rowCount(current);
+			const auto nChild = m_markModel->rowCount(previous);
 			for (int i = 0; i < nChild; i++) {
-				markIndices << m_markModel->index(i, 0, current);
+				markIndices << m_markModel->index(i, 0, previous);
 			}
 
 			this->blockSignals(true);
@@ -93,6 +103,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 				if (item->type() == TreeItemType::Mark) {
 					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
 					mark->setSelected(false);
+					qDebug() << "Mark Deselected";
 					/* This will emit selectionChange signal from SliceWidget and will invoke
 					 * SliceEditorWidget::_slot_markSelected again so as to call this function recursively,
 					 * so at the begining, signal is blocked first
@@ -100,7 +111,6 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 				}
 			}
 			this->blockSignals(false);
-
 		}
 	}
 	
