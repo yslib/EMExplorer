@@ -47,7 +47,7 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/model/treeitem.h \
     $${MY_PREFIX_DIR}/widgets/renderwidget.h \
     $${MY_PREFIX_DIR}/widgets/renderoptionwidget.h \
-    $${MY_PREFIX_DIR}/widgets/slicetoolwidget.h \
+    $${MY_PREFIX_DIR}/widgets/categorycontrolwidget.h \
     $${MY_PREFIX_DIR}/3drender/shader/shaderdatainterface.h \
     $${MY_PREFIX_DIR}/3drender/shader/shaderprogram.h \
     $${MY_PREFIX_DIR}/algorithm/gradientcalculator.h \
@@ -67,7 +67,7 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/model/marktreeitem.h \
     $${MY_PREFIX_DIR}/model/iteminfomodel.h \
     $${MY_PREFIX_DIR}/model/strokeitem.h \
-    src/algorithm/bimap.h
+    $${MY_PREFIX_DIR}/algorithm/bimap.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
@@ -96,7 +96,7 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/renderwidget.cpp \
     $${MY_PREFIX_DIR}/widgets/zoomwidget.cpp \
     $${MY_PREFIX_DIR}/widgets/renderoptionwidget.cpp \
-    $${MY_PREFIX_DIR}/widgets/slicetoolwidget.cpp \
+    $${MY_PREFIX_DIR}/widgets/categorycontrolwidget.cpp \
     $${MY_PREFIX_DIR}/algorithm/gradientcalculator.cpp \
     $${MY_PREFIX_DIR}/3drender/shader/shaderprogram.cpp \
     $${MY_PREFIX_DIR}/3drender/shader/raycastingshader.cpp \
@@ -114,5 +114,5 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/model/marktreeitem.cpp \
     $${MY_PREFIX_DIR}/model/iteminfomodel.cpp \
     $${MY_PREFIX_DIR}/model/strokeitem.cpp \
-    src/algorithm/bimap.cpp
+    $${MY_PREFIX_DIR}/algorithm/bimap.cpp
 RESOURCES += resources.qrc

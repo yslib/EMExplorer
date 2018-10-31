@@ -20,7 +20,7 @@
 #include "model/markmodel.h"
 #include "widgets/marktreeviewwidget.h"
 #include "widgets/renderoptionwidget.h"
-#include "widgets/CategoryControlWidget.h"
+#include "widgets/categorycontrolwidget.h"
 #include "widgets/renderwidget.h"
 #include "widgets/slicewidget.h"
 #include "widgets/slicecontrolwidget.h"
