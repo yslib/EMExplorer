@@ -1,0 +1,47 @@
+digraph "cimg_library_suffixed::cos"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node34 [label="cimg_library_suffixed::cos",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node34 -> Node35 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node35 [label="Camera::processMouseScroll",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_camera.html#a5e2e214480303c46e9f950ede9a4c6b7"];
+  Node34 -> Node36 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node36 [label="SliceVolume::setSliceSphere\lCoord",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_volume.html#a4674f7a3c32b1778031e03ec6a307dd0"];
+  Node34 -> Node37 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node34 -> Node38 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_complex_exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a2d823d18414809075048f82cfc2f4779"];
+  Node34 -> Node39 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node39 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::_mp_complex_pow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a4c1d921651a9408da9487f1d4e8c13d0"];
+  Node34 -> Node40 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node40 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_cos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a2fcab7dff8d6d344c767cdb0681abffe"];
+  Node34 -> Node41 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node41 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_rot2d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a7251d8ae472be70c029e3975125233a3"];
+  Node34 -> Node42 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node42 [label="cimg_library_suffixed\l::CImg\< charT \>::cos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a11af60c5864134f6faa02ec33365002b",tooltip="Compute the cosine of each pixel value. "];
+  Node34 -> Node43 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node43 [label="cimg_library_suffixed\l::CImg\< charT \>::get_cos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1d6d4be9892469025a791f19848d8638",tooltip="Compute the cosine of each pixel value . "];
+  Node34 -> Node44 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node44 [label="cimg_library_suffixed\l::CImg\< charT \>::rotation\l_matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a18ba2075fe783f6b185de03695bd625f",tooltip="Return a 3x3 rotation matrix from an { axis + angle } or a quaternion. "];
+  Node34 -> Node45 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node45 [label="cimg_library_suffixed\l::CImg\< charT \>::HSItoRGB",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a82435e0972fa4663a8b026ba832cfa3a",tooltip="Convert pixel values from HSI to RGB color spaces. "];
+  Node34 -> Node46 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node46 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_rotate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a0c0d7575a84ce1ab046dc53699d555fd",tooltip="Rotate image with arbitrary angle . "];
+  Node34 -> Node47 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node47 [label="cimg_library_suffixed\l::CImg\< charT \>::_rotate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad93e8ff81e78bf78b9f1153ef6e55ad4"];
+  Node34 -> Node48 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node48 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_anisotropic",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#af3c29f70168c4443e3f6f887834819b0",tooltip="Blur image anisotropically, directed by a field of diffusion tensors. "];
+  Node34 -> Node49 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node49 [label="cimg_library_suffixed\l::CImg\< charT \>::FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#abf1763dd0cf132f59147662022feb791",tooltip="Compute 1d Fast Fourier Transform, along a specified axis. "];
+  Node34 -> Node50 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node50 [label="cimg_library_suffixed\l::CImg\< charT \>::cone3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7cdc2da46ee1679928f178b0b886fba3",tooltip="Generate a 3d cone. "];
+  Node34 -> Node51 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node51 [label="cimg_library_suffixed\l::CImg\< charT \>::cylinder3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a009c1cb31d4c261774a310e10d0ee9d7",tooltip="Generate a 3d cylinder. "];
+  Node34 -> Node52 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node52 [label="cimg_library_suffixed\l::CImg\< charT \>::torus3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8e6e4d77fb5eba21751926bb972d89d5",tooltip="Generate a 3d torus. "];
+  Node34 -> Node53 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node53 [label="cimg_library_suffixed\l::CImg\< charT \>::draw_arrow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aac745c02e72234bd8203a2d21c21d47f",tooltip="Draw a 2d arrow. "];
+  Node34 -> Node54 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node54 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_ellipse",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aea02b9cdc8518779ac4397ed0c733757"];
+}

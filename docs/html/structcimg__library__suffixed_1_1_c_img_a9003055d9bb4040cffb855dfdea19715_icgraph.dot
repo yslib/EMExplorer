@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::_LU"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node248 [label="cimg_library_suffixed\l::CImg::_LU",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node248 -> Node249 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node249 [label="cimg_library_suffixed\l::CImg\< charT \>::det",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a89c4a7eddf8e3d1cc5823576a2399c45",tooltip="Compute the determinant of the image, viewed as a matrix. "];
+  Node248 -> Node250 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node250 [label="cimg_library_suffixed\l::CImg\< charT \>::solve",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3c868d05056064840adec3b2e75f2c22",tooltip="Solve a system of linear equations. "];
+}

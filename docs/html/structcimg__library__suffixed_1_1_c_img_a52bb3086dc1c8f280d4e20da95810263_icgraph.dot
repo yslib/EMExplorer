@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::unroll"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3377 [label="cimg_library_suffixed\l::CImg::unroll",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3377 -> Node3378 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3378 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_discard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a158d3e9bd97132548046647db70e0fc5"];
+  Node3377 -> Node3379 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3379 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_unroll",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3a59a02e64a154a522f8291f50c977e2",tooltip="Unroll pixel values along specified axis . "];
+}

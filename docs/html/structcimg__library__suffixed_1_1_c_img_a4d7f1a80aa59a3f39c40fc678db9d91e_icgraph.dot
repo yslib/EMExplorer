@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::cross"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node668 [label="cimg_library_suffixed\l::CImg::cross",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node668 -> Node669 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node669 [label="cimg_library_suffixed\l::CImg\< charT \>::get_cross",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a693bb4d3271ab0e66801434616211885",tooltip="Compute the cross product between two 1x3 images, viewed as 3d vectors . "];
+}

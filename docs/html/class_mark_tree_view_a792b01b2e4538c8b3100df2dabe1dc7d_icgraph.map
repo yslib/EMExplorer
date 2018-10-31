@@ -1,0 +1,4 @@
+<map id="MarkTreeView::currentIndexChanged" name="MarkTreeView::currentIndexChanged">
+<area shape="rect" id="node2" href="$class_mark_tree_view.html#a24777593f8e7bb70c5d1f6102c74eb44" title="Reimplemented from QTreeView::currentChanged(cosnt QModelIndex &amp; current,const QModelIndex&amp; preivous)..." alt="" coords="236,5,439,32"/>
+<area shape="rect" id="node3" href="$class_mark_manager.html#a2f2c4deed14679f888a5dce731edb508" title="Construct a mark manager widget. " alt="" coords="243,56,431,83"/>
+</map>

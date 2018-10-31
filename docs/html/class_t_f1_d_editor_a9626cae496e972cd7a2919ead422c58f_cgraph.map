@@ -1,0 +1,9 @@
+<map id="TF1DEditor::lowerThresholdSpinChanged" name="TF1DEditor::lowerThresholdSpinChanged">
+<area shape="rect" id="node2" href="$class_double_slider.html#aefabfbe5a145bea286a93ab2af36cd59" title="DoubleSlider::setMinValue" alt="" coords="239,35,413,61"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_editor.html#a26ceb7789e40bbcded24f12e72ff6e2d" title="TF1DEditor::applyThreshold" alt="" coords="235,85,417,112"/>
+<area shape="rect" id="node4" href="$class_double_slider.html#a0ea80b7ba093ec43e2b432f246a9c401" title="DoubleSlider::getMinValue" alt="" coords="468,5,643,32"/>
+<area shape="rect" id="node5" href="$class_double_slider.html#a32840a12ce070d6522291ebc363c7607" title="DoubleSlider::getMaxValue" alt="" coords="466,56,645,83"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#aa1d4689481bdce0e45048a898b2a0084" title="TF1DMappingCanvas::\lsetThreshold" alt="" coords="479,107,631,149"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_editor.html#a1b0f4927c1c45873039aa493dfae42ac" title="TF1DEditor::updateTransfer\lFunction" alt="" coords="465,173,645,214"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_editor.html#a3ccf0ae529d26b0a89f058df03907ed0" title="TF1DEditor::repaintAll" alt="" coords="693,180,843,207"/>
+</map>

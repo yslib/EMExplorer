@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_tree_item.html" title="TreeItem" alt="" coords="5,107,77,133"/>
+<area shape="rect" id="node2" href="$class_category_tree_item.html" title="CategoryTreeItem" alt="" coords="133,5,257,32"/>
+<area shape="rect" id="node3" href="$class_empty_tree_item.html" title="This instance of the class represents a empty node in mark tree view. " alt="" coords="139,56,250,83"/>
+<area shape="rect" id="node4" href="$class_instance_tree_item.html" title="InstanceTreeItem" alt="" coords="134,107,255,133"/>
+<area shape="rect" id="node5" href="$class_root_tree_item.html" title="This class represents the root node in the mark tree view. " alt="" coords="145,157,244,184"/>
+<area shape="rect" id="node6" href="$class_stroke_mark_tree_item.html" title="StrokeMarkTreeItem" alt="" coords="125,208,264,235"/>
+</map>

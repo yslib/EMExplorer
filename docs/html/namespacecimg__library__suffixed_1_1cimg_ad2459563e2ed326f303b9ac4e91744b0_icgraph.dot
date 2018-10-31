@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::cimg::dcraw_path"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node996 [label="cimg_library_suffixed\l::cimg::dcraw_path",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node996 -> Node997 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node997 [label="cimg_library_suffixed\l::cimg::date",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aac739bf544269324a04504ebe92b93e9",tooltip="Get current local time (single-attribute version). "];
+  Node996 -> Node998 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node998 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_dcraw_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae8ee2dbbc634767b37efabe0f0eb7104",tooltip="Load image from a RAW Color Camera file, using external tool &#39;dcraw&#39;. "];
+}

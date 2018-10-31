@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::get_sinc"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1957 [label="cimg_library_suffixed\l::CImg::get_sinc",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1957 -> Node1958 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1958 [label="cimg_library_suffixed\l::sinc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#abe9c92eb888fb9765f8535602dc42b34"];
+}

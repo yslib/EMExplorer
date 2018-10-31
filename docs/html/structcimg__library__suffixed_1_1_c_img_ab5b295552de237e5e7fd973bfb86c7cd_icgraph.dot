@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::CMYtoCMYK"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node621 [label="cimg_library_suffixed\l::CImg::CMYtoCMYK",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node621 -> Node622 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node622 [label="cimg_library_suffixed\l::CImg\< charT \>::RGBtoCMYK",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aca59267634b4b06a8aa1d0fc95e1b2be",tooltip="Convert pixel values from RGB to CMYK color spaces. "];
+}

@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::det"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node843 [label="cimg_library_suffixed\l::CImg::det",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node843 -> Node844 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node844 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_det",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ad4f0fc6433a92e06bc76fb7a430e3c85"];
+}

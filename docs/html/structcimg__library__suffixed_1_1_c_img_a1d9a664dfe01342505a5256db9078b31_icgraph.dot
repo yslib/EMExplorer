@@ -1,0 +1,30 @@
+digraph "cimg_library_suffixed::CImg::get_resize"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1778 [label="cimg_library_suffixed\l::CImg::get_resize",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1778 -> Node1779 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1779 [label="cimg_library_suffixed\l::CImgDisplay::snapshot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a914ee0515249db301dc66275861a6b3e",tooltip="Take a snapshot of the associated window content. "];
+  Node1779 -> Node1780 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1780 [label="cimg_library_suffixed\l::CImg\< charT \>::CImg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a015159d8cee61c2f2316c3e128470a71",tooltip="Construct image from a display window. "];
+  Node1779 -> Node1781 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1781 [label="cimg_library_suffixed\l::CImg\< charT \>::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a668fe887682e7cbb469409842bb98cd2",tooltip="Construct image from a display window . "];
+  Node1779 -> Node1782 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1782 [label="cimg_library_suffixed\l::CImg\< charT \>::operator=",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a75e18966d8e02a9cee85642038e30a08",tooltip="Copy the content of a display window to the current image instance. "];
+  Node1778 -> Node1778 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1778 -> Node1783 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1783 [label="cimg_library_suffixed\l::CImg\< charT \>::_correlate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aed98b23130078df5ad69b199d88bb261",tooltip="Correlate image by a kernel . "];
+  Node1778 -> Node1784 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1784 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_displacement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a91ec1cd09114c4018a78e4ea0b2df386",tooltip="Estimate displacement field between two images . "];
+  Node1778 -> Node1785 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1785 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6dba86c8049ae141ffc9936b2eaf5c5c"];
+  Node1778 -> Node1786 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1786 [label="cimg_library_suffixed\l::CImg\< charT \>::__get\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aaa07158749f6daf52edcfb4a3b86c4ef"];
+  Node1778 -> Node1787 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1787 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af8a6b01f20b2d459e5abe6b99836ea9a"];
+  Node1778 -> Node1788 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1788 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a759ef20b53f1e507973dc53fcc2c7bb2",tooltip="Save image sequence as a GIF animated file. "];
+  Node1778 -> Node1789 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1789 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af09a45345581747984f4df0607418f2c",tooltip="Save image sequence, using the external tool &#39;ffmpeg&#39;. "];
+}

@@ -1,0 +1,32 @@
+digraph "cimg_library_suffixed::CImg&lt; T &gt;::_functor4d_streamline_expr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cimg_library_suffixed\l::CImg\< T \>::_functor4d\l_streamline_expr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" mp" ,fontname="Helvetica"];
+  Node2 [label="cimg_library_suffixed\l::CImg\< T \>::_cimg_math\l_parser",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html"];
+  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" code_end\n_code\ncode_init\ncode" ,fontname="Helvetica"];
+  Node3 [label="cimg_library_suffixed\l::CImgList\< ulongT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html"];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" _data" ,fontname="Helvetica"];
+  Node4 [label="cimg_library_suffixed\l::CImg\< ulongT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html"];
+  Node5 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" memtype" ,fontname="Helvetica"];
+  Node5 [label="cimg_library_suffixed\l::CImg\< intT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html"];
+  Node4 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" p_break\np_code_end\np_code\nopcode" ,fontname="Helvetica"];
+  Node6 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" expr\npexpr" ,fontname="Helvetica"];
+  Node6 [label="cimg_library_suffixed\l::CImg\< charT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html"];
+  Node7 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" constcache_vals\nimg_stats\n_img_stats\nmem" ,fontname="Helvetica"];
+  Node7 [label="cimg_library_suffixed\l::CImg\< doubleT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html"];
+  Node8 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" variable_def\nmacro_body\nmacro_def" ,fontname="Helvetica"];
+  Node8 [label="cimg_library_suffixed\l::CImgList\< charT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html"];
+  Node6 -> Node8 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" _data" ,fontname="Helvetica"];
+  Node9 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" macro_body_is_string" ,fontname="Helvetica"];
+  Node9 [label="cimg_library_suffixed\l::CImgList\< boolT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html"];
+  Node10 -> Node9 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" _data" ,fontname="Helvetica"];
+  Node10 [label="cimg_library_suffixed\l::CImg\< boolT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html"];
+  Node11 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" reserved_label\nmem_img_stats\nvariable_pos\nlevel\nconstcache_inds" ,fontname="Helvetica"];
+  Node11 [label="cimg_library_suffixed\l::CImg\< uintT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html"];
+  Node12 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" list_stats\n_list_median\nlist_median\n_list_stats" ,fontname="Helvetica"];
+  Node12 [label="cimg_library_suffixed\l::CImgList\< doubleT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html"];
+  Node7 -> Node12 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" _data" ,fontname="Helvetica"];
+}

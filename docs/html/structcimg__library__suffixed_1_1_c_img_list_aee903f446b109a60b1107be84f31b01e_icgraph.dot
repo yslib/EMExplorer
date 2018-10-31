@@ -1,0 +1,21 @@
+digraph "cimg_library_suffixed::CImgList::size"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node590 [label="cimg_library_suffixed\l::CImgList::size",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node590 -> Node591 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node591 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_object3dtoCImg3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a10b28cfe85047fcd3637bf2083586da6",tooltip="Convert 3d object into a CImg3d representation . "];
+  Node590 -> Node592 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node592 [label="cimg_library_suffixed\l::CImg\< charT \>::_size\l_object3dtoCImg3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1617f662e7a8878661fad1355613e093"];
+  Node590 -> Node593 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node593 [label="cimg_library_suffixed\l::CImg\< charT \>::___draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ac35491902293ceb99afaf46efb2f78a0"];
+  Node590 -> Node594 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node594 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6dba86c8049ae141ffc9936b2eaf5c5c"];
+  Node590 -> Node595 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node595 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+  Node590 -> Node596 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node596 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_off",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7cba468815b7ce868cc5119e89046420"];
+  Node590 -> Node597 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node597 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_crop_font",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a3783a9b4937b941920639a5c9c82011d",tooltip="Crop font along the X-axis . "];
+}

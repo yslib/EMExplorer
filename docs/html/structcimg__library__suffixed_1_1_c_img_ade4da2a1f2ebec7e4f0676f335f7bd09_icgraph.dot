@@ -1,0 +1,29 @@
+digraph "cimg_library_suffixed::CImg::get_shared_channel"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1871 [label="cimg_library_suffixed\l::CImg::get_shared_channel",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1871 -> Node1872 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1872 [label="cimg_library_suffixed\l::CImg\< charT \>::_label",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#abda7bb00204f598bf8e4a00470c11e45"];
+  Node1871 -> Node1873 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1873 [label="cimg_library_suffixed\l::CImg\< charT \>::HSV\l_LUT256",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a51f90120a4070c5d47806c9fffc210ff",tooltip="Return colormap \"HSV\", containing 256 colors entries in RGB. "];
+  Node1871 -> Node1874 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1874 [label="cimg_library_suffixed\l::CImg\< charT \>::_correlate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aed98b23130078df5ad69b199d88bb261",tooltip="Correlate image by a kernel . "];
+  Node1871 -> Node1875 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1875 [label="cimg_library_suffixed\l::CImg\< charT \>::get_erode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aad353fc91b0c6ef3c0251f4f46a96150",tooltip="Erode image by a structuring element . "];
+  Node1871 -> Node1876 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1876 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_dilate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a66a723bf61125378577a3e99247ff8da",tooltip="Dilate image by a structuring element . "];
+  Node1871 -> Node1877 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1877 [label="cimg_library_suffixed\l::CImg\< charT \>::watershed",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6c93c9f308c168756831884f1aa829af",tooltip="Compute watershed transform. "];
+  Node1871 -> Node1878 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1878 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_bilateral",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab19d123867d5a2ed56fe1b016267bfe7",tooltip="Blur image, with the joint bilateral filter. "];
+  Node1871 -> Node1879 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1879 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_distance_dijkstra",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab461b8b649f269f33f4eedba90d1a84e",tooltip="Compute distance map to a specified value, according to a custom metric (use dijkstra algorithm) ..."];
+  Node1871 -> Node1880 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1880 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_distance_eikonal",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a2b1addf2e74607a44640f82f88916d37",tooltip="Compute distance map to one source point, according to a custom metric (use fast marching algorithm)..."];
+  Node1871 -> Node1881 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1881 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw_text",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adffe80db5906bbcbe875031ab0ba3a82"];
+  Node1871 -> Node1882 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1882 [label="cimg_library_suffixed\l::CImg\< charT \>::_display_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a39224c81542abc157318e64a6df11fdf"];
+}

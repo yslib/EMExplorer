@@ -1,0 +1,16 @@
+<map id="SliceEditorWidget::deleteSelectedMarks" name="SliceEditorWidget::deleteSelectedMarks">
+<area shape="rect" id="node2" href="$class_slice_widget.html#a850a05aa3c1ae3e28f658521f73bbe44" title="SliceWidget::selectedItems" alt="" coords="197,107,379,133"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2" title="MarkModel::removeMarks" alt="" coords="203,157,373,184"/>
+<area shape="rect" id="node15" href="$class_slice_widget.html#a18095dee4f17927573eb8d1a2420242c" title="SliceWidget::selectedItem\lCount" alt="" coords="201,209,375,250"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#a927b39237700dc4f82b68f61011f4413" title="Remove a specified mark mark. " alt="" coords="427,157,591,184"/>
+<area shape="rect" id="node5" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="MarkModel::rowCount" alt="" coords="649,31,797,57"/>
+<area shape="rect" id="node10" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="670,81,775,108"/>
+<area shape="rect" id="node11" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="669,132,776,159"/>
+<area shape="rect" id="node12" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="655,183,791,209"/>
+<area shape="rect" id="node13" href="$class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99" title="TreeItem::removeChildren" alt="" coords="639,233,807,260"/>
+<area shape="rect" id="node14" href="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6" title="Sets dirty bit of the mark model. " alt="" coords="653,284,792,311"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="855,31,996,57"/>
+<area shape="rect" id="node7" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="1044,5,1129,32"/>
+<area shape="rect" id="node8" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="1044,56,1129,83"/>
+<area shape="rect" id="node9" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="1177,49,1349,90"/>
+</map>

@@ -1,0 +1,36 @@
+digraph "cimg_library_suffixed::cimg::sleep"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3662 [label="cimg_library_suffixed\l::cimg::sleep",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3662 -> Node3663 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3663 [label="cimg_library_suffixed\l::cimg::_wait",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a204c82b3ebad23bf1c996e216bbed9ad"];
+  Node3663 -> Node3664 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3664 [label="cimg_library_suffixed\l::cimg::wait",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a8431f8cf0989f40df3b6ac7d9dc90abd",tooltip="Wait for a given number of milliseconds since the last call to wait(). "];
+  Node3664 -> Node3665 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3665 [label="cimg_library_suffixed\l::CImgDisplay::wait",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a6ba54ea916f502d782ccb787ce02ccbd",tooltip="Wait for any user event occuring on the current display. "];
+  Node3665 -> Node3666 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3666 [label="cimg_library_suffixed\l::CImg\< charT \>::_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad9b7141242d0b6e861a8014112ddb5b5"];
+  Node3665 -> Node3667 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3667 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_select_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a689f47424dc7c548ebfe53e431409199",tooltip="Select sub-graph in a graph. "];
+  Node3665 -> Node3668 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3668 [label="cimg_library_suffixed\l::CImg\< charT \>::_display",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adf9d80c60e82b079056c31cb0fe61faf"];
+  Node3665 -> Node3669 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3669 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+  Node3665 -> Node3670 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3670 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af8a6b01f20b2d459e5abe6b99836ea9a"];
+  Node3665 -> Node3671 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3671 [label="cimg_library_suffixed\l::cimg::dialog",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a11aed0e6b30d75bf50946ee78d1aed94",tooltip="Display a simple dialog box, and wait for the user&#39;s response. "];
+  Node3664 -> Node3672 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3672 [label="cimg_library_suffixed\l::CImgDisplay::snapshot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a914ee0515249db301dc66275861a6b3e",tooltip="Take a snapshot of the associated window content. "];
+  Node3672 -> Node3673 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3673 [label="cimg_library_suffixed\l::CImg\< charT \>::CImg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a015159d8cee61c2f2316c3e128470a71",tooltip="Construct image from a display window. "];
+  Node3672 -> Node3674 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3674 [label="cimg_library_suffixed\l::CImg\< charT \>::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a668fe887682e7cbb469409842bb98cd2",tooltip="Construct image from a display window . "];
+  Node3672 -> Node3675 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3675 [label="cimg_library_suffixed\l::CImg\< charT \>::operator=",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a75e18966d8e02a9cee85642038e30a08",tooltip="Copy the content of a display window to the current image instance. "];
+  Node3663 -> Node3676 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3676 [label="cimg_library_suffixed\l::CImgDisplay::wait",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a6a6bf6d5a43424d8e9728563dc79aa3f",tooltip="Wait for a given number of milliseconds since the last call to wait(). "];
+  Node3662 -> Node3672 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

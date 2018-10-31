@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::cimg::ror"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3593 [label="cimg_library_suffixed\l::cimg::ror",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3593 -> Node3594 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3594 [label="cimg_library_suffixed\l::cimg::ror",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a0cc69aa64bca2114676aebf2f689e5e8"];
+  Node3593 -> Node3595 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3595 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3593 -> Node3596 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3596 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_ror",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a511b281c46274f713e3eb4a3256459ed"];
+  Node3593 -> Node3597 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3597 [label="cimg_library_suffixed\l::CImg\< charT \>::ror",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#af98d2145c7cab1a46c6e5e1599fa2939",tooltip="Compute the bitwise right rotation of each pixel value. "];
+  Node3593 -> Node3598 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3598 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_bmp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa54db2f4c7251f0b2ec7e27c55f035ad"];
+}

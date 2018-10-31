@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_cbrt"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node235 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_cbrt",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node235 -> Node236 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node236 [label="cimg_library_suffixed\l::cimg::cbrt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#ad72601dd5481dc3abd338d9ed1604622",tooltip="Return x^(1/3). "];
+}

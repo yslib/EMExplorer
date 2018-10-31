@@ -1,0 +1,39 @@
+digraph "cimg_library_suffixed::cimg::invert_endianness"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2031 [label="cimg_library_suffixed\l::cimg::invert_endianness",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2031 -> Node2032 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2032 [label="cimg_library_suffixed\l::cimg::invert_endianness",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aaa2e6e8ccab85cc7fc7b9f02060965a2",tooltip="Reverse endianness of a single variable. "];
+  Node2031 -> Node2033 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2033 [label="cimg_library_suffixed\l::CImg\< charT \>::invert\l_endianness",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a22c014ba48da63fedb942dca9df883c2",tooltip="Invert endianness of all pixel values. "];
+  Node2031 -> Node2034 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2034 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_png",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8cde6f74b600005d95497c4834a686b4"];
+  Node2031 -> Node2035 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2035 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_pnm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4ee4502761ce479392f2641211a5694f"];
+  Node2031 -> Node2036 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2036 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_pfm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a0735cc3a6a6f0639ff34e98086cb7992"];
+  Node2031 -> Node2037 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2037 [label="cimg_library_suffixed\l::CImg\< charT \>::_load\l_analyze",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a01444df91267a5b4cb8105ac5886f12f"];
+  Node2031 -> Node2038 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2038 [label="cimg_library_suffixed\l::CImg\< charT \>::_load\l_pandore",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#abca75206a158250ae62f9f66e8da76c6"];
+  Node2031 -> Node2039 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2039 [label="cimg_library_suffixed\l::CImg\< charT \>::load_raw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#af50b9077784dad68a318c403866367d7",tooltip="Load image from a raw binary file. "];
+  Node2031 -> Node2040 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2040 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_load_raw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a03c7c625ebac464ac598586501eaf342",tooltip="Load image from a raw binary file . "];
+  Node2031 -> Node2041 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2041 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_raw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ac35f14b0a2ad7b9a7921a150c1056fd5"];
+  Node2031 -> Node2042 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2042 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_png",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aab5e304310373159e357250314e99da6"];
+  Node2031 -> Node2043 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2043 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pnm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3b62455c9523881fa64a47d8362c3d80"];
+  Node2031 -> Node2044 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2044 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pfm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a65be74d7d22bb71e708b3beb8e9cae49"];
+  Node2031 -> Node2045 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2045 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lload_parrec",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#affbfd21835dfd5c00fe98cc71c7760c2",tooltip="Load a list from a PAR/REC (Philips) file. "];
+  Node2031 -> Node2046 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2046 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_save_cimg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af99c31c0d24c46734145e1910ca44323"];
+  Node2031 -> Node2047 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2047 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_serialize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a6ef5394483360f2220873d2b8b856789",tooltip="Serialize a CImgList<T> instance into a raw CImg<unsigned char> buffer. "];
+}

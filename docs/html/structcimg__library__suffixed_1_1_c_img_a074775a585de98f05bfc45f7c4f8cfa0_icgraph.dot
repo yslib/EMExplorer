@@ -1,0 +1,26 @@
+digraph "cimg_library_suffixed::CImg::get_invert"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1543 [label="cimg_library_suffixed\l::CImg::get_invert",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1543 -> Node1544 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1544 [label="cimg_library_suffixed\l::operator/",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#af2bdc1f26a64adc01b8d8c61df639568"];
+  Node1543 -> Node1545 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1545 [label="cimg_library_suffixed\l::invert",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a78492a52daecbec968b15f3c02f3fdde"];
+  Node1545 -> Node1543 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1545 -> Node1546 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1546 [label="cimg_library_suffixed\l::CImg\< charT \>::haar",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae5d38bed2e12d78631a84feb13fd715b",tooltip="Compute Haar multiscale wavelet transform. "];
+  Node1545 -> Node1547 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1547 [label="cimg_library_suffixed\l::CImg\< charT \>::get_haar",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a35d89112cc5ff251f8b134209cd222f0",tooltip="Compute Haar multiscale wavelet transform . "];
+  Node1545 -> Node1548 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1548 [label="cimg_library_suffixed\l::CImgList\< charT \>::FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ac07f7527b6223ed7b6c4e02f6feab7b3",tooltip="Compute a 1d Fast Fourier Transform, along specified axis. "];
+  Node1545 -> Node1549 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1549 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aa026daaaa283e6bcc688a9bb42f16001",tooltip="Compute a 1-D Fast Fourier Transform, along specified axis . "];
+  Node1543 -> Node1550 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1550 [label="cimg_library_suffixed\l::CImg\< charT \>::operator/=",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a866a8b640fd988d6473d7f0c251481eb",tooltip="In-place division operator. "];
+  Node1543 -> Node1551 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1551 [label="cimg_library_suffixed\l::CImg\< charT \>::operator/",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aab407645f844295cbb4621e744cbb7d0",tooltip="Division operator. "];
+  Node1543 -> Node1552 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1552 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_gaussian",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a60f9518dd29e4f7f31a8bf44ad470140",tooltip="Draw a 2d gaussian function. "];
+}

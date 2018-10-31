@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::sinc"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node173 [label="cimg_library_suffixed\l::sinc",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node173 -> Node174 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node174 [label="cimg_library_suffixed\l::CImg::get_sinc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7e4b91912494fd5db7c82360809513a4",tooltip="Compute the sinc of each pixel value . "];
+}

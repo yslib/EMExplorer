@@ -1,0 +1,5 @@
+<map id="TF1DEditor::getTransferFunction" name="TF1DEditor::getTransferFunction">
+<area shape="rect" id="node2" href="$class_render_parameter_widget.html#a81885dd80bee8ba1d2be4cbb0451a6ce" title="Constructs a widget by a given widget of RenderWidget. " alt="" coords="270,5,442,47"/>
+<area shape="rect" id="node3" href="$class_render_parameter_widget.html#aefab8da09d864c24675e521249dbae84" title="Returns the 1d transfer function that used for volume rendering. " alt="" coords="274,71,438,112"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#aaa775550921dd36f5b3d18c7c648df1a" title="TF1DEditor::getTF1DTexture\lCanvas" alt="" coords="263,136,449,177"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="RenderWidget::paintGL" name="RenderWidget::paintGL">
+<area shape="rect" id="node2" href="$class_focus_camera.html#a500bf4473815d884f6e27f9a95b11f47" title="FocusCamera::setCenter" alt="" coords="211,5,377,32"/>
+<area shape="rect" id="node3" href="$class_render_widget.html#af8fa871549a1586223a8a36906b83d52" title="RenderWidget::camera" alt="" coords="217,56,371,83"/>
+<area shape="rect" id="node4" href="$class_focus_camera.html#ab1516f2bb7542ef456bac5a994c74f8f" title="FocusCamera::view" alt="" coords="227,107,361,133"/>
+<area shape="rect" id="node5" href="$class_focus_camera.html#a0ad848550ba8f2b28e69391d8e3e8be3" title="FocusCamera::position" alt="" coords="216,157,372,184"/>
+</map>

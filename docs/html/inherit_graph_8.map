@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$class_category_tree_item_info_model.html" title="This class represents a category node in the mark tree view. " alt="" coords="195,5,373,32"/>
+<area shape="rect" id="node3" href="$class_instance_tree_item_info_model.html" title="InstanceTreeItemInfoModel" alt="" coords="196,56,372,83"/>
+<area shape="rect" id="node4" href="$class_mark_item_info_model.html" title="MarkItemInfoModel" alt="" coords="219,107,349,133"/>
+<area shape="rect" id="node5" href="$class_mark_model.html" title="This class is used to represent the mark model created by marking. " alt="" coords="241,157,327,184"/>
+</map>

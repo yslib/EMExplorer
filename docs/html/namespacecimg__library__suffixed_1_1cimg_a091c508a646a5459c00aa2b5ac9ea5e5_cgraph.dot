@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::cimg::min"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2501 [label="cimg_library_suffixed\l::cimg::min",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2501 -> Node2502 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2502 [label="cimg_library_suffixed\l::cimg::min",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#ad5459593e7f8a4066cb22ad63de8e92d",tooltip="Return the minimum between four values. "];
+}

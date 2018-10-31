@@ -1,0 +1,4 @@
+<map id="SliceEditorWidget::setRightSliceVisibility" name="SliceEditorWidget::setRightSliceVisibility">
+<area shape="rect" id="node2" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="201,5,348,47"/>
+<area shape="rect" id="node3" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="396,5,537,47"/>
+</map>

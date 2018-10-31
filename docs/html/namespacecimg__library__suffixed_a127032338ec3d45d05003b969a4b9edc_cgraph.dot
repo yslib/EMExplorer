@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::sinh"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node176 [label="cimg_library_suffixed\l::sinh",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node176 -> Node177 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node177 [label="cimg_library_suffixed\l::CImg::get_sinh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a171c38efa2981ac8ae02c78ba4fb4468",tooltip="Compute the hyperbolic sine of each pixel value . "];
+}

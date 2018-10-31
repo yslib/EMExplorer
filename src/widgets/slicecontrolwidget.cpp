@@ -16,6 +16,9 @@
 #include "widgets/renderwidget.h"
 
 
+/**
+ * \brief Constructs a widget by the given \a sliceWidget and \a volumeWidget
+ */
 SliceControlWidget::SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget, QWidget* parent) :
 	QWidget(parent)
 	, m_volumeWidget(nullptr)
@@ -142,12 +145,19 @@ SliceControlWidget::SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWid
 	m_playButtonGroup->addButton(m_stopAction);
 
 
-	setSliceModel(sliceWidget, volumeWidget);
+	setControlledWidget(sliceWidget, volumeWidget);
 
 }
 
 
-void SliceControlWidget::setSliceModel(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget) {
+/**
+ * \brief Sets the controlled widget \a sliceWidge and \a volumeWidget to present
+ * 
+ * \note Only when the slice data models of the two widgets i.e. \a SliceEditorWidget and \a RenderWidget are the same,
+ *		 the widget state will be set as \a enabled 
+ * \sa SliceEditorWidget RenderWidget AbstractSliceDataModel
+ */
+void SliceControlWidget::setControlledWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget) {
 
 	if (m_sliceWidget == sliceWidget && m_volumeWidget == volumeWidget)
 		return;
@@ -250,6 +260,12 @@ void SliceControlWidget::onSliceTimer() {
 	}
 }
 
+/**
+ * \brief This is a private function for updating widget state after changing the controlled widget
+ * 
+ * Only when the slice data models of the tow widgets i.e. \a SliceEditorWidget and \a RenderWidget are same,
+ * the widget state will be set as \a enabled
+ */
 void SliceControlWidget::updateDataModel() {
 
 	AbstractSliceDataModel * model = nullptr;

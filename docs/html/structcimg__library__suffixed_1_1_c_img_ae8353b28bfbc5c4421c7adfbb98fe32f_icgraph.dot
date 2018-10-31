@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::load"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2362 [label="cimg_library_suffixed\l::CImg::load",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2362 -> Node2363 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2363 [label="cimg_library_suffixed\l::CImgList\< charT \>::load",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a63bd67d8dd2301933df7decb4612916e",tooltip="Load a list from a file. "];
+}

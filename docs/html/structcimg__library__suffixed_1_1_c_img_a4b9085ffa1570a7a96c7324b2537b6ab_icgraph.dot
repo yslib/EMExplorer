@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::CImg::_linear_atXYZC"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node179 [label="cimg_library_suffixed\l::CImg::_linear_atXYZC",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node179 -> Node180 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node180 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_ixyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#adccb19bacb29f24ee9b582ffdab1ce87"];
+  Node179 -> Node181 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node181 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_jxyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ab65aef2aad83c05094346595eebd5051"];
+  Node179 -> Node182 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node182 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_list_ixyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#af4383fa9613e2534570a889e24d06b5a"];
+  Node179 -> Node183 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node183 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_list_jxyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a1f3648a3f11256430d982c9c6e8debe4"];
+  Node179 -> Node184 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node184 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_bilateral",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab19d123867d5a2ed56fe1b016267bfe7",tooltip="Blur image, with the joint bilateral filter. "];
+}

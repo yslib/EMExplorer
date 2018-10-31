@@ -1,0 +1,8 @@
+<map id="SliceEditorWidget::markModel" name="SliceEditorWidget::markModel">
+<area shape="rect" id="node2" href="$class_main_window.html#a11e3895b953cf51549ff48414e226c24" title="MainWindow::closeEvent" alt="" coords="188,5,355,32"/>
+<area shape="rect" id="node3" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="205,56,337,83"/>
+<area shape="rect" id="node4" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="403,107,565,133"/>
+<area shape="rect" id="node5" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="191,157,352,184"/>
+<area shape="rect" id="node6" href="$class_slice_main_window.html#a481a5370cf722229b40a452882015eec" title="SliceMainWindow::open" alt="" coords="191,208,352,235"/>
+<area shape="rect" id="node7" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="459,208,509,235"/>
+</map>

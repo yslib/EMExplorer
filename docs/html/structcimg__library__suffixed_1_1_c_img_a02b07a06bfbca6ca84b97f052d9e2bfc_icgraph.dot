@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::XYZtoxyY"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3529 [label="cimg_library_suffixed\l::CImg::XYZtoxyY",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3529 -> Node3530 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3530 [label="cimg_library_suffixed\l::CImg\< charT \>::RGBtoxyY",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1760b1ea849e17c90de4fe76eb0c87e7",tooltip="Convert pixel values from RGB to xyY color spaces. "];
+}

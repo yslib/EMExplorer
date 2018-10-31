@@ -1,0 +1,12 @@
+<map id="MarkModel::removeMark" name="MarkModel::removeMark">
+<area shape="rect" id="node2" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="MarkModel::rowCount" alt="" coords="227,31,375,57"/>
+<area shape="rect" id="node7" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="249,81,354,108"/>
+<area shape="rect" id="node8" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="248,132,355,159"/>
+<area shape="rect" id="node9" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="233,183,369,209"/>
+<area shape="rect" id="node10" href="$class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99" title="TreeItem::removeChildren" alt="" coords="217,233,385,260"/>
+<area shape="rect" id="node11" href="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6" title="Sets dirty bit of the mark model. " alt="" coords="232,284,371,311"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="433,31,575,57"/>
+<area shape="rect" id="node4" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="623,5,708,32"/>
+<area shape="rect" id="node5" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="623,56,708,83"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="756,49,928,90"/>
+</map>

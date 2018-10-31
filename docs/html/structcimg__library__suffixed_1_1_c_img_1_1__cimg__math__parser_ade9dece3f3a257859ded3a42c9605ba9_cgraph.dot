@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_log2"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node829 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_log2",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node829 -> Node830 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node830 [label="cimg_library_suffixed\l::cimg::log2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a03657cf098d3b588e76bcef4426233bd",tooltip="Return base-2 logarithm of a value. "];
+  Node830 -> Node831 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node831 [label="cimg_library_suffixed::log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a65baff382319a3677fd777a976a4f50b"];
+  Node831 -> Node832 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node832 [label="cimg_library_suffixed\l::CImg::get_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a560dd5fe13a0b40fcf95e2ea7020381e",tooltip="Compute the logarithm of each pixel value . "];
+}

@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::atX"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node506 [label="cimg_library_suffixed\l::CImg::atX",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node506 -> Node507 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node507 [label="cimg_library_suffixed\l::CImgList\< charT \>::atNX",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a0e96d35da5389885c3d5d1fdd193d6a1",tooltip="Access to pixel value with Dirichlet boundary conditions for the 2 coordinates (pos,x) . "];
+  Node506 -> Node508 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node508 [label="cimg_library_suffixed\l::CImgList\< charT \>::_atNX",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a1a1ce6c98540e9071d1a86eae1920d7b"];
+}

@@ -1,0 +1,25 @@
+digraph "cimg_library_suffixed::CImgList::get_append"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node297 [label="cimg_library_suffixed\l::CImgList::get_append",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node297 -> Node298 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node298 [label="cimg_library_suffixed\l::CImgDisplay::display",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a7f0ae1e5a6deb128d9a4f9501514675b",tooltip="Display list of images on associated window. "];
+  Node297 -> Node299 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node299 [label="cimg_library_suffixed\l::CImg\< charT \>::append",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a66b642b7548536f9dfe0328207e37ef4",tooltip="Append two images along specified axis. "];
+  Node297 -> Node300 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node300 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_append",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adfc652cf008c0263804f1bbf518ff21f",tooltip="Append two images along specified axis . "];
+  Node297 -> Node301 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node301 [label="cimg_library_suffixed\l::CImg\< charT \>::load_cimg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#acd11fa7d0e9e7598c686eeadd86b792d",tooltip="Load image from a .cimg[z] file. "];
+  Node297 -> Node302 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node302 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_parrec",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a2443496c0824ead4e1bf8a84c5eda7b0",tooltip="Load image from a PAR-REC (Philips) file. "];
+  Node297 -> Node303 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node303 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_load_yuv",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ac57bf12c7a027b12a6df6b88aa6b7a2b",tooltip="Load image sequence from a YUV file . "];
+  Node297 -> Node304 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node304 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_load_video",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3a29ee5b4cfcb8d35134a85b7cc60c29",tooltip="Load image sequence from a video file, using OpenCV library . "];
+  Node297 -> Node305 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node305 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_load_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a5b75a8084949dc540378cc62dddf8161",tooltip="Load image sequence using FFMPEG&#39;s external tool &#39;ffmpeg&#39; . "];
+  Node297 -> Node306 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node306 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_load_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a9ddb90d7e2fadc1afdd4aa8167697a70",tooltip="Load gif file, using ImageMagick or GraphicsMagick&#39;s external tool &#39;convert&#39; . "];
+}

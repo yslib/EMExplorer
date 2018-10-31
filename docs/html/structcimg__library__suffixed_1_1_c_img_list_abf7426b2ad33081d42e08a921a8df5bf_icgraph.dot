@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImgList::reverse"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node553 [label="cimg_library_suffixed\l::CImgList::reverse",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node553 -> Node554 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node554 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_reverse",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#adc6a452ffc83cdb5652f807d3470e931",tooltip="Reverse list order . "];
+}

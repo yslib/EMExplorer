@@ -1,0 +1,10 @@
+<map id="MarkModel::marks" name="MarkModel::marks">
+<area shape="rect" id="node2" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="MarkModel::rowCount" alt="" coords="184,31,332,57"/>
+<area shape="rect" id="node7" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="205,81,311,108"/>
+<area shape="rect" id="node8" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="205,132,311,159"/>
+<area shape="rect" id="node9" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="190,183,326,209"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="380,31,521,57"/>
+<area shape="rect" id="node4" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="569,5,655,32"/>
+<area shape="rect" id="node5" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="569,56,655,83"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="703,49,875,90"/>
+</map>

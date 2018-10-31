@@ -20,7 +20,7 @@
 #include "model/markmodel.h"
 #include "widgets/marktreeviewwidget.h"
 #include "widgets/renderoptionwidget.h"
-#include "widgets/slicetoolwidget.h"
+#include "widgets/CategoryControlWidget.h"
 #include "widgets/renderwidget.h"
 #include "widgets/slicewidget.h"
 #include "widgets/slicecontrolwidget.h"
@@ -561,7 +561,7 @@ void MainWindow::createWidget()
 
 	// Control Widget
 	m_volumeControlWidget = new RenderParameterWidget(m_volumeView, this);
-	m_sliceToolControlWidget = new SliceToolWidget(m_imageView, this);
+	m_sliceToolControlWidget = new CategoryControlWidget(m_imageView, this);
 	m_sliceControlWidget = new SliceControlWidget(m_imageView, m_volumeView, this);
 
 

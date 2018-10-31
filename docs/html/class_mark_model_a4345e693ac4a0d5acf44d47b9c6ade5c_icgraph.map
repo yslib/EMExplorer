@@ -1,0 +1,13 @@
+<map id="MarkModel::parent" name="MarkModel::parent">
+<area shape="rect" id="node2" href="$class_mark_model.html#a68dda394b983ab9539d44e8973631b71" title="This is a convenience function for removing a item in the the tree model by its pointer &#160;and its pare..." alt="" coords="186,31,371,57"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#ac42f11801e20c62fce0f45c60487a9f2" title="Reimplemented from QAbstractItemModel::setData(const QModelIndex &amp; index, const QVariant &amp; value..." alt="" coords="209,132,348,159"/>
+<area shape="rect" id="node10" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="184,209,373,250"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#aeb22aaa4ec64436cadd6786aa14979e5" title="This is a convenience function for removed a bundle of tree items into the tree model by the pointers..." alt="" coords="421,5,613,32"/>
+<area shape="rect" id="node5" href="$class_mark_model.html#a0b366414f5570bb3afc193bf839cc14d" title="MarkModel::addMark" alt="" coords="445,56,589,83"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#ab93687bc47808ed4e34263978b372e98" title="Add marks marks by an existing category. " alt="" coords="442,107,593,133"/>
+<area shape="rect" id="node8" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="429,157,605,184"/>
+<area shape="rect" id="node9" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="426,208,609,235"/>
+<area shape="rect" id="node6" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="665,49,799,90"/>
+<area shape="rect" id="node11" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="444,259,591,301"/>
+<area shape="rect" id="node12" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="661,259,803,301"/>
+</map>

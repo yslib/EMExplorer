@@ -38,7 +38,7 @@ class AbstractSliceDataModel;
 class SliceItem;
 class SliceWidget;
 class RenderWidget;
-class SliceToolWidget;
+class CategoryControlWidget;
 class CategoryInfo;
 class StrokeMarkItem;
 

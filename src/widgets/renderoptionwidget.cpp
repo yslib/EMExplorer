@@ -15,6 +15,9 @@
 #include <QLineEdit>
 #include <QToolButton>
 
+/**
+ * \brief Constructs a widget by a given \a widget of \a RenderWidget
+ */
 RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* parent)
 	:QWidget(parent)
 	, m_widget(nullptr)
@@ -273,6 +276,9 @@ void RenderParameterWidget::tfButtonClicked() {
 }
 
 
+/**
+ * \brief  Sets \a widget of \a RenderWidget to present
+ */
 void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 
 	if (m_widget == widget)
@@ -300,6 +306,9 @@ void RenderParameterWidget::setRenderWidget(RenderWidget * widget) {
 	m_phiSlider->setValue(90);
 }
 
+/**
+ * \brief Returns the 1d transfer function that used for volume rendering
+ */
 QSharedPointer<float> RenderParameterWidget::transferFunction() const {
 	if (m_tfEditor == nullptr)
 		return QSharedPointer<float>();

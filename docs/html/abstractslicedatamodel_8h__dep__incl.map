@@ -1,0 +1,21 @@
+<map id="D:/code/MRCEditor/src/abstract/abstractslicedatamodel.h" name="D:/code/MRCEditor/src/abstract/abstractslicedatamodel.h">
+<area shape="rect" id="node2" href="$slicevolume_8cpp.html" title="D:/code/MRCEditor/src\l/3drender/geometry/slicevolume.cpp" alt="" coords="5,95,236,136"/>
+<area shape="rect" id="node3" href="$raycastingshader_8cpp.html" title="D:/code/MRCEditor/src\l/3drender/shader/raycastingshader.cpp" alt="" coords="260,95,507,136"/>
+<area shape="rect" id="node4" href="$abstractslicedatamodel_8cpp.html" title="D:/code/MRCEditor/src\l/abstract/abstractslicedatamodel.cpp" alt="" coords="531,95,767,136"/>
+<area shape="rect" id="node5" href="$abstractsliceeditorplugin_8cpp.html" title="D:/code/MRCEditor/src\l/abstract/abstractsliceeditorplugin.cpp" alt="" coords="791,95,1034,136"/>
+<area shape="rect" id="node6" href="$gradientcalculator_8cpp.html" title="D:/code/MRCEditor/src\l/algorithm/gradientcalculator.cpp" alt="" coords="551,184,762,225"/>
+<area shape="rect" id="node7" href="$markmodel_8h.html" title="D:/code/MRCEditor/src\l/model/markmodel.h" alt="" coords="1160,95,1316,136"/>
+<area shape="rect" id="node8" href="$markmodel_8cpp.html" title="D:/code/MRCEditor/src\l/model/markmodel.cpp" alt="" coords="787,184,943,225"/>
+<area shape="rect" id="node11" href="$renderwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/renderwidget.cpp" alt="" coords="1209,184,1381,225"/>
+<area shape="rect" id="node12" href="$sliceeditorwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/sliceeditorwidget.cpp" alt="" coords="1406,184,1601,225"/>
+<area shape="rect" id="node15" href="$mrcdatamodel_8h.html" title="D:/code/MRCEditor/src\l/model/mrcdatamodel.h" alt="" coords="1981,95,2140,136"/>
+<area shape="rect" id="node20" href="$slicecontrolwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/slicecontrolwidget.cpp" alt="" coords="2165,95,2367,136"/>
+<area shape="rect" id="node9" href="$marktreeitem_8cpp.html" title="D:/code/MRCEditor/src\l/model/marktreeitem.cpp" alt="" coords="967,184,1133,225"/>
+<area shape="rect" id="node10" href="$mainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/mainwindow.cpp" alt="" coords="2425,273,2595,315"/>
+<area shape="rect" id="node13" href="$slicemainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/slicemainwindow.cpp" alt="" coords="1859,184,2055,225"/>
+<area shape="rect" id="node14" href="$volumemainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/volumemainwindow.cpp" alt="" coords="1625,184,1835,225"/>
+<area shape="rect" id="node16" href="$mainwindow_8h.html" title="D:/code/MRCEditor/src\l/widgets/mainwindow.h" alt="" coords="2584,184,2740,225"/>
+<area shape="rect" id="node18" href="$mrcdatamodel_8cpp.html" title="D:/code/MRCEditor/src\l/model/mrcdatamodel.cpp" alt="" coords="2079,184,2251,225"/>
+<area shape="rect" id="node19" href="$_category_control_widget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/CategoryControlWidget.cpp" alt="" coords="2275,184,2508,225"/>
+<area shape="rect" id="node17" href="$main_8cpp.html" title="D:/code/MRCEditor/src\l/main.cpp" alt="" coords="2619,273,2775,315"/>
+</map>

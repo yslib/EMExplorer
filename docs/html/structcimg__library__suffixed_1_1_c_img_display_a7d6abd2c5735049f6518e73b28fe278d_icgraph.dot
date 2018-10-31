@@ -1,0 +1,32 @@
+digraph "cimg_library_suffixed::CImgDisplay::screen_height"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node414 [label="cimg_library_suffixed\l::CImgDisplay::screen\l_height",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node414 -> Node415 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node415 [label="cimg_library_suffixed\l::CImgDisplay::_fitscreen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a7fef297dd2ab82550718fcb7751c66bc"];
+  Node415 -> Node416 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node416 [label="cimg_library_suffixed\l::CImg\< charT \>::_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad9b7141242d0b6e861a8014112ddb5b5"];
+  Node415 -> Node417 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node417 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_select_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a689f47424dc7c548ebfe53e431409199",tooltip="Select sub-graph in a graph. "];
+  Node415 -> Node418 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node418 [label="cimg_library_suffixed\l::CImg\< charT \>::_display",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adf9d80c60e82b079056c31cb0fe61faf"];
+  Node415 -> Node419 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node419 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+  Node415 -> Node420 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node420 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af8a6b01f20b2d459e5abe6b99836ea9a"];
+  Node415 -> Node421 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node421 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_display",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af514efa37d021bd02a95186531139a38"];
+  Node414 -> Node416 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node414 -> Node422 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node422 [label="cimg_library_suffixed\l::CImg\< charT \>::__get\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aaa07158749f6daf52edcfb4a3b86c4ef"];
+  Node414 -> Node417 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node414 -> Node418 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node414 -> Node419 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node414 -> Node423 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node423 [label="cimg_library_suffixed\l::CImg\< charT \>::_display_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a39224c81542abc157318e64a6df11fdf"];
+  Node414 -> Node420 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node414 -> Node424 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node424 [label="cimg_library_suffixed\l::cimg::dialog",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a11aed0e6b30d75bf50946ee78d1aed94",tooltip="Display a simple dialog box, and wait for the user&#39;s response. "];
+}

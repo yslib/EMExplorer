@@ -1,0 +1,31 @@
+digraph "cimg_library_suffixed::CImg::draw_image"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node984 [label="cimg_library_suffixed\l::CImg::draw_image",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node984 -> Node985 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node985 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_draw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#af3e8793d2e3b96587e73729f449a934e"];
+  Node984 -> Node986 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node986 [label="cimg_library_suffixed\l::CImg\< charT \>::solve",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3c868d05056064840adec3b2e75f2c22",tooltip="Solve a system of linear equations. "];
+  Node984 -> Node987 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node987 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_discard",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a158d3e9bd97132548046647db70e0fc5"];
+  Node984 -> Node988 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node988 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_resize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1d9a664dfe01342505a5256db9078b31",tooltip="Resize image to new dimensions . "];
+  Node984 -> Node989 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node989 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_projections2d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1774ac5f65cb510394e8f04b2a8881e7",tooltip="Generate a 2d representation of a 3d image, with XY,XZ and YZ views. "];
+  Node984 -> Node990 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node990 [label="cimg_library_suffixed\l::CImg\< charT \>::get_crop",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a611297a981e43c03a771fbc5d948f85a",tooltip="Crop image region . "];
+  Node984 -> Node991 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node991 [label="cimg_library_suffixed\l::CImg\< charT \>::get_haar",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a35d89112cc5ff251f8b134209cd222f0",tooltip="Compute Haar multiscale wavelet transform . "];
+  Node984 -> Node992 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node992 [label="cimg_library_suffixed\l::CImg\< charT \>::_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad9b7141242d0b6e861a8014112ddb5b5"];
+  Node984 -> Node993 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node993 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_select_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a689f47424dc7c548ebfe53e431409199",tooltip="Select sub-graph in a graph. "];
+  Node984 -> Node994 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node994 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_append",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a0742de5c028207997d91cd6599262ef9",tooltip="Return a single image which is the appending of all images of the current CImgList instance..."];
+  Node984 -> Node995 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node995 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af8a6b01f20b2d459e5abe6b99836ea9a"];
+  Node984 -> Node996 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node996 [label="cimg_library_suffixed\l::cimg::dialog",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a11aed0e6b30d75bf50946ee78d1aed94",tooltip="Display a simple dialog box, and wait for the user&#39;s response. "];
+}

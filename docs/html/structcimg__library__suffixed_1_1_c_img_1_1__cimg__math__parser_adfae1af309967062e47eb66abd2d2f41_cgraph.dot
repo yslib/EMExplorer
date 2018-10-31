@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_sinc"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1064 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_sinc",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1064 -> Node1065 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1065 [label="cimg_library_suffixed\l::cimg::sinc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#ae3375412d53d28356063384da9fd9ad2",tooltip="Return the sinc of a given value. "];
+  Node1065 -> Node1066 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1066 [label="cimg_library_suffixed::sin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#adadd90e3f405e206a38d01dc80e9be2d"];
+  Node1066 -> Node1067 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1067 [label="cimg_library_suffixed\l::CImg::get_sin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ada2a306f3b37f5630573447fc9578124",tooltip="Compute the sine of each pixel value . "];
+}

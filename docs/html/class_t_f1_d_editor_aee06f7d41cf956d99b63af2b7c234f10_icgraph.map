@@ -1,0 +1,13 @@
+<map id="TF1DEditor::TF1DChanged" name="TF1DEditor::TF1DChanged">
+<area shape="rect" id="node2" href="$class_render_parameter_widget.html#a81885dd80bee8ba1d2be4cbb0451a6ce" title="Constructs a widget by a given widget of RenderWidget. " alt="" coords="235,220,407,261"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_editor.html#a1b0f4927c1c45873039aa493dfae42ac" title="TF1DEditor::updateTransfer\lFunction" alt="" coords="231,285,411,327"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="946,249,1129,275"/>
+<area shape="rect" id="node11" href="$class_t_f1_d_editor.html#a26f799505f51abb6da4bfcbd79442287" title="TF1DEditor::loadTransfer\lFunction" alt="" coords="706,271,871,312"/>
+<area shape="rect" id="node12" href="$class_t_f1_d_editor.html#a1d09285deec3efd89c9e3eea06a20f4a" title="TF1DEditor::resetTransfer\lFunction" alt="" coords="703,336,874,377"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17" title="TF1DEditor::createConnections" alt="" coords="936,129,1139,155"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_editor.html#a26ceb7789e40bbcded24f12e72ff6e2d" title="TF1DEditor::applyThreshold" alt="" coords="459,161,641,187"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a09bea74dece8749643ad6e55cb8cb8a4" title="TF1DEditor::TF1DEditor" alt="" coords="1187,129,1347,155"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_editor.html#ab522f2be69a556e3f045c19bf7d4a8ae" title="TF1DEditor::thresholdChanged" alt="" coords="689,37,888,63"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_editor.html#a9626cae496e972cd7a2919ead422c58f" title="TF1DEditor::lowerThreshold\lSpinChanged" alt="" coords="698,88,879,129"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_editor.html#a09901e4bfb8cb297e729a0ef9840e591" title="TF1DEditor::upperThreshold\lSpinChanged" alt="" coords="697,153,880,195"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="HistogramWidget::HistogramWidget" name="HistogramWidget::HistogramWidget">
+<area shape="rect" id="node2" href="$class_abstract_slice_editor_plugin.html#acf6f78dc8de45837e93ea40e954229c3" title="AbstractSliceEditorPlugin\l::sliceItem" alt="" coords="243,71,413,112"/>
+<area shape="rect" id="node6" href="$class_abstract_slice_view_plugin.html#aa481339a25aacca41872400910e6f6ba" title="AbstractSliceViewPlugin\l::sliceType" alt="" coords="246,136,410,177"/>
+<area shape="rect" id="node7" href="$class_abstract_slice_editor_plugin.html#acecc6bb1a5fd0e76d4e6a4d7ca4177f6" title="AbstractSliceEditorPlugin\l::currentIndex" alt="" coords="461,253,632,295"/>
+<area shape="rect" id="node9" href="$class_abstract_slice_editor_plugin.html#ad5f378eeb839a203633f5a45e480e0ea" title="AbstractSliceEditorPlugin\l::originalImage" alt="" coords="243,487,413,528"/>
+<area shape="rect" id="node11" href="$class_histogram.html#aca9d3ed8024fdd7b0709643caefd9c6e" title="Histogram::setImage" alt="" coords="257,553,399,579"/>
+<area shape="rect" id="node12" href="$class_abstract_slice_editor_plugin.html#a8fa0c350f39f12dd36db2fc37200f591" title="AbstractSliceEditorPlugin\l::setImage" alt="" coords="461,428,632,469"/>
+<area shape="rect" id="node13" href="$class_abstract_slice_editor_plugin.html#a9cfc9e11d08a69343cb80ddee93de890" title="AbstractSliceEditorPlugin\l::currentImage" alt="" coords="243,253,413,295"/>
+<area shape="rect" id="node14" href="$class_abstract_slice_editor_plugin.html#a66247bc02a617d0be7d96d2432583001" title="AbstractSliceEditorPlugin\l::image" alt="" coords="461,363,632,404"/>
+<area shape="rect" id="node15" href="$class_abstract_slice_editor_plugin.html#a766c82709b5b768483d350e486d793b9" title="AbstractSliceEditorPlugin\l::setCurrentImage" alt="" coords="243,319,413,360"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a37ddc32b97cc4e8771745046cb88ff35" title="Returns the top slice widget. " alt="" coords="479,136,614,177"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#aca98a3731da7f8fcf6db8de5fdb09dc7" title="Returns the right slice widget. " alt="" coords="479,5,614,47"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#a5e4c4a47ad244e38f7106aecb902b820" title="Returns the front slice widget. " alt="" coords="479,71,614,112"/>
+<area shape="rect" id="node8" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="680,253,815,295"/>
+<area shape="rect" id="node10" href="$class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a" title="Returns the top slice model. " alt="" coords="680,428,815,469"/>
+</map>

@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::cimg::rol"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3589 [label="cimg_library_suffixed\l::cimg::rol",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3589 -> Node3590 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3590 [label="cimg_library_suffixed\l::cimg::rol",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a1ead565c35064488c8a56fce858da674",tooltip="Bitwise-rotate value on the left. "];
+}

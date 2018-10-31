@@ -15,7 +15,7 @@ class QToolButton;
 class QButtonGroup;
 QT_END_NAMESPACE
 class SliceEditorWidget;
-class SliceToolWidget;
+class CategoryControlWidget;
 class SliceControlWidget;
 
 class MarkModel;
@@ -88,7 +88,7 @@ private:
 
 	RenderParameterWidget * m_volumeControlWidget;
 
-	SliceToolWidget * m_sliceToolControlWidget;
+	CategoryControlWidget * m_sliceToolControlWidget;
 	SliceControlWidget * m_sliceControlWidget;
 
 	QScrollArea * m_scrollAreaWidget;

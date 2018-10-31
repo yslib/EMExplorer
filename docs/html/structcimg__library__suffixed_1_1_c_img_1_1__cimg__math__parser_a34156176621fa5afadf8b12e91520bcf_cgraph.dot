@@ -1,0 +1,15 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_set_jxyzc"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1048 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_set_jxyzc",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1048 -> Node1049 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1049 [label="cimg_library_suffixed\l::CImg::width",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a2d7b769d447c0451a2f43c77e997beff",tooltip="Return the number of image columns. "];
+  Node1048 -> Node1050 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1050 [label="cimg_library_suffixed\l::CImg::height",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a49834fd555c4a8362100bc628f1b03bb",tooltip="Return the number of image rows. "];
+  Node1048 -> Node1051 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1051 [label="cimg_library_suffixed\l::CImg::depth",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa708d2050f866a341896aca528615d2d",tooltip="Return the number of image slices. "];
+  Node1048 -> Node1052 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1052 [label="cimg_library_suffixed\l::CImg::spectrum",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a03cdb8e4b45371862c65c3b5be7b697e",tooltip="Return the number of image channels. "];
+}

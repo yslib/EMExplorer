@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 class SliceEditorWidget;
-class SliceToolWidget;
+class CategoryControlWidget;
 class SliceControlWidget;
 class QToolButton;
 

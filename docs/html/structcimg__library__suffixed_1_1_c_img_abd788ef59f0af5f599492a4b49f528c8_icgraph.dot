@@ -1,0 +1,31 @@
+digraph "cimg_library_suffixed::CImg::_system_strescape"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node321 [label="cimg_library_suffixed\l::CImg::_system_strescape",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node321 -> Node322 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node322 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1f1ef95d7faa4c2c7a72d3d347f30dad",tooltip="Load gzipped image file, using external tool &#39;gunzip&#39;. "];
+  Node321 -> Node323 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node323 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_medcon_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8306218d5edf273c822113b799fd89cc",tooltip="Load image from a DICOM file, using XMedcon&#39;s external tool &#39;medcon&#39;. "];
+  Node321 -> Node324 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node324 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a53983bb4f1ebe2a817b68029b8c04cb1",tooltip="Save image using gzip external binary. "];
+  Node321 -> Node325 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node325 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_graphicsmagick_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a44f125968c20e8c7d833bf7d75c32db6",tooltip="Save image using GraphicsMagick&#39;s external binary. "];
+  Node321 -> Node326 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node326 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_imagemagick_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#afbf8db949f62c8bd3f2f73ba3d9c1420",tooltip="Save image using ImageMagick&#39;s external binary. "];
+  Node321 -> Node327 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node327 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_medcon_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a30d02c3d77fc43c8b5845e92268cdab5",tooltip="Save image as a Dicom file. "];
+  Node321 -> Node328 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node328 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lload_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aa1c97a6c05ba746d02440eec0ad2e602",tooltip="Load an image from a video file using the external tool &#39;ffmpeg&#39;. "];
+  Node321 -> Node329 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node329 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_load_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a666592ad2e1ecef3317d060696ebbfaa"];
+  Node321 -> Node330 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node330 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lload_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aae55e9a79bf2f7e08108dd200f63bf2c",tooltip="Load a gzipped list, using external tool &#39;gunzip&#39;. "];
+  Node321 -> Node331 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node331 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a759ef20b53f1e507973dc53fcc2c7bb2",tooltip="Save image sequence as a GIF animated file. "];
+  Node321 -> Node332 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node332 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aad5afe8b913e276dd281255dd787b4ba",tooltip="Save list as a gzipped file, using external tool &#39;gzip&#39;. "];
+  Node321 -> Node333 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node333 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af09a45345581747984f4df0607418f2c",tooltip="Save image sequence, using the external tool &#39;ffmpeg&#39;. "];
+}

@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_set_ioff"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node993 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_set_ioff",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node993 -> Node994 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node994 [label="cimg_library_suffixed\l::CImg::size",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4ba2e100802443474e3f453639ec8a5a",tooltip="Return the total number of pixel values. "];
+}

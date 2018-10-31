@@ -1,0 +1,6 @@
+<map id="SliceWidget::pen" name="SliceWidget::pen">
+<area shape="rect" id="node2" href="$class_category_control_widget.html#aad862c247bffd2f918f6c3fd8933a6b6" title="Returns the number of category. " alt="" coords="381,5,537,47"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="185,35,319,76"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#a1d33484b159165e85dad00e5731cd561" title="Returns a QPen object used for painting marks. " alt="" coords="175,101,329,127"/>
+<area shape="rect" id="node5" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="377,101,540,127"/>
+</map>

@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::symmetric_eigen"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3347 [label="cimg_library_suffixed\l::CImg::symmetric_eigen",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3347 -> Node3348 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3348 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_matrix_eig",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a3dffc597ff9c370f441b0290b0fe0db2"];
+  Node3347 -> Node3349 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3349 [label="cimg_library_suffixed\l::CImg\< charT \>::ellipsoid3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a0b8b15895c6d7bf28afb1878ee6cb122",tooltip="Generate a 3d ellipsoid. "];
+}

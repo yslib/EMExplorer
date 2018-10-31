@@ -1,0 +1,13 @@
+<map id="SliceEditorWidget::currentSliceIndex" name="SliceEditorWidget::currentSliceIndex">
+<area shape="rect" id="node2" href="$class_abstract_slice_editor_plugin.html#acecc6bb1a5fd0e76d4e6a4d7ca4177f6" title="AbstractSliceEditorPlugin\l::currentIndex" alt="" coords="188,159,359,201"/>
+<area shape="rect" id="node10" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="206,225,341,266"/>
+<area shape="rect" id="node11" href="$class_slice_editor_widget.html#aa508ade08f133b58b03322f698f19df8" title="Returns the categories that the current mark model holds. " alt="" coords="206,290,341,331"/>
+<area shape="rect" id="node3" href="$class_abstract_slice_editor_plugin.html#a766c82709b5b768483d350e486d793b9" title="AbstractSliceEditorPlugin\l::setCurrentImage" alt="" coords="407,166,577,207"/>
+<area shape="rect" id="node4" href="$class_histogram_widget.html#af51939268974d652f61ee3f98461d4e6" title="Constructs a widgets used for image processing for certain type type of slice in sliceEditor. " alt="" coords="629,107,818,149"/>
+<area shape="rect" id="node5" href="$class_histogram_widget.html#ad3afdcd1e87ed52d02def3c66b272e6f" title="HistogramWidget::updateData\lModel" alt="" coords="625,173,821,214"/>
+<area shape="rect" id="node6" href="$class_abstract_slice_editor_plugin.html#a9cfc9e11d08a69343cb80ddee93de890" title="AbstractSliceEditorPlugin\l::currentImage" alt="" coords="407,49,577,90"/>
+<area shape="rect" id="node7" href="$class_pixel_widget.html#a3b274a09b7c4d878078f5c771c706214" title="PixelWidget::setPosition" alt="" coords="641,5,806,32"/>
+<area shape="rect" id="node9" href="$class_pixel_widget.html#a56d5bd3464befa2267a84edc93863377" title="PixelWidget::resizeEvent" alt="" coords="640,56,807,83"/>
+<area shape="rect" id="node8" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="869,5,1032,32"/>
+<area shape="rect" id="node12" href="$class_category_control_widget.html#aad862c247bffd2f918f6c3fd8933a6b6" title="Returns the number of category. " alt="" coords="414,290,570,331"/>
+</map>

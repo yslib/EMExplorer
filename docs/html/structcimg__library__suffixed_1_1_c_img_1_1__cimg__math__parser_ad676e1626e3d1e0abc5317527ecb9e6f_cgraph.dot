@@ -1,0 +1,32 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_image_resize"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node531 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_resize",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node531 -> Node532 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node532 [label="cimg_library_suffixed\l::cimg::mod",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#afcc02428c9b7d9100e1674369d25cc40",tooltip="Return the modulo of a value. "];
+  Node531 -> Node533 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node533 [label="cimg_library_suffixed\l::cimg::mutex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a9e739e4b4ac058abfba069466617b914"];
+  Node533 -> Node534 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node534 [label="cimg_library_suffixed\l::cimg::Mutex_attr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa0e1bc96ae6e235dc5b67b8b0a466166"];
+  Node533 -> Node535 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node535 [label="cimg_library_suffixed\l::cimg::Mutex_info::unlock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#afac3fa5f107ad4795fb867050f616555"];
+  Node533 -> Node536 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node536 [label="cimg_library_suffixed\l::cimg::Mutex_info::lock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a6cc8e26847a1aa649febed03d70182e7"];
+  Node533 -> Node537 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node537 [label="cimg_library_suffixed\l::cimg::Mutex_info::trylock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a9bf4ed1e1dfe6f28fa6250cd04f3c900"];
+  Node537 -> Node534 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node531 -> Node538 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node538 [label="cimg_library_suffixed\l::CImg::width",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a2d7b769d447c0451a2f43c77e997beff",tooltip="Return the number of image columns. "];
+  Node531 -> Node539 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node539 [label="cimg_library_suffixed\l::CImg::height",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a49834fd555c4a8362100bc628f1b03bb",tooltip="Return the number of image rows. "];
+  Node531 -> Node540 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node540 [label="cimg_library_suffixed\l::CImg::depth",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa708d2050f866a341896aca528615d2d",tooltip="Return the number of image slices. "];
+  Node531 -> Node541 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node541 [label="cimg_library_suffixed\l::CImg::spectrum",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a03cdb8e4b45371862c65c3b5be7b697e",tooltip="Return the number of image channels. "];
+  Node531 -> Node542 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node542 [label="cimg_library_suffixed\l::CImg::pixel_type",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab5cb3e6f07f2cd894641aa6a26807c1e",tooltip="Return the type of image pixel values as a C string. "];
+  Node531 -> Node543 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node543 [label="cimg_library_suffixed\l::CImg::resize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adf42a4d63a14a4199e4703743b217075",tooltip="Resize image to new dimensions. "];
+}

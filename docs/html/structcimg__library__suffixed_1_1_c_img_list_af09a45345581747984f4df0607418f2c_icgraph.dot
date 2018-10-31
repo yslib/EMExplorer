@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImgList::save_ffmpeg_external"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node574 [label="cimg_library_suffixed\l::CImgList::save_ffmpeg\l_external",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node574 -> Node575 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node575 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3a8132f303e3295e0219ea4518c6ef20",tooltip="Save volumetric image as a video, using ffmpeg external binary. "];
+}

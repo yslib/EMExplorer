@@ -1,0 +1,7 @@
+<map id="MarkModel::removeTreeItems" name="MarkModel::removeTreeItems">
+<area shape="rect" id="node2" href="$class_mark_model.html#a68dda394b983ab9539d44e8973631b71" title="This is a convenience function for removing a item in the the tree model by its pointer &#160;and its pare..." alt="" coords="245,31,431,57"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a812b072c107e9328012cad0c2ca98a23" title="Return the index represents the underlying data item. " alt="" coords="479,5,645,32"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c" title="MarkModel::parent" alt="" coords="497,56,627,83"/>
+<area shape="rect" id="node5" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="693,31,835,57"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="714,81,814,108"/>
+</map>

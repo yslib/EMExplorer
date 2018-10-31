@@ -1,0 +1,21 @@
+digraph "cimg_library_suffixed::cimg::sign"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3639 [label="cimg_library_suffixed\l::cimg::sign",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3639 -> Node3640 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3640 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3639 -> Node3641 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3641 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_sign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#aecb20acf2137daa7b1e804a76e386ced"];
+  Node3639 -> Node3642 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3642 [label="cimg_library_suffixed\l::CImg\< charT \>::sign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ac0690a65c81513ffc96f36985cfa4fd4",tooltip="Compute the sign of each pixel value. "];
+  Node3639 -> Node3643 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3643 [label="cimg_library_suffixed\l::CImg\< charT \>::get_sign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a370326a6ce24161bc1d82fb32acc9d2b",tooltip="Compute the sign of each pixel value . "];
+  Node3639 -> Node3644 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3644 [label="cimg_library_suffixed\l::CImg\< charT \>::sharpen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae884ac4a2168d7411b004a4e8c6869e5",tooltip="Sharpen image. "];
+  Node3639 -> Node3645 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3645 [label="cimg_library_suffixed\l::CImg\< charT \>::distance\l_eikonal",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a5f82947b70ae0c01993cb74563fd4daa",tooltip="Compute distance function to 0-valued isophotes, using the Eikonal PDE. "];
+  Node3639 -> Node3646 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3646 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_polygon",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aba5835eafcb8746755d164f3f9d20b81",tooltip="Draw a filled 2d polygon. "];
+}

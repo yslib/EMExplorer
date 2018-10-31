@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::cimg::fdate"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1382 [label="cimg_library_suffixed\l::cimg::fdate",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1382 -> Node1383 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1383 [label="cimg_library_suffixed\l::cimg::fdate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a1db87aed0dbd0fd7a0e709894e9f645d",tooltip="Get last write time of a given file or directory (single-attribute version). "];
+  Node1382 -> Node1384 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1384 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_date",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a7d33acc96b377e03eb46ff759bd91d11"];
+}

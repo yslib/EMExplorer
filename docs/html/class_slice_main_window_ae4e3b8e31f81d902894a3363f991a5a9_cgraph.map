@@ -1,0 +1,5 @@
+<map id="SliceMainWindow::SliceMainWindow" name="SliceMainWindow::SliceMainWindow">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a046612fcab11def88348b78b1062cbdc" title="Zooms in for three slice widgets. " alt="" coords="244,5,379,47"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a6fa40afbe13ccc596ebfe4cf159a82d5" title="Zooms out for three slice widgets. " alt="" coords="244,71,379,112"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#a0edd0cf31fe3c5603cedb99e52c1c85f" title="Resets the default zoom for three slice widgets. " alt="" coords="244,136,379,177"/>
+</map>

@@ -1,0 +1,42 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_vector_print"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1194 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_vector_print",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1194 -> Node1195 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1195 [label="cimg_library_suffixed\l::cimg::strellipsize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a69a3a1bbdf0f62474211ea5a398f9e72",tooltip="Ellipsize a string. "];
+  Node1194 -> Node1196 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1196 [label="cimg_library_suffixed\l::cimg::mutex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a9e739e4b4ac058abfba069466617b914"];
+  Node1196 -> Node1197 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1197 [label="cimg_library_suffixed\l::cimg::Mutex_attr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa0e1bc96ae6e235dc5b67b8b0a466166"];
+  Node1196 -> Node1198 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1198 [label="cimg_library_suffixed\l::cimg::Mutex_info::unlock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#afac3fa5f107ad4795fb867050f616555"];
+  Node1196 -> Node1199 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1199 [label="cimg_library_suffixed\l::cimg::Mutex_info::lock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a6cc8e26847a1aa649febed03d70182e7"];
+  Node1196 -> Node1200 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1200 [label="cimg_library_suffixed\l::cimg::Mutex_info::trylock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a9bf4ed1e1dfe6f28fa6250cd04f3c900"];
+  Node1200 -> Node1197 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1194 -> Node1201 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1201 [label="cimg_library_suffixed\l::cimg::output",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#ada686776cc71803df391eea79cd1b3e5",tooltip="Get/set default output stream for the  library messages. "];
+  Node1201 -> Node1196 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1201 -> Node1202 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1202 [label="cimg_library_suffixed\l::cimg::_stderr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aab8db7528c32a8fd3a3dc471e662782e"];
+  Node1202 -> Node1203 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1203 [label="cimg_library_suffixed\l::cimg::unused",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a79aef0cbcf66ceb71c2b74cb66b4deb2",tooltip="Avoid warning messages due to unused parameters. Do nothing actually. "];
+  Node1203 -> Node1196 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1202 -> Node1204 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1204 [label="cimg_library_suffixed\l::cimg::exception_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aeafab144366eddd11360f32f468fa4af",tooltip="Set current  exception mode. "];
+  Node1204 -> Node1205 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1205 [label="cimg_library_suffixed\l::cimg::_exception_mode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a6c578f866de2be9be7e385d693c758c8"];
+  Node1205 -> Node1196 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1205 -> Node1206 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1206 [label="cimg_library_suffixed\l::cimg::_stdin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a01a3b743897290604513ea6d847c9886"];
+  Node1206 -> Node1203 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1206 -> Node1204 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1205 -> Node1207 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1207 [label="cimg_library_suffixed\l::cimg::_stdout",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a493220746e5df3466568bd7862825008"];
+  Node1207 -> Node1203 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1207 -> Node1204 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1205 -> Node1202 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

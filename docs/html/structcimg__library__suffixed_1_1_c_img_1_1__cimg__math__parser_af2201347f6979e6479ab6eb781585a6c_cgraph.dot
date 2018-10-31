@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_median"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node865 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_median",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node865 -> Node866 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node866 [label="cimg_library_suffixed\l::cimg::median",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#acf4703b2dd4307ecbdf61e7fc5d93800"];
+  Node865 -> Node867 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node867 [label="cimg_library_suffixed\l::CImg::data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a5a062592b78f33dd2813cc59985e61a2",tooltip="Return a pointer to the first pixel value. "];
+  Node865 -> Node868 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node868 [label="cimg_library_suffixed\l::CImg::median",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3206e8b7f1b9b133355e78b758d3b289",tooltip="Return the median pixel value. "];
+}

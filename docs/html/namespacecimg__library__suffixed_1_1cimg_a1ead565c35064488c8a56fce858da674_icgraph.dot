@@ -1,0 +1,15 @@
+digraph "cimg_library_suffixed::cimg::rol"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3578 [label="cimg_library_suffixed\l::cimg::rol",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3578 -> Node3579 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3579 [label="cimg_library_suffixed\l::cimg::rol",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#afb7d512cc0b5473301a060131bd415af"];
+  Node3578 -> Node3580 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3580 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3578 -> Node3581 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3581 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_rol",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a85bb0d80b94724409a1ef1e3b512ae2e"];
+  Node3578 -> Node3582 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3582 [label="cimg_library_suffixed\l::CImg\< charT \>::rol",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a84f1165e3c73956c3a7e0c5e448e269c",tooltip="Compute the bitwise left rotation of each pixel value. "];
+}

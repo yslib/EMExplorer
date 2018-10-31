@@ -1,0 +1,17 @@
+<map id="TF1DMappingKey::isSplit" name="TF1DMappingKey::isSplit">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a4d74bc88f89ac6dcfa087556e6036742" title="TF1DMappingCanvas::\lshowKeyContextMenu" alt="" coords="223,5,375,47"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#ab13275aa81a6ad759cf2c2093f71c9ab" title="TF1DMappingCanvas::\lmousePressEvent" alt="" coords="423,55,575,96"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html#a51c5bfc32131bc9e8879e768e90be5a1" title="TF1DMappingCanvas::\lpaintEvent" alt="" coords="423,275,575,316"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_canvas.html#a9117316e3878813a556eec8f8928c601" title="TF1DMappingCanvas::\lmouseMoveEvent" alt="" coords="423,185,575,227"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#ab4bbe42d2258dfc37fd7d50a4d862870" title="TF1DMappingCanvas::\lchangeCurrentColor" alt="" coords="223,357,375,399"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_canvas.html#a877b200cd6014bb4099e67b5d29201b8" title="TF1DMappingCanvas::\lsplitMergeKeys" alt="" coords="223,488,375,529"/>
+<area shape="rect" id="node13" href="$class_t_f1_d_mapping_canvas.html#a4085072da475d5148c23ed31c39b244c" title="TF1DMappingCanvas::\lzeroKey" alt="" coords="223,423,375,464"/>
+<area shape="rect" id="node14" href="$class_t_f1_d_mapping_canvas.html#a970c5f906847bb48f06878d0f3a646ea" title="TF1DMappingCanvas::\lhitLine" alt="" coords="223,123,375,164"/>
+<area shape="rect" id="node16" href="$class_t_f1_d_mapping_canvas.html#a03fa4fdad913ac83eec4fd5e9777b64a" title="TF1DMappingCanvas::\lpaintKeys" alt="" coords="223,240,375,281"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_canvas.html#af176a94ed28c651467e91a7c904efd47" title="TF1DMappingCanvas::\lTF1DMappingCanvas" alt="" coords="423,423,575,464"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_mapping_canvas.html#a650ebe4ed51e7fa1702c8bbbc8ba37da" title="TF1DMappingCanvas::\lsetVolumeInfomation" alt="" coords="423,488,575,529"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_editor.html#a5767e2dc624ab06a1e354500e0e888db" title="TF1DEditor::setVolumeInformation" alt="" coords="623,495,843,522"/>
+<area shape="rect" id="node11" href="$class_render_parameter_widget.html#a81885dd80bee8ba1d2be4cbb0451a6ce" title="Constructs a widget by a given widget of RenderWidget. " alt="" coords="896,459,1068,500"/>
+<area shape="rect" id="node12" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="891,525,1073,551"/>
+<area shape="rect" id="node15" href="$class_t_f1_d_mapping_canvas.html#aa98fdddbc173ae720de47f56a88afbbb" title="TF1DMappingCanvas::\lkeyPressEvent" alt="" coords="423,120,575,161"/>
+</map>

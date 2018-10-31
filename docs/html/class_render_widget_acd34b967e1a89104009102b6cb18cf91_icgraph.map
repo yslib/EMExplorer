@@ -1,0 +1,7 @@
+<map id="RenderWidget::markModelChanged" name="RenderWidget::markModelChanged">
+<area shape="rect" id="node2" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="280,56,475,83"/>
+<area shape="rect" id="node3" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="559,5,691,32"/>
+<area shape="rect" id="node5" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="545,56,706,83"/>
+<area shape="rect" id="node6" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="523,107,728,133"/>
+<area shape="rect" id="node4" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="776,31,939,57"/>
+</map>

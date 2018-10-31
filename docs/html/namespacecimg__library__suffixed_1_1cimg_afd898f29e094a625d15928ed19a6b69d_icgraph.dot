@@ -1,0 +1,41 @@
+digraph "cimg_library_suffixed::cimg::endianness"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1047 [label="cimg_library_suffixed\l::cimg::endianness",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1047 -> Node1048 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1048 [label="cimg_library_suffixed\l::CImgDisplay::snapshot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a914ee0515249db301dc66275861a6b3e",tooltip="Take a snapshot of the associated window content. "];
+  Node1048 -> Node1049 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1049 [label="cimg_library_suffixed\l::CImg\< charT \>::CImg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a015159d8cee61c2f2316c3e128470a71",tooltip="Construct image from a display window. "];
+  Node1048 -> Node1050 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1050 [label="cimg_library_suffixed\l::CImg\< charT \>::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a668fe887682e7cbb469409842bb98cd2",tooltip="Construct image from a display window . "];
+  Node1048 -> Node1051 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1051 [label="cimg_library_suffixed\l::CImg\< charT \>::operator=",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a75e18966d8e02a9cee85642038e30a08",tooltip="Copy the content of a display window to the current image instance. "];
+  Node1047 -> Node1052 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1052 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_png",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8cde6f74b600005d95497c4834a686b4"];
+  Node1047 -> Node1053 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1053 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_pnm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4ee4502761ce479392f2641211a5694f"];
+  Node1047 -> Node1054 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1054 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_pfm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a0735cc3a6a6f0639ff34e98086cb7992"];
+  Node1047 -> Node1055 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1055 [label="cimg_library_suffixed\l::CImg\< charT \>::_load_inr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a9347170daf5606c1957d03a417b7f8b7"];
+  Node1047 -> Node1056 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1056 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_png",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aab5e304310373159e357250314e99da6"];
+  Node1047 -> Node1057 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1057 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pnm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3b62455c9523881fa64a47d8362c3d80"];
+  Node1047 -> Node1058 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1058 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pfm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a65be74d7d22bb71e708b3beb8e9cae49"];
+  Node1047 -> Node1059 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1059 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_inr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa29c8a2179f282535660800f9b9192e0"];
+  Node1047 -> Node1060 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1060 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_load_cimg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af1b7ce1621365a454d74bf0ab83253f3"];
+  Node1047 -> Node1061 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1061 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lload_parrec",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#affbfd21835dfd5c00fe98cc71c7760c2",tooltip="Load a list from a PAR/REC (Philips) file. "];
+  Node1047 -> Node1062 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1062 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_save_cimg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af99c31c0d24c46734145e1910ca44323"];
+  Node1047 -> Node1063 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1063 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_serialize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a6ef5394483360f2220873d2b8b856789",tooltip="Serialize a CImgList<T> instance into a raw CImg<unsigned char> buffer. "];
+  Node1047 -> Node1064 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1064 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_unserialize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ab2437a10d0bbe2f4d5e91a49dc5cd105",tooltip="Unserialize a CImg<unsigned char> serialized buffer into a CImgList<T> list. "];
+}

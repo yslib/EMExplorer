@@ -1,0 +1,17 @@
+<map id="TreeItem::removeChildren" name="TreeItem::removeChildren">
+<area shape="rect" id="node2" href="$class_mark_model.html#a927b39237700dc4f82b68f61011f4413" title="Remove a specified mark mark. " alt="" coords="223,70,387,97"/>
+<area shape="rect" id="node16" href="$class_mark_model.html#a8561f86209e9d07b6793b6a08d7b09c9" title="MarkModel::removeRows" alt="" coords="221,121,388,147"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2" title="MarkModel::removeMarks" alt="" coords="436,45,607,71"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="655,88,836,129"/>
+<area shape="rect" id="node15" href="$class_slice_editor_widget.html#a700e6e3a04e9eacb2d5653c19bf6843d" title="Deletes the selected marks in three slice widget. " alt="" coords="673,5,817,47"/>
+<area shape="rect" id="node5" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="886,45,1077,71"/>
+<area shape="rect" id="node9" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="884,95,1079,122"/>
+<area shape="rect" id="node11" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="887,212,1076,253"/>
+<area shape="rect" id="node14" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="907,147,1055,188"/>
+<area shape="rect" id="node6" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="1163,95,1295,122"/>
+<area shape="rect" id="node8" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="1149,45,1310,71"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1380,45,1543,71"/>
+<area shape="rect" id="node10" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="1127,146,1332,173"/>
+<area shape="rect" id="node12" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="1156,204,1303,245"/>
+<area shape="rect" id="node13" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1391,204,1532,245"/>
+</map>

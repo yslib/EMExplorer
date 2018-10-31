@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::_eik_priority_queue_insert"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node144 [label="cimg_library_suffixed\l::CImg::_eik_priority\l_queue_insert",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node144 -> Node145 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node145 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_distance_eikonal",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a2b1addf2e74607a44640f82f88916d37",tooltip="Compute distance map to one source point, according to a custom metric (use fast marching algorithm)..."];
+}

@@ -1,0 +1,4 @@
+<map id="MarkModel::marks" name="MarkModel::marks">
+<area shape="rect" id="node2" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="184,5,303,32"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#a3e76d45fd27cc6f9001efc9f1b8effed" title="TreeItem::data" alt="" coords="351,5,456,32"/>
+</map>

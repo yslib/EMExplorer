@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::cimg::permutations"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3425 [label="cimg_library_suffixed\l::cimg::permutations",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3425 -> Node3426 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3426 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3425 -> Node3427 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3427 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_permutations",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ad1be0f03f678135d32f2994f58966ef4"];
+  Node3425 -> Node3428 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3428 [label="cimg_library_suffixed\l::CImg\< charT \>::symmetric_eigen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a53284105886c5eb684b26e7dba5ede66",tooltip="Compute eigenvalues and eigenvectors of the instance image, viewed as a symmetric matrix..."];
+  Node3425 -> Node3429 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3429 [label="cimg_library_suffixed\l::CImg\< charT \>::SVD",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a33c8a817208b7aa571350457969e9dbe",tooltip="Compute the SVD of the instance image, viewed as a general matrix. "];
+  Node3425 -> Node3430 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3430 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6dba86c8049ae141ffc9936b2eaf5c5c"];
+}

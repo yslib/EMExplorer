@@ -1,0 +1,20 @@
+digraph "cimg_library_suffixed::cimg::sleep"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3655 [label="cimg_library_suffixed\l::cimg::sleep",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3655 -> Node3656 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3656 [label="cimg_library_suffixed\l::cimg::unused",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a79aef0cbcf66ceb71c2b74cb66b4deb2",tooltip="Avoid warning messages due to unused parameters. Do nothing actually. "];
+  Node3656 -> Node3657 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3657 [label="cimg_library_suffixed\l::cimg::mutex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a9e739e4b4ac058abfba069466617b914"];
+  Node3657 -> Node3658 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3658 [label="cimg_library_suffixed\l::cimg::Mutex_attr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa0e1bc96ae6e235dc5b67b8b0a466166"];
+  Node3657 -> Node3659 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3659 [label="cimg_library_suffixed\l::cimg::Mutex_info::unlock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#afac3fa5f107ad4795fb867050f616555"];
+  Node3657 -> Node3660 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3660 [label="cimg_library_suffixed\l::cimg::Mutex_info::lock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a6cc8e26847a1aa649febed03d70182e7"];
+  Node3657 -> Node3661 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3661 [label="cimg_library_suffixed\l::cimg::Mutex_info::trylock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a9bf4ed1e1dfe6f28fa6250cd04f3c900"];
+  Node3661 -> Node3658 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

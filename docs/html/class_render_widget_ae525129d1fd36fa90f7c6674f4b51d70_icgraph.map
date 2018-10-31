@@ -1,0 +1,6 @@
+<map id="RenderWidget::setMarkModel" name="RenderWidget::setMarkModel">
+<area shape="rect" id="node2" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="285,5,417,32"/>
+<area shape="rect" id="node4" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="270,56,431,83"/>
+<area shape="rect" id="node5" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="248,107,453,133"/>
+<area shape="rect" id="node3" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="501,31,664,57"/>
+</map>

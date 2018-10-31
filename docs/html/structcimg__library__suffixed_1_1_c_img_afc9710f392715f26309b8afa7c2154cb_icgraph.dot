@@ -1,0 +1,16 @@
+digraph "cimg_library_suffixed::CImg::get_atan"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1297 [label="cimg_library_suffixed\l::CImg::get_atan",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1297 -> Node1298 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1298 [label="cimg_library_suffixed\l::atan",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#ad67ec1fcb333b3ae29c6f98ff68e9364"];
+  Node1298 -> Node1299 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1299 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node1298 -> Node1300 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1300 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_atan",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#aafe10ff06417cc9efa3e5dea3c5a4b3f"];
+  Node1298 -> Node1301 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1301 [label="cimg_library_suffixed\l::CImg\< charT \>::atan",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a21e3f3a1c301bff2304d0cf2c0f0b8cf",tooltip="Compute the arctangent of each pixel value. "];
+  Node1298 -> Node1297 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

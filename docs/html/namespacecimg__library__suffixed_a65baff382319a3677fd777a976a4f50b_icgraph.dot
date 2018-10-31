@@ -1,0 +1,45 @@
+digraph "cimg_library_suffixed::log"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node90 [label="cimg_library_suffixed::log",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node90 -> Node91 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node91 [label="cimg_library_suffixed\l::cimg::grand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa12c572ad67f655e27f7b8e3e76dafa5",tooltip="Return a random variable following a gaussian distribution and a standard deviation of 1..."];
+  Node91 -> Node92 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node92 [label="cimg_library_suffixed\l::cimg::prand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a2a18bbfb6a496d8d5a02943be8eaa936",tooltip="Return a random variable following a Poisson distribution of parameter z. "];
+  Node92 -> Node93 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node93 [label="cimg_library_suffixed\l::CImg\< charT \>::noise",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6049c651eefc3a13b8f7d1fc3ff225d7",tooltip="Add random noise to pixel values. "];
+  Node91 -> Node94 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node94 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser::mp_g",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a1a6f67dab44ca62b11aec01933907178"];
+  Node91 -> Node93 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node90 -> Node95 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node95 [label="cimg_library_suffixed\l::cimg::log2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a03657cf098d3b588e76bcef4426233bd",tooltip="Return base-2 logarithm of a value. "];
+  Node95 -> Node96 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node96 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node95 -> Node97 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node97 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_log2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ade9dece3f3a257859ded3a42c9605ba9"];
+  Node95 -> Node98 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node98 [label="cimg_library_suffixed\l::CImg\< charT \>::log2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a2fbd06361da285cd57797bba6df0b275",tooltip="Compute the base-2 logarithm of each pixel value. "];
+  Node95 -> Node99 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node99 [label="cimg_library_suffixed\l::CImg\< charT \>::get_log2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6f3dafb21c7bac989a884e3f4ce1565f",tooltip="Compute the base-10 logarithm of each pixel value . "];
+  Node90 -> Node96 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node90 -> Node100 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node100 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_complex_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ac01a447168773b005f451a63d2317620"];
+  Node90 -> Node101 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node101 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::_mp_complex_pow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a4c1d921651a9408da9487f1d4e8c13d0"];
+  Node90 -> Node102 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node102 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ae9a43f4c2a66afec7fced513abcf758f"];
+  Node90 -> Node103 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node103 [label="cimg_library_suffixed\l::CImg\< charT \>::log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#acc2665db5892449362ae3098f65b0377",tooltip="Compute the logarithm of each pixel value. "];
+  Node90 -> Node104 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node104 [label="cimg_library_suffixed\l::CImg\< charT \>::get_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a560dd5fe13a0b40fcf95e2ea7020381e",tooltip="Compute the logarithm of each pixel value . "];
+  Node90 -> Node105 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node105 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_displacement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a91ec1cd09114c4018a78e4ea0b2df386",tooltip="Estimate displacement field between two images . "];
+  Node90 -> Node106 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node106 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_mandelbrot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4ee4442b26855c03fbfbab878da90c07",tooltip="Draw a quadratic Mandelbrot or Julia 2d fractal. "];
+  Node90 -> Node107 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node107 [label="TF1DMappingCanvas::\ldrawHistogram",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_t_f1_d_mapping_canvas.html#af8ca9b7839cb0ce17065c1b87963b450"];
+  Node107 -> Node108 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node108 [label="TF1DMappingCanvas::\lpaintEvent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_t_f1_d_mapping_canvas.html#a51c5bfc32131bc9e8879e768e90be5a1"];
+}

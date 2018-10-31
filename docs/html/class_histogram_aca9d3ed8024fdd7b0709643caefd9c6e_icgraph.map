@@ -1,0 +1,5 @@
+<map id="Histogram::setImage" name="Histogram::setImage">
+<area shape="rect" id="node2" href="$class_histogram.html#a3843acb5c1b95f42a99b1ef4b1b9669a" title="Histogram::Histogram" alt="" coords="220,5,368,32"/>
+<area shape="rect" id="node3" href="$class_histogram_widget.html#af51939268974d652f61ee3f98461d4e6" title="Constructs a widgets used for image processing for certain type type of slice in sliceEditor. " alt="" coords="199,57,389,98"/>
+<area shape="rect" id="node4" href="$class_histogram_widget.html#ad3afdcd1e87ed52d02def3c66b272e6f" title="HistogramWidget::updateData\lModel" alt="" coords="196,122,392,163"/>
+</map>

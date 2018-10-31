@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_memcopy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node870 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_memcopy",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node870 -> Node871 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node871 [label="cimg_library_suffixed\l::cimg::abs",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a0852e9ad458e82d2c003844cd92bdb8a",tooltip="Return absolute value of a value. "];
+  Node870 -> Node872 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node872 [label="cimg_library_suffixed\l::cimg::max",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a4b4cabc621d732787bca13016ea8026a",tooltip="Return the maximum between four values. "];
+}

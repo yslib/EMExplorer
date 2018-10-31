@@ -1,0 +1,6 @@
+<map id="AbstractSliceEditorPlugin::currentImage" name="AbstractSliceEditorPlugin::currentImage">
+<area shape="rect" id="node2" href="$class_abstract_slice_editor_plugin.html#a66247bc02a617d0be7d96d2432583001" title="AbstractSliceEditorPlugin\l::image" alt="" coords="224,5,395,47"/>
+<area shape="rect" id="node4" href="$class_abstract_slice_editor_plugin.html#acecc6bb1a5fd0e76d4e6a4d7ca4177f6" title="AbstractSliceEditorPlugin\l::currentIndex" alt="" coords="224,71,395,112"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a" title="Returns the top slice model. " alt="" coords="443,5,577,47"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="443,71,577,112"/>
+</map>

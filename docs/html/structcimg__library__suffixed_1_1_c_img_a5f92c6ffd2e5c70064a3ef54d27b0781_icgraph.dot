@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::matrix"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2476 [label="cimg_library_suffixed\l::CImg::matrix",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2476 -> Node2477 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2477 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab785a9eaeb7545d46e8c355567a325a4",tooltip="Resize image to become a scalar square matrix . "];
+  Node2476 -> Node2478 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2478 [label="cimg_library_suffixed\l::CImg\< charT \>::rotation\l_matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a18ba2075fe783f6b185de03695bd625f",tooltip="Return a 3x3 rotation matrix from an { axis + angle } or a quaternion. "];
+}

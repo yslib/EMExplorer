@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::pixel_type"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2868 [label="cimg_library_suffixed\l::CImg::pixel_type",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2868 -> Node2869 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2869 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_resize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ad676e1626e3d1e0abc5317527ecb9e6f"];
+  Node2868 -> Node2870 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2870 [label="cimg_library_suffixed\l::CImgList\< charT \>::\linsert",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a84deef3a7cce5b08836947886ccdffac",tooltip="Insert a copy of the image img into the current image list, at position pos. "];
+}

@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::get_shared"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1865 [label="cimg_library_suffixed\l::CImg::get_shared",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1865 -> Node1866 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1866 [label="cimg_library_suffixed\l::CImg\< charT \>::_fill",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4d460428b9d4250303877a582f7ef566"];
+  Node1865 -> Node1867 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1867 [label="cimg_library_suffixed\l::CImg\< charT \>::_correlate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aed98b23130078df5ad69b199d88bb261",tooltip="Correlate image by a kernel . "];
+}

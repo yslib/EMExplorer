@@ -26,6 +26,9 @@ class QToolButton;
 QT_END_NAMESPACE
 
 
+/**
+ * \brief This is a widget used to control \a RenderWidget
+ */
 class RenderParameterWidget : public QWidget
 {
 	Q_OBJECT

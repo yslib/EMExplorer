@@ -1,0 +1,8 @@
+<map id="TreeItem::takeChild" name="TreeItem::takeChild">
+<area shape="rect" id="node2" href="$class_mark_model.html#ac42f11801e20c62fce0f45c60487a9f2" title="Reimplemented from QAbstractItemModel::setData(const QModelIndex &amp; index, const QVariant &amp; value..." alt="" coords="188,89,327,115"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a0b366414f5570bb3afc193bf839cc14d" title="MarkModel::addMark" alt="" coords="394,13,538,39"/>
+<area shape="rect" id="node5" href="$class_mark_model.html#ab93687bc47808ed4e34263978b372e98" title="Add marks marks by an existing category. " alt="" coords="391,63,541,90"/>
+<area shape="rect" id="node6" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="378,114,554,141"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="375,165,557,191"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="605,5,740,47"/>
+</map>

@@ -1,0 +1,15 @@
+<map id="MRC::fileName" name="MRC::fileName">
+<area shape="rect" id="node2" href="$class_m_r_c.html#a97242a647041c32669c54f5396db02f5" title="MRC::isOpened" alt="" coords="175,5,290,32"/>
+<area shape="rect" id="node3" href="$class_m_r_c.html#af8861edd6a1d1ef8c87c7fe344386be3" title="MRC::width" alt="" coords="188,56,277,83"/>
+<area shape="rect" id="node4" href="$class_m_r_c.html#a36332fe0acc23890e6290ca0774cfab2" title="MRC::height" alt="" coords="185,107,280,133"/>
+<area shape="rect" id="node5" href="$class_m_r_c.html#abc50cdac606180388c0deef1ed0c5aa5" title="MRC::slice" alt="" coords="189,157,276,184"/>
+<area shape="rect" id="node6" href="$class_m_r_c.html#ab320b1f2234b59e468b5ebb1affa4a6c" title="MRC::propertyCount" alt="" coords="163,208,303,235"/>
+<area shape="rect" id="node7" href="$class_m_r_c.html#a5993c271c1d88c650129498de953bb7c" title="MRC::propertyName" alt="" coords="163,259,303,285"/>
+<area shape="rect" id="node8" href="$class_m_r_c.html#a7619495af0545aeebc07f608183f2e15" title="MRC::propertyType" alt="" coords="165,309,300,336"/>
+<area shape="rect" id="node9" href="$class_m_r_c.html#aec57ad43c5bd3d988bbffffe0e2d7790" title="MRC::property" alt="" coords="179,360,286,387"/>
+<area shape="rect" id="node10" href="$class_m_r_c.html#a4ba02129fab47be34fcdcf831fbda08e" title="MRC::data" alt="" coords="191,411,275,437"/>
+<area shape="rect" id="node11" href="$class_m_r_c.html#a5718061d335944a9dc1abbbd63ad512f" title="MRC::dataType" alt="" coords="351,461,463,488"/>
+<area shape="rect" id="node12" href="$class_m_r_c.html#ae9b1ac0bb3e5ccb9db1ae024fb80b7ba" title="MRC::info" alt="" coords="193,512,272,539"/>
+<area shape="rect" id="node13" href="$class_m_r_c.html#a66caa183358483da3132577265d1766c" title="MRC::~MRC" alt="" coords="185,563,281,589"/>
+<area shape="rect" id="node14" href="$class_m_r_c.html#a594d6a9d9ac071ae43ce88da7704cc88aa40bc0d0a8bb3de2f78ef76edebfbb0b" title="MRC::Format::MRC" alt="" coords="164,613,301,640"/>
+</map>

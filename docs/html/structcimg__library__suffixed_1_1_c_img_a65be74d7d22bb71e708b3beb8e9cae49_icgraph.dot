@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::_save_pfm"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node296 [label="cimg_library_suffixed\l::CImg::_save_pfm",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node296 -> Node297 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node297 [label="cimg_library_suffixed\l::CImg\< charT \>::save_pfm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1c7f7340bc5326713d06af1cda3be5be",tooltip="Save image as a PFM file. "];
+}

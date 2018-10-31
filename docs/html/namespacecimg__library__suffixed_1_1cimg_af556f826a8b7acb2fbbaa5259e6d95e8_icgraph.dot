@@ -1,0 +1,25 @@
+digraph "cimg_library_suffixed::cimg::hypot"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1976 [label="cimg_library_suffixed\l::cimg::hypot",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1976 -> Node1977 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1977 [label="cimg_library_suffixed\l::CImg\< charT \>::rotation\l_matrix",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a18ba2075fe783f6b185de03695bd625f",tooltip="Return a 3x3 rotation matrix from an { axis + angle } or a quaternion. "];
+  Node1976 -> Node1978 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1978 [label="cimg_library_suffixed\l::CImg\< charT \>::noise",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6049c651eefc3a13b8f7d1fc3ff225d7",tooltip="Add random noise to pixel values. "];
+  Node1976 -> Node1979 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1979 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_anisotropic",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#af3c29f70168c4443e3f6f887834819b0",tooltip="Blur image anisotropically, directed by a field of diffusion tensors. "];
+  Node1976 -> Node1980 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1980 [label="cimg_library_suffixed\l::CImg\< charT \>::distance\l_eikonal",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a5f82947b70ae0c01993cb74563fd4daa",tooltip="Compute distance function to 0-valued isophotes, using the Eikonal PDE. "];
+  Node1976 -> Node1981 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1981 [label="cimg_library_suffixed\l::CImg\< charT \>::sphere3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8025573f639ba766ca2270bf10c2d00f",tooltip="Generate a 3d sphere. "];
+  Node1976 -> Node1982 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1982 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_spline",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a87afc1c040d254ef0ed370e37b5f8a77",tooltip="Draw a 2d spline. "];
+  Node1976 -> Node1983 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1983 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6dba86c8049ae141ffc9936b2eaf5c5c"];
+  Node1976 -> Node1984 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1984 [label="cimg_library_suffixed\l::CImg\< charT \>::_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad9b7141242d0b6e861a8014112ddb5b5"];
+  Node1976 -> Node1985 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1985 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+}

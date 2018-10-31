@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::_functor2d_expr::~_functor2d_expr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="cimg_library_suffixed\l::CImg::_functor2d_expr\l::~_functor2d_expr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node0 -> Node1 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser::end",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a6707c6d516122d4e601391d6d0d608bc"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="cimg_library_suffixed\l::CImgList::is_empty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ae1f51c42341873aebaa428e522eed8c6",tooltip="Return true if list is empty. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="cimg_library_suffixed\l::CImgList::end",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a445d48f01ed07420b47cefa7e4db0730",tooltip="Return iterator to one position after the last image of the list. "];
+}

@@ -1,0 +1,35 @@
+digraph "cimg_library_suffixed::CImg::spectrum"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3244 [label="cimg_library_suffixed\l::CImg::spectrum",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3244 -> Node3245 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3245 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_resize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ad676e1626e3d1e0abc5317527ecb9e6f"];
+  Node3244 -> Node3246 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3246 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_s",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a6471ae8309591f8abfb9903a5f823013"];
+  Node3244 -> Node3247 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3247 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_whds",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a57cd62422118b65b4ee347362a9be59f"];
+  Node3244 -> Node3248 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3248 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_ixyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#adccb19bacb29f24ee9b582ffdab1ce87"];
+  Node3244 -> Node3249 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3249 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_jxyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ab65aef2aad83c05094346595eebd5051"];
+  Node3244 -> Node3250 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3250 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_list_ixyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#af4383fa9613e2534570a889e24d06b5a"];
+  Node3244 -> Node3251 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3251 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_list_jxyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a1f3648a3f11256430d982c9c6e8debe4"];
+  Node3244 -> Node3252 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3252 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_list_set_ixyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a64f9d099796fd7de08662bf60e8bb82e"];
+  Node3244 -> Node3253 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3253 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_list_set_jxyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ad947e6ce6e57e93e11fd67f500eb70c8"];
+  Node3244 -> Node3254 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3254 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_set_ixyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#af5d4e38f7c1c620c3867f08adb636214"];
+  Node3244 -> Node3255 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3255 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_set_jxyzc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a34156176621fa5afadf8b12e91520bcf"];
+  Node3244 -> Node3256 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3256 [label="cimg_library_suffixed\l::CImg\< charT \>::draw_image",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4dfe9a9fb78df031a5750e7898af3d9e",tooltip="Draw an image. "];
+  Node3244 -> Node3257 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3257 [label="cimg_library_suffixed\l::CImg\< charT \>::__get\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aaa07158749f6daf52edcfb4a3b86c4ef"];
+  Node3244 -> Node3258 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3258 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lcontainsNXYZC",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ad2488203cbf2fddba82666454ea7c90b",tooltip="Test if list contains one particular pixel location. "];
+}

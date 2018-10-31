@@ -1,0 +1,5 @@
+<map id="TF1DMappingCanvas::getMappingForValue" name="TF1DMappingCanvas::getMappingForValue">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="205,5,405,32"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="210,56,401,83"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="211,107,399,133"/>
+</map>

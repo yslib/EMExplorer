@@ -1,0 +1,12 @@
+<map id="SliceWidget::setMarks" name="SliceWidget::setMarks">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3" title="Sets the current slice index given in index for the slice type type. " alt="" coords="208,104,343,145"/>
+<area shape="rect" id="node10" href="$class_slice_editor_widget.html#aa508ade08f133b58b03322f698f19df8" title="Returns the categories that the current mark model holds. " alt="" coords="208,169,343,211"/>
+<area shape="rect" id="node3" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="395,17,542,59"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#a34785ca09d9555c78deb605d6e93efa0" title="Replaces the old slice model with the given model and returns the old one. " alt="" coords="401,104,536,145"/>
+<area shape="rect" id="node4" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="605,5,746,47"/>
+<area shape="rect" id="node6" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="609,71,741,98"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="804,97,967,123"/>
+<area shape="rect" id="node8" href="$class_slice_main_window.html#a481a5370cf722229b40a452882015eec" title="SliceMainWindow::open" alt="" coords="595,173,756,199"/>
+<area shape="rect" id="node9" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="860,173,911,199"/>
+<area shape="rect" id="node11" href="$class_category_control_widget.html#aad862c247bffd2f918f6c3fd8933a6b6" title="Returns the number of category. " alt="" coords="391,169,547,211"/>
+</map>

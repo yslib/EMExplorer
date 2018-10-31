@@ -1,0 +1,5 @@
+<map id="AbstractSliceEditorPlugin" name="AbstractSliceEditorPlugin">
+<area shape="rect" id="node3" href="$class_abstract_slice_view_plugin.html" title="AbstractSliceViewPlugin" alt="" coords="50,155,214,181"/>
+<area shape="rect" id="node4" href="$class_histogram_widget.html" title="This is a widget supply some image processing features for slice in SliceEditorWidget. " alt="" coords="5,229,128,256"/>
+<area shape="rect" id="node5" href="$class_pixel_widget.html" title="This is a widget used to give a pixel&#45;level view for certain slice in SliceEditorWidget. " alt="" coords="153,229,245,256"/>
+</map>

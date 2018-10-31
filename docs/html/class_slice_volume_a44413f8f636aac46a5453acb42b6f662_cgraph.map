@@ -1,0 +1,6 @@
+<map id="SliceVolume::SliceVolume" name="SliceVolume::SliceVolume">
+<area shape="rect" id="node2" href="$class_abstract_slice_data_model.html#a6ee771893956663b608ffdfa63a71124" title="AbstractSliceDataModel\l::topSliceCount" alt="" coords="249,5,412,47"/>
+<area shape="rect" id="node3" href="$class_abstract_slice_data_model.html#a19f5168d24a72bd01fa3f38991112770" title="AbstractSliceDataModel\l::rightSliceCount" alt="" coords="249,71,412,112"/>
+<area shape="rect" id="node4" href="$class_abstract_slice_data_model.html#a7d9de8d5b699740f3a0367afb8502503" title="AbstractSliceDataModel\l::frontSliceCount" alt="" coords="249,136,412,177"/>
+<area shape="rect" id="node5" href="$class_slice_volume.html#a55ed60590c5842f84d582369a2c25c17" title="SliceVolume::setRenderWidget" alt="" coords="229,202,432,229"/>
+</map>

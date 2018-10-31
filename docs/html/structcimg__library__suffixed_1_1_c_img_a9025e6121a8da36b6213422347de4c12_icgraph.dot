@@ -1,0 +1,38 @@
+digraph "cimg_library_suffixed::CImg::get_exp"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1459 [label="cimg_library_suffixed\l::CImg::get_exp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1459 -> Node1460 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1460 [label="cimg_library_suffixed::exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#adc3a62a5832fe41a2a16023ba04c8e64"];
+  Node1460 -> Node1461 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1461 [label="cimg_library_suffixed\l::cimg::prand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a2a18bbfb6a496d8d5a02943be8eaa936",tooltip="Return a random variable following a Poisson distribution of parameter z. "];
+  Node1461 -> Node1462 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1462 [label="cimg_library_suffixed\l::CImg\< charT \>::noise",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6049c651eefc3a13b8f7d1fc3ff225d7",tooltip="Add random noise to pixel values. "];
+  Node1460 -> Node1463 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1463 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::_cimg_math_parser",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a591684f81af8ba85885b7de9c0c6ca5f"];
+  Node1460 -> Node1464 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1464 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node1460 -> Node1465 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1465 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_complex_exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a2d823d18414809075048f82cfc2f4779"];
+  Node1460 -> Node1466 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1466 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::_mp_complex_pow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a4c1d921651a9408da9487f1d4e8c13d0"];
+  Node1460 -> Node1467 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1467 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#aac266d813e6b22db9c5a7465f33fe0f2"];
+  Node1460 -> Node1468 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1468 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_gauss",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a660dabe36da3de2426f95518b193a5d2"];
+  Node1460 -> Node1469 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1469 [label="cimg_library_suffixed\l::CImg\< charT \>::exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7772f5e71c3c6fa9b9226c8f0c2395db",tooltip="Compute the exponential of each pixel value. "];
+  Node1460 -> Node1459 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1460 -> Node1470 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1470 [label="cimg_library_suffixed\l::CImg\< charT \>::deriche",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1f9c44f6a4577ee414419394aa34d4ac",tooltip="Apply recursive Deriche filter. "];
+  Node1460 -> Node1471 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1471 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_anisotropic",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#af3c29f70168c4443e3f6f887834819b0",tooltip="Blur image anisotropically, directed by a field of diffusion tensors. "];
+  Node1460 -> Node1472 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1472 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_blur_patch",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3a7a9e74dc09f2f79fcd3f605a2a9059",tooltip="Blur image using patch-based space . "];
+  Node1460 -> Node1473 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1473 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_gaussian",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3b96b681b3c0e11c067b12789328229a",tooltip="Draw a 1d gaussian function. "];
+  Node1460 -> Node1474 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1474 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+}

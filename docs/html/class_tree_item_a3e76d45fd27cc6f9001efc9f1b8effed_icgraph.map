@@ -1,0 +1,20 @@
+<map id="TreeItem::data" name="TreeItem::data">
+<area shape="rect" id="node2" href="$class_mark_model.html#ad8d80f4f4ec00efcca27bf5cad208eb5" title="MarkModel::markMesh" alt="" coords="543,173,697,199"/>
+<area shape="rect" id="node14" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="159,122,277,149"/>
+<area shape="rect" id="node19" href="$treeitem_8cpp.html#a624a5ff366aab15ba5df68d78486e2b6" title="Note:The stream operator would modified the item pointer whenever possible. " alt="" coords="175,223,261,250"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="745,115,927,156"/>
+<area shape="rect" id="node4" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="977,42,1167,69"/>
+<area shape="rect" id="node8" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="975,93,1169,119"/>
+<area shape="rect" id="node10" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="977,144,1167,185"/>
+<area shape="rect" id="node13" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="998,209,1146,251"/>
+<area shape="rect" id="node5" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="1254,93,1386,119"/>
+<area shape="rect" id="node7" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="1239,42,1401,69"/>
+<area shape="rect" id="node6" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1471,67,1633,94"/>
+<area shape="rect" id="node9" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="1217,143,1423,170"/>
+<area shape="rect" id="node11" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="1247,201,1393,243"/>
+<area shape="rect" id="node12" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1481,201,1623,243"/>
+<area shape="rect" id="node15" href="$class_mark_model.html#a306d5ab20a62cc6dd078272a1d94e54f" title="MarkModel::marks" alt="" coords="345,122,475,149"/>
+<area shape="rect" id="node16" href="$class_mark_model.html#a03212ad079fe25bd31b90658399d0a3e" title="MarkModel::categoryText" alt="" coords="325,71,495,98"/>
+<area shape="rect" id="node17" href="$class_slice_editor_widget.html#aa508ade08f133b58b03322f698f19df8" title="Returns the categories that the current mark model holds. " alt="" coords="553,5,687,47"/>
+<area shape="rect" id="node18" href="$class_category_control_widget.html#aad862c247bffd2f918f6c3fd8933a6b6" title="Returns the number of category. " alt="" coords="758,5,914,47"/>
+</map>

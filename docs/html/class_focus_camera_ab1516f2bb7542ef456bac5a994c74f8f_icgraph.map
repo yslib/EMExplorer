@@ -1,0 +1,5 @@
+<map id="FocusCamera::view" name="FocusCamera::view">
+<area shape="rect" id="node2" href="$class_slice_volume.html#a8a5b065fa06681989459a08c1ad92e03" title="SliceVolume::viewMatrix" alt="" coords="188,5,351,32"/>
+<area shape="rect" id="node3" href="$class_slice_volume.html#a29128f1156e960980653fcc951329158" title="SliceVolume::render" alt="" coords="200,56,339,83"/>
+<area shape="rect" id="node4" href="$class_render_widget.html#ab573fc0c7c8667da0dcd17baf96ce235" title="Reimplemented from QOpenGLWidget::paintGL() " alt="" coords="191,107,348,133"/>
+</map>

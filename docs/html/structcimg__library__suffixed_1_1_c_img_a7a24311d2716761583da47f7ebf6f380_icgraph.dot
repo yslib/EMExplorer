@@ -1,0 +1,16 @@
+digraph "cimg_library_suffixed::CImg::get_cosh"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1382 [label="cimg_library_suffixed\l::CImg::get_cosh",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1382 -> Node1383 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1383 [label="cimg_library_suffixed\l::cosh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a82540c55c7d8c8ffad6a0aeac1e32ccb"];
+  Node1383 -> Node1384 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1384 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node1383 -> Node1385 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1385 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_cosh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a2882321ea2fd5ea75a7d511548aa3aa7"];
+  Node1383 -> Node1386 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1386 [label="cimg_library_suffixed\l::CImg\< charT \>::cosh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae1d24b22b1e42c5ac02250e485d36c34",tooltip="Compute the hyperbolic cosine of each pixel value. "];
+  Node1383 -> Node1382 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

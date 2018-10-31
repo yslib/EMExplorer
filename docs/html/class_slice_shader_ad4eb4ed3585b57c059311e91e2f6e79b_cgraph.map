@@ -1,0 +1,7 @@
+<map id="SliceShader::load" name="SliceShader::load">
+<area shape="rect" id="node2" href="$class_shader_program.html#aff33ae09161488c7bd9efc16d9fae24c" title="ShaderProgram::setUniform\lSampler" alt="" coords="177,5,360,47"/>
+<area shape="rect" id="node3" href="$class_shader_data_interface.html#a2edd09c63323e4646c03cef63c471de8" title="ShaderDataInterface\l::volumeTexId" alt="" coords="199,71,338,112"/>
+<area shape="rect" id="node4" href="$class_shader_data_interface.html#acdc8fc8b0de8f12d057a105929992acf" title="ShaderDataInterface\l::perspMatrix" alt="" coords="199,136,338,177"/>
+<area shape="rect" id="node5" href="$class_shader_data_interface.html#a895b5ae9920570c36b537b82cee1de2b" title="ShaderDataInterface\l::viewMatrix" alt="" coords="199,201,338,243"/>
+<area shape="rect" id="node6" href="$class_shader_data_interface.html#a09580485f3ff2b4a6dd1ae81b70e0417" title="ShaderDataInterface\l::worldMatrix" alt="" coords="199,267,338,308"/>
+</map>

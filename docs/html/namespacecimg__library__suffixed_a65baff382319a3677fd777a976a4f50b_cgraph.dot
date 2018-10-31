@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::log"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node88 [label="cimg_library_suffixed::log",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node88 -> Node89 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node89 [label="cimg_library_suffixed\l::CImg::get_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a560dd5fe13a0b40fcf95e2ea7020381e",tooltip="Compute the logarithm of each pixel value . "];
+}

@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::cimg::medcon_path"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2463 [label="cimg_library_suffixed\l::cimg::medcon_path",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2463 -> Node2464 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2464 [label="cimg_library_suffixed\l::cimg::date",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aac739bf544269324a04504ebe92b93e9",tooltip="Get current local time (single-attribute version). "];
+  Node2463 -> Node2465 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2465 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_medcon_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8306218d5edf273c822113b799fd89cc",tooltip="Load image from a DICOM file, using XMedcon&#39;s external tool &#39;medcon&#39;. "];
+  Node2463 -> Node2466 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2466 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_medcon_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a30d02c3d77fc43c8b5845e92268cdab5",tooltip="Save image as a Dicom file. "];
+}

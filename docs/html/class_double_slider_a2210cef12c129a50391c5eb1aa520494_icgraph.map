@@ -1,0 +1,12 @@
+<map id="DoubleSlider::setMaxValue" name="DoubleSlider::setMaxValue">
+<area shape="rect" id="node2" href="$class_double_slider.html#a3cd8c24e75fc003a1d9157f254b49a62" title="DoubleSlider::mouseRelease\lEvent" alt="" coords="232,60,421,101"/>
+<area shape="rect" id="node3" href="$class_double_slider.html#ae5aac2b29c8739e907f9f6e6674fd745" title="DoubleSlider::setValues" alt="" coords="246,126,407,153"/>
+<area shape="rect" id="node11" href="$class_t_f1_d_editor.html#a09901e4bfb8cb297e729a0ef9840e591" title="TF1DEditor::upperThreshold\lSpinChanged" alt="" coords="716,213,899,255"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#a8b7b786e01a574835374c2b3592dde19" title="TF1DEditor::resetThresholds" alt="" coords="475,38,662,65"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_editor.html#a556aea7084841f0ffeeafc88b2bfe20a" title="TF1DEditor::restoreThresholds" alt="" coords="469,126,668,153"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a1d09285deec3efd89c9e3eea06a20f4a" title="TF1DEditor::resetTransfer\lFunction" alt="" coords="722,31,893,72"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="957,97,1139,123"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17" title="TF1DEditor::createConnections" alt="" coords="947,155,1149,182"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_editor.html#a09bea74dece8749643ad6e55cb8cb8a4" title="TF1DEditor::TF1DEditor" alt="" coords="1197,155,1357,182"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_editor.html#a26f799505f51abb6da4bfcbd79442287" title="TF1DEditor::loadTransfer\lFunction" alt="" coords="725,148,890,189"/>
+</map>

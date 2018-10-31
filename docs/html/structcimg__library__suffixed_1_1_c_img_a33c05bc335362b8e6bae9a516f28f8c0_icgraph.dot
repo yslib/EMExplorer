@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::get_pseudoinvert"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1769 [label="cimg_library_suffixed\l::CImg::get_pseudoinvert",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1769 -> Node1770 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1770 [label="cimg_library_suffixed\l::pseudoinvert",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#aa2cd51ec8b416d2ca4299253e618d343"];
+  Node1769 -> Node1771 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1771 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_matrix_pseudoinv",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#aff9915edf57aa7da0070c778a98a07f8"];
+  Node1769 -> Node1772 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1772 [label="cimg_library_suffixed\l::CImg\< charT \>::solve",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3c868d05056064840adec3b2e75f2c22",tooltip="Solve a system of linear equations. "];
+}

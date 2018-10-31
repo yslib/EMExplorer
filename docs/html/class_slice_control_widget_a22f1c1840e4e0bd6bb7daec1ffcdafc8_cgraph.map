@@ -1,0 +1,51 @@
+<map id="SliceControlWidget::setControlledWidget" name="SliceControlWidget::setControlledWidget">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a512cf43219f9c532ff99d07f8fd3c4ff" title="This is a convenience function to set top slice visibility. " alt="" coords="225,407,364,449"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="221,473,369,514"/>
+<area shape="rect" id="node21" href="$class_slice_editor_widget.html#a0efb717a625e86a76b802f213f82b188" title="This is a convenience function to set front slice visibility. " alt="" coords="221,837,369,878"/>
+<area shape="rect" id="node22" href="$class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3" title="Sets the current slice index given in index for the slice type type. " alt="" coords="227,771,362,813"/>
+<area shape="rect" id="node23" href="$class_abstract_slice_data_model.html#a6ee771893956663b608ffdfa63a71124" title="AbstractSliceDataModel\l::topSliceCount" alt="" coords="453,597,615,638"/>
+<area shape="rect" id="node25" href="$class_abstract_slice_data_model.html#a19f5168d24a72bd01fa3f38991112770" title="AbstractSliceDataModel\l::rightSliceCount" alt="" coords="453,662,615,703"/>
+<area shape="rect" id="node26" href="$class_abstract_slice_data_model.html#a7d9de8d5b699740f3a0367afb8502503" title="AbstractSliceDataModel\l::frontSliceCount" alt="" coords="453,727,615,769"/>
+<area shape="rect" id="node32" href="$class_render_widget.html#affb712d77936e6394f77d3969ae03415" title="This property holds the visibility of the top slice when renders data with slice type render..." alt="" coords="205,902,385,943"/>
+<area shape="rect" id="node33" href="$class_render_widget.html#af644b979f282b0bf45fa62d27e7dd2c6" title="This property holds the visibility of the right slice when renders data with slice type render..." alt="" coords="200,967,389,1009"/>
+<area shape="rect" id="node34" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="200,538,389,579"/>
+<area shape="rect" id="node42" href="$class_render_widget.html#a3f7d1ebf1a10d0445abf52240e5edb46" title="RenderWidget::setTopSlice" alt="" coords="205,1033,385,1060"/>
+<area shape="rect" id="node43" href="$class_render_widget.html#aa51c3a5284b0b7dcd62445eb4df03dab" title="RenderWidget::setFrontSlice" alt="" coords="200,1084,389,1111"/>
+<area shape="rect" id="node44" href="$class_render_widget.html#a3631bb18226e9b80bad45722f5b61049" title="RenderWidget::setRightSlice" alt="" coords="200,1135,389,1161"/>
+<area shape="rect" id="node45" href="$class_titled_slider_with_spin_box.html#a7d51b2c5ee7ce7d13a74550eccbe130a" title="TitledSliderWithSpinBox\l::maximum" alt="" coords="213,1186,376,1227"/>
+<area shape="rect" id="node46" href="$class_titled_slider_with_spin_box.html#aa3fa2be4f1e8c94f839e5b6e1cdfe063" title="TitledSliderWithSpinBox\l::value" alt="" coords="213,1251,376,1293"/>
+<area shape="rect" id="node47" href="$class_titled_slider_with_spin_box.html#a857311a6bf9407c79305ac810bb5af3b" title="TitledSliderWithSpinBox\l::setValue" alt="" coords="213,1317,376,1358"/>
+<area shape="rect" id="node48" href="$class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a" title="Returns the top slice model. " alt="" coords="227,1382,362,1423"/>
+<area shape="rect" id="node49" href="$class_render_widget.html#a46687e74943516c84ac0ae7064297daa" title="RenderWidget::dataModel" alt="" coords="209,1448,381,1475"/>
+<area shape="rect" id="node50" href="$class_titled_slider_with_spin_box.html#a7d1b4d2cf29f202af89d400ac7fb8a00" title="TitledSliderWithSpinBox\l::setMaximum" alt="" coords="213,1499,376,1541"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="443,277,625,318"/>
+<area shape="rect" id="node5" href="$class_mark_model.html#a306d5ab20a62cc6dd078272a1d94e54f" title="MarkModel::marks" alt="" coords="925,259,1055,285"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#a03212ad079fe25bd31b90658399d0a3e" title="MarkModel::categoryText" alt="" coords="905,309,1075,336"/>
+<area shape="rect" id="node8" href="$class_mark_model.html#a2d5f433c60e500260731d025960733ba" title="MarkModel::categoryModel\lIndices" alt="" coords="679,361,857,402"/>
+<area shape="rect" id="node9" href="$class_mark_model.html#ad8d80f4f4ec00efcca27bf5cad208eb5" title="MarkModel::markMesh" alt="" coords="691,56,845,83"/>
+<area shape="rect" id="node10" href="$class_mark_model.html#a927b39237700dc4f82b68f61011f4413" title="Remove a specified mark mark. " alt="" coords="908,477,1072,504"/>
+<area shape="rect" id="node11" href="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6" title="Sets dirty bit of the mark model. " alt="" coords="1135,452,1273,479"/>
+<area shape="rect" id="node12" href="$class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2" title="MarkModel::removeMarks" alt="" coords="683,477,853,504"/>
+<area shape="rect" id="node13" href="$class_mark_model.html#a670db8c2f34a33ad41e4a3f3e36d6589" title="Returns the number of the marks belong to a specified category category. " alt="" coords="689,5,847,32"/>
+<area shape="rect" id="node14" href="$class_mark_model.html#abe6abbd59c1ea3c302b8cd6951d4c28f" title="Save current marks contained in the mark model. " alt="" coords="708,579,828,605"/>
+<area shape="rect" id="node18" href="$class_mark_model.html#adbcf453ef851df5c37d83972db9971ac" title="Returns the dirty bit of the mark model. " alt="" coords="709,107,827,133"/>
+<area shape="rect" id="node19" href="$class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f" title="Reset the dirty bit. " alt="" coords="693,157,843,184"/>
+<area shape="rect" id="node20" href="$class_mark_model.html#aa6a8455921fa58f501bb4fccaefa6841" title="Destroyes the mark model. " alt="" coords="685,208,851,235"/>
+<area shape="rect" id="node6" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="1145,284,1263,311"/>
+<area shape="rect" id="node15" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="909,659,1071,701"/>
+<area shape="rect" id="node16" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="909,901,1071,942"/>
+<area shape="rect" id="node17" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="1123,901,1285,942"/>
+<area shape="rect" id="node24" href="$class_abstract_slice_data_model.html#aa2a7101c7cd8329ec1f3e58fd310f1b5" title="AbstractSliceDataModel\l::topSlice" alt="" coords="687,759,849,801"/>
+<area shape="rect" id="node27" href="$class_abstract_slice_data_model.html#a0412a083fb02f79248e7a5c801a2c2d6" title="AbstractSliceDataModel\l::frontSlice" alt="" coords="453,1047,615,1089"/>
+<area shape="rect" id="node29" href="$class_slice_widget.html#a61ae58d37ad2df7e58082d952da2199d" title="SliceWidget::setImage" alt="" coords="457,844,611,871"/>
+<area shape="rect" id="node30" href="$class_slice_widget.html#ae2ae97073b6a05625cb7dc3a89a3f0df" title="SliceWidget::clearSliceMarks" alt="" coords="437,895,631,921"/>
+<area shape="rect" id="node31" href="$class_slice_widget.html#ad9a08cbf4e0038e5669ac00964bbe86a" title="SliceWidget::setMarks" alt="" coords="457,945,611,972"/>
+<area shape="rect" id="node28" href="$class_abstract_slice_data_model.html#a831d31809663159fedace360001c89c3" title="AbstractSliceDataModel\l::originalFrontSlice" alt="" coords="687,1047,849,1089"/>
+<area shape="rect" id="node35" href="$class_bi_map.html#a9b106ea1fa76394ad9ed3318327ebd18" title="BiMap::query" alt="" coords="485,393,583,420"/>
+<area shape="rect" id="node36" href="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c" title="MarkModel::parent" alt="" coords="469,545,599,572"/>
+<area shape="rect" id="node39" href="$class_bi_map.html#acf64200b8669e84f5244883808ae8335" title="BiMap::clear" alt="" coords="487,444,581,471"/>
+<area shape="rect" id="node40" href="$class_mark_model.html#abd67a8a42ced49d205fc618bcefbc6ab" title="MarkModel::treeItems" alt="" coords="460,495,608,521"/>
+<area shape="rect" id="node41" href="$class_bi_map.html#a57f716f75beb5a89f9afbdd82593b801" title="BiMap::addQueryPair" alt="" coords="461,343,607,369"/>
+<area shape="rect" id="node37" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="697,680,839,707"/>
+<area shape="rect" id="node38" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="718,629,818,656"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="Transform3::operator*" name="Transform3::operator*">
+<area shape="rect" id="node2" href="$class_vector2.html#a0ee1e2717eeeb557c0426da96722b602" title="Vector2::x" alt="" coords="200,5,283,32"/>
+<area shape="rect" id="node3" href="$class_point3.html#a92f9669110e29427e3470626b1b385f6" title="Point3::x" alt="" coords="204,56,279,83"/>
+<area shape="rect" id="node4" href="$class_vector2.html#a3b169e886dd5ca09dd57007d3908f991" title="Vector2::y" alt="" coords="200,107,283,133"/>
+<area shape="rect" id="node5" href="$class_point3.html#a050b197ce5207f78afe589bc1caa1e0c" title="Point3::y" alt="" coords="204,157,279,184"/>
+<area shape="rect" id="node6" href="$class_point3.html#a7e34f2d192ce973145285737050bdd6e" title="Point3::z" alt="" coords="204,208,279,235"/>
+</map>

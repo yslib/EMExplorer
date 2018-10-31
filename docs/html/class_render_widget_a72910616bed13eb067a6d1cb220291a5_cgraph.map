@@ -1,0 +1,7 @@
+<map id="RenderWidget::mouseMoveEvent" name="RenderWidget::mouseMoveEvent">
+<area shape="rect" id="node2" href="$class_focus_camera.html#a0bd7d63bc18ed0b4271e7f73b4f21202" title="FocusCamera::up" alt="" coords="289,5,415,32"/>
+<area shape="rect" id="node3" href="$class_focus_camera.html#af6e93697b6abe6d0585dca03862edd2b" title="FocusCamera::right" alt="" coords="284,56,420,83"/>
+<area shape="rect" id="node4" href="$class_focus_camera.html#aa38a3f301a6a4bfda8070d8441e0e0f3" title="FocusCamera::movement" alt="" coords="267,107,437,133"/>
+<area shape="rect" id="node5" href="$class_focus_camera.html#aa42d088155ef927cbfd0a912ac7341f0" title="FocusCamera::rotation" alt="" coords="275,157,429,184"/>
+<area shape="rect" id="node6" href="$class_focus_camera.html#aa87d41592f8f205674fa00e9575f6e41" title="FocusCamera::front" alt="" coords="284,208,420,235"/>
+</map>

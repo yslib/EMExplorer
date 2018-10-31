@@ -1,0 +1,15 @@
+<map id="TF1DMappingCanvas::setVolumeInfomation" name="TF1DMappingCanvas::setVolumeInfomation">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a877b200cd6014bb4099e67b5d29201b8" title="TF1DMappingCanvas::\lsplitMergeKeys" alt="" coords="205,135,357,177"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_canvas.html#a4085072da475d5148c23ed31c39b244c" title="TF1DMappingCanvas::\lzeroKey" alt="" coords="205,201,357,242"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_mapping_canvas.html#a70fe02d66e80a4d2c36533fe047e5fc3" title="TF1DMappingCanvas::\ldeleteKey" alt="" coords="205,266,357,307"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_mapping_canvas.html#a8795829e69389a59e34ae8ff2452a953" title="TF1DMappingCanvas::\lresetTransferFunc" alt="" coords="205,331,357,373"/>
+<area shape="rect" id="node11" href="$class_t_f1_d_mapping_canvas.html#a20bba188228e4ab6aa05073501b7bc84" title="TF1DMappingCanvas::\lchangeCurrentColor" alt="" coords="205,63,357,105"/>
+<area shape="rect" id="node14" href="$class_t_f1_d_mapping_canvas.html#a74bb6ffb566cd465baa9783f7e141cf6" title="TF1DMappingCanvas::\ltoggleClipThresholds" alt="" coords="205,397,357,438"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a074f0af6fe5c4b79d8230e1d900d2b42" title="TF1DMappingKey::setSplit" alt="" coords="413,157,591,184"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a9f3a66b2b43f544cf4b776e8b9fb52ea" title="TF1DMappingKey::isSplit" alt="" coords="417,107,587,133"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#aafab30102c7949d6c0815dae499bd480" title="TF1DMappingCanvas::\lgetOtherKey" alt="" coords="426,209,578,250"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_key.html#ae3150def3aba40af06b840e981271602" title="TF1DMappingKey::setAlphaR" alt="" coords="405,275,599,301"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_key.html#ab3d028d8ef1d779505caac0d6ddac7ac" title="TF1DMappingKey::setAlphaL" alt="" coords="407,325,597,352"/>
+<area shape="rect" id="node12" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="407,5,597,32"/>
+<area shape="rect" id="node13" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="408,56,596,83"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="FocusCamera::right" name="FocusCamera::right">
+<area shape="rect" id="node2" href="$class_slice_volume.html#ac2af399fe321445fbe80217b173312f5" title="SliceVolume::cameraRight" alt="" coords="208,5,384,32"/>
+<area shape="rect" id="node3" href="$class_render_widget.html#a72910616bed13eb067a6d1cb220291a5" title="RenderWidget::mouseMoveEvent" alt="" coords="189,56,403,83"/>
+</map>

@@ -18,12 +18,15 @@ QT_END_NAMESPACE;
 
 enum class SliceType;
 
+/**
+ * \brief This is widget used to control the slice index for both slice view and volume view
+ */
 class SliceControlWidget:public QWidget
 {
 	Q_OBJECT
 public:
     SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget,QWidget * parent = nullptr);
-	void setSliceModel(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget);
+	void setControlledWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget);
 
 
 private slots:

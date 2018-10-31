@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_crop"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node288 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_crop",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node288 -> Node289 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node289 [label="cimg_library_suffixed\l::cimg::mod",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#afcc02428c9b7d9100e1674369d25cc40",tooltip="Return the modulo of a value. "];
+  Node288 -> Node290 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node290 [label="cimg_library_suffixed\l::CImg::get_crop",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a611297a981e43c03a771fbc5d948f85a",tooltip="Crop image region . "];
+}

@@ -1,0 +1,22 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_image_sort"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node549 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_sort",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node549 -> Node550 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node550 [label="cimg_library_suffixed\l::cimg::mod",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#afcc02428c9b7d9100e1674369d25cc40",tooltip="Return the modulo of a value. "];
+  Node549 -> Node551 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node551 [label="cimg_library_suffixed\l::cimg::mutex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a9e739e4b4ac058abfba069466617b914"];
+  Node551 -> Node552 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node552 [label="cimg_library_suffixed\l::cimg::Mutex_attr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa0e1bc96ae6e235dc5b67b8b0a466166"];
+  Node551 -> Node553 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node553 [label="cimg_library_suffixed\l::cimg::Mutex_info::unlock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#afac3fa5f107ad4795fb867050f616555"];
+  Node551 -> Node554 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node554 [label="cimg_library_suffixed\l::cimg::Mutex_info::lock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a6cc8e26847a1aa649febed03d70182e7"];
+  Node551 -> Node555 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node555 [label="cimg_library_suffixed\l::cimg::Mutex_info::trylock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a9bf4ed1e1dfe6f28fa6250cd04f3c900"];
+  Node555 -> Node552 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node549 -> Node556 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node556 [label="cimg_library_suffixed\l::CImg::sort",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a146bc350d757a8b39ed08dc8272d7d77",tooltip="Sort pixel values and get sorting permutations. "];
+}

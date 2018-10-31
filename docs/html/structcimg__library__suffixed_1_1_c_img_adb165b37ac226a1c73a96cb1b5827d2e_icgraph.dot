@@ -1,0 +1,19 @@
+digraph "cimg_library_suffixed::CImg::save"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3000 [label="cimg_library_suffixed\l::CImg::save",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3000 -> Node3001 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3001 [label="cimg_library_suffixed\l::CImg\< charT \>::_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad9b7141242d0b6e861a8014112ddb5b5"];
+  Node3000 -> Node3002 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3002 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_select_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a689f47424dc7c548ebfe53e431409199",tooltip="Select sub-graph in a graph. "];
+  Node3000 -> Node3003 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3003 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+  Node3000 -> Node3004 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3004 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af8a6b01f20b2d459e5abe6b99836ea9a"];
+  Node3000 -> Node3005 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3005 [label="cimg_library_suffixed\l::CImgList\< charT \>::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a7186fe44f8d6ce58583e3177ff802445",tooltip="Save list into a file. "];
+  Node3000 -> Node3006 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3006 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a759ef20b53f1e507973dc53fcc2c7bb2",tooltip="Save image sequence as a GIF animated file. "];
+}

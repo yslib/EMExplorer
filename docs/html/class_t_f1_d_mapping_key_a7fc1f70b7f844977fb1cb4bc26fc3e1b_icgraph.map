@@ -1,0 +1,18 @@
+<map id="TF1DMappingKey::getColorL" name="TF1DMappingKey::getColorL">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a51c5bfc32131bc9e8879e768e90be5a1" title="TF1DMappingCanvas::\lpaintEvent" alt="" coords="470,15,622,57"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#ab13275aa81a6ad759cf2c2093f71c9ab" title="TF1DMappingCanvas::\lmousePressEvent" alt="" coords="470,175,622,217"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html#ab4bbe42d2258dfc37fd7d50a4d862870" title="TF1DMappingCanvas::\lchangeCurrentColor" alt="" coords="241,110,393,151"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_canvas.html#a4fae8b70589e690c7f0d2a0cb4366e05" title="TF1DMappingCanvas::\linsertNewKey" alt="" coords="241,175,393,217"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#a970c5f906847bb48f06878d0f3a646ea" title="TF1DMappingCanvas::\lhitLine" alt="" coords="241,293,393,334"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_mapping_canvas.html#a03fa4fdad913ac83eec4fd5e9777b64a" title="TF1DMappingCanvas::\lpaintKeys" alt="" coords="241,45,393,86"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_mapping_canvas.html#a074ca4f2fed604ef0386868b5b25dbc7" title="TF1DMappingCanvas::\lgetTransferFunction" alt="" coords="241,371,393,413"/>
+<area shape="rect" id="node17" href="$class_t_f1_d_mapping_canvas.html#a4882f2cd0cd060cb7207570281baffbe" title="TF1DMappingCanvas::\lgetMappingForValue" alt="" coords="241,437,393,478"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_canvas.html#a9117316e3878813a556eec8f8928c601" title="TF1DMappingCanvas::\lmouseMoveEvent" alt="" coords="470,306,622,347"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_canvas.html#aa98fdddbc173ae720de47f56a88afbbb" title="TF1DMappingCanvas::\lkeyPressEvent" alt="" coords="470,241,622,282"/>
+<area shape="rect" id="node11" href="$class_t_f1_d_editor.html#af173d5cf19f4e7d5443b9053035c30a3" title="TF1DEditor::getTransferFunction" alt="" coords="441,437,651,464"/>
+<area shape="rect" id="node15" href="$class_t_f1_d_mapping_canvas.html#a4362a9c099ca0a2f1e84bd4a0ce81603" title="TF1DMappingCanvas::\lisThresholdClipped" alt="" coords="470,489,622,530"/>
+<area shape="rect" id="node16" href="$class_t_f1_d_texture_canvas.html#ae3e1f4769704bf584bc03223c83aa856" title="TF1DTextureCanvas::\lpaintGL" alt="" coords="473,371,619,413"/>
+<area shape="rect" id="node12" href="$class_render_parameter_widget.html#a81885dd80bee8ba1d2be4cbb0451a6ce" title="Constructs a widget by a given widget of RenderWidget. " alt="" coords="706,365,878,406"/>
+<area shape="rect" id="node13" href="$class_render_parameter_widget.html#aefab8da09d864c24675e521249dbae84" title="Returns the 1d transfer function that used for volume rendering. " alt="" coords="710,430,874,471"/>
+<area shape="rect" id="node14" href="$class_t_f1_d_editor.html#aaa775550921dd36f5b3d18c7c648df1a" title="TF1DEditor::getTF1DTexture\lCanvas" alt="" coords="699,495,885,537"/>
+</map>

@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::CImg::atXYZ"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node527 [label="cimg_library_suffixed\l::CImg::atXYZ",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node527 -> Node528 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node528 [label="cimg_library_suffixed\l::CImg\< charT \>::_correlate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aed98b23130078df5ad69b199d88bb261",tooltip="Correlate image by a kernel . "];
+  Node527 -> Node529 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node529 [label="cimg_library_suffixed\l::CImg\< charT \>::get_erode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aad353fc91b0c6ef3c0251f4f46a96150",tooltip="Erode image by a structuring element . "];
+  Node527 -> Node530 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node530 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_dilate",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a66a723bf61125378577a3e99247ff8da",tooltip="Dilate image by a structuring element . "];
+  Node527 -> Node531 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node531 [label="cimg_library_suffixed\l::CImgList\< charT \>::\latNXYZ",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a712c54070179c7fca098c7299552c29c",tooltip="Access pixel value with Dirichlet boundary conditions for the 3 coordinates (pos, x..."];
+  Node527 -> Node532 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node532 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_atNXYZ",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a9d8943cf916f4869a4aba1b925a7b7b6"];
+}
