@@ -542,7 +542,7 @@ void RenderWidget::markModelDataChanged(const QModelIndex & begin, const QModelI
  */
 void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 {
-	qDebug() << "RenderWidget::_slot_currentMeshChanged " << " RenderWidget should be clicked";
+	//qDebug() << "RenderWidget::_slot_currentMeshChanged " << " RenderWidget should be clicked";
 	const auto index = m_query.query(current);
 	//m_markModel->selectionModelOfThisModel()->clear();
 	m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
@@ -563,7 +563,7 @@ void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& curren
 
 			// The parent item of a mark item, which should be a mesh item should also be selected
 
-			qDebug() << "RenderWidget::_slot_currentChanged_selectionModel " << " Mark should be clicked from SliceEditorWidget";
+			//qDebug() << "RenderWidget::_slot_currentChanged_selectionModel " << " Mark should be clicked from SliceEditorWidget";
 			const auto parent = m_markModel->parent(current);
 			if (static_cast<TreeItem*>(parent.internalPointer())->type() == TreeItemType::Instance) {
 				const auto id = m_query.query(parent);
@@ -576,7 +576,7 @@ void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& curren
 
 		}
 		else {		// Mesh item is selected
-			qDebug() << "RenderWidget::_slot_currentChanged_selectionModel " << " Instance should be clicked from QTreeView";
+			//qDebug() << "RenderWidget::_slot_currentChanged_selectionModel " << " Instance should be clicked from QTreeView";
 			const auto id = m_query.query(current);
 			if (id != -1) {
 				Q_D(RenderWidget);

@@ -307,8 +307,7 @@ bool MarkModel::updateMeshMarkHelper(const QString& cate)
 }
 void MarkModel::detachFromView()
 {
-	disconnect(this, &MarkModel::modified, m_view, &SliceEditorWidget::markModified);
-	disconnect(this, &MarkModel::saved, m_view, &SliceEditorWidget::markSaved);
+
 	m_view = nullptr;
 	m_dataModel = nullptr;
 }

@@ -10,35 +10,40 @@
 #include "model/markmodel.h"
 #include "model/categorytreeitem.h"
 #include "histogramwidget.h"
-#include "pixelwidget.h"
 #include "sliceeditorwidget.h"
 #include "slicewidget.h"
 #include "renderwidget.h"
 
-inline bool SliceEditorWidget::contains(const QWidget* widget, const QPoint& pos)
-{
-	return (widget->rect()).contains(pos);
-}
 
-
+/**
+ * \brief This slot is called when a single mark is current in one of the tree slice widget
+ * 
+ * The slot notifies other objects that use the same item selection model that the mark is set current
+ * 
+ * \note current and selected has subtle different semantics. You could learn it from Qt Documentation.
+ * 
+ * \sa QItemSelectionModel
+ */
 void SliceEditorWidget::_slot_markSelected(StrokeMarkItem* mark) {
 
-	qDebug() << "SliceEditorWidget::_slot_markSelected " << " SliceEdtiroWidget should be clicked";
+	//qDebug() << "SliceEditorWidget::_slot_markSelected " << " SliceEdtiroWidget should be clicked";
 
 	const auto selectionModel = m_markModel->selectionModelOfThisModel();
 	Q_ASSERT(selectionModel);
 	const auto index = mark->modelIndex();
 	if(index.isValid() == true) {
-		//selectionModel->clearSelection();
 		selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
 	}
-	//selectionModel->select(m_markModel->parent(index),QItemSelectionModel::Select);
 }
 
 /**
- * \brief 
- * \param current 
- * \param previous 
+ * \brief This slots is called when item is selected in other objects that use the same item selection model
+ * 
+ * \a current represents the newly current item after change, and the \a previous represents the old one.
+ * 
+ *
+ * \note current and selected has subtle different semantics. You could learn it from Qt Documentation.
+ *   
  */
 void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous)
 {
@@ -47,7 +52,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 	if(item1 != nullptr) {
 		if (item1->type() == TreeItemType::Mark) {
 
-			qDebug() << "SliceEditorWidget::_slot_currentChanged_selectionModel " << " Mark should be clicked from QTreeView";
+			//qDebug() << "SliceEditorWidget::_slot_currentChanged_selectionModel " << " Mark should be clicked from QTreeView";
 			this->blockSignals(true);
 			const auto mark = static_cast<StrokeMarkItem*>(item1->metaData());
 			mark->setSelected(true);
@@ -55,7 +60,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 		}
 		else if (item1->type() == TreeItemType::Instance) {
 			// Set all children of the item as selection
-			qDebug() << "SliceEditorWidget::_slot_currentChanged_selectionModel " << " Instance should be clicked from RenderWidget";
+			//qDebug() << "SliceEditorWidget::_slot_currentChanged_selectionModel " << " Instance should be clicked from RenderWidget";
 			QList<QModelIndex> markIndices;
 			const auto nChild = m_markModel->rowCount(current);
 			for (int i = 0; i < nChild; i++) {
@@ -67,7 +72,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 			for (auto index : markIndices) {
 				const auto item = static_cast<TreeItem*>(index.internalPointer());
 				if (item->type() == TreeItemType::Mark) {
-					qDebug() << "Mark Selected";
+					//qDebug() << "Mark Selected";
 					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
 					mark->setSelected(true);
 					/* This will emit selectionChange signal from SliceWidget and will invoke
@@ -103,7 +108,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 				if (item->type() == TreeItemType::Mark) {
 					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
 					mark->setSelected(false);
-					qDebug() << "Mark Deselected";
+					//qDebug() << "Mark Deselected";
 					/* This will emit selectionChange signal from SliceWidget and will invoke
 					 * SliceEditorWidget::_slot_markSelected again so as to call this function recursively,
 					 * so at the begining, signal is blocked first
@@ -117,62 +122,61 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 
 }
 
+/**
+ * \brief This slot is not be used so far.
+ */
 void SliceEditorWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
 {
 
 }
 
-void SliceEditorWidget::createConnections()
-{
-	//forward selected signals
-	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
-	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::rightSliceSelected);
-	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::frontSliceSelected);
 
-	connect(m_topView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Top, mark); });
-	connect(m_rightView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Right, mark); });
-	connect(m_frontView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Front, mark); });
-
-	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
-
-	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
-	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
-	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
-
-
-	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
-	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
-	connect(m_frontView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Front); });
-
-	connect(this, &SliceEditorWidget::markSelected, this, &SliceEditorWidget::_slot_markSelected);
-}
-
+/**
+ * \brief Update states for all widgets that they are should be.
+ */
 void SliceEditorWidget::updateActions()
 {
 	const auto enable = m_sliceModel != nullptr;
-	setTopSliceVisibility(true);
-	setRightSliceVisibility(true);
-	setFrontSliceVisibility(true);
+
+	setTopSliceVisibility(enable);
+	setRightSliceVisibility(enable);
+	setFrontSliceVisibility(enable);
 }
 
+/**
+ * \brief 
+ * \param check 
+ */
 void SliceEditorWidget::setTopSliceVisibility(bool check)
 {
 	const auto enable = check && m_sliceModel != nullptr;
 	m_topView->setHidden(!enable);
 }
 
+/**
+ * \brief 
+ * \param check 
+ */
 void SliceEditorWidget::setFrontSliceVisibility(bool check)
 {
 	const auto enable = check && m_sliceModel != nullptr;
 	m_frontView->setHidden(!enable);
 }
 
+/**
+ * \brief 
+ * \param check 
+ */
 void SliceEditorWidget::setRightSliceVisibility(bool check)
 {
 	const auto enable = check && m_sliceModel != nullptr;
 	m_rightView->setHidden(!enable);
 }
 
+/**
+ * \brief 
+ * \param model 
+ */
 void SliceEditorWidget::installMarkModel(MarkModel* model)
 {
 	Q_ASSERT_X(m_sliceModel,
@@ -180,7 +184,6 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 
 	if(m_markModel != nullptr) {
 		// disconnect old signals
-		disconnect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);  //TODO:: This function will be removed in the future
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
 	}
@@ -188,7 +191,6 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 
 	if(m_markModel != nullptr) {
 		// connect new signals 
-		connect(m_markModel, &MarkModel::modified, this, &SliceEditorWidget::markModified);  //TODO:: This function will be removed in the future
 		connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged,this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
 		connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged,this,&SliceEditorWidget::_slot_selectionChanged_selectionModel);
 	}
@@ -196,23 +198,20 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	updateMarks(SliceType::Top);
 	updateMarks(SliceType::Right);
 	updateMarks(SliceType::Front);
-
+	updateActions();
 }
 
-void SliceEditorWidget::updateSliceModel()
-{
 
-	setSliceIndex(SliceType::Front, 0);
-	setSliceIndex(SliceType::Right, 0);
-	setSliceIndex(SliceType::Top, 0);
-}
 
-void SliceEditorWidget::detachMarkModel()
-{
-	if (m_markModel != nullptr)
-		m_markModel->detachFromView();
-}
 
+/**
+ * \brief 
+ * \param parent 
+ * \param topSliceVisible 
+ * \param rightSliceVisible 
+ * \param frontSliceVisible 
+ * \param model 
+ */
 SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	bool topSliceVisible,
 	bool rightSliceVisible,
@@ -240,16 +239,48 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_frontView->installEventFilter(this);
 	m_frontView->setNavigationViewEnabled(false);
 
-	createConnections();
+
+	// Connections 
+	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
+	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::rightSliceSelected);
+	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::frontSliceSelected);
+
+	connect(m_topView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Top, mark); });
+	connect(m_rightView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Right, mark); });
+	connect(m_frontView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Front, mark); });
+
+	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
+
+	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
+	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
+	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSingleSelectionHelper);
+
+	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
+	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
+	connect(m_frontView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Front); });
+
+	connect(this, &SliceEditorWidget::markSelected, this, &SliceEditorWidget::_slot_markSelected);
+
 	updateActions();
 
 	setWindowTitle(QStringLiteral("Slice Editor"));
 	m_layout->addWidget(m_topView, 0, 0, 1, 1, Qt::AlignCenter);
 	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignLeft);
 	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignTop);
+
 	setLayout(m_layout);
 }
 
+/**
+ * \brief Reimplemented from QWidget::eventFilter
+ * 
+ * Filters the mouse wheel event for the zooming in/out of slice widget
+ * \note If you want to filter the event out, i.e. stop it being handled further, return \a true; otherwise return \a false.
+ * 
+ * \warning If you delete the receiver object in this function, be sure to return true. 
+ * Otherwise, Qt will forward the event to the deleted object and the program might crash.
+ * 
+ */
 bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 	if (watched == m_topView) {
 		if (event->type() == QEvent::Wheel) {
@@ -290,6 +321,11 @@ bool SliceEditorWidget::eventFilter(QObject* watched, QEvent* event) {
 
 
 
+/**
+ * \brief 
+ * \param value 
+ * \param type 
+ */
 void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
 {
 	Q_ASSERT_X(m_sliceModel != nullptr, "ImageView::sliceChanged", "null pointer");
@@ -319,11 +355,24 @@ void SliceEditorWidget::changeSliceHelper(int value, SliceType type)
 }
 
 
-int SliceEditorWidget::currentIndexHelper(SliceType type)
-{
+/**
+ * \brief 
+ * \param type 
+ * \return 
+ */
+int SliceEditorWidget::currentIndexHelper(SliceType type) const {
 	return currentSliceIndex(type);
 }
 
+/**
+ * \brief Creates an instance of \a MarkModel. 
+ * 
+ * \param view 
+ * \param d 
+ * \return 
+ * 
+ * \sa MarkModel
+ */
 MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractSliceDataModel * d)
 {
 	return new MarkModel(d, view,
@@ -378,6 +427,7 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 
 void SliceEditorWidget::markDeleteHelper(SliceType type, StrokeMarkItem * mark)
 {
+
 }
 
 void SliceEditorWidget::deleteSelectedMarks()
@@ -413,6 +463,9 @@ void SliceEditorWidget::markSingleSelectionHelper()
 	emit markSelected(item);
 }
 
+/**
+ * \brief  Returns the slice widget which currently has a focus, otherwise return \a nullptr
+ */
 SliceWidget* SliceEditorWidget::focusOn()
 {
 	if (m_topView->hasFocus())
@@ -424,28 +477,49 @@ SliceWidget* SliceEditorWidget::focusOn()
 	return nullptr;
 }
 
+/**
+ * \brief Returns the visibility of top slice.
+ * 
+ * Returns \a true if it's visible, otherwise returns \a false
+ */
 bool SliceEditorWidget::topSliceVisible() const
 {
 	return m_topView->isHidden();
 }
 
+/**
+ * \brief Returns the visibility of right slice.
+ *
+ * Returns \a true if it's visible, otherwise returns \a false
+ */
 bool SliceEditorWidget::rightSliceVisible() const
 {
 	return m_rightView->isHidden();
 }
 
+/**
+ * \brief Returns the visibility of front slice.
+ *
+ * Returns \a true if it's visible, otherwise returns \a false
+ */
 bool SliceEditorWidget::frontSliceVisible() const
 {
 	return m_frontView->isHidden();
 }
 
+/**
+ * \brief Returns a \a QPen object used for painting marks
+ */
 QPen SliceEditorWidget::pen() const
 {
 	return m_topView->pen();
 }
 
-
-
+/**
+ * \brief This property holds visibility of the three types of slice widget.
+ * \param type Indicates the slice type.
+ * \param visible Indicates visibility of the slice widget.
+ */
 void SliceEditorWidget::setSliceVisible(SliceType type, bool visible) {
 	switch (type) {
 	case SliceType::Top:
@@ -464,20 +538,45 @@ void SliceEditorWidget::setSliceVisible(SliceType type, bool visible) {
 	return;
 }
 
+/** 
+ * \brief This a convienience function to change the visibility of the top slice widget
+
+ * \param enable Indicates visibility of the slice widget.
+ * 
+ * \sa SliceEditorWidget::setSliceVisible(SliceType type, bool visible)
+ */
 void SliceEditorWidget::setTopSliceVisible(bool enable)
 {
 	setSliceVisible(SliceType::Top, enable);
 }
 
+/**
+ * \brief This a convienience function to change the visibility of the front slice widget
+ * 
+ * \param enable Indicates visibility of the slice widget.
+ * \sa SliceEditorWidget::setSliceVisible(SliceType type, bool visible)
+ */
 void SliceEditorWidget::setRightSliceVisible(bool enable)
 {
 	setSliceVisible(SliceType::Right, enable);
 }
 
+/**
+ * \brief This a convienience function to change the visibility of the right slice widget
+ * 
+ * \param enable Indicates visibility of the slice widget.
+ * \sa SliceEditorWidget::setSliceVisible(SliceType type, bool visible)
+ */
 void SliceEditorWidget::setFrontSliceVisible(bool enable)
 {
 	setSliceVisible(SliceType::Front, enable);
 }
+
+/**
+ * \brief Sets the slice widgets' pen to be the given \a pen 
+ * 
+ * The \a pen used for painting marks
+ */
 
 void SliceEditorWidget::setPen(const QPen &pen)
 {
@@ -486,13 +585,24 @@ void SliceEditorWidget::setPen(const QPen &pen)
 	m_frontView->setPen(pen);
 }
 
+/**
+ * \brief 
+ * \param model 
+ * \return 
+ */
 AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel* model)
 {
-	auto t = m_sliceModel;
+	const auto t = m_sliceModel;
+
 	m_sliceModel = model;
-	detachMarkModel();
+	delete m_markModel;
+
 	installMarkModel(createMarkModel(this, m_sliceModel));
-	updateSliceModel();
+
+	setSliceIndex(SliceType::Front, 0);
+	setSliceIndex(SliceType::Right, 0);
+	setSliceIndex(SliceType::Top, 0);
+
 	updateActions();
 	emit dataModelChanged();
 	return t;
@@ -517,15 +627,14 @@ MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noe
 	}
 	if (model == nullptr)			//remove mark
 	{
-		detachMarkModel();
 		auto t = m_markModel;
 		installMarkModel(nullptr);
-		updateActions();
 		if (success != nullptr)
 			*success = true;
 		emit markModelChanged();
 		return t;
 	}
+
 	if (model->checkMatchHelper(m_sliceModel) == false)		// Check whether the new mark model match the current data model
 	{
 		if (success != nullptr)
@@ -533,21 +642,25 @@ MarkModel* SliceEditorWidget::takeMarkModel(MarkModel* model, bool * success)noe
 		return nullptr;
 	}
 
-	detachMarkModel();
-
 	const auto t = m_markModel;		//old 
 	installMarkModel(model);
-	updateActions();
 	if (success != nullptr)
 		*success = true;
 	emit markModelChanged();
 	return t;
 }
+
+/**
+ * \brief Returns the mark model held in the widget.
+ */
 MarkModel * SliceEditorWidget::markModel()
 {
 	return m_markModel;
 }
 
+/**
+ * \brief Destroys the widget
+ */
 SliceEditorWidget::~SliceEditorWidget()
 {
 	delete d_ptr;
@@ -556,6 +669,9 @@ SliceEditorWidget::~SliceEditorWidget()
 }
 
 
+/**
+ * \brief Returns the slice index of \a type type slice
+ */
 int SliceEditorWidget::currentSliceIndex(SliceType type) const
 {
 	switch (type)
@@ -571,6 +687,9 @@ int SliceEditorWidget::currentSliceIndex(SliceType type) const
 
 }
 
+/**
+ * \brief Resets the default zoom for three slice widgets 
+ */
 void SliceEditorWidget::resetZoom(bool check)
 {
 	m_topView->resetMatrix();
@@ -578,6 +697,9 @@ void SliceEditorWidget::resetZoom(bool check)
 	m_frontView->resetMatrix();
 }
 
+/**
+ * \brief Zooms in for three slice widgets
+ */
 void SliceEditorWidget::zoomIn()
 {
 	const auto factor = std::pow(1.125, 1);
@@ -586,6 +708,9 @@ void SliceEditorWidget::zoomIn()
 	m_frontView->scale(factor, factor);
 }
 
+/**
+ * \brief Zooms out for three slice widgets
+ */
 void SliceEditorWidget::zoomOut()
 {
 	const auto factor = std::pow(1.125, -1);
@@ -594,6 +719,14 @@ void SliceEditorWidget::zoomOut()
 	m_frontView->scale(factor, factor);
 }
 
+/**
+ * \brief Sets the given \a opt operation for the \a type type slice.
+ * 
+ * The operation includes mark drawing, mark selection and slice movement.
+ * 
+ * \sa SliceType Operation
+ * 
+ */
 void SliceEditorWidget::setOperation(SliceType type, int opt)
 {
 	switch (type)
@@ -610,6 +743,11 @@ void SliceEditorWidget::setOperation(SliceType type, int opt)
 	}
 }
 
+/**
+ * \brief Sets the current slice index given in \a index for the slice type \a type
+ * 
+ * \sa SliceType
+ */
 void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 {
 	//
@@ -675,29 +813,39 @@ void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 		view->setMarks((*list)[index]);
 }
 
+/**
+ * \brief Returns the current category
+ */
 QString SliceEditorWidget::currentCategory() const
 {
 	return d_ptr->state->currentCategory;
 }
 
+/**
+ * \brief This property holds the current category that the mark will be painted on.
+ *  
+ */
 void SliceEditorWidget::setCurrentCategory(const QString& name) {
 	Q_D(SliceEditorWidget);
 	d->state->currentCategory = name;
 }
 
-bool SliceEditorWidget::addCategory(const CategoryInfo& info) {
+/**
+ * \brief Adds a new category into the mark model in the \a SliceEditorWidget
+ * 
+ * Returns \true if add is successfully, otherwise return \a false
+ * 
+ * \sa CategoryInfo
+ */
+bool SliceEditorWidget::addCategory(const CategoryInfo& info) const {
 	if (m_markModel == nullptr)
 		return false;
 	return m_markModel->addCategory(info);
 }
 
-//bool SliceEditorWidget::addCategory(const CategoryInfo & info)const
-//{
-//	if (m_markModel == nullptr)
-//		return false;
-//	return m_markModel->addCategory(info);
-//}
-
+/**
+ * \brief Returns the categories that the current mark model holds
+ */
 QStringList SliceEditorWidget::categories() const
 {
 	if (m_markModel == nullptr)
@@ -705,6 +853,13 @@ QStringList SliceEditorWidget::categories() const
 	return m_markModel->categoryText();
 }
 
+/**
+ * \brief Update marks on \a type type of slice.
+ * 
+ * This is often used when new slice data model or new mark model is set.
+ * 
+ * \sa SliceType
+ */
 void SliceEditorWidget::updateMarks(SliceType type)
 {
 	if (m_markModel == nullptr)
@@ -739,6 +894,10 @@ void SliceEditorWidget::updateMarks(SliceType type)
 	break;
 	}
 }
+
+
+
+
 
 SliceScene::SliceScene(QObject *parent) :QGraphicsScene(parent)
 {

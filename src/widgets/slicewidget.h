@@ -133,23 +133,16 @@ private:
 
 	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
 
-
 	Q_OBJECT
 
 	qreal m_scaleFactor;
 	bool m_paintNavigationView;
-
 	QVector<QPoint> m_paintViewPointsBuffer;
 	QPointF m_prevViewPoint;
-
-	//QColor m_color;
 	QPen m_pen;
 	SliceItem * m_slice;
-
 	QImage m_image;
 	QImage m_thumbnail;
-
-	//QGraphicsItem * m_paintingItem;
 	//items
 	SliceItem * m_currentPaintingSlice;
 	StrokeMarkItem * m_paintingItem;

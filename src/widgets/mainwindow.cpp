@@ -542,8 +542,10 @@ void MainWindow::createWidget()
 	m_imageViewDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	m_viewMenu->addAction(m_imageViewDockWidget->toggleViewAction());
 	connect(m_imageViewDockWidget, &QDockWidget::visibilityChanged, [this](bool enable) {if(enable)updateActionsAndControlPanelByWidgetFocus(FocusInSliceWidget); });
-	connect(m_imageView, &SliceEditorWidget::markModified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
-	connect(m_imageView, &SliceEditorWidget::markSaved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
+
+	connect(m_imageView->markModel(), &MarkModel::modified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
+	connect(m_imageView->markModel(), &MarkModel::saved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
+
 	connect(m_imageView, &SliceEditorWidget::viewFocus, this, &MainWindow::sliceViewSelected);
 	connect(m_imageView->topView(), &SliceWidget::selectionChanged, this, &MainWindow::updateActionsBySelectionInSliceView);
 

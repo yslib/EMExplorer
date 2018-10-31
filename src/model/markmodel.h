@@ -37,14 +37,9 @@ enum TreeItemType;
 
 /**
  * \class MarkModel markmodel.h "model/markmodel.h"
+ * 
  * \brief This class is used to represent the mark model created by marking
  * 
- * 
- * \internal
- *  Data storage specification:
- *  Category name is stored at 0 column
- *  Mark Item is stored at 0 column
- *  Mark Mesh is stored at 1 column of Category node 
  * 
  */
 class MarkModel :public QAbstractItemModel
@@ -54,16 +49,13 @@ class MarkModel :public QAbstractItemModel
 	/**
 	 * \brief 
 	 */
+
 	enum MarkModelItemRole
 	{
 		MeshRole = Qt::ItemDataRole::UserRole + 1,
 		MetaDataRole = Qt::ItemDataRole::UserRole + 2,
 		TreeItemRole = Qt::ItemDataRole::UserRole + 3
 	};
-
-	//typedef QSharedPointer<QGraphicsItem> __Internal_Mark_Type_;
-	//typedef QWeakPointer<QGraphicsItem> __Internal_Mark_Type_Weak_Ref_;
-	//typedef QSharedPointer<CategoryItem> __Internal_Categroy_Type_;
 	
 	using MarkSliceList = QVector<QList<StrokeMarkItem*>>;
 	//state member
@@ -85,12 +77,11 @@ class MarkModel :public QAbstractItemModel
 
 	//Helper functions
 	TreeItem* _hlp_internalPointer(const QModelIndex& index) const;
-	//QModelIndex modelIndexHelper(const QModelIndex& root, const QString& display)const;
+
 	QModelIndex _hlp_categoryIndex(const QString& category)const;
 	QModelIndex _hlp_categoryAdd(const QString& category, const QColor& color);		//set dirty
 	QModelIndex _hlp_categoryAdd(const CategoryInfo & info);							//set setdirty
 
-	//void _hlp_index(const QModelIndex & parent,int type,QList<QModelIndex> * indices);
 
 	QModelIndex _hlp_instanceFind(const QString & category,const StrokeMarkItem * item);
 	QModelIndex _hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark);

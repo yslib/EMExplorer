@@ -5,7 +5,6 @@
 #include <QWidget>
 #include <QGraphicsScene>
 #include <QItemSelection>
-#include "algorithm/bimap.h"
 
 enum class SliceType;
 QT_BEGIN_NAMESPACE
@@ -85,29 +84,22 @@ public:
 		AbstractSliceDataModel * model = nullptr);
 
 	bool eventFilter(QObject* watched, QEvent* event) override;
-
 	bool topSliceVisible() const;
 	bool rightSliceVisible() const;
 	bool frontSliceVisible() const;
-
 	QPen pen()const;
 	void setPen(const QPen & pen);
-
 	void setTopSliceVisible(bool enable);
 	void setRightSliceVisible(bool enable);
 	void setFrontSliceVisible(bool enable);
 	void setSliceVisible(SliceType type, bool visible);
-
 	int currentSliceIndex(SliceType type)const;
 	void setSliceIndex(SliceType type, int index);
 
-	//void playSlice(SliceType type, bool play);
-
 	QString currentCategory()const;
 	void setCurrentCategory(const QString & name);
-	bool addCategory(const CategoryInfo & info);
+	bool addCategory(const CategoryInfo & info) const;
 	QStringList categories() const;
-
 
 	SliceWidget * topView()const;
 	SliceWidget * rightView()const;
@@ -129,10 +121,6 @@ public:
 
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
-
-
-	//QSize sizeHint() const Q_DECL_OVERRIDE { return {800,800}; }
-	//QSize minimumSizeHint() const Q_DECL_OVERRIDE { return { 600,600 }; }
     ~SliceEditorWidget()override;
 signals:
 
@@ -155,46 +143,54 @@ signals:
 	void frontSliceChanged(int index);
 
 	/**
-	 * \brief This signal is emitted when slice data model changed
+	 * \brief The signal is emitted when slice data model changed
 	 */
 	void dataModelChanged();
 
 	/**
-	 * \brief This signal is emitted when mark model changed
+	 * \brief The signal is emitted when mark model changed
 	 */
 	void markModelChanged();
 
 	/**
-	 * \brief 
-	 * \param point 
+	 * \brief The signal is emitted when the top slice is selected
+	 * \param point The selected position on the selected slice
 	 */
 	void topSliceSelected(const QPoint & point);
 
 	/**
-	 * \brief 
-	 * \param point 
+	 * \brief The signal is emitted when the right slice is selected
+	 * \param point The selected position on the selected slice
 	 */
 	void rightSliceSelected(const QPoint & point);
 
 	/**
-	 * \brief 
-	 * \param point 
+	 * \brief The signal is emitted when the right slice is selected
+	 * \param point The selected position on the selected slice
 	 */
 	void frontSliceSelected(const QPoint & point);
-
+	
+	/**
+	 * \brief The signal is emitted when focus enters into on of three slice widget
+	 * 
+	 * The parameter \a type indicates type of the focused slice
+	 * 
+	 * \sa SliceType
+	 */
 	void viewFocus(SliceType type);
 
-	
-	void markModified();	///< Useful??
-	
-	void markSaved();		///< Useful???
-	//
-
+	/**
+	 * \brief The signal is emitted when a mark in one of three slice widget is selected
+	 * 
+	 * The first selected mark will be the given as \a item
+	 */
 	void markSelected(StrokeMarkItem * item);
 
+	/**
+	 * \brief This signals is emitted when marks in one of three slice widget are selected.
+	 * All selected marks will be given as \a items
+	 */
 	void marksSelected(QList<StrokeMarkItem*> items);
-
-	void instanceSelected(const QModelIndex & index);
 
 private slots:
 
@@ -206,38 +202,34 @@ private slots:
 
 private:
 
+	/**
+	 * \brief This is a private enum.
+	 * 
+	 * The enum flags keep the play direction used for slice playing
+	 */
 	enum class PlayDirection {
-		Forward,
-		Backward
+		Forward,				///< Forward play
+		Backward				///< Backward play
 	};
-	void createConnections();
-	//update helper
-	
-	//void updateSliceCount(SliceType type);
-	
+
 	void updateMarks(SliceType type);
 	void updateActions();
-
 	void installMarkModel(MarkModel* model);
-	void updateSliceModel();
-	void detachMarkModel();				///TODO:: In the future, this function will be removed
-	//void detachSliceModel();
-	inline bool contains(const QWidget* widget, const QPoint& pos);
+
 	void markAddedHelper(SliceType type, StrokeMarkItem* mark);
 	void markDeleteHelper(SliceType type, StrokeMarkItem* mark);
 	void markSingleSelectionHelper();
-	void changeSliceHelper(int value, SliceType type);
-	int currentIndexHelper(SliceType type);
 
+	void changeSliceHelper(int value, SliceType type);
+	int currentIndexHelper(SliceType type) const;
 	SliceWidget * focusOn();
 	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * d);
-	//Data Model
 
+	// Data Members
 	SliceEditorWidgetPrivate * const d_ptr;
 	Q_DECLARE_PRIVATE(SliceEditorWidget);
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
-    BiMap<StrokeMarkItem*,QPersistentModelIndex> m_query;
 	//main layout
 	QGridLayout *m_layout;
 	SliceWidget * m_topView;
@@ -245,9 +237,34 @@ private:
 	SliceWidget * m_frontView;
 };
 
-//inline VolumeWidget* ImageCanvas::volumeWidget()const {return m_renderView;}
+/**
+ * \brief Returns the top slice model
+ * 
+ * \sa AbstractSliceDataModel
+ */
 inline AbstractSliceDataModel * SliceEditorWidget::sliceModel()const { return m_sliceModel; }
+
+/**
+ * \brief Returns the top slice widget
+ * 
+ * \sa SliceWidget
+ */
 inline SliceWidget * SliceEditorWidget::topView()const { return m_topView; }
+
+/**
+ * \brief Returns the right slice widget
+ *
+ * \sa SliceWidget
+ */
+inline
 inline SliceWidget * SliceEditorWidget::rightView()const { return m_rightView; }
+
+/**
+ * \brief Returns the front slice widget
+ *
+ * \sa SliceWidget
+ */
+inline
 inline SliceWidget * SliceEditorWidget::frontView()const { return m_frontView; }
+
 #endif // IMAGEVIEWER_H
