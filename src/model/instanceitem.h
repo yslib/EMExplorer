@@ -4,25 +4,39 @@
 #include "model/treeitem.h"
 #include "algorithm/triangulate.h"
 
-class InstanceMetaData;
+class InstanceMetaData 
+{
+	QString m_name;
+	QRectF  m_region;
+	bool m_visibleState;
+public:
+	InstanceMetaData():m_visibleState(true){}
+	QString name()const { return m_name; }
+	void setName(const QString & name) { m_name = name; }
+	bool visibleState()const { return m_visibleState; }
+	void setVisibleState(bool visible) { m_visibleState = visible;}
+	QRectF region()const { return m_region; }
+	void setRegion(const QRectF & rect) { m_region = rect; }
+};
 
-class InstanceTreeItemInfoModel:public QAbstractItemModel {
+class InstanceTreeItem;
 
-
+class InstanceTreeItemInfoModel :public QAbstractItemModel
+{
+	InstanceTreeItem * m_treeItem;
+	QVector<QString> m_propertyNames;
+	InstanceMetaData * m_metaData;
 
 public:
-
-	InstanceTreeItemInfoModel(QObject * parent = nullptr);
+	InstanceTreeItemInfoModel(InstanceMetaData * metaData,InstanceTreeItem * item, QObject * parent = nullptr);
 	QVariant data(const QModelIndex& index, int role) const override;
 	int columnCount(const QModelIndex& parent) const override;
 	QModelIndex index(int row, int column, const QModelIndex& parent) const override;
 	int rowCount(const QModelIndex& parent) const override;
 	QModelIndex parent(const QModelIndex& child) const override;
 	bool setData(const QModelIndex& index, const QVariant& value, int role) override;
-
-	QString m_text;
-	QRect m_range;
-	quint8 m_checkState;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+	Qt::ItemFlags flags(const QModelIndex& index) const override;
 };
 
 class InstanceTreeItem:public TreeItem
@@ -33,6 +47,7 @@ class InstanceTreeItem:public TreeItem
 
 	InstanceTreeItemInfoModel * m_infoModel;
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
+	QScopedPointer<InstanceMetaData> m_metaData;
 
 
 public:
@@ -48,13 +63,15 @@ public:
 	void * metaData() override;
 	QAbstractItemModel * infoModel() const override { return m_infoModel; }
 
-
-	QRect boundingBox()const { return m_infoModel->m_range; }
-	void setBoundingBox(const QRect & rect) { m_infoModel->m_range = rect; }
-	bool visible()const { return m_infoModel->m_checkState == 1 ? true : false; }
+	QRectF boundingBox() const { return m_metaData->region(); }
+	void setBoundingBox(const QRectF& rect) { m_metaData->setRegion(rect); }
+	bool visible()const { return m_metaData->visibleState(); }
 
 	QSharedPointer<Triangulate> mesh()const;
 
+	~InstanceTreeItem();
+
 };
+
 
 #endif // INSTANCEITEM_H

@@ -18,11 +18,9 @@ QVector<QList<StrokeMarkItem*>> InstanceTreeItem::refactorMarks(QList<StrokeMark
 	 * when item is inserted at once so as to get a better performance here.
 	 */
 
-	std::sort(marks.begin(), marks.end(), [](const QGraphicsItem * it1, const QGraphicsItem * it2)->bool
+	std::sort(marks.begin(), marks.end(), [](const StrokeMarkItem * it1, const StrokeMarkItem * it2)->bool
 	{
-		Q_ASSERT_X(it1->data(MarkProperty::SliceIndex).canConvert<int>(), "MarkModel::refactorMarks", "it1 failed");
-		Q_ASSERT_X(it2->data(MarkProperty::SliceIndex).canConvert<int>(), "MarkModel::refactorMarks", "it2 failed");
-		return it1->data(MarkProperty::SliceIndex).value<int>() < it2->data(MarkProperty::SliceIndex).value<int>();
+		return it1->sliceIndex() << it2->sliceIndex();
 	});
 
 	/*
@@ -63,51 +61,54 @@ QVector<QList<StrokeMarkItem*>> InstanceTreeItem::refactorMarks(QList<StrokeMark
 
 InstanceTreeItem::InstanceTreeItem(const QString & text, const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
 	TreeItem(pModelIndex, parent),
-m_infoModel(nullptr)
+	m_infoModel(nullptr)
 {
-	m_infoModel = new InstanceTreeItemInfoModel(nullptr);
-	m_infoModel->m_text = text;
-	m_infoModel->m_checkState = 1;
+
+	m_metaData.reset(new InstanceMetaData());
+	m_metaData->setName(text);
+	m_infoModel = new InstanceTreeItemInfoModel(m_metaData.data(),this, nullptr);
 }
 
 
 /**
- * \brief 
- * \param column 
- * \param role 
- * \return 
+ * \brief
+ * \param column
+ * \param role
+ * \return
  */
 QVariant InstanceTreeItem::data(int column, int role) const
 {
-	if(role == Qt::DisplayRole) {
-		if(column == 0) {
-			return m_infoModel->m_text;
+	if (role == Qt::DisplayRole)
+	{
+		if (column == 0) {
+			return m_metaData->name();
 		}
-	}else if(role == Qt::CheckStateRole) {
-		if(column == 0) {
-			return m_infoModel->m_checkState == 1?Qt::Checked:Qt::Unchecked;
+	}
+	else if (role == Qt::CheckStateRole) {
+		if (column == 0) {
+			return m_metaData->visibleState() ? Qt::Checked : Qt::Unchecked;
 		}
 	}
 	return QVariant();
 }
 
 /**
- * \brief 
- * \param column 
- * \param value 
- * \param role 
- * \return 
+ * \brief
+ * \param column
+ * \param value
+ * \param role
+ * \return
  */
 bool InstanceTreeItem::setData(int column, const QVariant& value, int role) {
 	if (role == Qt::EditRole) {
 		if (column == 0) {
-			m_infoModel->m_text = value.toString();
+			m_metaData->setName(value.toString());
 			return true;
 		}
 	}
 	else if (role == Qt::CheckStateRole) {
 		if (column == 0) {
-			m_infoModel->m_checkState = (value == Qt::Checked ? 1 : 0);
+			m_metaData->setVisibleState(value == Qt::Checked);
 			return true;
 		}
 	}
@@ -115,16 +116,16 @@ bool InstanceTreeItem::setData(int column, const QVariant& value, int role) {
 }
 
 /**
- * \brief 
- * \return 
+ * \brief
+ * \return
  */
 int InstanceTreeItem::columnCount() const {
 	return 1;
 }
 
 /**
- * \brief 
- * \return 
+ * \brief
+ * \return
  */
 int InstanceTreeItem::type() const {
 	return TreeItemType::Instance;
@@ -132,20 +133,20 @@ int InstanceTreeItem::type() const {
 
 /**
  * \brief Reimplemented from TreeItem::insertColums(int position, int columns)
- * 
- * \param position 
- * \param columns 
- * \return 
+ *
+ * \param position
+ * \param columns
+ * \return
  */
 bool InstanceTreeItem::insertColumns(int position, int columns) {
 	return false;
 }
 
 /**
- * \brief 
- * \param position 
- * \param columns 
- * \return 
+ * \brief
+ * \param position
+ * \param columns
+ * \return
  */
 bool InstanceTreeItem::removeColumns(int position, int columns)
 {
@@ -155,7 +156,7 @@ bool InstanceTreeItem::removeColumns(int position, int columns)
 
 /**
  * \brief Retruns the meta data in the item
- * 
+ *
  * \return Returns nullptr
  */
 void* InstanceTreeItem::metaData() { return nullptr; }
@@ -164,9 +165,9 @@ void* InstanceTreeItem::metaData() { return nullptr; }
 QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {
 	QList<StrokeMarkItem*> marks;
 	const auto nChild = childCount();
-	for(auto i=0;i<nChild;i++) {
+	for (auto i = 0; i < nChild; i++) {
 		const auto item = child(i);
-		if(item->type() == TreeItemType::Mark) {
+		if (item->type() == TreeItemType::Mark) {
 			marks << static_cast<StrokeMarkItem*>(item->metaData());
 		}
 	}
@@ -175,57 +176,66 @@ QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {
 	return tri;
 }
 
-
-InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(QObject * parent) :QAbstractItemModel(parent)
+InstanceTreeItem::~InstanceTreeItem() 
 {
+	m_infoModel->deleteLater();
+}
 
+
+InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(InstanceMetaData * metaData, InstanceTreeItem * item, QObject * parent) :QAbstractItemModel(parent)
+{
+	m_treeItem = item;
+	m_metaData = metaData;
+
+	m_propertyNames << QStringLiteral("Name")
+		//<< QStringLiteral("Color")
+		<< QStringLiteral("Region")
+		<< QStringLiteral("Visibility")
+		<< QStringLiteral("Mark Count");
 }
 
 QVariant InstanceTreeItemInfoModel::data(const QModelIndex & index, int role) const
 {
-	if(role == Qt::DisplayRole) {
+	Q_ASSERT(m_treeItem);
+	Q_ASSERT(m_metaData);
+	if (role == Qt::DisplayRole) {
 		const auto r = index.row();
 		const auto c = index.column();
-		if(r == 0) {
-			if(c == 0) {
-				return QStringLiteral("Name");
-			}
-			if(c == 1) {
-				return m_text;
+		if (c == 0) {
+			return m_propertyNames.value(r);
+		}
+		if (c == 1) {
+			switch (r) 
+			{
+				case 0:return m_metaData->name();
+				case 1:return m_metaData->region();
+				case 2:return m_metaData->visibleState();
+				case 3:return m_treeItem->childCount();
+				default: return QVariant{};
 			}
 		}
-		if(r == 1) {
-			if( c == 0) {
-				return QStringLiteral("Region");
-			}
-			if( c == 1) {
-				return m_range;
-			}
-		}
-		if(r == 2) {
-			if( c == 0) {
-				return QStringLiteral("Visible");
-			}
-			if(c == 1) {
-				return m_checkState == 1 ? true : false;
-			}
-		}
-
 	}
 	return QVariant();
 }
 
-int InstanceTreeItemInfoModel::columnCount(const QModelIndex& parent) const { return 2; }
+int InstanceTreeItemInfoModel::columnCount(const QModelIndex& parent) const 
+{
+	return 2;
+}
 
 QModelIndex InstanceTreeItemInfoModel::index(int row, int column, const QModelIndex & parent) const
 {
-	if(parent.isValid() == false) {
+	if (!parent.isValid())
+	{
 		return createIndex(row, column);
 	}
 	return QModelIndex{};
 }
 
-int InstanceTreeItemInfoModel::rowCount(const QModelIndex& parent) const { return 3; }
+int InstanceTreeItemInfoModel::rowCount(const QModelIndex& parent) const 
+{
+	return m_propertyNames.size();
+}
 
 QModelIndex InstanceTreeItemInfoModel::parent(const QModelIndex & child) const
 {
@@ -235,4 +245,25 @@ QModelIndex InstanceTreeItemInfoModel::parent(const QModelIndex & child) const
 bool InstanceTreeItemInfoModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	return false;
+}
+
+QVariant InstanceTreeItemInfoModel::headerData(int section, Qt::Orientation orientation, int role) const 
+{
+	if(orientation == Qt::Horizontal) 
+	{
+		if(role == Qt::DisplayRole) {
+			if(section == 0) {
+				return QStringLiteral("Property Name");
+			}
+			if (section == 1) {
+				return QStringLiteral("Value");
+			}
+		}
+	}
+	return QVariant{};
+}
+
+Qt::ItemFlags InstanceTreeItemInfoModel::flags(const QModelIndex& index) const 
+{
+	return QAbstractItemModel::flags(index);
 }

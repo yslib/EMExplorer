@@ -135,15 +135,11 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 			emit sliceSelected(itemPoint.toPoint());
 
 			if (m_state == Operation::Paint) {
-
 				m_currentPaintingSlice = m_slice;
-
 				m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
-
 				m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
 				m_paintingItem->setPen(m_pen);
 				m_paintingItem->appendPoint(itemPoint);
-
 				event->accept();
 				return;
 			}
@@ -319,9 +315,9 @@ inline
 void SliceWidget::setMarkHelper(
 	const QList<StrokeMarkItem*>& items)
 {
-	foreach(QGraphicsItem * item, items)
+	foreach(StrokeMarkItem * item, items)
 	{
-		item->setVisible(item->data(MarkProperty::VisibleState).toBool());
+		item->setVisible(item->visibleState());
 		item->setParentItem(m_slice);
 	}
 

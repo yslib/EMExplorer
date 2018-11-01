@@ -204,9 +204,9 @@ QModelIndex MarkModel::_hlp_instanceAdd(const QString & category, const StrokeMa
  */
 void MarkModel::addMarkInSliceHelper(StrokeMarkItem * mark)
 {
-	int index = mark->data(MarkProperty::SliceIndex).toInt();
+	const int index = mark->sliceIndex();
 	MarkSliceList * markList;
-	switch (static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()))
+	switch (mark->sliceType())
 	{
 	case SliceType::Top:
 		markList = &m_topSliceVisibleMarks;
@@ -229,8 +229,8 @@ void MarkModel::addMarkInSliceHelper(StrokeMarkItem * mark)
  */
 void MarkModel::removeMarkInSliceHelper(StrokeMarkItem * mark)
 {
-	int index = mark->data(MarkProperty::SliceIndex).toInt();
-	auto type = static_cast<SliceType>(mark->data(MarkProperty::SliceType).value<int>());
+	const auto index = mark->sliceIndex();
+	const auto type = mark->sliceType();
 	switch (type)
 	{
 	case SliceType::Top:
@@ -257,11 +257,11 @@ void MarkModel::updateMarkVisibleHelper(StrokeMarkItem * mark)
 		return;
 	int index = -1;
 
-	index = m_view->currentSliceIndex(static_cast<SliceType>(mark->data(MarkProperty::SliceType).toInt()));
-	if (index != mark->data(MarkProperty::SliceIndex).toInt())
+	index = m_view->currentSliceIndex(static_cast<SliceType>(mark->sliceType()));
+	if (index != mark->sliceIndex())
 		return;
 
-	const auto visible = mark->data(MarkProperty::VisibleState).toBool();
+	const auto visible = mark->visibleState();
 	mark->setVisible(visible);
 	setDirty();
 }
@@ -469,11 +469,9 @@ QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> 
 	 * when item is inserted at once so as to get a better performance here.
 	 */
 
-	std::sort(marks.begin(), marks.end(), [](const QGraphicsItem * it1, const QGraphicsItem * it2)->bool
+	std::sort(marks.begin(), marks.end(), [](const StrokeMarkItem * it1, const StrokeMarkItem * it2)->bool
 	{
-		Q_ASSERT_X(it1->data(MarkProperty::SliceIndex).canConvert<int>(), "MarkModel::refactorMarks", "it1 failed");
-		Q_ASSERT_X(it2->data(MarkProperty::SliceIndex).canConvert<int>(), "MarkModel::refactorMarks", "it2 failed");
-		return it1->data(MarkProperty::SliceIndex).value<int>() < it2->data(MarkProperty::SliceIndex).value<int>();
+		return it1->sliceIndex() < it2->sliceIndex();
 	});
 
 	/*
@@ -806,7 +804,11 @@ QList<StrokeMarkItem*> MarkModel::marks(const QString& text) const
  */
 bool MarkModel::removeMark(StrokeMarkItem * mark)
 {
-	const auto category = mark->data(MarkProperty::CategoryName).toString();
+	QString category = "";
+
+	// TODO::
+
+
 	auto id = _hlp_categoryIndex(category);
 	int r = rowCount(id);
 	auto item = _hlp_internalPointer(id);

@@ -98,8 +98,9 @@ void Triangulate::initVertex(const QList<StrokeMarkItem*>& marks) {
 	m_ready = false;
 
 	auto copyMarks = marks;
-	std::sort(copyMarks.begin(), copyMarks.end(), [](const StrokeMarkItem* m1, const StrokeMarkItem *m2) {
-		return m1->data(MarkProperty::SliceIndex).value<int>() < m2->data(MarkProperty::SliceIndex).value<int>();
+	std::sort(copyMarks.begin(), copyMarks.end(), [](const StrokeMarkItem* m1, const StrokeMarkItem *m2) 
+	{
+		return m1->sliceIndex() < m2->sliceIndex();
 	});
 	for(int i=0;i<markCount;i++) {
 		const auto & poly = copyMarks[i]->polygon();
@@ -107,7 +108,7 @@ void Triangulate::initVertex(const QList<StrokeMarkItem*>& marks) {
 		m_levelIndices[i].resize(n);
 		for(int j=0;j<n;j++) {
 			m_levelIndices[i][j] = j + m_vertexCount;
-			m_allVertices.push_back({static_cast<float>(poly[j].x()),static_cast<float>(poly[j].y()),static_cast<float>(copyMarks[i]->data(MarkProperty::SliceIndex).value<int>()*m_spacing)});		//(x,y,z) in current slice
+			m_allVertices.push_back({static_cast<float>(poly[j].x()),static_cast<float>(poly[j].y()),static_cast<float>(copyMarks[i]->sliceIndex()*m_spacing)});		//(x,y,z) in current slice
 		}
 		m_vertexCount += n;
 	}

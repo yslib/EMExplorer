@@ -155,71 +155,71 @@ void MarkTreeView::onRenameAction()
 
 
 //In c++, functions in an anonymous namespace are equivalent to be qualified by static, which have a local scope
-namespace
-{
-	QString propertyToString(const QVariant & var, MarkProperty::Property type)
-	{
-		switch (type)
-		{
-		case MarkProperty::Color:
-		case MarkProperty::CategoryColor:
-		{
-			if (var.canConvert<QColor>() == false)
-				return QString();
-			QColor c = var.value<QColor>();
-			QString str = QStringLiteral("(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue());
-			return str;
-		}
-		case MarkProperty::Name:
-		case MarkProperty::CategoryName:
-			return var.toString();
-		case MarkProperty::SliceIndex:
-			return QString::number(var.toInt());
-		case MarkProperty::SliceType:
-			switch (static_cast<SliceType>(var.toInt()))
-			{
-			case SliceType::Top:
-				return QStringLiteral("Top");
-			case SliceType::Right:
-				return QStringLiteral("Right");
-			case SliceType::Front:
-				return QStringLiteral("Front");
-			default:
-				return QStringLiteral("");
-			}
-		case MarkProperty::VisibleState:
-			return var.toBool() ? QStringLiteral("True") : QStringLiteral("False");
-		case MarkProperty::Length:
-			return QString::number(var.toDouble());
-		default:
-			return QString();
-			break;
-		}
-
-	}
-
-
-	QTableWidgetItem * tableViewItem(const QVariant & var, MarkProperty::Property type)
-	{
-		QTableWidgetItem * item = nullptr;
-		item = new QTableWidgetItem(propertyToString(var, type));
-		switch (type)
-		{
-		case MarkProperty::CategoryColor:
-		case MarkProperty::Color:
-			item->setData(Qt::BackgroundColorRole, var);
-			return item;
-		case MarkProperty::Name:
-		case MarkProperty::CategoryName:
-		case MarkProperty::SliceIndex:
-		case MarkProperty::SliceType:
-		case MarkProperty::VisibleState:
-		case MarkProperty::Length:
-			break;
-		}
-		return item;
-	}
-}
+//namespace
+//{
+//	QString propertyToString(const QVariant & var, MarkProperty::Property type)
+//	{
+//		switch (type)
+//		{
+//		case MarkProperty::Color:
+//		case MarkProperty::CategoryColor:
+//		{
+//			if (var.canConvert<QColor>() == false)
+//				return QString();
+//			QColor c = var.value<QColor>();
+//			QString str = QStringLiteral("(%1,%2,%3)").arg(c.red()).arg(c.green()).arg(c.blue());
+//			return str;
+//		}
+//		case MarkProperty::Name:
+//		case MarkProperty::CategoryName:
+//			return var.toString();
+//		case MarkProperty::SliceIndex:
+//			return QString::number(var.toInt());
+//		case MarkProperty::SliceType:
+//			switch (static_cast<SliceType>(var.toInt()))
+//			{
+//			case SliceType::Top:
+//				return QStringLiteral("Top");
+//			case SliceType::Right:
+//				return QStringLiteral("Right");
+//			case SliceType::Front:
+//				return QStringLiteral("Front");
+//			default:
+//				return QStringLiteral("");
+//			}
+//		case MarkProperty::VisibleState:
+//			return var.toBool() ? QStringLiteral("True") : QStringLiteral("False");
+//		case MarkProperty::Length:
+//			return QString::number(var.toDouble());
+//		default:
+//			return QString();
+//			break;
+//		}
+//
+//	}
+//
+//
+//	QTableWidgetItem * tableViewItem(const QVariant & var, MarkProperty::Property type)
+//	{
+//		QTableWidgetItem * item = nullptr;
+//		item = new QTableWidgetItem(propertyToString(var, type));
+//		switch (type)
+//		{
+//		case MarkProperty::CategoryColor:
+//		case MarkProperty::Color:
+//			item->setData(Qt::BackgroundColorRole, var);
+//			return item;
+//		case MarkProperty::Name:
+//		case MarkProperty::CategoryName:
+//		case MarkProperty::SliceIndex:
+//		case MarkProperty::SliceType:
+//		case MarkProperty::VisibleState:
+//		case MarkProperty::Length:
+//			break;
+//		}
+//		return item;
+//	}
+//}
 
 
 TreeNodeInfoView::TreeNodeInfoView(QWidget * parent) :QTableView(parent)

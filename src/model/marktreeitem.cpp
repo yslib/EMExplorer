@@ -39,19 +39,27 @@ m_markItem(nullptr), m_infoModel(nullptr) {
 	m_markItem->m_modelIndex = persistentModelIndex();
 
 	m_infoModel = new MarkItemInfoModel(markItem, nullptr);
+
+	Q_ASSERT(parentItem());
+
+	m_markItem->setName(QStringLiteral("# %1 #").number(parentItem()->childCount()));
 }
 
 QVariant StrokeMarkTreeItem::data(int column, int role) const {
+
 	if (column >= columnCount())
 		return QVariant();
-	if (role == Qt::DisplayRole) {
-		return m_markItem->data(MarkProperty::Name);
+	if (role == Qt::DisplayRole) 
+	{
+		return m_markItem->name();
 	}
-	else if (role == Qt::DecorationRole) {
-		return m_markItem->data(MarkProperty::Color);
+	if (role == Qt::DecorationRole) 
+	{
+		return m_markItem->pen().color();
 	}
-	else if (role == Qt::CheckStateRole) {
-		return m_markItem->data(MarkProperty::VisibleState) == true ? Qt::Checked : Qt::Unchecked;
+	if (role == Qt::CheckStateRole) 
+	{
+		return m_markItem->visibleState() ?  Qt::Checked : Qt::Unchecked;
 	}
 	return QVariant();
 }
@@ -68,31 +76,34 @@ bool StrokeMarkTreeItem::removeColumns(int position, int columns) {
 	return false;
 }
 
-int StrokeMarkTreeItem::columnCount() const {
+int StrokeMarkTreeItem::columnCount() const 
+{
 	return 2;
 }
 
 bool StrokeMarkTreeItem::setData(int column, const QVariant& value, int role) {
-	if (role == Qt::EditRole) {
-		m_markItem->setData(MarkProperty::Name, value);
+
+	if (role == Qt::EditRole) 
+	{
+		m_markItem->setName(value.toString());
 		return true;
 	}
-	else if (role == Qt::DecorationRole) {
-		m_markItem->setData(MarkProperty::Color, value);
+	if (role == Qt::CheckStateRole) 
+	{
+		m_markItem->setVisibleState(value == Qt::Checked);
 		return true;
 	}
-	else if (role == Qt::CheckStateRole) {
-		m_markItem->setData(MarkProperty::VisibleState, value == Qt::Checked ? true : false);
-		//m_markItem->setVisible(value == Qt::Checked ? true : false);
-		return true;
-	}
+	return false;
 }
 
 /**
  * \brief Returns the information about the tree item.
  * \return
  */
-int StrokeMarkTreeItem::type() const { return TreeItemType::Mark; }
+int StrokeMarkTreeItem::type() const 
+{
+	return TreeItemType::Mark;
+}
 
 /**
  * \brief Returns meta data in the tree item
@@ -121,6 +132,14 @@ StrokeMarkTreeItem::~StrokeMarkTreeItem()
 MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem * mark, QObject * parent) :m_markItem(nullptr), QAbstractItemModel(parent)
 {
 	m_markItem = mark;
+
+	propertyNames << QStringLiteral("Name") 
+	<< QStringLiteral("Slice Index") 
+	<< QStringLiteral("Slice Type") 
+	<< QStringLiteral("Visible") 
+	<< QStringLiteral("Color") 
+	<< QStringLiteral("Length:");
+
 }
 
 /**
@@ -136,29 +155,32 @@ QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 {
 	if (m_markItem == nullptr)
 		return QVariant();
-	if (role == Qt::DisplayRole) {
-		const auto r = index.row();
-		const auto c = index.column();
-		const static QString tableHeaders[] = {
-			QStringLiteral("Color"),
-			QStringLiteral("Name") ,
-			QStringLiteral("Slice Index") ,
-			QStringLiteral("Slice Type") ,
-			QStringLiteral("Visible"),
-			QStringLiteral("Length:") };
-		if (c == 0) {
-			return tableHeaders[r];
+	const auto r = index.row();
+	const auto c = index.column();
+	if (role == Qt::DisplayRole) 
+	{
+		if (c == 0) 
+		{
+			return propertyNames[r];
 		}
-		else if (c == 1) {
-			switch (r) {
-			case 0:return m_markItem->data(MarkProperty::Color);
-			case 1:return m_markItem->data(MarkProperty::Name);
-			case 2:return m_markItem->data(MarkProperty::SliceIndex);
-			case 3:return m_markItem->data(MarkProperty::SliceType);
-			case 4:return m_markItem->data(MarkProperty::VisibleState);
-			case 5:return m_markItem->data(MarkProperty::Length);
-			default:return QVariant{};
+		if (c == 1) 
+		{
+			switch (r) 
+			{
+				case 0:return m_markItem->name();
+				case 1:return m_markItem->sliceIndex();
+				case 2:return static_cast<int>(m_markItem->sliceType());
+				case 3:return m_markItem->visibleState();
+				case 4:return QVariant{};			// Color
+				case 5:return m_markItem->length();
+				default:return QVariant{};
 			}
+		}
+	}
+	if(role == Qt::BackgroundColorRole) {
+		if(r == 4 && c == 1) 
+		{
+			return m_markItem->pen().color();
 		}
 	}
 	return QVariant();
@@ -183,7 +205,8 @@ int MarkItemInfoModel::columnCount(const QModelIndex & parent) const
  */
 QModelIndex MarkItemInfoModel::index(int row, int column, const QModelIndex & parent) const
 {
-	if (parent.isValid() == false) {
+	if (!parent.isValid()) 
+	{
 		return createIndex(row, column);
 	}
 	return QModelIndex{};
@@ -196,7 +219,7 @@ QModelIndex MarkItemInfoModel::index(int row, int column, const QModelIndex & pa
  */
 int MarkItemInfoModel::rowCount(const QModelIndex & parent) const
 {
-	return 6;
+	return propertyNames.size();
 }
 
 /**
@@ -218,7 +241,24 @@ QModelIndex MarkItemInfoModel::parent(const QModelIndex & child) const
  * \param role
  * \return
  */
-bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+
+	Q_ASSERT(m_markItem);
+
+	if (!index.isValid())
+		return false;
+	const auto r = index.row();
+	const auto c = index.column();
+	if(role == Qt::EditRole)		// Edits name of the mark
+	{
+		if(r == 0 && c == 1)       // Name
+		{		
+			m_markItem->setName(value.toString());
+			emit dataChanged(index, index, {role});
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -246,4 +286,9 @@ QVariant MarkItemInfoModel::headerData(int section, Qt::Orientation orientation,
 		}
 	}
 	return QVariant();
+}
+
+Qt::ItemFlags MarkItemInfoModel::flags(const QModelIndex& index) const 
+{
+	return QAbstractItemModel::flags(index);
 }

@@ -6,6 +6,7 @@
 #include <QAbstractGraphicsShapeItem>
 #include <QPersistentModelIndex>
 #include <qcoreapplication.h>
+#include <QPen>
 
 //#include <QtContainerFwd>
 
@@ -72,16 +73,25 @@
 
 
 
-typedef QList<QPair<MarkProperty::Property, QString>> MarkPropertyInfo;
+//typedef QList<QPair<MarkProperty::Property, QString>> MarkPropertyInfo;
 
 
 
-Q_DECLARE_METATYPE(MarkPropertyInfo)
+//Q_DECLARE_METATYPE(MarkPropertyInfo)
+
+
 
 class StrokeMarkItem :public QGraphicsPolygonItem {
 	std::function<QVariant(StrokeMarkItem* mark,QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
 	QPersistentModelIndex m_modelIndex;
+	QString m_name;
+	SliceType m_sliceType;
+	QPen m_pen;
+	double m_length;
+	int m_index;
+	bool m_visibleState;
 public:
+
 	enum {Type = StrokeMark};
 	explicit StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
 	explicit StrokeMarkItem(QGraphicsItem * parent = nullptr);
@@ -90,12 +100,24 @@ public:
 	int type() const override { return Type; }
 	void setItemChangeHandler(const std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)>& handler);
 	QPersistentModelIndex modelIndex()const { return m_modelIndex; }
+
+	QString	name()const { return m_name; }
+	void setName(const QString & name) { m_name = name; }
+	SliceType sliceType()const { return m_sliceType; }
+	void setSliceType(SliceType type) { m_sliceType = type; }
+	double length()const { return m_length; };
+	int sliceIndex()const { return m_index; }
+	void setSliceIndex(int index) { m_index = index; }
+
+	bool visibleState()const { return m_visibleState; }
+	void setVisibleState(bool visible) { m_visibleState = visible; }
+	
 private:
 	void createPropertyInfo();
 	void updateLength();
+	
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
-
 	friend class StrokeMarkTreeItem;		///< Member m_modelIndex
 };
 

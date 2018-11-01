@@ -110,7 +110,7 @@ public:
 	void zoomOut();
 	void setOperation(SliceType type,int opt);
 
-	void setTopSliceVisibility(bool enable);
+	void setTopSliceVisibility(bool check);
 	void setFrontSliceVisibility(bool check);
 	void setRightSliceVisibility(bool check);
 

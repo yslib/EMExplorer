@@ -375,50 +375,18 @@ MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractS
 
 /**
  * \brief This is a helper function used to add mark \a mark to a \a type type slice
+ * 
+ * Some information about the mark should be added into it including \a type of SliceType and \a index
+ * 
  * \note This is only for class internal use
  */
 void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 {
-	//Q_ASSERT_X(m_panel, "ImageCanvas::markAddedHelper", "null pointer");
-
-	//d_ptr->state->category;
 	Q_ASSERT_X(m_markModel, "SliceEditorWidget::markAddedHelper", "m_markModel != nullptr");
-
 	const auto cate = d_ptr->state->currentCategory;
-
-	//const auto cateItem = m_markModel->categoryItem(cate);
-
-	//Q_ASSERT_X(cateItem != nullptr, "SliceEditorWidget::markAddedHelper", "cateItem != nullptr");
-
-	const QVariant categoryColor = QVariant::fromValue<QColor>(Qt::blue);
-
-
-	mark->setData(MarkProperty::SliceType, QVariant::fromValue(static_cast<int>(type)));
-	mark->setData(MarkProperty::CategoryName, QVariant::fromValue(cate));
-	mark->setData(MarkProperty::CategoryColor, categoryColor);
-	mark->setData(MarkProperty::VisibleState, QVariant::fromValue(true));
-	//slicetype, sliceindex, categoryname, name, color, categorycolor, visible state
-	int index;
-
-	QColor color;
-	index = currentSliceIndex(type);
-	switch (type)
-	{
-	case SliceType::Top:
-		color = m_topView->pen().color();
-		break;
-	case SliceType::Right:
-		color = m_rightView->pen().color();
-		break;
-	case SliceType::Front:
-		color = m_frontView->pen().color();
-		break;
-	}
-	mark->setData(MarkProperty::SliceIndex, QVariant::fromValue(index));
-	mark->setData(MarkProperty::Color, color);
-	Q_ASSERT_X(m_markModel != nullptr,
-		"mark_create_helper_", "null pointer");
-
+	const auto index = currentSliceIndex(type);
+	mark->setSliceType(type);
+	mark->setSliceIndex(index);
 	m_markModel->addMark(cate, mark);
 }
 

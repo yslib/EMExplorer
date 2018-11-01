@@ -6,10 +6,9 @@
 class MarkItemInfoModel :public QAbstractItemModel
 {
 	StrokeMarkItem * m_markItem;
-
+	QVector<QString> propertyNames;
 public:
 	explicit MarkItemInfoModel(StrokeMarkItem * mark,QObject * parent);
-
 	QVariant data(const QModelIndex& index, int role) const override;
 	int columnCount(const QModelIndex& parent) const override;
 	QModelIndex index(int row, int column, const QModelIndex& parent) const override;
@@ -17,8 +16,8 @@ public:
 	QModelIndex parent(const QModelIndex& child) const override;
 	bool setData(const QModelIndex& index, const QVariant& value, int role) override;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+	Qt::ItemFlags flags(const QModelIndex& index) const override;
 };
-
 
 
 class StrokeMarkTreeItem :public TreeItem {

@@ -70,21 +70,13 @@ public slots:
 
 
 protected:
-
 	void mousePressEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
-
 	void mouseMoveEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
-
 	void mouseReleaseEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
-
 	void wheelEvent(QWheelEvent * event)Q_DECL_OVERRIDE;
-
 	void focusInEvent(QFocusEvent* event) Q_DECL_OVERRIDE;
-
 	void focusOutEvent(QFocusEvent* event)Q_DECL_OVERRIDE;
-
 	void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
-
 signals:
 
 	/**
