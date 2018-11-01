@@ -36,32 +36,44 @@ m_markItem(nullptr), m_infoModel(nullptr) {
 	//	});
 	//}
 
+	QVariant::Color;
+
 	m_markItem->m_modelIndex = persistentModelIndex();
 
 	m_infoModel = new MarkItemInfoModel(markItem, nullptr);
 
-	Q_ASSERT(parentItem());
+	//Q_ASSERT(parentItem());
 
-	m_markItem->setName(QStringLiteral("# %1 #").number(parentItem()->childCount()));
+	m_markItem->setName(QStringLiteral("# %1 #").number(1));
 }
 
 QVariant StrokeMarkTreeItem::data(int column, int role) const {
 
 	if (column >= columnCount())
 		return QVariant();
-	if (role == Qt::DisplayRole) 
+	if(column == 0) 
 	{
-		return m_markItem->name();
+		if (role == Qt::DisplayRole)
+		{
+			return m_markItem->name();
+		}
+		if (role == Qt::DecorationRole)
+		{
+			return m_markItem->pen().color();
+		}
+		if (role == Qt::CheckStateRole)
+		{
+			return m_markItem->visibleState() ? Qt::Checked : Qt::Unchecked;
+		}
 	}
-	if (role == Qt::DecorationRole) 
-	{
-		return m_markItem->pen().color();
+	if(column == 1) {
+		if(role == Qt::DisplayRole) 
+		{
+			return m_markItem->sliceIndex();
+		}
 	}
-	if (role == Qt::CheckStateRole) 
-	{
-		return m_markItem->visibleState() ?  Qt::Checked : Qt::Unchecked;
-	}
-	return QVariant();
+
+	return QVariant{};
 }
 
 bool StrokeMarkTreeItem::insertColumns(int position, int columns) {
@@ -154,10 +166,10 @@ MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem * mark, QObject * parent) :m
 QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 {
 	if (m_markItem == nullptr)
-		return QVariant();
+		return QVariant{};
 	const auto r = index.row();
 	const auto c = index.column();
-	if (role == Qt::DisplayRole) 
+	if ( role == Qt::EditRole || role == Qt::DisplayRole) 
 	{
 		if (c == 0) 
 		{
@@ -171,7 +183,7 @@ QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 				case 1:return m_markItem->sliceIndex();
 				case 2:return static_cast<int>(m_markItem->sliceType());
 				case 3:return m_markItem->visibleState();
-				case 4:return QVariant{};			// Color
+				case 4:return m_markItem->pen().color();	// Color
 				case 5:return m_markItem->length();
 				default:return QVariant{};
 			}
@@ -183,7 +195,7 @@ QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 			return m_markItem->pen().color();
 		}
 	}
-	return QVariant();
+	return QVariant{};
 }
 
 /**
@@ -252,11 +264,26 @@ bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value,
 	const auto c = index.column();
 	if(role == Qt::EditRole)		// Edits name of the mark
 	{
-		if(r == 0 && c == 1)       // Name
-		{		
-			m_markItem->setName(value.toString());
-			emit dataChanged(index, index, {role});
-			return true;
+		qDebug() << "???";
+		if( c == 1) {
+			if(r == 0) {			// Name
+				m_markItem->setName(value.toString());
+				emit dataChanged(index, index, { role });
+				return true;
+			}
+			if(r == 3) {
+				m_markItem->setVisibleState(value.toBool());
+				emit dataChanged(index, index, { role });
+				return true;
+			}
+			if(r == 4) {
+				auto p = m_markItem->pen();
+				p.setColor(qvariant_cast<QColor>(value));
+				m_markItem->setPen(p);
+				emit dataChanged(index, index, { role });
+				return true;
+			}
+
 		}
 	}
 	return false;
@@ -275,20 +302,40 @@ bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value,
  */
 QVariant MarkItemInfoModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if (role == Qt::DisplayRole) {
-		if (orientation == Qt::Horizontal) {
-			if (section == 0) {
-				return QStringLiteral("Preperty Name");
+	if (role == Qt::DisplayRole) 
+	{
+		if (orientation == Qt::Horizontal) 
+		{
+			switch(section) 
+			{
+				case 0:return QStringLiteral("Property");
+				case 1:return QStringLiteral("Value");
+				default:return QVariant{};
 			}
-			else if (section == 1) {
-				return QStringLiteral("Value");
-			}
+
 		}
 	}
-	return QVariant();
+	return QVariant{};
 }
 
 Qt::ItemFlags MarkItemInfoModel::flags(const QModelIndex& index) const 
 {
+	if (!index.isValid())
+		return Qt::NoItemFlags;
+	const auto r = index.row();
+	const auto c = index.column();
+	if(c == 1)
+	{
+		switch(r) 
+		{
+			case 0:case 3:case 4:									// Name Visibility Color					
+			return Qt::ItemIsEnabled | Qt::ItemIsEditable;			
+			default:return Qt::ItemIsEnabled;							// Others
+		}
+	}
+	if(c == 0) 
+	{
+		return Qt::ItemIsEnabled;
+	}
 	return QAbstractItemModel::flags(index);
 }

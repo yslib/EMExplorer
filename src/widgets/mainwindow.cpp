@@ -12,6 +12,7 @@
 #include <QEvent>
 #include <QButtonGroup>
 
+
 #include "mainwindow.h"
 #include "model/mrc.h"
 #include "widgets/sliceeditorwidget.h"
@@ -26,6 +27,7 @@
 #include "widgets/slicecontrolwidget.h"
 #include "widgets/pixelwidget.h"
 #include "widgets/histogramwidget.h"
+
 
 
 //QSize imageSize(500, 500);
@@ -47,6 +49,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	//	{QStringLiteral("m"), QStringLiteral("Run marking function for view slice window.")}
 	//});
 	//m_parser->process(*qApp);
+
+
+
+
 
 	setWindowTitle("Window");
 

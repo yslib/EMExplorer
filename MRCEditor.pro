@@ -67,7 +67,8 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/model/marktreeitem.h \
     $${MY_PREFIX_DIR}/model/iteminfomodel.h \
     $${MY_PREFIX_DIR}/model/strokeitem.h \
-    $${MY_PREFIX_DIR}/algorithm/bimap.h
+    $${MY_PREFIX_DIR}/algorithm/bimap.h \
+    src/widgets/colorlisteditor.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
     $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
@@ -114,5 +115,6 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/model/marktreeitem.cpp \
     $${MY_PREFIX_DIR}/model/iteminfomodel.cpp \
     $${MY_PREFIX_DIR}/model/strokeitem.cpp \
-    $${MY_PREFIX_DIR}/algorithm/bimap.cpp
+    $${MY_PREFIX_DIR}/algorithm/bimap.cpp \
+    src/widgets/colorlisteditor.cpp
 RESOURCES += resources.qrc

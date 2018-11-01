@@ -20,7 +20,7 @@ QVariant CategoryTreeItemInfoModel::data(const QModelIndex& index, int role) con
 
 int CategoryTreeItemInfoModel::columnCount(const QModelIndex & parent) const
 {
-	if(parent.isValid() == false) 
+	if(parent.isValid() == false)
 	{
 		return 2;
 	}
@@ -81,7 +81,7 @@ CategoryTreeItem::CategoryTreeItem(const CategoryItem& categoryItem,const QPersi
  */
 QVariant CategoryTreeItem::data(int column, int role) const {
 	if (column >= columnCount())
-		return false;
+		return QVariant{};
 	if (role == Qt::DisplayRole) {
 		return m_categoryItem.name();
 	}
@@ -98,7 +98,7 @@ QVariant CategoryTreeItem::data(int column, int role) const {
  * \brief Reimplemented from TreeItem::columnCount()
  * \return 
  */
-int CategoryTreeItem::columnCount() const { return 2; }
+int CategoryTreeItem::columnCount() const { return 1; }
 
 /**
  * \brief Reimplemented from TreeItem::setData(int column,const QVariant& value,int role)

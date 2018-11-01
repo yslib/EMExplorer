@@ -1,14 +1,17 @@
 #include <QMenu>
 #include <QContextMenuEvent>
-#include <QTableWidget>
 #include <QHeaderView>
 #include <QVBoxLayout>
 
 #include "globals.h"
 #include "marktreeviewwidget.h"
 #include "model/treeitem.h"
+#include "model/markmodel.h"
+#include "widgets/colorlisteditor.h"
 
 #include <iostream>
+#include <QItemEditorFactory>
+#include <qitemdelegate.h>
 
 
 MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
@@ -16,10 +19,10 @@ MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	createAction();
+	//setShowGrid(true);
+	setAlternatingRowColors(true);
 	createMenu();
 }
-
-
 
 void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
 {
@@ -32,10 +35,6 @@ void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
  * \brief Reimplemented from QTreeView::currentChanged(cosnt QModelIndex & current,const QModelIndex& preivous)
  *
  * This override function is used to emit currentIndexChanged() signal
- * \param current 
- * \param previous
- * 
- *   
  */
 
 void MarkTreeView::currentChanged(const QModelIndex& current, const QModelIndex& previous) 
@@ -226,8 +225,17 @@ TreeNodeInfoView::TreeNodeInfoView(QWidget * parent) :QTableView(parent)
 {
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	//verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	//setShowGrid(true);
+	setShowGrid(true);
 	setAlternatingRowColors(true);
+
+	auto *factory = new QItemEditorFactory();
+	auto *colorListCreator = new QStandardItemEditorCreator<ColorListEditor>();
+	factory->registerEditor(QVariant::Color, colorListCreator);
+
+	auto dele = new QItemDelegate;
+	dele->setItemEditorFactory(factory);
+	setItemDelegate(dele);
+
 }
 
 

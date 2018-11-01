@@ -13,7 +13,7 @@ class RootTreeItem : public TreeItem {
 public:
 	RootTreeItem(const QPersistentModelIndex & pIndex,TreeItem * parent) :TreeItem(pIndex,parent) {}
 	QVariant data(int column, int role) const override { return QVariant(); }
-	int columnCount() const override { return 1; }
+	int columnCount() const override { return 2; }
 	bool insertColumns(int position, int columns) override{Q_UNUSED(position);Q_UNUSED(columns);return false;}
 	bool removeColumns(int position, int columns) override{Q_UNUSED(position);Q_UNUSED(columns);return false;}
 	bool setData(int column, const QVariant& value, int role) override{return false;}

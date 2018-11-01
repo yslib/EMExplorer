@@ -972,11 +972,6 @@ Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
  * the node represented by \a index. \a Under this situation, the type of internal data in \a value should be \a void*
  * and the value of \a column() of \a index is ignored
  *
- *
- * \param index
- * \param value
- * \param role
- *
  * \return Returns \a true if this call is successful otherwise return \a false.
  *
  * \note If \a role is Qt::CheckStateRole, the function will be called recursively to apply the same setting
@@ -1059,9 +1054,7 @@ bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 
 /**
  * \brief
- * \param row
- * \param count
- * \param parent
+
  * \return
  */
 bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
@@ -1097,7 +1090,7 @@ QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int rol
 		if (section == 1)
 			return QStringLiteral("Desc");
 	}
-	return QVariant();
+	return QVariant{};
 }
 
 QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
@@ -1111,12 +1104,12 @@ QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) co
 QModelIndex MarkModel::parent(const QModelIndex & index) const
 {
 	//Index points to a root item
-	TreeItem * item = _hlp_internalPointer(index);
+	const auto item = _hlp_internalPointer(index);
 
-	if (index.isValid() == false || item == m_rootItem)return QModelIndex();
+	if (index.isValid() == false || item == m_rootItem)
+		return QModelIndex();
 
-
-	TreeItem * parentItem = item->parentItem();
+	const auto parentItem = item->parentItem();
 
 	//If index points to a child item of root item
 	if (parentItem == m_rootItem)
@@ -1151,7 +1144,6 @@ QDataStream & operator<<(QDataStream & stream, const CategoryItem & item)
 
 QDataStream & operator>>(QDataStream & stream, CategoryItem & item)
 {
-
 	stream >> item.m_info.name >> item.m_info.color >> item.m_count >> item.m_visible;
 	Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd,
 		"Category::operator<<", "corrupt data");

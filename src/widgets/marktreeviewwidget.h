@@ -4,6 +4,7 @@
 #include <QTreeView>
 #include <QTableView>
 
+class MarkModel;
 class QAction;
 class QMenu;
 class TreeItem;

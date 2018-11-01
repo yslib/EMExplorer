@@ -119,15 +119,17 @@ bool InstanceTreeItem::setData(int column, const QVariant& value, int role) {
  * \brief
  * \return
  */
-int InstanceTreeItem::columnCount() const {
-	return 1;
+int InstanceTreeItem::columnCount() const 
+{
+	return 2;
 }
 
 /**
  * \brief
  * \return
  */
-int InstanceTreeItem::type() const {
+int InstanceTreeItem::type() const 
+{
 	return TreeItemType::Instance;
 }
 
@@ -138,7 +140,8 @@ int InstanceTreeItem::type() const {
  * \param columns
  * \return
  */
-bool InstanceTreeItem::insertColumns(int position, int columns) {
+bool InstanceTreeItem::insertColumns(int position, int columns) 
+{
 	return false;
 }
 
@@ -150,7 +153,6 @@ bool InstanceTreeItem::insertColumns(int position, int columns) {
  */
 bool InstanceTreeItem::removeColumns(int position, int columns)
 {
-
 	return false;
 }
 
