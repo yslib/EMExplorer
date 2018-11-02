@@ -59,14 +59,12 @@ QVector<QList<StrokeMarkItem*>> InstanceTreeItem::refactorMarks(QList<StrokeMark
 }
 
 
-InstanceTreeItem::InstanceTreeItem(const QString & text, const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
+InstanceTreeItem::InstanceTreeItem(InstanceMetaData * metaData, const QPersistentModelIndex& pModelIndex, TreeItem* parent) :
 	TreeItem(pModelIndex, parent),
-	m_infoModel(nullptr)
+	m_infoModel(nullptr),
+	m_metaData(metaData)
 {
-
-	m_metaData.reset(new InstanceMetaData());
-	m_metaData->setName(text);
-	m_infoModel = new InstanceTreeItemInfoModel(m_metaData.data(),this, nullptr);
+	m_infoModel = new InstanceTreeItemInfoModel(m_metaData,this, nullptr);
 }
 
 
@@ -180,9 +178,38 @@ QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {
 
 InstanceTreeItem::~InstanceTreeItem() 
 {
+	delete m_metaData;
 	m_infoModel->deleteLater();
 }
 
+QDataStream & operator<<(QDataStream & stream, const InstanceMetaData * metaData)
+{
+	Q_ASSERT(metaData);
+	stream << metaData->m_name << metaData->m_region << metaData->m_visibleState;
+	return stream;
+}
+
+QDataStream & operator>>(QDataStream & stream, InstanceMetaData *& metaData)
+{
+	metaData = new InstanceMetaData;
+	stream >> metaData->m_name >> metaData->m_region >> metaData->m_visibleState;
+	return stream;
+}
+
+QDataStream & operator<<(QDataStream & stream, const InstanceTreeItem * item)
+{
+	Q_ASSERT(item);
+	stream << item->m_metaData;
+	return stream;
+}
+QDataStream & operator>>(QDataStream & stream, InstanceTreeItem *& item) 
+{
+	InstanceMetaData * metaData = nullptr;
+	stream >> metaData;		// allocate in it
+	const auto newItem = new InstanceTreeItem(metaData, QModelIndex{}, nullptr);
+	item = newItem;
+	return stream;
+}
 
 InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(InstanceMetaData * metaData, InstanceTreeItem * item, QObject * parent) :QAbstractItemModel(parent)
 {
@@ -190,7 +217,6 @@ InstanceTreeItemInfoModel::InstanceTreeItemInfoModel(InstanceMetaData * metaData
 	m_metaData = metaData;
 
 	m_propertyNames << QStringLiteral("Name")
-		//<< QStringLiteral("Color")
 		<< QStringLiteral("Region")
 		<< QStringLiteral("Visibility")
 		<< QStringLiteral("Mark Count");

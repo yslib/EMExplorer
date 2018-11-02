@@ -4,6 +4,8 @@
 #include "model/treeitem.h"
 #include "algorithm/triangulate.h"
 
+#include <QDataStream>
+
 class InstanceMetaData 
 {
 	QString m_name;
@@ -17,7 +19,15 @@ public:
 	void setVisibleState(bool visible) { m_visibleState = visible;}
 	QRectF region()const { return m_region; }
 	void setRegion(const QRectF & rect) { m_region = rect; }
+
+	friend QDataStream & operator<<(QDataStream & stream, const InstanceMetaData * metaData);
+
+	friend QDataStream & operator>>(QDataStream & stream, InstanceMetaData *& metaData);
+
+
 };
+
+
 
 class InstanceTreeItem;
 
@@ -26,7 +36,6 @@ class InstanceTreeItemInfoModel :public QAbstractItemModel
 	InstanceTreeItem * m_treeItem;
 	QVector<QString> m_propertyNames;
 	InstanceMetaData * m_metaData;
-
 public:
 	InstanceTreeItemInfoModel(InstanceMetaData * metaData,InstanceTreeItem * item, QObject * parent = nullptr);
 	QVariant data(const QModelIndex& index, int role) const override;
@@ -44,16 +53,14 @@ class InstanceTreeItem:public TreeItem
 	//QString m_text;
 	//QRect m_range;
 	//quint8 m_checkState;
-
 	InstanceTreeItemInfoModel * m_infoModel;
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
-	QScopedPointer<InstanceMetaData> m_metaData;
 
-
+	InstanceMetaData* m_metaData;
 public:
 
 	// Inherit from TreeItem
-    InstanceTreeItem(const QString & text, const QPersistentModelIndex & pModelIndex,TreeItem * parent);
+    InstanceTreeItem(InstanceMetaData * metaData, const QPersistentModelIndex & pModelIndex,TreeItem * parent);
 	QVariant data(int column, int role) const override;
 	bool setData(int column, const QVariant& value, int role) override;
 	int columnCount() const override;
@@ -71,7 +78,13 @@ public:
 
 	~InstanceTreeItem();
 
+	friend QDataStream & operator<<(QDataStream & stream, const InstanceTreeItem * item);
+	friend QDataStream & operator>>(QDataStream & stream, InstanceTreeItem *& item);
+
 };
+
+
+
 
 
 #endif // INSTANCEITEM_H

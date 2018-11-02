@@ -5,7 +5,8 @@
 
 StrokeMarkTreeItem::
 StrokeMarkTreeItem(StrokeMarkItem* markItem, const QPersistentModelIndex & pIndex, TreeItem* parent) : TreeItem(pIndex, parent),
-m_markItem(nullptr), m_infoModel(nullptr) {
+m_markItem(nullptr), 
+m_infoModel(nullptr) {
 	m_markItem = markItem;
 
 	//if (m_markItem != nullptr) {
@@ -36,7 +37,7 @@ m_markItem(nullptr), m_infoModel(nullptr) {
 	//	});
 	//}
 
-	QVariant::Color;
+	//QVariant::Color;
 
 	m_markItem->m_modelIndex = persistentModelIndex();
 
@@ -134,6 +135,23 @@ StrokeMarkTreeItem::~StrokeMarkTreeItem()
 	delete m_markItem;
 	m_infoModel->deleteLater();
 }
+
+QDataStream& operator<<(QDataStream& stream, const StrokeMarkTreeItem * item) 
+{
+	Q_ASSERT(item);
+	stream << item->m_markItem;
+	return stream;
+}
+
+QDataStream & operator>>(QDataStream & stream, StrokeMarkTreeItem *& item) 
+{
+	StrokeMarkItem * mark;
+	stream >> mark;
+	const auto newItem = new StrokeMarkTreeItem(mark, QModelIndex{}, nullptr);
+	return stream;
+}
+
+
 
 
 /**

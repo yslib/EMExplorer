@@ -14,24 +14,14 @@
 
 //#include <QDataStream>
 
-
 class TreeItem;
-struct CategoryInfo;
-QT_BEGIN_NAMESPACE
-class QGraphicsItem;
-QT_END_NAMESPACE
 class QGraphicsItem;
 class SliceEditorWidget;
 class AbstractSliceDataModel;
 class RootTreeItem;
-class CategoryItem;
-
-class Triangulate;
-
+//class CategoryItem;
 class StrokeMarkItem;
-
 class QItemSelectionModel;
-
 enum TreeItemType;
 
 
@@ -48,12 +38,12 @@ class MarkModel :public QAbstractItemModel
 	Q_OBJECT
 
 	/**
-	 * \brief 
+	 * \brief These enums are used to identify the user-defined roles
 	 */
 
 	enum MarkModelItemRole
 	{
-		MeshRole = Qt::ItemDataRole::UserRole + 1,
+		MeshRole = Qt::ItemDataRole::UserRole + 1,			
 		MetaDataRole = Qt::ItemDataRole::UserRole + 2,
 		TreeItemRole = Qt::ItemDataRole::UserRole + 3
 	};
@@ -76,27 +66,15 @@ class MarkModel :public QAbstractItemModel
 	SliceDataIdentityTester m_identity;
 	RootTreeItem * m_rootItem;
 
-	//Helper functions
-	TreeItem* _hlp_internalPointer(const QModelIndex& index) const;
 
-	QModelIndex _hlp_categoryIndex(const QString& category)const;
-	QModelIndex _hlp_categoryAdd(const QString& category, const QColor& color);		//set dirty
-	QModelIndex _hlp_categoryAdd(const CategoryInfo & info);							//set setdirty
-
-
-	QModelIndex _hlp_instanceFind(const QString & category,const StrokeMarkItem * item);
-	QModelIndex _hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark);
 
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
 	void addMarkInSliceHelper(StrokeMarkItem * mark);									//set dirty
 	void removeMarkInSliceHelper(StrokeMarkItem* mark);
 	void updateMarkVisibleHelper(StrokeMarkItem * mark);							//set dirty
-	bool updateMeshMarkHelper(const QString& cate);
-	void detachFromView();
-
-	static void retrieveDataFromTreeItemHelper(TreeItem* root, TreeItemType type, int column, QVector<QVariant> & data, int role);
-	static void _hlp_retrieveTreeItem(TreeItem * parent, TreeItemType type, QList<TreeItem*>* items);
 	QModelIndex _hlp_indexByItem(TreeItem* parent, TreeItem * item);
+
+
 
 	void initSliceMarkContainerHelper();
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
@@ -107,12 +85,12 @@ class MarkModel :public QAbstractItemModel
 	const MarkSliceList & rightSliceVisibleMarks()const { return m_rightSliceVisibleMarks; }
 	const MarkSliceList & frontSliceVisibleMarks()const { return m_frontSliceVisibleMarks; }
 
+
 	MarkModel(AbstractSliceDataModel * dataModel,
 		SliceEditorWidget * view, 
 		QObject * parent = nullptr);
 
 	enum {MagicNumber = 1823615231};
-
 	friend class SliceEditorWidget;
 signals:
 
@@ -151,7 +129,6 @@ public:
 	MarkModel() = delete;
 	MarkModel(const QString & fileName);
 
-
 	//bool eventFilter(QObject* watched, QEvent* event) override;
 	QVariant data(const QModelIndex & index, int role = Qt::EditRole)const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole)const Q_DECL_OVERRIDE;
@@ -172,53 +149,32 @@ public:
 	bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 
+	TreeItem * treeItem(const QModelIndex& index) const;
+	TreeItem * rootItem() const;
+
 	//Custom functions for accessing and setting data
-
-	bool addMark(const QString& text, StrokeMarkItem* mark);
-	bool addMarks(const QString& text, const QList<StrokeMarkItem*>& marks);
-	bool addCategory(const CategoryInfo& info);
-
 
 	QList<TreeItem*> treeItems(const QModelIndex & parent, int type);
 	QModelIndex indexByItem(TreeItem * item);
 
-	bool insertTreeItem(TreeItem* item, const QModelIndex & parent);
-	bool insertTreeItems(const QList<TreeItem*>& items, const QModelIndex & parent);
+	bool insertTreeItem(TreeItem * item, const QModelIndex & parent);
+	bool insertTreeItems(const QList<TreeItem*> & items, const QModelIndex & parent);
 	bool removeTreeItem(TreeItem* item);
 	bool removeTreeItems(const QList<TreeItem*> & items);
-
-	//bool save(const QString & fileName,const QModelIndex & parent);
-	
 	QItemSelectionModel * selectionModelOfThisModel()const {return m_selectionModel;};
+	
 
-	QList<StrokeMarkItem*> marks(const QString& text) const;
-	QList<QGraphicsItem*> marks()const;													//This is time-consuming operation
-	QStringList categoryText()const;
-	QList<QModelIndex> categoryModelIndices()const;
-	QVector<QSharedPointer<Triangulate>> markMesh(const QString& cate);
-	bool removeMark(StrokeMarkItem* mark);
-	int removeMarks(const QList<StrokeMarkItem*>& marks = QList<StrokeMarkItem*>());
-	inline int markCount(const QString & category)const;
+	static void retrieveData(TreeItem * root, TreeItemType type, int column, QVector<QVariant> & data, int role);
+	static void retrieveTreeItem(TreeItem * parent, TreeItemType type, QList<TreeItem*>* items);
 
 	bool save(const QString & fileName,MarkFormat format = MarkFormat::Binary);
+
 	inline void setDirty();
 	inline bool dirty()const;
 	inline void resetDirty();
 	virtual ~MarkModel();
 
-	//friend class MarkTreeView;
 };
-
-
-
-
-
-/**
- * \brief Returns the number of the marks belong to a specified category \a category
- * 
- */
-inline int MarkModel::markCount(const QString & category)const{return rowCount(_hlp_categoryIndex(category));}
-
 /**
  * \brief Sets dirty bit of the mark model
  * 

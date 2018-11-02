@@ -1,5 +1,10 @@
 #include "treeitem.h"
-#include <QGraphicsItem>
+#include "categorytreeitem.h"
+#include "instanceitem.h"
+#include "marktreeitem.h"
+#include "roottreeitem.h"
+
+#include <QDataStream>
 
 QDataStream& operator<<(QDataStream& stream, const TreeItemType& type)
 {
@@ -126,20 +131,26 @@ bool TreeItem::removeChildren(int position, int count) noexcept {
 	return true;
 }
 
+
+
 /**
-* \brief Note:The stream operator would serialized the 
-* \brief TreeItem to a binary file underly the stream	recursively.
-* \param Reference of QDataStream
-* \param Pointer to TreeItem
-* \return Reference of QDataStream
-*/
+ * \brief 
+ */
 
 QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
 {
 	if (item == nullptr)
 		return stream;
-	//stream << item->m_type;
-	//stream << item->m_data;
+	const auto type = item->type();
+	stream << static_cast<quint32>(type);
+	switch (type)
+	{
+		case TreeItemType::Root:stream << static_cast<RootTreeItem*>(const_cast<TreeItem*>(item)); break;
+		case TreeItemType::Category:stream << static_cast<CategoryTreeItem*>(const_cast<TreeItem*>(item)); break;
+		case TreeItemType::Instance:stream << static_cast<InstanceTreeItem*>(const_cast<TreeItem*>(item)); break;
+		case TreeItemType::Mark:stream << static_cast<StrokeMarkTreeItem*>(const_cast<TreeItem*>(item)); break;
+		default:break;
+	}
 	stream << item->m_children;
 	return stream;
 }
@@ -147,7 +158,7 @@ QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
 /**
 * \brief Note:The stream operator would modified the item pointer whenever possible.
 * 
-*  If the pointer is nullptr, the function will apply constrcution to the 
+*  If the pointer is nullptr, the function will apply constrcution to the
 *  pointer-reference and if the pointer is not empty,the function will
 *  reconstruct it to satisfied with the binary file underlying the stream
 
@@ -160,15 +171,47 @@ QDataStream & operator>>(QDataStream & stream, TreeItem *& item)
 {
 	//Decode the node type
 	TreeItemType type;
+
 	stream >> type;
-	if(stream.status() == QDataStream::ReadPastEnd)	//Recursion terminate.
+
+	if (stream.status() == QDataStream::ReadPastEnd)	//Recursion terminate.
 		return stream;
-	QVector<QVariant> data;
-	stream >> data;
-	//item = new TreeItem(data,type, nullptr);
+
+	switch (type)
+	{
+		case TreeItemType::Root: 
+			{
+				RootTreeItem * node;
+				stream >> node;				// Allocate memory in it
+				item = node;
+			} break;
+		case TreeItemType::Category:
+			{
+				CategoryTreeItem * node;
+				stream >> node;
+				item = node;
+			} break;
+		case TreeItemType::Instance:
+			{
+				InstanceTreeItem * node;
+				stream >> node;
+				item = node;
+			} break;
+		case TreeItemType::Mark: 
+			{
+				StrokeMarkTreeItem * node;
+				stream >> node;
+				item = node;
+			} break;
+			default:Q_ASSERT(false);
+	}
+
 	stream >> item->m_children;
 
-	foreach(auto it,item->m_children)
+	qDebug() << item->m_children.size();
+
+	for(auto it:item->m_children)
 		it->setParentItem(item);		//set parent for the children
+
 	return stream;
 }

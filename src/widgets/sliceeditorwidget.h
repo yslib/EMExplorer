@@ -93,7 +93,7 @@ public:
 	void setRightSliceVisible(bool enable);
 	void setFrontSliceVisible(bool enable);
 	void setSliceVisible(SliceType type, bool visible);
-	int currentSliceIndex(SliceType type)const;
+	int  currentSliceIndex(SliceType type)const;
 	void setSliceIndex(SliceType type, int index);
 
 	QString currentCategory()const;
@@ -215,13 +215,22 @@ private:
 	void updateMarks(SliceType type);
 	void updateActions();
 	void installMarkModel(MarkModel* model);
-
 	void markAddedHelper(SliceType type, StrokeMarkItem* mark);
 	void _slots_singleMarkSelectionChanged();
 
 	//void changeSliceHelper(int value, SliceType type);
 	SliceWidget * focusOn();
 	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * data);
+
+	QModelIndex _hlp_categoryIndex(const QString& category)const;
+	QModelIndex _hlp_categoryAdd(const CategoryInfo & info) const;						
+
+	QModelIndex _hlp_instanceFind(const QString & category, const StrokeMarkItem * item);
+	QModelIndex _hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark);
+	QStringList categoryText()const;
+
+	bool removeMark(StrokeMarkItem* mark);
+	int removeMarks(const QList<StrokeMarkItem*>& marks = QList<StrokeMarkItem*>());
 
 	// Data Members
 	SliceEditorWidgetPrivate * const d_ptr;

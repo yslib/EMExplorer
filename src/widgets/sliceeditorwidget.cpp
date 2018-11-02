@@ -9,6 +9,7 @@
 #include "abstract/abstractslicedatamodel.h"
 #include "model/markmodel.h"
 #include "model/categorytreeitem.h"
+#include "model/marktreeitem.h"
 #include "histogramwidget.h"
 #include "sliceeditorwidget.h"
 #include "slicewidget.h"
@@ -374,6 +375,145 @@ MarkModel* SliceEditorWidget::createMarkModel(SliceEditorWidget *view, AbstractS
 }
 
 /**
+*	\brief
+*	\param category
+*	\return return a \a QModelIndex represents the \a category
+*
+*	\internal
+*	\note This can be implement by a hash table, which is more efficient.
+*/
+QModelIndex SliceEditorWidget::_hlp_categoryIndex(const QString & category) const
+{
+	const auto c = m_markModel->rowCount();	//children number of root. It's category				
+	for (int i = 0; i < c; i++)
+	{
+		auto id = m_markModel->index(i, 0);
+		const auto item = static_cast<TreeItem*>(id.internalPointer());
+
+		if (item != nullptr && item->type() != TreeItemType::Category)
+			continue;
+
+		//auto d = item->data(0).value<__Internal_Categroy_Type_>();
+		const auto var = item->data(0, Qt::DisplayRole);
+		Q_ASSERT_X(var.canConvert<QString>(), "MarkModel::categoryIndexHelper", "convert failed");
+		if (var == category)
+		{
+			return id;
+		}
+	}
+	return QModelIndex();
+}
+
+
+
+QModelIndex SliceEditorWidget::_hlp_categoryAdd(const CategoryInfo & info) const {
+
+	const auto c = m_markModel->rowCount();
+	const auto success = m_markModel->insertRows(c, 1, QModelIndex());
+
+	if (success == false)
+		return QModelIndex();
+
+	const auto newIndex = m_markModel->MarkModel::index(c, 0, QModelIndex());
+
+	const auto p = new CategoryTreeItem(CategoryItem(info.name, info.color), newIndex, m_markModel->rootItem());
+
+	m_markModel->MarkModel::setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
+
+	return m_markModel->MarkModel::index(c, 0, QModelIndex());
+}
+
+QModelIndex SliceEditorWidget::_hlp_instanceFind(const QString & category, const StrokeMarkItem * item)
+{
+	auto cIndex = _hlp_categoryIndex(category);
+	Q_ASSERT_X(cIndex.isValid(), "MarkModel::instanceAddHelper", "index is invalid");
+
+	const auto nChild = m_markModel->rowCount(cIndex);
+	const auto itemRect = item->boundingRect();
+
+	QModelIndex best;
+	double maxArea = 0;
+	for (auto i = 0; i < nChild; i++) {
+		const auto iIndex = m_markModel->index(i, 0, cIndex);
+		const auto item = m_markModel->treeItem(iIndex);
+		if (item->type() == TreeItemType::Instance) {
+			const auto instanceItem = static_cast<InstanceTreeItem*>(item);
+			const auto rect = instanceItem->boundingBox();
+
+			const auto intersected = rect.intersected(itemRect);
+			const auto area = intersected.width()*intersected.height();
+			if (maxArea < area) {
+				best = iIndex;
+				maxArea = area;
+			}
+		}
+	}
+	if (best.isValid() == false)
+	{
+		return QModelIndex();
+	}
+	return best;
+}
+
+QModelIndex SliceEditorWidget::_hlp_instanceAdd(const QString & category, const StrokeMarkItem * mark)
+{
+	auto cIndex = _hlp_categoryIndex(category);
+	Q_ASSERT_X(cIndex.isValid(), "MarkModel::instanceFindHelper", "invalid index");
+
+	const auto c = m_markModel->rowCount(cIndex);
+
+	// Insert a new row
+	const auto success = m_markModel->insertRows(c, 1, cIndex);
+
+	if (success == false)
+		return QModelIndex();
+
+	// Fetch the new inserted index
+	const auto newIndex = m_markModel->MarkModel::index(c, 0, cIndex);
+
+	// Create a tree item pointer
+	InstanceMetaData * metaData = new InstanceMetaData;			// Bull Shit
+	metaData->name() = QStringLiteral("Instance");
+	const auto p = new InstanceTreeItem(metaData, newIndex, nullptr);
+	p->setBoundingBox(mark->boundingRect().toRect());
+
+	m_markModel->MarkModel::setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
+
+	return m_markModel->MarkModel::index(c, 0, cIndex);
+}
+
+QStringList SliceEditorWidget::categoryText() const
+{
+	if (m_markModel == nullptr)
+		return  QStringList{};
+
+	QVector<QVariant> data;
+	QStringList list;
+	m_markModel->retrieveData(m_markModel->rootItem(), TreeItemType::Category, 0, data, Qt::DisplayRole);
+	foreach(const auto & var, data) {
+		Q_ASSERT_X(var.canConvert<QString>(), "MarkModel::categoryText", "convert falied");
+		list << var.toString();
+	}
+	return list;
+}
+
+bool SliceEditorWidget::removeMark(StrokeMarkItem* mark) 
+{
+	const auto parent = m_markModel->parent(mark->modelIndex());
+	m_markModel->removeRows(mark->modelIndex().row(), 1, parent);
+	return true;
+}
+
+int SliceEditorWidget::removeMarks(const QList<StrokeMarkItem*>& marks)
+{
+	auto success = 0;
+	for (auto item : marks)
+		if (removeMark(item))
+			success++;
+	return success;
+}
+
+/**
  * \brief This is a helper function used to add mark \a mark to a \a type type slice
  * 
  * Some information about the mark should be added into it including \a type of SliceType and \a index
@@ -387,7 +527,25 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 	const auto index = currentSliceIndex(type);
 	mark->setSliceType(type);
 	mark->setSliceIndex(index);
-	m_markModel->addMark(cate, mark);
+
+	//m_markModel->addMark(cate, mark);
+
+	auto i = _hlp_instanceFind(cate, mark);
+	if (i.isValid() == false) {
+		i = _hlp_instanceAdd(cate, mark);
+	}
+
+	const auto r = m_markModel->rowCount(i);
+	const auto c = 1;
+
+	// Insert rows
+	m_markModel->insertRows(r, 1, i);
+
+	// Get index of new inserted rows
+	// Set data
+	const auto newIndex = m_markModel->MarkModel::index(r, 0, i);
+	const auto p = new StrokeMarkTreeItem(mark, newIndex, nullptr);
+	m_markModel->setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
 }
 
 /**
@@ -408,7 +566,10 @@ void SliceEditorWidget::deleteSelectedMarks()
 		foreach(auto item, m_frontView->selectedItems())
 		items << item;
 
-	m_markModel->removeMarks(items);
+	//m_markModel->removeMarks(items);
+	//TODO::
+	removeMarks(items);
+
 }
 
 /**
@@ -824,7 +985,14 @@ void SliceEditorWidget::setCurrentCategory(const QString& name) {
 bool SliceEditorWidget::addCategory(const CategoryInfo& info) const {
 	if (m_markModel == nullptr)
 		return false;
-	return m_markModel->addCategory(info);
+
+	auto i = _hlp_categoryIndex(info.name);
+	if (i.isValid() == false)
+	{
+		_hlp_categoryAdd(info);
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -832,9 +1000,7 @@ bool SliceEditorWidget::addCategory(const CategoryInfo& info) const {
  */
 QStringList SliceEditorWidget::categories() const
 {
-	if (m_markModel == nullptr)
-		return  QStringList();
-	return m_markModel->categoryText();
+	return categoryText();
 }
 
 /**
@@ -878,10 +1044,6 @@ void SliceEditorWidget::updateMarks(SliceType type)
 	break;
 	}
 }
-
-
-
-
 
 SliceScene::SliceScene(QObject *parent) :QGraphicsScene(parent)
 {

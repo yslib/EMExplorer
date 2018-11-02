@@ -119,17 +119,18 @@ static void drawHighlightSelected(
 	painter->drawRect(item->boundingRect().adjusted(pad, pad, -pad, -pad));
 }
 
-StrokeMarkItem::StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent) :QGraphicsPolygonItem(parent),m_visibleState(true)
-
+StrokeMarkItem::StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent) :
+QGraphicsPolygonItem(parent),
+m_markInfo(new StrokeMarkItemPrivate)
 {
-	//createPropertyInfo();
 	setPolygon(path);
 	updateLength();
 }
 
-StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : QGraphicsPolygonItem(parent),m_visibleState(true)
+StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : 
+QGraphicsPolygonItem(parent),
+m_markInfo(new StrokeMarkItemPrivate)
 {
-	//createPropertyInfo();
 	updateLength();
 }
 
@@ -164,6 +165,12 @@ void StrokeMarkItem::setItemChangeHandler(
 	m_itemChangeHandler = handler;
 }
 
+StrokeMarkItem::~StrokeMarkItem()
+{
+	delete m_markInfo;
+	m_markInfo = nullptr;
+}
+
 void StrokeMarkItem::createPropertyInfo()
 {
 	/*const MarkPropertyInfo propertyInfos = {
@@ -185,14 +192,14 @@ void StrokeMarkItem::updateLength()
 	const int c = poly.count();
 	if (c <= 1)
 	{
-		m_length = 0;
+		m_markInfo->m_length = 0;
 		return;
 	}
 	const auto &p0 = poly[c - 2];
 	const auto &p1 = poly[c - 1];
 	const auto dx = p0.x() - p1.x();
 	const auto dy = p0.y() - p1.y();
-	m_length += std::sqrt(dx*dx + dy * dy);
+	m_markInfo->m_length += std::sqrt(dx*dx + dy * dy);
 }
 
 /**
@@ -212,72 +219,39 @@ QVariant StrokeMarkItem::itemChange(GraphicsItemChange change, const QVariant& v
 	return QGraphicsPolygonItem::itemChange(change, value);
 }
 
-QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item)
+QDataStream & operator<<(QDataStream & stream, const StrokeMarkItem * item)
 {
 	if (item == nullptr || item->type() != ItemTypes::StrokeMark)
 		return stream;
 	if (item->type() == ItemTypes::StrokeMark)
 	{
-		auto mark = static_cast<const StrokeMarkItem*>(item);
-		//stream << (qint32)mark->type()
-			//<< mark->data(MarkProperty::CategoryColor).value<QColor>()
-			//<< mark->data(MarkProperty::CategoryName).value<QString>()
-			//<< mark->data(MarkProperty::Color).value<QColor>()
-			//<< mark->data(MarkProperty::Length).value<double>()
-			//<< mark->data(MarkProperty::Name).value<QString>()
-			//<< mark->data(MarkProperty::SliceIndex).value<int>()
-			//<< mark->data(MarkProperty::SliceType).value<int>()
-			//<< mark->data(MarkProperty::VisibleState).value<bool>()
-			//<< mark->polygon()
-			//<< mark->pen();
+		stream << static_cast<quint32>(item->type())
+			<< item->pen()
+			<< item->polygon()
+			<< item->m_markInfo;
 	}
 	return stream;
 }
 
-QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)
+QDataStream & operator>>(QDataStream & stream, StrokeMarkItem *& item)
 {
 	qint32 type;
 	stream >> type;
-	Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd, 
-		"QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)", "corrupt data");
-	Q_ASSERT_X(type == ItemTypes::StrokeMark, 
-		"QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)", "corrupt data");
-	if(type == ItemTypes::StrokeMark)			//There may be a error
+	Q_ASSERT(stream.status() != QDataStream::ReadPastEnd);
+	Q_ASSERT(type == ItemTypes::StrokeMark);
+	if(type == ItemTypes::StrokeMark)
 	{
-		//QColor categoryColor;			//QColor
-		//QString categoryName;			//QString
-		//QColor color;					//QColor
-		//double length;					//double
-		//QString name;					//QString
-		//int sliceIndex;					//int
-		//int sliceType;					//int
-		//bool vis;						//bool
-		//QPolygonF poly;					//QPolygon
-		//QPen pen;
-		//stream >> categoryColor
-		//	>> categoryName
-		//	>> color
-		//	>> length
-		//	>> name
-		//	>> sliceIndex
-		//	>> sliceType
-		//	>> vis
-		//	>> poly
-		//	>> pen;
-		//Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd,
-		//	"QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item)", "corrupt data");
-		//auto mark = new StrokeMarkItem;
-		//mark->setData(MarkProperty::CategoryColor, QVariant::fromValue<QColor>(categoryColor));
-		//mark->setData(MarkProperty::CategoryName, QVariant::fromValue<QString>(categoryName));
-		//mark->setData(MarkProperty::Color, QVariant::fromValue<QColor>(color));
-		//mark->setData(MarkProperty::Length, QVariant::fromValue<double>(length));
-		//mark->setData(MarkProperty::Name, QVariant::fromValue<QString>(name));
-		//mark->setData(MarkProperty::SliceIndex, QVariant::fromValue<int>(sliceIndex));
-		//mark->setData(MarkProperty::SliceType, QVariant::fromValue<int>(sliceType));
-		//mark->setData(MarkProperty::VisibleState, QVariant::fromValue<bool>(vis));
-		//mark->setPolygon(poly);
-		//mark->setPen(pen);
-		//item = mark;
+		auto newMark = new StrokeMarkItem(nullptr);
+
+		QPen pen;
+		QPolygonF poly;
+
+		stream >> pen >> poly >> newMark->m_markInfo;
+;
+		newMark->setPolygon(poly);
+		newMark->setPen(pen);
+
+		item = newMark;
 	}
 	return stream;
 }

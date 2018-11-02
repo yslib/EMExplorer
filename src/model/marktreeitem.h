@@ -19,12 +19,10 @@ public:
 	Qt::ItemFlags flags(const QModelIndex& index) const override;
 };
 
-
 class StrokeMarkTreeItem :public TreeItem {
 
 	StrokeMarkItem * m_markItem;
 	QAbstractItemModel * m_infoModel;
-
 protected:
 	void modelIndexChanged(const QPersistentModelIndex& index) override 
 	{
@@ -53,6 +51,10 @@ public:
 	QAbstractItemModel * infoModel() const override { return m_infoModel; }
 
 	~StrokeMarkTreeItem();
+
+	friend QDataStream& operator<<(QDataStream& stream, const StrokeMarkTreeItem * item);
+
+	friend QDataStream & operator>>(QDataStream & stream,StrokeMarkTreeItem *& item);
 
 };
 

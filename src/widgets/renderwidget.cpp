@@ -664,15 +664,12 @@ void RenderWidget::updateMark() {
 	QMatrix4x4 trans;
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
-
 	{
 		const auto instances = m_markModel->treeItems(QModelIndex(), TreeItemType::Instance);
 		const QColor color = Qt::red;
 		for (const auto & inst : instances) {
 			const auto mesh = static_cast<InstanceTreeItem*>(inst)->mesh();
-
 			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
-
 			const auto v = mesh->vertices();
 			const auto idx = mesh->indices();
 			const auto nV = mesh->vertexCount();
@@ -693,7 +690,6 @@ void RenderWidget::updateMark() {
 			m_query.addQueryPair(inst->persistentModelIndex(), id);
 		}
 	}
-
 	doneCurrent();
 }
 

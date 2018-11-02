@@ -10,6 +10,23 @@
  */
 class RootTreeItem : public TreeItem {
 	//void setPersistentModelIndex(const QPersistentModelIndex & index) {setModelIndex(index);}
+
+	void setModelIndexRecursively(const QModelIndex & parent) 
+	{
+		_internal_setModelIndexRecursively(this, parent);
+	}
+	static void _internal_setModelIndexRecursively(TreeItem * item, const QModelIndex & parent) {
+
+		item->m_persistentModelIndex = parent;
+		const auto nChild = item->childCount();
+		for (auto i = 0; i < nChild; i++) {
+			auto ch = item->child(i);
+			const auto index = parent.model()->index(i, 0, parent);
+			ch->updateModelIndex(index);
+			_internal_setModelIndexRecursively(ch, index);
+		}
+	}
+
 public:
 	RootTreeItem(const QPersistentModelIndex & pIndex,TreeItem * parent) :TreeItem(pIndex,parent) {}
 	QVariant data(int column, int role) const override { return QVariant(); }
@@ -20,9 +37,11 @@ public:
 	int type() const override { return TreeItemType::Root; }
 	void * metaData()override { return nullptr; }
 	QAbstractItemModel * infoModel() const override { return nullptr; }
-	
 
 	friend class MarkModel;
+
+	friend QDataStream & operator<<(QDataStream & stream, const RootTreeItem * item);
+	friend QDataStream & operator>>(QDataStream & stream, RootTreeItem *& item);
 };
 
 

@@ -160,3 +160,37 @@ int CategoryTreeItem::type() const { return TreeItemType::Category; }
  * \return Reimplemented from TreeItem::metaData()
  */
 void* CategoryTreeItem::metaData() { return static_cast<void*>(&m_categoryItem); }
+
+
+QDataStream & operator<<(QDataStream & stream, const CategoryItem & item)
+{
+	stream << item.m_info.name << item.m_info.color << item.m_visible;
+	return stream;
+}
+
+QDataStream & operator>>(QDataStream & stream, CategoryItem & item)
+{
+	stream >> item.m_info.name >> item.m_info.color >> item.m_visible;
+	Q_ASSERT_X(stream.status() != QDataStream::ReadPastEnd,
+		"Category::operator<<", "corrupt data");
+	return stream;
+}
+
+QDataStream& operator<<(QDataStream& stream, const CategoryTreeItem * item) 
+{
+	Q_ASSERT(item);
+	stream << item->m_categoryItem;
+	return stream;
+}
+
+QDataStream & operator>>(QDataStream & stream, CategoryTreeItem *& item) 
+{
+	const auto newItem = new CategoryTreeItem(CategoryItem(), QModelIndex(), nullptr);
+	stream >> (newItem->m_categoryItem);
+	item = newItem;
+	return stream;
+}
+
+
+
+

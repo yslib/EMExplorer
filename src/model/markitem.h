@@ -7,6 +7,7 @@
 #include <QPersistentModelIndex>
 #include <qcoreapplication.h>
 #include <QPen>
+#include <QScopedPointer>
 
 //#include <QtContainerFwd>
 
@@ -81,15 +82,34 @@
 
 
 
+
 class StrokeMarkItem :public QGraphicsPolygonItem {
 	std::function<QVariant(StrokeMarkItem* mark,QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
 	QPersistentModelIndex m_modelIndex;
-	QString m_name;
-	SliceType m_sliceType;
-	QPen m_pen;
-	double m_length;
-	int m_index;
-	bool m_visibleState;
+	struct StrokeMarkItemPrivate
+	{
+		StrokeMarkItemPrivate():m_visibleState(true){}
+		QString m_name;
+		SliceType m_sliceType;
+		double m_length;
+		int m_index;
+		bool m_visibleState;
+
+		friend QDataStream & operator<<(QDataStream & stream,const StrokeMarkItemPrivate * info) 
+		{
+			stream << info->m_name << static_cast<quint32>(info->m_sliceType) << info->m_length << info->m_index << info->m_visibleState;
+			return stream;
+		}
+		friend QDataStream & operator>>(QDataStream & stream, StrokeMarkItemPrivate * info){
+			Q_ASSERT(info);
+			quint32 type;
+			stream >> info->m_name >> type >> info->m_length >> info->m_index >> info->m_visibleState;
+			info->m_sliceType = static_cast<SliceType>(type);
+			return stream;
+		}
+
+	}*m_markInfo;
+
 public:
 
 	enum {Type = StrokeMark};
@@ -101,16 +121,21 @@ public:
 	void setItemChangeHandler(const std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)>& handler);
 	QPersistentModelIndex modelIndex()const { return m_modelIndex; }
 
-	QString	name()const { return m_name; }
-	void setName(const QString & name) { m_name = name; }
-	SliceType sliceType()const { return m_sliceType; }
-	void setSliceType(SliceType type) { m_sliceType = type; }
-	double length()const { return m_length; };
-	int sliceIndex()const { return m_index; }
-	void setSliceIndex(int index) { m_index = index; }
+	QString	name()const { return m_markInfo->m_name; }
+	void setName(const QString & name) { m_markInfo->m_name = name; }
+	SliceType sliceType()const { return m_markInfo->m_sliceType; }
+	void setSliceType(SliceType type) { m_markInfo->m_sliceType = type; }
+	double length()const { return m_markInfo->m_length; };
+	int sliceIndex()const { return m_markInfo->m_index; }
+	void setSliceIndex(int index) { m_markInfo->m_index = index; }
 
-	bool visibleState()const { return m_visibleState; }
-	void setVisibleState(bool visible) { m_visibleState = visible; }
+	bool visibleState()const { return m_markInfo->m_visibleState; }
+	void setVisibleState(bool visible) { m_markInfo->m_visibleState = visible; }
+
+	~StrokeMarkItem();
+
+	friend QDataStream & operator<<(QDataStream & stream, const StrokeMarkItem * item);
+	friend QDataStream & operator>>(QDataStream & stream, StrokeMarkItem *& item);
 	
 private:
 	void createPropertyInfo();
@@ -123,23 +148,7 @@ protected:
 
 
 
-QDataStream & operator<<(QDataStream & stream, const QGraphicsItem * item);
-QDataStream & operator>>(QDataStream & stream, QGraphicsItem *& item);
-Q_DECLARE_METATYPE(QSharedPointer<QGraphicsItem>);
 
-inline QDataStream& operator<<(QDataStream& stream, const QSharedPointer<QGraphicsItem>& item)
-{
-	stream << item.data();
-	return stream;
-}
-
-inline QDataStream& operator>>(QDataStream& stream, QSharedPointer<QGraphicsItem>& item)
-{
-	QGraphicsItem * ptr;
-	stream >> ptr;
-	item.reset(ptr);
-	return stream;
-}
 
 
 ///**

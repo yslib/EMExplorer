@@ -60,7 +60,6 @@ class AbstractTreeItemMetaData {
 public:
 	AbstractTreeItemMetaData();
 	void * internalPointer()const;
-
 };
 
 
@@ -69,13 +68,15 @@ class TreeItem
 	PTR_TYPE(TreeItem) m_parent;
 	QVector<PTR_TYPE(TreeItem)> m_children;
 	QPersistentModelIndex m_persistentModelIndex;
-	void updateChildQPersistentModelIndex(TreeItem * item,int row);
-	void updateModelIndex(const QPersistentModelIndex & index) 
+
+	void updateChildQPersistentModelIndex(TreeItem * item, int row);
+	void updateModelIndex(const QPersistentModelIndex & index)
 	{
 		m_persistentModelIndex = index;
 		modelIndexChanged(index);
 	}
 protected:
+
 	//void setModelIndex(const QPersistentModelIndex & index) { m_persistentModelIndex = index; }
 	virtual void modelIndexChanged(const QPersistentModelIndex & index) 
 	{
@@ -120,6 +121,7 @@ public:
 	virtual bool setData(int column, const QVariant & value, int role = Qt::DisplayRole) = 0;
 	virtual int type()const = 0;
 	virtual void * metaData() = 0;
+
 	//void setCommonData(const QVariant & value) { m_commonData = value; }
 	/**
 	*	All above methods are necessary for a read-only TreeView.
@@ -147,8 +149,8 @@ public:
 	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);
 	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
 
-
 	friend class MarkModel;
+	friend class RootTreeItem;
 };
 
 /**
