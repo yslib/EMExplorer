@@ -148,6 +148,7 @@ QDataStream & operator>>(QDataStream & stream, StrokeMarkTreeItem *& item)
 	StrokeMarkItem * mark;
 	stream >> mark;
 	const auto newItem = new StrokeMarkTreeItem(mark, QModelIndex{}, nullptr);
+	item = newItem;
 	return stream;
 }
 

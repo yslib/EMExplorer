@@ -151,6 +151,14 @@ QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
 		case TreeItemType::Mark:stream << static_cast<StrokeMarkTreeItem*>(const_cast<TreeItem*>(item)); break;
 		default:break;
 	}
+
+	if(item->m_children.isEmpty()) {
+		stream << quint8(0);
+		return stream;
+	}else {
+		stream << quint8(1);
+	}
+		
 	stream << item->m_children;
 	return stream;
 }
@@ -206,6 +214,12 @@ QDataStream & operator>>(QDataStream & stream, TreeItem *& item)
 			default:Q_ASSERT(false);
 	}
 
+	quint8 empty;
+	stream >> empty;
+	if (!empty) 
+	{
+		return stream;
+	}
 	stream >> item->m_children;
 
 	qDebug() << item->m_children.size();

@@ -463,7 +463,8 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 
 		stream << static_cast<qint32>(MagicNumber);			// Magic Number first
 		stream << m_identity;								// Identity Tester
-		stream << static_cast<TreeItem*>(m_rootItem);								// Root Item
+		stream << static_cast<TreeItem*>(m_rootItem);		// Root Item
+
 		resetDirty();
 		return true;
 	}
