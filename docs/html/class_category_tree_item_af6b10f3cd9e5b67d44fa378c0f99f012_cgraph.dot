@@ -1,0 +1,15 @@
+digraph "CategoryTreeItem::data"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node7 [label="CategoryTreeItem::data",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="CategoryTreeItem::column\lCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_tree_item.html#ac4225ff27cff060bca07838a15312333",tooltip="Reimplemented from TreeItem::columnCount() "];
+  Node7 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="CategoryItem::name",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_item.html#a10017b7f18fc09528565a971b7824099",tooltip="Return category name. "];
+  Node7 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="CategoryItem::color",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_item.html#aa587131ad99ecdaa43984ca695c0ed4b"];
+  Node7 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="CategoryItem::visible",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_item.html#a989a644fa3002af96e254290de52ea8b",tooltip="Return the category visibility. "];
+}

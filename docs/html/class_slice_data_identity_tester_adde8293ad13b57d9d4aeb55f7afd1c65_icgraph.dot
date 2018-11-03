@@ -1,0 +1,41 @@
+digraph "SliceDataIdentityTester::SliceDataIdentityTester"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="SliceDataIdentityTester\l::SliceDataIdentityTester",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="SliceDataIdentityTester\l::createTester",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#a2e92327a56bbadfded56758a615361f7"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="MarkModel::resetDirty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f",tooltip="Reset the dirty bit. "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="MarkModel::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#abe6abbd59c1ea3c302b8cd6951d4c28f",tooltip="Save current marks contained in the mark model. "];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="MarkModel::selectionModel\lOfThisModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50"];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="MarkManager::setMarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a",tooltip="Set new model model to the widget. "];
+  Node6 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="MainWindow::open",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952"];
+  Node7 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="MainWindow::eventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1"];
+  Node6 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="MainWindow::openMark",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da"];
+  Node9 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="RenderWidget::setMarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70",tooltip="Sets the slice model as the given model. "];
+  Node10 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="VolumeMainWindow::openMark",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5"];
+  Node5 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="RenderWidget::setFrontSlice\lVisible",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365",tooltip="This property holds the visibility of the front slice when renders data with slice type render..."];
+  Node12 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="SliceControlWidget\l::setControlledWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8",tooltip="Sets the controlled widget sliceWidge and volumeWidget to present. "];
+  Node13 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="SliceControlWidget\l::SliceControlWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6",tooltip="Constructs a widget by the given sliceWidget and volumeWidget. "];
+  Node5 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="SliceEditorWidget::\lsetRightSliceVisibility",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6",tooltip="This is a convenience function to set right slice visibility. "];
+  Node15 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

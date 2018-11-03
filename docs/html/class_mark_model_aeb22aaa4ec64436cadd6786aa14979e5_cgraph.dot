@@ -1,0 +1,25 @@
+digraph "MarkModel::removeTreeItems"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node220 [label="MarkModel::removeTreeItems",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node220 -> Node221 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node221 [label="MarkModel::removeTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a68dda394b983ab9539d44e8973631b71",tooltip="This is a convenience function for removing a item in the the tree model by its pointer  and its pare..."];
+  Node221 -> Node222 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node222 [label="MarkModel::index",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a68eda17b59203b69b9cfacb0e18aeca4",tooltip="Reimplemented from QAbstractItemModel::index(int row, int column, const QModelIndex & parent) const..."];
+  Node222 -> Node223 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node223 [label="TreeItem::parentItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c"];
+  Node222 -> Node224 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node224 [label="MarkModel::treeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613",tooltip="This is a function to get the internal data structure from index. "];
+  Node222 -> Node225 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node225 [label="TreeItem::child",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4"];
+  Node221 -> Node226 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node226 [label="MarkModel::indexByItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a812b072c107e9328012cad0c2ca98a23",tooltip="Return the index represents the underlying data item. "];
+  Node221 -> Node227 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node227 [label="MarkModel::parent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c",tooltip="Reimplemented from QAbstractItemModel::parent(const QModelIndex & index) const. "];
+  Node227 -> Node224 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node227 -> Node223 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node227 -> Node228 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node228 [label="TreeItem::row",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66"];
+}

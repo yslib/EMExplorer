@@ -1,0 +1,11 @@
+digraph "MarkModel::indexByItem"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node97 [label="MarkModel::indexByItem",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node97 -> Node98 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node98 [label="MarkModel::removeTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a68dda394b983ab9539d44e8973631b71",tooltip="This is a convenience function for removing a item in the the tree model by its pointer  and its pare..."];
+  Node98 -> Node99 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node99 [label="MarkModel::removeTreeItems",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#aeb22aaa4ec64436cadd6786aa14979e5",tooltip="This is a convenience function for removed a bundle of tree items into the tree model by the pointers..."];
+}

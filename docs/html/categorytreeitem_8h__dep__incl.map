@@ -1,6 +1,7 @@
 <map id="D:/code/MRCEditor/src/model/categorytreeitem.h" name="D:/code/MRCEditor/src/model/categorytreeitem.h">
 <area shape="rect" id="node2" href="$categorytreeitem_8cpp.html" title="D:/code/MRCEditor/src\l/model/categorytreeitem.cpp" alt="" coords="5,95,192,136"/>
 <area shape="rect" id="node3" href="$markmodel_8cpp.html" title="D:/code/MRCEditor/src\l/model/markmodel.cpp" alt="" coords="217,95,373,136"/>
-<area shape="rect" id="node4" href="$_category_control_widget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/CategoryControlWidget.cpp" alt="" coords="397,95,630,136"/>
-<area shape="rect" id="node5" href="$sliceeditorwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/sliceeditorwidget.cpp" alt="" coords="655,95,849,136"/>
+<area shape="rect" id="node4" href="$treeitem_8cpp.html" title="D:/code/MRCEditor/src\l/model/treeitem.cpp" alt="" coords="397,95,553,136"/>
+<area shape="rect" id="node5" href="$_category_control_widget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/CategoryControlWidget.cpp" alt="" coords="577,95,810,136"/>
+<area shape="rect" id="node6" href="$sliceeditorwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/sliceeditorwidget.cpp" alt="" coords="835,95,1029,136"/>
 </map>

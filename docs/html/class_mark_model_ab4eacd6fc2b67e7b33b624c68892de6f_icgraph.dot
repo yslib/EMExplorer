@@ -1,0 +1,13 @@
+digraph "MarkModel::insertRows"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node110 [label="MarkModel::insertRows",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node110 -> Node111 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node111 [label="MarkModel::insertTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a",tooltip="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..."];
+  Node110 -> Node112 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node112 [label="MarkModel::insertTreeItems",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b",tooltip="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..."];
+  Node110 -> Node113 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node113 [label="SliceEditorWidget::\leventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0",tooltip="Reimplemented from QWidget::eventFilter. "];
+}

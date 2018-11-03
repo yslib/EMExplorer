@@ -1,0 +1,19 @@
+digraph "MarkModel::save"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node326 [label="MarkModel::save",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node326 -> Node327 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node327 [label="MarkModel::resetDirty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f",tooltip="Reset the dirty bit. "];
+  Node327 -> Node328 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node328 [label="SliceDataIdentityTester\l::createTester",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#a2e92327a56bbadfded56758a615361f7"];
+  Node328 -> Node329 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node329 [label="SliceDataIdentityTester\l::SliceDataIdentityTester",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#adde8293ad13b57d9d4aeb55f7afd1c65"];
+  Node326 -> Node330 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node330 [label="AbstractSliceDataModel\l::originalTopSlice",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46"];
+  Node326 -> Node331 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node331 [label="AbstractSliceDataModel\l::rightSlice",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9"];
+  Node331 -> Node332 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node332 [label="AbstractSliceDataModel\l::originalRightSlice",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f"];
+}

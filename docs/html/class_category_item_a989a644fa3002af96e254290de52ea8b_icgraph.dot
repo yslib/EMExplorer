@@ -1,0 +1,13 @@
+digraph "CategoryItem::visible"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node27 [label="CategoryItem::visible",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node27 -> Node28 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node28 [label="CategoryTreeItem::data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_tree_item.html#af6b10f3cd9e5b67d44fa378c0f99f012",tooltip="Reimplemented from TreeItem::data(int column,int role) "];
+  Node27 -> Node29 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node29 [label="CategoryItem::setVisible",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_item.html#aea3cab950f55fc72f2985475a411402e"];
+  Node29 -> Node30 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node30 [label="CategoryTreeItem::setData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_tree_item.html#a2c7a7fef41f6e4d5eed867cd41e666f6",tooltip="Reimplemented from TreeItem::setData(int column,const QVariant& value,int role) "];
+}

@@ -1,0 +1,11 @@
+digraph "SliceEditorWidget::deleteSelectedMarks"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node41 [label="SliceEditorWidget::\ldeleteSelectedMarks",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node41 -> Node42 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node42 [label="SliceWidget::selectedItems",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_widget.html#a850a05aa3c1ae3e28f658521f73bbe44"];
+  Node41 -> Node43 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node43 [label="SliceWidget::selectedItem\lCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_widget.html#a18095dee4f17927573eb8d1a2420242c"];
+}

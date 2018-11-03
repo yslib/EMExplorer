@@ -1,0 +1,42 @@
+digraph "MarkModel::treeItems"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node475 [label="MarkModel::treeItems",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node475 -> Node476 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node476 [label="MarkModel::treeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613",tooltip="This is a function to get the internal data structure from index. "];
+  Node475 -> Node477 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node477 [label="MarkModel::retrieveTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#ac21d495d673ed2238d7c1df17fa844fb",tooltip="This is a helper function for get specified type to items in the parent of . "];
+  Node477 -> Node478 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node478 [label="TreeItem::childCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1"];
+  Node478 -> Node479 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node479 [label="operator\<\<",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736"];
+  Node478 -> Node480 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node480 [label="operator\>\>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0"];
+  Node480 -> Node481 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node481 [label="TreeItem::persistentModel\lIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a",tooltip="Returns the model index refers to the item in the model. "];
+  Node477 -> Node482 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node482 [label="TreeItem::child",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4"];
+  Node477 -> Node483 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node483 [label="StrokeMarkTreeItem\l::type",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html#a4800e57b9ff1b73bb0771acea935e02a",tooltip="Returns the information about the tree item. "];
+  Node477 -> Node484 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node484 [label="MarkModel::parent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c",tooltip="Reimplemented from QAbstractItemModel::parent(const QModelIndex & index) const. "];
+  Node484 -> Node476 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node484 -> Node485 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node485 [label="TreeItem::parentItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c"];
+  Node484 -> Node486 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node486 [label="TreeItem::row",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66"];
+  Node477 -> Node487 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node487 [label="SliceDataIdentityTester\l::isValid",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#a45b6a7f2aba24c64deadcaf0a20b4780"];
+  Node477 -> Node488 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node488 [label="SliceDataIdentityTester\l::topSliceCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#ab02cf2ec2b37d360ee84da41fa8b2da7"];
+  Node477 -> Node489 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node489 [label="SliceDataIdentityTester\l::rightSliceCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#a8b0d7ad96af0dc63659d290f1328057c"];
+  Node477 -> Node490 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node490 [label="SliceDataIdentityTester\l::frontSliceCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_data_identity_tester.html#acbf4e40991fb2dd508145979a76badf5"];
+  Node477 -> Node491 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node491 [label="StrokeMarkItem::sliceIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71"];
+  Node477 -> Node492 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node492 [label="MarkModel::MarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#ad887e7829162eaa74f1aa37995698cbf",tooltip="This is a deleted constructor. "];
+}

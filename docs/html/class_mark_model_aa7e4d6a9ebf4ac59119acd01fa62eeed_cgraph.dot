@@ -1,0 +1,27 @@
+digraph "MarkModel::rootItem"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node302 [label="MarkModel::rootItem",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node302 -> Node303 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node303 [label="MarkModel::index",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a68eda17b59203b69b9cfacb0e18aeca4",tooltip="Reimplemented from QAbstractItemModel::index(int row, int column, const QModelIndex & parent) const..."];
+  Node303 -> Node304 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node304 [label="TreeItem::parentItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c"];
+  Node303 -> Node305 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node305 [label="MarkModel::treeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613",tooltip="This is a function to get the internal data structure from index. "];
+  Node303 -> Node306 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node306 [label="TreeItem::child",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4"];
+  Node302 -> Node307 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node307 [label="StrokeMarkItem::sliceIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71"];
+  Node302 -> Node308 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node308 [label="StrokeMarkItem::sliceType",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a9e172d94724405391f7f55e72dc4cdbd"];
+  Node302 -> Node309 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node309 [label="MarkModel::setDirty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6",tooltip="Sets dirty bit of the mark model. "];
+  Node302 -> Node310 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node310 [label="StrokeMarkTreeItem\l::type",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html#a4800e57b9ff1b73bb0771acea935e02a",tooltip="Returns the information about the tree item. "];
+  Node302 -> Node311 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node311 [label="SliceEditorWidget::\lcurrentSliceIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c",tooltip="Returns the slice index of type type slice. "];
+  Node302 -> Node312 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node312 [label="StrokeMarkItem::visibleState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#aa589264b91dafeeb18f5a728c0e11ffe"];
+}

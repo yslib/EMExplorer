@@ -3,5 +3,15 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node0 [label="cimg_library_suffixed\l::cimg::superset\< short,\l unsigned short \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1superset_3_01short_00_01unsigned_01short_01_4.html"];
+  Node62 [label="QObject",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node62 -> Node63 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node63 [label="GradientCalculator",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_gradient_calculator.html"];
+  Node62 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="SliceVolume",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_volume.html"];
+  Node23 [label="ShaderDataInterface",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_shader_data_interface.html"];
+  Node23 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node0 [label="Volume",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_volume.html"];
+  Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="GPUVolume",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_g_p_u_volume.html"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
 }

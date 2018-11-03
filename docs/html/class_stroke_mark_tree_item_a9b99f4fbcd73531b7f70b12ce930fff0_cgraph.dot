@@ -1,0 +1,36 @@
+digraph "StrokeMarkTreeItem::modelIndexChanged"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node27 [label="StrokeMarkTreeItem\l::modelIndexChanged",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node27 -> Node28 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node28 [label="MarkItemInfoModel::\lindex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#ad33c9e02711ac19619451f2875424722"];
+  Node27 -> Node29 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node29 [label="MarkItemInfoModel::\lparent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#a1f8b585a2038d6af1c8b074d4dc80a02",tooltip="Return an invalid QModelIndex for any child. "];
+  Node27 -> Node30 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node30 [label="MarkItemInfoModel::data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#a24b51b0bb77f90e7d206fbcbe9518608",tooltip="Returns the data located in index. "];
+  Node30 -> Node31 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node31 [label="StrokeMarkItem::name",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#aaecec181336552b1d43766f3ac479943"];
+  Node30 -> Node32 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node32 [label="StrokeMarkItem::sliceIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71"];
+  Node30 -> Node33 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node33 [label="StrokeMarkItem::sliceType",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a9e172d94724405391f7f55e72dc4cdbd"];
+  Node30 -> Node34 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node34 [label="StrokeMarkItem::visibleState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#aa589264b91dafeeb18f5a728c0e11ffe"];
+  Node30 -> Node35 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node35 [label="StrokeMarkItem::length",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a4c298af776709d8c09135998142f6468"];
+  Node27 -> Node36 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node36 [label="MarkItemInfoModel::\lcolumnCount",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#a759cc56284221cf0696f4960253c6183"];
+  Node27 -> Node37 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 [label="MarkItemInfoModel::\lsetData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#a999bb8769e54b671be6f669308e6bf3e"];
+  Node37 -> Node38 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 [label="StrokeMarkItem::setName",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a28b069b6e22d7f71aa3c53c0b284b227"];
+  Node38 -> Node31 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 -> Node39 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node39 [label="StrokeMarkItem::setVisible\lState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a841aa5d4fb1d896e0d477a4fdc223f6a"];
+  Node39 -> Node40 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node40 [label="StrokeMarkItem::~StrokeMarkItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a6b5daecdff06e98dbf6ddbabd69092e5"];
+  Node39 -> Node41 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node41 [label="StrokeMarkItem::itemChange",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a805906d816a5a0f54e226a58d54a9243",tooltip="This is a item state change handler. "];
+}

@@ -1,0 +1,30 @@
+digraph "CategoryControlWidget::categoryCount"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3 [label="CategoryControlWidget\l::categoryCount",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="SliceEditorWidget::\lsliceModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a",tooltip="Returns the top slice model. "];
+  Node3 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="SliceEditorWidget::\lcategories",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#aa508ade08f133b58b03322f698f19df8",tooltip="Returns the categories that the current mark model holds. "];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="SliceEditorWidget::\lcurrentSliceIndex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c",tooltip="Returns the slice index of type type slice. "];
+  Node5 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="SliceWidget::setMarks",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_widget.html#ad9a08cbf4e0038e5669ac00964bbe86a"];
+  Node3 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="SliceEditorWidget::\ltopView",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a37ddc32b97cc4e8771745046cb88ff35",tooltip="Returns the top slice widget. "];
+  Node3 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="SliceWidget::pen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_widget.html#a7816b406651f2c4f388bd7626255024c"];
+  Node3 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="SliceEditorWidget::\lsetPen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#aa551b44db6ac4ad9f737cc09ec64816f",tooltip="Sets the slice widgets&#39; pen to be the given pen. "];
+  Node10 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="SliceWidget::setPen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_widget.html#aff63c87e4f7a99a90d067e47ec9b7de1"];
+  Node3 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="SliceEditorWidget::\lsetCurrentCategory",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a37537ce0a5f55c30c7f942ddc8e6cdaf",tooltip="This property holds the current category that the mark will be painted on. "];
+  Node3 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="SliceEditorWidget::\laddCategory",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#af2b80216e3b56f0b791510c007289b60",tooltip="Adds a new category into the mark model in the SliceEditorWidget. "];
+  Node3 -> Node14 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="SliceEditorWidget::pen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a1d33484b159165e85dad00e5731cd561",tooltip="Returns a QPen object used for painting marks. "];
+  Node14 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

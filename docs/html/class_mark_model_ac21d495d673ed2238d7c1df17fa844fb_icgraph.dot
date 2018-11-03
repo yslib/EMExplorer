@@ -1,0 +1,36 @@
+digraph "MarkModel::retrieveTreeItem"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node289 [label="MarkModel::retrieveTreeItem",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node289 -> Node290 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node290 [label="MarkModel::treeItems",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#abd67a8a42ced49d205fc618bcefbc6ab",tooltip="Returns all tree items according to a given parent index parent and a type. "];
+  Node290 -> Node291 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node291 [label="RenderWidget::setFrontSlice\lVisible",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365",tooltip="This property holds the visibility of the front slice when renders data with slice type render..."];
+  Node291 -> Node292 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node292 [label="SliceControlWidget\l::setControlledWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8",tooltip="Sets the controlled widget sliceWidge and volumeWidget to present. "];
+  Node292 -> Node293 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node293 [label="SliceControlWidget\l::SliceControlWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6",tooltip="Constructs a widget by the given sliceWidget and volumeWidget. "];
+  Node289 -> Node294 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node294 [label="MarkModel::selectionModel\lOfThisModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50"];
+  Node294 -> Node295 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node295 [label="MarkManager::setMarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a",tooltip="Set new model model to the widget. "];
+  Node295 -> Node296 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node296 [label="MainWindow::open",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952"];
+  Node296 -> Node297 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node297 [label="MainWindow::eventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1"];
+  Node295 -> Node298 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node298 [label="MainWindow::openMark",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da"];
+  Node298 -> Node297 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node294 -> Node299 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node299 [label="RenderWidget::setMarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70",tooltip="Sets the slice model as the given model. "];
+  Node299 -> Node296 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node299 -> Node298 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node299 -> Node300 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node300 [label="VolumeMainWindow::openMark",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5"];
+  Node294 -> Node291 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node294 -> Node301 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node301 [label="SliceEditorWidget::\lsetRightSliceVisibility",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6",tooltip="This is a convenience function to set right slice visibility. "];
+  Node301 -> Node292 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

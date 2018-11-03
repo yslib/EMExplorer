@@ -3,8 +3,9 @@
 <area shape="rect" id="node3" href="$markmodel_8cpp.html" title="D:/code/MRCEditor/src\l/model/markmodel.cpp" alt="" coords="241,95,397,136"/>
 <area shape="rect" id="node4" href="$marktreeitem_8cpp.html" title="D:/code/MRCEditor/src\l/model/marktreeitem.cpp" alt="" coords="421,95,587,136"/>
 <area shape="rect" id="node5" href="$mainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/mainwindow.cpp" alt="" coords="611,95,781,136"/>
-<area shape="rect" id="node6" href="$renderwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/renderwidget.cpp" alt="" coords="805,95,977,136"/>
-<area shape="rect" id="node7" href="$sliceeditorwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/sliceeditorwidget.cpp" alt="" coords="1001,95,1196,136"/>
-<area shape="rect" id="node8" href="$slicemainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/slicemainwindow.cpp" alt="" coords="1221,95,1417,136"/>
-<area shape="rect" id="node9" href="$volumemainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/volumemainwindow.cpp" alt="" coords="1441,95,1650,136"/>
+<area shape="rect" id="node6" href="$marktreeviewwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/marktreeviewwidget.cpp" alt="" coords="805,95,1016,136"/>
+<area shape="rect" id="node7" href="$renderwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/renderwidget.cpp" alt="" coords="1041,95,1213,136"/>
+<area shape="rect" id="node8" href="$sliceeditorwidget_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/sliceeditorwidget.cpp" alt="" coords="1237,95,1432,136"/>
+<area shape="rect" id="node9" href="$slicemainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/slicemainwindow.cpp" alt="" coords="1457,95,1653,136"/>
+<area shape="rect" id="node10" href="$volumemainwindow_8cpp.html" title="D:/code/MRCEditor/src\l/widgets/volumemainwindow.cpp" alt="" coords="1677,95,1886,136"/>
 </map>

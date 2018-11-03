@@ -63,15 +63,9 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_tree_item_meta_data.html#afd96c109ac05a27f8f1568b080380fba"><param name="Name" value="internalPointer"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_file_info_viewer.html#a506a4afebbc28d6847a66db5fa9e7cc7"><param name="Name" value="activated"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#af488a0abef3f71ea29b67658b8840a63"><param name="Name" value="addCategory"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#af488a0abef3f71ea29b67658b8840a63"><param name="Name" value="MarkModel"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#af2b80216e3b56f0b791510c007289b60"><param name="Name" value="SliceEditorWidget"></OBJECT>
-  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#af2b80216e3b56f0b791510c007289b60"><param name="Name" value="addCategory"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_file_info_viewer.html#a6275860877134707845a4941fbd1e3dd"><param name="Name" value="addFileName"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_file_info_viewer.html#a3e0b336e04990d74f7434188177b6ece"><param name="Name" value="addItem"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a0b366414f5570bb3afc193bf839cc14d"><param name="Name" value="addMark"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ab93687bc47808ed4e34263978b372e98"><param name="Name" value="addMarks"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_bi_map.html#a57f716f75beb5a89f9afbdd82593b801"><param name="Name" value="addQueryPair"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="mrc_8h.html#a517daa300b3b5448a250d68f9f60b8ee"><param name="Name" value="ALPHA_OFFSET"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_render_options.html#a846877bad32e49eb4790581dee72ef92"><param name="Name" value="ambient"></OBJECT>
@@ -104,7 +98,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_bi_map.html#aab623190b585fe586df3ca4523b315e0"><param name="Name" value="removeQueryPair"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a4fd62c265f24e13ad50d06b458beaa10afddb49a94e4648e46929d937f919def8"><param name="Name" value="Binary"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a59ca2f0958b95554845f143cb7fe8c0e"><param name="Name" value="boundingBox"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a645da9729ab0c8b90d38c98eeba9324a"><param name="Name" value="boundingBox"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#adb50885d056e06c05bff7b31d6ad46dd"><param name="Name" value="cache"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_gradient_calculator.html#a15823b6ecc928739e4668eff490f7e58"><param name="Name" value="calcGradent"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html"><param name="Name" value="Camera"></OBJECT>
@@ -169,7 +163,6 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#aa508ade08f133b58b03322f698f19df8"><param name="Name" value="categories"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8h.html#a5dd43bb89287d8fca79dcfa65925eef6a50b0d16e6ab8a004634e95a13d197c86"><param name="Name" value="Category"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601af031a15cb6514ac70171e9f2847050c0"><param name="Name" value="CategoryColor"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_control_widget.html"><param name="Name" value="CategoryControlWidget"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_control_widget.html#aa8df6dfa61deea265d1e6ece8b59053e"><param name="Name" value="CategoryControlWidget"></OBJECT>
@@ -194,23 +187,20 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a5a531857ff0ddaf7ec89f3f3e226b8cd"><param name="Name" value="categoryInfo"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a7590d67b1dfc8d2ac76ffda2232d73f1"><param name="Name" value="CategoryItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#aa587131ad99ecdaa43984ca695c0ed4b"><param name="Name" value="color"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a52122bd3a170574f564167c0f1869b29"><param name="Name" value="count"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a64f72bd3db5bbedea6460bf12a6f2e8b"><param name="Name" value="decreaseCount"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a503d5880449f695a8ded37501342e239"><param name="Name" value="increaseCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a10017b7f18fc09528565a971b7824099"><param name="Name" value="name"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a09b4019ed7b3b3ec0f7f207cfbe65699"><param name="Name" value="operator<<"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a6c6bc12649d68baba2a3a80e8542ea54"><param name="Name" value="operator>>"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#ab2b97dac4ce193308cf0e6a4f3d8c51a"><param name="Name" value="setColor"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a75f0c5f62fb4d9cc91c6b680efbdf882"><param name="Name" value="setCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a777642f67dfe95a64b302a3e375c06ab"><param name="Name" value="setName"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#aea3cab950f55fc72f2985475a411402e"><param name="Name" value="setVisible"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a989a644fa3002af96e254290de52ea8b"><param name="Name" value="visible"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a2d5f433c60e500260731d025960733ba"><param name="Name" value="categoryModelIndices"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a16f29f4b36d0b81d2470eccf7a2d950c"><param name="Name" value="CategoryName"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a03212ad079fe25bd31b90658399d0a3e"><param name="Name" value="categoryText"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html"><param name="Name" value="CategoryTreeItem"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8h.html#abfa7eb4082a4b6ab997f8d2d036af57c"><param name="Name" value="categorytreeitem.h"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8cpp.html"><param name="Name" value="categorytreeitem.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8cpp.html#a09b4019ed7b3b3ec0f7f207cfbe65699"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8cpp.html#a6c6bc12649d68baba2a3a80e8542ea54"><param name="Name" value="operator>>"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html"><param name="Name" value="CategoryTreeItem"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a502ee33d8351adecd6b2837056fd0e5b"><param name="Name" value="CategoryTreeItem"></OBJECT>
@@ -219,6 +209,8 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a5b5d7fc007ead869c7f13759dc52b8f7"><param name="Name" value="infoModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a09774d0ffa83ec24e9f0d588d1351c68"><param name="Name" value="insertColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a5dd1ad955d71f825f493f801c9ce6fe0"><param name="Name" value="metaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#aba87c2806dd5e08dec56527974ddadcd"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a65ebd8fc15d9dbccf45ee49891d5b643"><param name="Name" value="operator>>"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#ad6c37d578d7c5792d795e99b9e510495"><param name="Name" value="removeColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a2c7a7fef41f6e4d5eed867cd41e666f6"><param name="Name" value="setData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a82bfe5a32d3b893e13b3a3088afd7444"><param name="Name" value="type"></OBJECT>
@@ -252,9 +244,15 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_info.html#aeb040584f12052ee4cede71d38b29f62"><param name="Name" value="CategoryInfo"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#aa587131ad99ecdaa43984ca695c0ed4b"><param name="Name" value="CategoryItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_color_list_editor.html#ad15af4d2e4add4957adf134407baad96"><param name="Name" value="ColorListEditor"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html#aa456cb5b23d3ea0250af17b50fb4ade7"><param name="Name" value="MeshIntegration"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ad1b5dd63e5e2f3e8ae9e1cb20bf6b8a0"><param name="Name" value="Color"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html#aa456cb5b23d3ea0250af17b50fb4ade7"><param name="Name" value="color"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_color_list_editor.html"><param name="Name" value="ColorListEditor"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_color_list_editor.html#ad15af4d2e4add4957adf134407baad96"><param name="Name" value="color"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_color_list_editor.html#ae345bb08c2c7966c93c6f3a7cb1ed9ba"><param name="Name" value="ColorListEditor"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_color_list_editor.html#acfaa60b89c25a64b23d892ed64fceec1"><param name="Name" value="setColor"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#ac4225ff27cff060bca07838a15312333"><param name="Name" value="columnCount"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#ac4225ff27cff060bca07838a15312333"><param name="Name" value="CategoryTreeItem"></OBJECT>
@@ -277,11 +275,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_data_model.html#a07f9f3136059638bccbcd1befcef211b"><param name="Name" value="MRCDataModel"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_tree_view.html#a1df5e99cdfc7f93eb0e07a14c8c07fcc"><param name="Name" value="contextMenuEvent"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a52122bd3a170574f564167c0f1869b29"><param name="Name" value="count"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a52122bd3a170574f564167c0f1869b29"><param name="Name" value="CategoryItem"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_file_info_viewer.html#ada5e3e57da8d9ba8963b7f42cc3eea0f"><param name="Name" value="MRCFileInfoViewer"></OBJECT>
-  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_file_info_viewer.html#ada5e3e57da8d9ba8963b7f42cc3eea0f"><param name="Name" value="count"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17"><param name="Name" value="createConnections"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a25d98941f2a3fef3d9dc99f79e7c8fb9"><param name="Name" value="createStdFunc"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_data_identity_tester.html#a2e92327a56bbadfded56758a615361f7"><param name="Name" value="createTester"></OBJECT>
@@ -334,7 +328,6 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a7c2d3b9352849c389b218e869e38cec0"><param name="Name" value="SliceEditorWidget"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#a5718061d335944a9dc1abbbd63ad512f"><param name="Name" value="dataType"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a64f72bd3db5bbedea6460bf12a6f2e8b"><param name="Name" value="decreaseCount"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#ad05cf06a659e6176b1963f473e9956cd"><param name="Name" value="deleteAction"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="globals_8h.html#a39630cb8fd6943938d59d5cbc14cfdcd"><param name="Name" value="DELETEANDSETNULL"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a70fe02d66e80a4d2c36533fe047e5fc3"><param name="Name" value="deleteKey"></OBJECT>
@@ -426,6 +419,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item_info_model.html#a6396518692cd4cd5aec6d23c8ea0647f"><param name="Name" value="flags"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item_info_model.html#a6396518692cd4cd5aec6d23c8ea0647f"><param name="Name" value="CategoryTreeItemInfoModel"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#ac8ba98b24861f4e0dbb281f246ea9a69"><param name="Name" value="InstanceTreeItemInfoModel"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#a9c3ef83bed4d4e9b207567eb75ea6cbc"><param name="Name" value="MarkItemInfoModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a432b0209e28e43563976921acc8ad0a8"><param name="Name" value="MarkModel"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="volume_8h.html#a464576d9172e89a2809435cac5f34554a54bb0a996f16f7c6af42b74acbb74543"><param name="Name" value="Float32"></OBJECT>
@@ -574,8 +569,9 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_vector3.html#a9c479720e5a4a8d48603b4d59d09da9c"><param name="Name" value="Vector3"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_titled_slider_with_spin_box.html#a1e22114635f24f4a8a3c8e5fc9c53bc9"><param name="Name" value="hasTracking"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#afc2e1473f158c0f003baa45b519d8020"><param name="Name" value="headerData"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#afc662fbe6d9d8dc0d1e218bd73a6fcaa"><param name="Name" value="headerData"></OBJECT>
   <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#afc662fbe6d9d8dc0d1e218bd73a6fcaa"><param name="Name" value="InstanceTreeItemInfoModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#afc2e1473f158c0f003baa45b519d8020"><param name="Name" value="MarkItemInfoModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a526369da9c2b67154560e76a9dbe208d"><param name="Name" value="MarkModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_info_table_model.html#a2ac821a707cfe31e0af78d7fb24ea003"><param name="Name" value="MRCInfoTableModel"></OBJECT>
@@ -626,7 +622,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="mrc_8h.html#a148b3ca8235a8cf3fdea2d92476d6978"><param name="Name" value="IIUNIT_Y_INVERTED"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_editor_plugin.html#a66247bc02a617d0be7d96d2432583001"><param name="Name" value="image"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#a82b3a16b8634c3eb25b48fe3f4ef350da2f21631359121b59ecdbcbcce93dfa3a"><param name="Name" value="ImageStack"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a503d5880449f695a8ded37501342e239"><param name="Name" value="increaseCount"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item_info_model.html#aefadf2aa3ed0ac6d98b9d01015fa9c43"><param name="Name" value="index"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item_info_model.html#aefadf2aa3ed0ac6d98b9d01015fa9c43"><param name="Name" value="CategoryTreeItemInfoModel"></OBJECT>
@@ -676,31 +671,50 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a"><param name="Name" value="insertTreeItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b"><param name="Name" value="insertTreeItems"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8h.html#a5dd43bb89287d8fca79dcfa65925eef6a7b11a56c087b613e1ee9828f69bec025"><param name="Name" value="Instance"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="instanceitem_8cpp.html"><param name="Name" value="instanceitem.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="instanceitem_8cpp.html#ad509de1337dcdc65a4fa885e1f813f90"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="instanceitem_8cpp.html#a84e58e9cc77fc8127b4990a3d7e5d687"><param name="Name" value="operator>>"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html"><param name="Name" value="InstanceMetaData"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#ae191a95ec9de168d64b9c1d955ea2026"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#aac6fe7f2491b54ed4c434f3deb4ff40c"><param name="Name" value="name"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#ad509de1337dcdc65a4fa885e1f813f90"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a84e58e9cc77fc8127b4990a3d7e5d687"><param name="Name" value="operator>>"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a6f52821e282853110877f4815e762660"><param name="Name" value="region"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a4449123ce2c089214e437f9e8858f8f3"><param name="Name" value="setName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#ac6c332bfb303c4419f7e2873d5b78bef"><param name="Name" value="setRegion"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#aa0bd2179dc20afbd9246648aa13b8e48"><param name="Name" value="setVisibleState"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a1e701b2297fb55dd5b249997f54a54a7"><param name="Name" value="visibleState"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html"><param name="Name" value="InstanceTreeItem"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a59ca2f0958b95554845f143cb7fe8c0e"><param name="Name" value="boundingBox"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a645da9729ab0c8b90d38c98eeba9324a"><param name="Name" value="boundingBox"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a6235f5919a6700a9e1b8bdfd4e0218cd"><param name="Name" value="columnCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#aec33395849c4351937da06c6ced81d0b"><param name="Name" value="data"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a33d693e56ca52196871a7eb4ca0beec5"><param name="Name" value="infoModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a4b462b0033ae5f68428d0650d142e856"><param name="Name" value="insertColumns"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a180116b38bbab7eb094ace5664b1704e"><param name="Name" value="InstanceTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a4ccaaa49f37b333c2ad12aab4519fee4"><param name="Name" value="InstanceTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a87288f39102b83857e44cd1245dd9b92"><param name="Name" value="mesh"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a7ca65fde97e7aa68756769f79f3ee877"><param name="Name" value="metaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a9d68c23ec8ef1d5452b8287ee373eb75"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#aef9c9051db8511b506f5be60e72f5b06"><param name="Name" value="operator>>"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a7839969f267fe8713a9d4f32398ba47f"><param name="Name" value="removeColumns"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#afe46b1d8255c65e54d178b03a68ef82b"><param name="Name" value="setBoundingBox"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a895af855fa081f620441176c3d715dd9"><param name="Name" value="setBoundingBox"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a98f07e33035edf4aa6e9f53e4d25dce2"><param name="Name" value="setData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a4e37399531bdc6f90b263eb17a532851"><param name="Name" value="type"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#ad55b5106e4b5862bf1b325212113894f"><param name="Name" value="visible"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a9c8a2604fafcb1318e44ecb42fdc0bd6"><param name="Name" value="~InstanceTreeItem"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html"><param name="Name" value="InstanceTreeItemInfoModel"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a6857b8fba0a12f68e56a87de055db929"><param name="Name" value="columnCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a9d86725a5661fd4f8b84c2844bb25174"><param name="Name" value="data"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#ac8ba98b24861f4e0dbb281f246ea9a69"><param name="Name" value="flags"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#afc662fbe6d9d8dc0d1e218bd73a6fcaa"><param name="Name" value="headerData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a2602bc27e872b6eef4c77aa1b9c099a7"><param name="Name" value="index"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a4fb1149179307cdc65185076875a42fd"><param name="Name" value="InstanceTreeItemInfoModel"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a2d071f23f52953e9509fbeb1d0916f60"><param name="Name" value="m_checkState"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#af27080c7d6e30be8c82f2babdeee5455"><param name="Name" value="m_range"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a8e605b25d8693c8ac56dad4ff84f6db2"><param name="Name" value="m_text"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a6e8968795490b2ac161baf6bfe50cec4"><param name="Name" value="InstanceTreeItemInfoModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#aee51f61612e460b2da1b84c13ac0ca4f"><param name="Name" value="parent"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a7dc15a647657bdfd4fc171d4a1329f30"><param name="Name" value="rowCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a78231acd9409e820c1fac1a297a53da0"><param name="Name" value="setData"></OBJECT>
@@ -794,9 +808,9 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="mrc_8h.html#aceb3f28afb6049b8a1616ee76f965509"><param name="Name" value="LABEL_OFFSET"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_widget_private.html#a99eba6733db0f4767fec097c526d43c0"><param name="Name" value="lastMousePos"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="camera_8h.html#a217e53712acf7debca5afbc48ea8ec34a945d5e233cf7d6240f6b783b36a374ff"><param name="Name" value="Left"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a6f3bab7c298b22813833c665522c95a1"><param name="Name" value="Length"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a4c298af776709d8c09135998142f6468"><param name="Name" value="length"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_vector2.html#a1456574eef2b9747e42c9a84f72145e1"><param name="Name" value="Length"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a6f3bab7c298b22813833c665522c95a1"><param name="Name" value="MarkProperty"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_vector2.html#a1456574eef2b9747e42c9a84f72145e1"><param name="Name" value="Vector2"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_vector3.html#a8bb6e472c495241786a3b430ef7d49ea"><param name="Name" value="Vector3"></OBJECT>
   </UL>
@@ -833,7 +847,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_editor.html#a9626cae496e972cd7a2919ead422c58f"><param name="Name" value="lowerThresholdSpinChanged"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_matrix4x4.html#ad50be49e68a62469f3eb7fc2471fd119"><param name="Name" value="m"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_focus_camera.html#a22d8e25515406d9b67e3505fdf70c728"><param name="Name" value="m_center"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a2d071f23f52953e9509fbeb1d0916f60"><param name="Name" value="m_checkState"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#a8aca33d054e6ebac24a178c55d132ad1"><param name="Name" value="m_front"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#a8aca33d054e6ebac24a178c55d132ad1"><param name="Name" value="Camera"></OBJECT>
@@ -857,13 +870,11 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#ace54a514f54dee3cabd946a793bad9bf"><param name="Name" value="Camera"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_focus_camera.html#a7f4b558bfdf2eeb2745fad5235a6a0f2"><param name="Name" value="FocusCamera"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#af27080c7d6e30be8c82f2babdeee5455"><param name="Name" value="m_range"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#ad7393b9e040b5c883bfaa5e6adc9d9bd"><param name="Name" value="m_right"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#ad7393b9e040b5c883bfaa5e6adc9d9bd"><param name="Name" value="Camera"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_focus_camera.html#a24bdfa357a5fa4fc37a2ad767d71d529"><param name="Name" value="FocusCamera"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item_info_model.html#a8e605b25d8693c8ac56dad4ff84f6db2"><param name="Name" value="m_text"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#a9ceaeddb12dfb90d6f188386bf418538"><param name="Name" value="m_up"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#a9ceaeddb12dfb90d6f188386bf418538"><param name="Name" value="Camera"></OBJECT>
@@ -904,27 +915,20 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_category_dialog.html#ac8192acdcc651579477f7e60b3a8ed5f"><param name="Name" value="MarkCategoryDialog"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_category_dialog.html#a7e83d990ad41f4db0b8074eb8b58b043"><param name="Name" value="resultReceived"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a670db8c2f34a33ad41e4a3f3e36d6589"><param name="Name" value="markCount"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a993d15aa7bea7075ec86f16574ba41d0a5ac5d63b55316dd759381ebb68343bc1"><param name="Name" value="MARKER_LEFT"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a993d15aa7bea7075ec86f16574ba41d0a8c2c1d1c33cfe535ad57a34e17dd0ef0"><param name="Name" value="MARKER_NORMAL"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a993d15aa7bea7075ec86f16574ba41d0adf3129b7cd32c55f17eb35b15ec171eb"><param name="Name" value="MARKER_RIGHT"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a993d15aa7bea7075ec86f16574ba41d0ade84a4217e8bf6785dda4da4c979d342"><param name="Name" value="MARKER_SELECTED"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html"><param name="Name" value="markitem.cpp"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#a3a962e8269c8258abe2e449f70fb10a9"><param name="Name" value="operator<<"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#a729b42f74e271b7469b1437509ad71e0"><param name="Name" value="operator>>"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html"><param name="Name" value="markitem.h"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#a1ec91e5d1609cea3e428c77d5648a6dd"><param name="Name" value="MarkPropertyInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#a3a962e8269c8258abe2e449f70fb10a9"><param name="Name" value="operator<<"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#a729b42f74e271b7469b1437509ad71e0"><param name="Name" value="operator>>"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#ab951fc144b2ebe5d653ac0b4d3f7cfac"><param name="Name" value="Q_DECLARE_METATYPE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#acf89c0ecdd63f0a932118a26bbcd1268"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#aee61327b82e87baf1d936b7f97dc2d07"><param name="Name" value="operator>>"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html"><param name="Name" value="MarkItemInfoModel"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#a759cc56284221cf0696f4960253c6183"><param name="Name" value="columnCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#a24b51b0bb77f90e7d206fbcbe9518608"><param name="Name" value="data"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#a9c3ef83bed4d4e9b207567eb75ea6cbc"><param name="Name" value="flags"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#afc2e1473f158c0f003baa45b519d8020"><param name="Name" value="headerData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#ad33c9e02711ac19619451f2875424722"><param name="Name" value="index"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_item_info_model.html#ad738619bf1c4d638f19f02879ccec4d3"><param name="Name" value="MarkItemInfoModel"></OBJECT>
@@ -937,21 +941,9 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_manager.html#a2f2c4deed14679f888a5dce731edb508"><param name="Name" value="MarkManager"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a"><param name="Name" value="setMarkModel"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ad8d80f4f4ec00efcca27bf5cad208eb5"><param name="Name" value="markMesh"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html"><param name="Name" value="MarkModel"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="markmodel_8cpp.html"><param name="Name" value="markmodel.cpp"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markmodel_8cpp.html#a09b4019ed7b3b3ec0f7f207cfbe65699"><param name="Name" value="operator<<"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markmodel_8cpp.html#a6c6bc12649d68baba2a3a80e8542ea54"><param name="Name" value="operator>>"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html"><param name="Name" value="MarkModel"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#af488a0abef3f71ea29b67658b8840a63"><param name="Name" value="addCategory"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a0b366414f5570bb3afc193bf839cc14d"><param name="Name" value="addMark"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ab93687bc47808ed4e34263978b372e98"><param name="Name" value="addMarks"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a4fd62c265f24e13ad50d06b458beaa10afddb49a94e4648e46929d937f919def8"><param name="Name" value="Binary"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a2d5f433c60e500260731d025960733ba"><param name="Name" value="categoryModelIndices"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a03212ad079fe25bd31b90658399d0a3e"><param name="Name" value="categoryText"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ac8f333311a34cb94c3c2da5e88adbc8b"><param name="Name" value="columnCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940"><param name="Name" value="data"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#adbcf453ef851df5c37d83972db9971ac"><param name="Name" value="dirty"></OBJECT>
@@ -963,20 +955,18 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ab4eacd6fc2b67e7b33b624c68892de6f"><param name="Name" value="insertRows"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a"><param name="Name" value="insertTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b"><param name="Name" value="insertTreeItems"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a670db8c2f34a33ad41e4a3f3e36d6589"><param name="Name" value="markCount"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ad8d80f4f4ec00efcca27bf5cad208eb5"><param name="Name" value="markMesh"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ad887e7829162eaa74f1aa37995698cbf"><param name="Name" value="MarkModel"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a928d790f75f1232cf785666d8c670513"><param name="Name" value="marks"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a26341e5acac94fcb48c3420f814ee187"><param name="Name" value="modified"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c"><param name="Name" value="parent"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a4fd62c265f24e13ad50d06b458beaa10a5e9a2375bb96425e0f57d6de516bba46"><param name="Name" value="Raw"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#abd38e4e3c0643e023b9b5777a77596fb"><param name="Name" value="removeColumns"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a927b39237700dc4f82b68f61011f4413"><param name="Name" value="removeMark"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2"><param name="Name" value="removeMarks"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a8561f86209e9d07b6793b6a08d7b09c9"><param name="Name" value="removeRows"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a68dda394b983ab9539d44e8973631b71"><param name="Name" value="removeTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#aeb22aaa4ec64436cadd6786aa14979e5"><param name="Name" value="removeTreeItems"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f"><param name="Name" value="resetDirty"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#af319ad9abc81c3b59112d9c8c08f2cab"><param name="Name" value="retrieveData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ac21d495d673ed2238d7c1df17fa844fb"><param name="Name" value="retrieveTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#aa7e4d6a9ebf4ac59119acd01fa62eeed"><param name="Name" value="rootItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#afe1c039bfbe3cb9bda4540becd1558e2"><param name="Name" value="RootTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb"><param name="Name" value="rowCount"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#abe6abbd59c1ea3c302b8cd6951d4c28f"><param name="Name" value="save"></OBJECT>
@@ -990,6 +980,7 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ac4618b9b6096860a95985e3dec8bceca"><param name="Name" value="SliceEditorWidget"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#afe1c039bfbe3cb9bda4540becd1558e2"><param name="Name" value="TreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613"><param name="Name" value="treeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#abd67a8a42ced49d205fc618bcefbc6ab"><param name="Name" value="treeItems"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#aa6a8455921fa58f501bb4fccaefa6841"><param name="Name" value="~MarkModel"></OBJECT>
   </UL>
@@ -998,23 +989,13 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_widget.html#acd34b967e1a89104009102b6cb18cf91"><param name="Name" value="RenderWidget"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#ad1212f4aa5a33c4d072844d0255c956e"><param name="Name" value="SliceEditorWidget"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html"><param name="Name" value="MarkProperty"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601af031a15cb6514ac70171e9f2847050c0"><param name="Name" value="CategoryColor"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a16f29f4b36d0b81d2470eccf7a2d950c"><param name="Name" value="CategoryName"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ad1b5dd63e5e2f3e8ae9e1cb20bf6b8a0"><param name="Name" value="Color"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a6f3bab7c298b22813833c665522c95a1"><param name="Name" value="Length"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ae172d8622dfe37aeb179c00ece0a9789"><param name="Name" value="Mesh"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ac463a64bffd67d30f842cb15b78b9cae"><param name="Name" value="Name"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a5288e2cfb5e2efe69e2c7cd34e63ff02"><param name="Name" value="PropertyInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ab5bf8144b04a7fcf7a689251d3f9591d"><param name="Name" value="SliceIndex"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ab53ea07e67d53201db744a1d975b9037"><param name="Name" value="SliceType"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ad695566e951b05d0862ac4f1a4c9e2a6"><param name="Name" value="VisibleState"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#a1ec91e5d1609cea3e428c77d5648a6dd"><param name="Name" value="MarkPropertyInfo"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a928d790f75f1232cf785666d8c670513"><param name="Name" value="marks"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a529f4ce5582b32903be037b8e3e02ec4"><param name="Name" value="markSelected"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a7c122857199bb8f1efc3720ca2b3d2f9"><param name="Name" value="marksSelected"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="marktreeitem_8cpp.html"><param name="Name" value="marktreeitem.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="marktreeitem_8cpp.html#a475d267ba94bd844a069e31848bb8e8d"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="marktreeitem_8cpp.html#a42408b602c7afd582f1e0ee4c2687b65"><param name="Name" value="operator>>"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_tree_view.html"><param name="Name" value="MarkTreeView"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_tree_view.html#a1df5e99cdfc7f93eb0e07a14c8c07fcc"><param name="Name" value="contextMenuEvent"></OBJECT>
@@ -1057,8 +1038,10 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="mesh_8h.html#ae1fb504add60a88824ea5f56b84043ce"><param name="Name" value="Vector3f"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a87288f39102b83857e44cd1245dd9b92"><param name="Name" value="mesh"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ae172d8622dfe37aeb179c00ece0a9789"><param name="Name" value="Mesh"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html#ad65d842c3a99fb3b2e06f12f0d1d51a8"><param name="Name" value="mesh"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a87288f39102b83857e44cd1245dd9b92"><param name="Name" value="InstanceTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html#ad65d842c3a99fb3b2e06f12f0d1d51a8"><param name="Name" value="MeshIntegration"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html"><param name="Name" value="MeshIntegration"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html#aa456cb5b23d3ea0250af17b50fb4ade7"><param name="Name" value="color"></OBJECT>
@@ -1351,8 +1334,9 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_info.html#a648a66dbcc1bc20918824308cb3b222d"><param name="Name" value="CategoryInfo"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a10017b7f18fc09528565a971b7824099"><param name="Name" value="CategoryItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#aac6fe7f2491b54ed4c434f3deb4ff40c"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aaecec181336552b1d43766f3ac479943"><param name="Name" value="StrokeMarkItem"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ac463a64bffd67d30f842cb15b78b9cae"><param name="Name" value="Name"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_navigation_view.html"><param name="Name" value="NavigationView"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_navigation_view.html#aee2bae68fa7a245e5fd87de691a259f3"><param name="Name" value="NavigationView"></OBJECT>
@@ -1483,12 +1467,20 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="abstractslicedatamodel_8h.html#a16cdecad5921c883fce7cd3d0b776c86"><param name="Name" value="abstractslicedatamodel.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="camera_8h.html#abe81ff321b3ec6229d8f3c4fe9465540"><param name="Name" value="camera.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a09b4019ed7b3b3ec0f7f207cfbe65699"><param name="Name" value="CategoryItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#aba87c2806dd5e08dec56527974ddadcd"><param name="Name" value="CategoryTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8cpp.html#a09b4019ed7b3b3ec0f7f207cfbe65699"><param name="Name" value="categorytreeitem.cpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="geometry_8h.html#a6ed2ff301b18cabd81814a7cf3b163ca"><param name="Name" value="geometry.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#a3a962e8269c8258abe2e449f70fb10a9"><param name="Name" value="markitem.cpp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#a3a962e8269c8258abe2e449f70fb10a9"><param name="Name" value="markitem.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markmodel_8cpp.html#a09b4019ed7b3b3ec0f7f207cfbe65699"><param name="Name" value="markmodel.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="instanceitem_8cpp.html#ad509de1337dcdc65a4fa885e1f813f90"><param name="Name" value="instanceitem.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#ad509de1337dcdc65a4fa885e1f813f90"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a9d68c23ec8ef1d5452b8287ee373eb75"><param name="Name" value="InstanceTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#acf89c0ecdd63f0a932118a26bbcd1268"><param name="Name" value="markitem.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="marktreeitem_8cpp.html#a475d267ba94bd844a069e31848bb8e8d"><param name="Name" value="marktreeitem.cpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_matrix4x4.html#ab4da4b366d5d0a7bbe890aff1f2445df"><param name="Name" value="Matrix4x4"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#aa134dd5bbc85111cfa91fdcb4e6b3d22"><param name="Name" value="RootTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="roottreeitem_8cpp.html#aa134dd5bbc85111cfa91fdcb4e6b3d22"><param name="Name" value="roottreeitem.cpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_data_identity_tester.html#a16cdecad5921c883fce7cd3d0b776c86"><param name="Name" value="SliceDataIdentityTester"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#acf89c0ecdd63f0a932118a26bbcd1268"><param name="Name" value="StrokeMarkItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a475d267ba94bd844a069e31848bb8e8d"><param name="Name" value="StrokeMarkTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_transform3.html#a42246e3241c44f9c86cd354a5301a828"><param name="Name" value="Transform3"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#ad79db34a360ab2f83025fbf77b438737"><param name="Name" value="TreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8cpp.html#af3867168b442d1c788191d4ff5e10736"><param name="Name" value="treeitem.cpp"></OBJECT>
@@ -1508,10 +1500,18 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="abstractslicedatamodel_8h.html#aad18e856333ff81c829cf1132faa85a1"><param name="Name" value="abstractslicedatamodel.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a6c6bc12649d68baba2a3a80e8542ea54"><param name="Name" value="CategoryItem"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#a729b42f74e271b7469b1437509ad71e0"><param name="Name" value="markitem.cpp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#a729b42f74e271b7469b1437509ad71e0"><param name="Name" value="markitem.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markmodel_8cpp.html#a6c6bc12649d68baba2a3a80e8542ea54"><param name="Name" value="markmodel.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#a65ebd8fc15d9dbccf45ee49891d5b643"><param name="Name" value="CategoryTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8cpp.html#a6c6bc12649d68baba2a3a80e8542ea54"><param name="Name" value="categorytreeitem.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="instanceitem_8cpp.html#a84e58e9cc77fc8127b4990a3d7e5d687"><param name="Name" value="instanceitem.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a84e58e9cc77fc8127b4990a3d7e5d687"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#aef9c9051db8511b506f5be60e72f5b06"><param name="Name" value="InstanceTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8cpp.html#aee61327b82e87baf1d936b7f97dc2d07"><param name="Name" value="markitem.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="marktreeitem_8cpp.html#a42408b602c7afd582f1e0ee4c2687b65"><param name="Name" value="marktreeitem.cpp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a431b03efb53782f0a4938d11d932f991"><param name="Name" value="RootTreeItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="roottreeitem_8cpp.html#a431b03efb53782f0a4938d11d932f991"><param name="Name" value="roottreeitem.cpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_data_identity_tester.html#aad18e856333ff81c829cf1132faa85a1"><param name="Name" value="SliceDataIdentityTester"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aee61327b82e87baf1d936b7f97dc2d07"><param name="Name" value="StrokeMarkItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a42408b602c7afd582f1e0ee4c2687b65"><param name="Name" value="StrokeMarkTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a624a5ff366aab15ba5df68d78486e2b6"><param name="Name" value="TreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8cpp.html#a437228530f02a7bebd73f29f411e82b0"><param name="Name" value="treeitem.cpp"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0"><param name="Name" value="treeitem.h"></OBJECT>
@@ -1672,16 +1672,10 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#aec57ad43c5bd3d988bbffffe0e2d7790"><param name="Name" value="property"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#ab320b1f2234b59e468b5ebb1affa4a6c"><param name="Name" value="propertyCount"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601a5288e2cfb5e2efe69e2c7cd34e63ff02"><param name="Name" value="PropertyInfo"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#a5993c271c1d88c650129498de953bb7c"><param name="Name" value="propertyName"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#a7619495af0545aeebc07f608183f2e15"><param name="Name" value="propertyType"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8h.html#a5a076b91b45166d94877ff1627a56086"><param name="Name" value="PTR_TYPE"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8h.html#abfa7eb4082a4b6ab997f8d2d036af57c"><param name="Name" value="Q_DECLARE_METATYPE"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="categorytreeitem_8h.html#abfa7eb4082a4b6ab997f8d2d036af57c"><param name="Name" value="categorytreeitem.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="markitem_8h.html#ab951fc144b2ebe5d653ac0b4d3f7cfac"><param name="Name" value="markitem.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="triangulate_8h.html#ab4cdd3acf5a389ba71251970a3541bed"><param name="Name" value="triangulate.h"></OBJECT>
-  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="triangulate_8h.html#ab4cdd3acf5a389ba71251970a3541bed"><param name="Name" value="Q_DECLARE_METATYPE"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="slicecontrolwidget_8h.html#a7647a420bd2edde8805386ba2062472b"><param name="Name" value="QT_END_NAMESPACE"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_bi_map.html#a9b106ea1fa76394ad9ed3318327ebd18"><param name="Name" value="query"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a4fd62c265f24e13ad50d06b458beaa10a5e9a2375bb96425e0f57d6de516bba46"><param name="Name" value="Raw"></OBJECT>
@@ -1699,7 +1693,11 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_gradient_calculator.html#a048b3c1e3e5a3a6a0575ae568a0d030f"><param name="Name" value="ready"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#abb3b431b8c92604aa619c7e4d575571aa37c033a29fead212bd12fc7a19e8f405"><param name="Name" value="Real32"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_navigation_view.html#a9c6c5ff6b6070edd26cb0522176eccaf"><param name="Name" value="region"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a6f52821e282853110877f4815e762660"><param name="Name" value="region"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a6f52821e282853110877f4815e762660"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_navigation_view.html#a9c6c5ff6b6070edd26cb0522176eccaf"><param name="Name" value="NavigationView"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99"><param name="Name" value="removeChildren"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_tree_item.html#ad6c37d578d7c5792d795e99b9e510495"><param name="Name" value="removeColumns"></OBJECT>
   <UL>
@@ -1711,8 +1709,6 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a49a0c43865c3ba6a09fce612bd4d4aca"><param name="Name" value="StrokeMarkTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a075068a25df11a01d451ffa8b3cb20bb"><param name="Name" value="TreeItem"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a927b39237700dc4f82b68f61011f4413"><param name="Name" value="removeMark"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2"><param name="Name" value="removeMarks"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_bi_map.html#aab623190b585fe586df3ca4523b315e0"><param name="Name" value="removeQueryPair"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a8561f86209e9d07b6793b6a08d7b09c9"><param name="Name" value="removeRows"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a68dda394b983ab9539d44e8973631b71"><param name="Name" value="removeTreeItem"></OBJECT>
@@ -1840,6 +1836,8 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_editor.html#a556aea7084841f0ffeeafc88b2bfe20a"><param name="Name" value="restoreThresholds"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_category_dialog.html#a7e83d990ad41f4db0b8074eb8b58b043"><param name="Name" value="resultReceived"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#af319ad9abc81c3b59112d9c8c08f2cab"><param name="Name" value="retrieveData"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#ac21d495d673ed2238d7c1df17fa844fb"><param name="Name" value="retrieveTreeItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="volume_8h.html#ab14ee7a66530d0213c160382bbe0cca4a30447e9f6efa4afdd251f9afc1d5fb44"><param name="Name" value="RGB"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="volume_8h.html#ab14ee7a66530d0213c160382bbe0cca4ae75845ff0980839032f4a78a0d42753c"><param name="Name" value="RGBA"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_camera.html#a43f9c27656505ec5a8e6ccd5287b9ed6"><param name="Name" value="right"></OBJECT>
@@ -1860,6 +1858,13 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#aca98a3731da7f8fcf6db8de5fdb09dc7"><param name="Name" value="rightView"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="mrc_8h.html#a069f32831d6d7d2651af49385457a112"><param name="Name" value="RMS_OFFSET"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="treeitem_8h.html#a5dd43bb89287d8fca79dcfa65925eef6ac886d5190f68bd172807c62df7a1b536"><param name="Name" value="Root"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#aa7e4d6a9ebf4ac59119acd01fa62eeed"><param name="Name" value="rootItem"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html"><param name="Name" value="RootTreeItem"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="roottreeitem_8cpp.html"><param name="Name" value="roottreeitem.cpp"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="roottreeitem_8cpp.html#aa134dd5bbc85111cfa91fdcb4e6b3d22"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="roottreeitem_8cpp.html#a431b03efb53782f0a4938d11d932f991"><param name="Name" value="operator>>"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html"><param name="Name" value="RootTreeItem"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#ac006d17da6c4f5ce98b446de150c91b2"><param name="Name" value="columnCount"></OBJECT>
@@ -1868,9 +1873,12 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a3d3301541941e598d8d13bfbce0467c5"><param name="Name" value="insertColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#afe1c039bfbe3cb9bda4540becd1558e2"><param name="Name" value="MarkModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#aaade669e72e08fe744b5c0d643b793f0"><param name="Name" value="metaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#aa134dd5bbc85111cfa91fdcb4e6b3d22"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a431b03efb53782f0a4938d11d932f991"><param name="Name" value="operator>>"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a5020b1bc334d9eb8093f398e051db715"><param name="Name" value="removeColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a53e65a7d2530f855091f2fde53e75980"><param name="Name" value="RootTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a696678216e58a9cc02dea63cbef54d64"><param name="Name" value="setData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a2dd297eb8c3ee868082bc292d9e256c9"><param name="Name" value="TreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a3252512c1a0d07f3ed5bfa4ba84fd30c"><param name="Name" value="type"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_focus_camera.html#aa42d088155ef927cbfd0a912ac7341f0"><param name="Name" value="rotation"></OBJECT>
@@ -1914,13 +1922,16 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="camera_8h.html#ab69e07c5be9d59da1c5eb1748d7bc913"><param name="Name" value="SENSITIVITY"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_key.html#ab3d028d8ef1d779505caac0d6ddac7ac"><param name="Name" value="setAlphaL"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_key.html#ae3150def3aba40af06b840e981271602"><param name="Name" value="setAlphaR"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#afe46b1d8255c65e54d178b03a68ef82b"><param name="Name" value="setBoundingBox"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a895af855fa081f620441176c3d715dd9"><param name="Name" value="setBoundingBox"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_focus_camera.html#a500bf4473815d884f6e27f9a95b11f47"><param name="Name" value="setCenter"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#ab2b97dac4ce193308cf0e6a4f3d8c51a"><param name="Name" value="setColor"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#ab2b97dac4ce193308cf0e6a4f3d8c51a"><param name="Name" value="CategoryItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_color_list_editor.html#acfaa60b89c25a64b23d892ed64fceec1"><param name="Name" value="ColorListEditor"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_key.html#a6a38e949788a1790769dd47708ac5988"><param name="Name" value="setColorL"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_key.html#a80c4070d576891f744798f5a81e16227"><param name="Name" value="setColorR"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8"><param name="Name" value="setControlledWidget"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a75f0c5f62fb4d9cc91c6b680efbdf882"><param name="Name" value="setCount"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a37537ce0a5f55c30c7f942ddc8e6cdaf"><param name="Name" value="setCurrentCategory"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_editor_plugin.html#a766c82709b5b768483d350e486d793b9"><param name="Name" value="setCurrentImage"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c_file_info_viewer.html#acd35e07a0f897afadacce38d8343659b"><param name="Name" value="setCurrentIndex"></OBJECT>
@@ -1987,6 +1998,11 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_double_slider.html#aefabfbe5a145bea286a93ab2af36cd59"><param name="Name" value="setMinValue"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_zoom_widget.html#a79ef87c943aa2261ea6b7326b0a02408"><param name="Name" value="setMinZoomFactor"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a777642f67dfe95a64b302a3e375c06ab"><param name="Name" value="setName"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#a777642f67dfe95a64b302a3e375c06ab"><param name="Name" value="CategoryItem"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a4449123ce2c089214e437f9e8858f8f3"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a28b069b6e22d7f71aa3c53c0b284b227"><param name="Name" value="StrokeMarkItem"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_widget.html#ad7bfb9034f33a009af0c0780b8847abb"><param name="Name" value="setNavigationViewEnabled"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a0595965dfd45460ec35fd0afe29d1420"><param name="Name" value="setNeedNormal"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_double_slider.html#a4eac74d960e85f233e15723360155058"><param name="Name" value="setOffsets"></OBJECT>
@@ -2009,7 +2025,11 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_titled_slider_width_double_spin_box.html#ab7e9e50e5779f927df46e8ada62e7dfa"><param name="Name" value="TitledSliderWidthDoubleSpinBox"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_titled_slider_with_spin_box.html#a2526358031c04f2572705496a44cf368"><param name="Name" value="TitledSliderWithSpinBox"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_navigation_view.html#a4f914f14150d2921b22917cab698a322"><param name="Name" value="setRegion"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#ac6c332bfb303c4419f7e2873d5b78bef"><param name="Name" value="setRegion"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#ac6c332bfb303c4419f7e2873d5b78bef"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_navigation_view.html#a4f914f14150d2921b22917cab698a322"><param name="Name" value="NavigationView"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_parameter_widget.html#adfa9b8a5bb93404668b0c0fcc517d927"><param name="Name" value="setRenderWidget"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_parameter_widget.html#adfa9b8a5bb93404668b0c0fcc517d927"><param name="Name" value="RenderParameterWidget"></OBJECT>
@@ -2030,7 +2050,12 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_titled_slider_width_double_spin_box.html#a40f742c009087f69abd1902af36f5616"><param name="Name" value="setSingleStep"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3"><param name="Name" value="setSliceIndex"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3"><param name="Name" value="SliceEditorWidget"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#ac6ae2cde134e35ed6e4d6aef2295860b"><param name="Name" value="StrokeMarkItem"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_volume.html#a4674f7a3c32b1778031e03ec6a307dd0"><param name="Name" value="setSliceSphereCoord"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a0b68943ad3c213665275fae17181452b"><param name="Name" value="setSliceType"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a47c5b6f3612352e1e8844d884ae6a0fd"><param name="Name" value="setSliceVisible"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_double_slider.html#aafb3a96fe3c4673b1e055f431f43cd86"><param name="Name" value="setSliderWidth"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_key.html#a074f0af6fe5c4b79d8230e1d900d2b42"><param name="Name" value="setSplit"></OBJECT>
@@ -2046,7 +2071,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_data_model.html#a2eed8491afb822961c8425e2334f08af"><param name="Name" value="AbstractSliceDataModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_widget.html#a3f7d1ebf1a10d0445abf52240e5edb46"><param name="Name" value="RenderWidget"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a512cf43219f9c532ff99d07f8fd3c4ff"><param name="Name" value="setTopSliceVisibility"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#ae8fb14c730ee22c27cfb8c4ae0bc92b7"><param name="Name" value="setTopSliceVisibility"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_widget.html#affb712d77936e6394f77d3969ae03415"><param name="Name" value="setTopSliceVisible"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_render_widget.html#affb712d77936e6394f77d3969ae03415"><param name="Name" value="RenderWidget"></OBJECT>
@@ -2067,6 +2092,11 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_double_slider.html#ae5aac2b29c8739e907f9f6e6674fd745"><param name="Name" value="setValues"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_category_item.html#aea3cab950f55fc72f2985475a411402e"><param name="Name" value="setVisible"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#aa0bd2179dc20afbd9246648aa13b8e48"><param name="Name" value="setVisibleState"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#aa0bd2179dc20afbd9246648aa13b8e48"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a841aa5d4fb1d896e0d477a4fdc223f6a"><param name="Name" value="StrokeMarkItem"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a650ebe4ed51e7fa1702c8bbbc8ba37da"><param name="Name" value="setVolumeInfomation"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_editor.html#a5767e2dc624ab06a1e354500e0e888db"><param name="Name" value="setVolumeInformation"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#a4a5f88a3156a767900cb00a28dbae9c0"><param name="Name" value="setXAxisText"></OBJECT>
@@ -2182,7 +2212,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#aab9d24caf666092861776d1d94266146"><param name="Name" value="setRightSliceVisible"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3"><param name="Name" value="setSliceIndex"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a47c5b6f3612352e1e8844d884ae6a0fd"><param name="Name" value="setSliceVisible"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a512cf43219f9c532ff99d07f8fd3c4ff"><param name="Name" value="setTopSliceVisibility"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#ae8fb14c730ee22c27cfb8c4ae0bc92b7"><param name="Name" value="setTopSliceVisibility"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a37775322f48419068d579b21bf4fab9e"><param name="Name" value="setTopSliceVisible"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a9b5981a1f41f5e8a51cbf1026415fc23"><param name="Name" value="SliceEditorWidget"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a"><param name="Name" value="sliceModel"></OBJECT>
@@ -2202,7 +2232,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget_private.html#a1d93839642050301f3ab88735fb18e0b"><param name="Name" value="SliceEditorWidgetPrivate"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget_private.html#ac40e7d6b832961e57a58f57c3b1ae8d9"><param name="Name" value="state"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ab5bf8144b04a7fcf7a689251d3f9591d"><param name="Name" value="SliceIndex"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71"><param name="Name" value="sliceIndex"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html"><param name="Name" value="SliceItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_editor_plugin.html#acf6f78dc8de45837e93ea40e954229c3"><param name="Name" value="sliceItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html"><param name="Name" value="SliceItem"></OBJECT>
@@ -2215,8 +2245,8 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_slice_widget_state.html#add6246b46609bd1ed1b26b9de8707b30"><param name="Name" value="sliceItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html"><param name="Name" value="SliceItem"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#abe0632359f3694952987f39ce6feebdfa79898dc72062ab6c16f49a33fbe89ed4"><param name="Name" value="Type"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#a06bd655ab68d46c1c5e63b1bdfcba0c3"><param name="Name" value="type"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#abe0632359f3694952987f39ce6feebdfa79898dc72062ab6c16f49a33fbe89ed4"><param name="Name" value="Type"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#a383f9254d9061655fa9f2787562090dd"><param name="Name" value="wheelEvent"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#ab590ef911a05699b8c2358bfa0b643b6"><param name="Name" value="~SliceItem"></OBJECT>
   </UL>
@@ -2253,7 +2283,10 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="renderwidget_8h.html#ac9e546db27bb4f76f47d7e25f24abb88a589bcfae373a12b4e91647ec4cc029e4"><param name="Name" value="SliceTexture"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_view_plugin.html#aa481339a25aacca41872400910e6f6ba"><param name="Name" value="sliceType"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ab53ea07e67d53201db744a1d975b9037"><param name="Name" value="SliceType"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_view_plugin.html#aa481339a25aacca41872400910e6f6ba"><param name="Name" value="AbstractSliceViewPlugin"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a9e172d94724405391f7f55e72dc4cdbd"><param name="Name" value="StrokeMarkItem"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_volume.html"><param name="Name" value="SliceVolume"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_volume.html#aa52691afe8022fffca370b0f6b7337f7"><param name="Name" value="ambient"></OBJECT>
@@ -2363,13 +2396,25 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a69fe703a5be5832f9e3a5552daa0b68f"><param name="Name" value="appendPoint"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a805906d816a5a0f54e226a58d54a9243"><param name="Name" value="itemChange"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a4c298af776709d8c09135998142f6468"><param name="Name" value="length"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a3d3a639331fbac807d0406c24d0930e5"><param name="Name" value="modelIndex"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aaecec181336552b1d43766f3ac479943"><param name="Name" value="name"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#acf89c0ecdd63f0a932118a26bbcd1268"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aee61327b82e87baf1d936b7f97dc2d07"><param name="Name" value="operator>>"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#abef9e84f84157cd6dcce251a442913b2"><param name="Name" value="paint"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a51b28e5fdad2d44fd0e0d73f7b301860"><param name="Name" value="setItemChangeHandler"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a28b069b6e22d7f71aa3c53c0b284b227"><param name="Name" value="setName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#ac6ae2cde134e35ed6e4d6aef2295860b"><param name="Name" value="setSliceIndex"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a0b68943ad3c213665275fae17181452b"><param name="Name" value="setSliceType"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a841aa5d4fb1d896e0d477a4fdc223f6a"><param name="Name" value="setVisibleState"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71"><param name="Name" value="sliceIndex"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a9e172d94724405391f7f55e72dc4cdbd"><param name="Name" value="sliceType"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa90d9aa2139475f69b2cd417e8909436"><param name="Name" value="StrokeMarkItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a93b3f63c547cc2de052b7a0e04c8e677"><param name="Name" value="StrokeMarkTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a03a42144fe4120de69bc2d4b5b5198b4a98e05550666b601c096e2c71ea954462"><param name="Name" value="Type"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa215afb337583ae2343b9d5a7b62df29"><param name="Name" value="type"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa589264b91dafeeb18f5a728c0e11ffe"><param name="Name" value="visibleState"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a6b5daecdff06e98dbf6ddbabd69092e5"><param name="Name" value="~StrokeMarkItem"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html"><param name="Name" value="StrokeMarkTreeItem"></OBJECT>
   <UL>
@@ -2379,6 +2424,8 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a42121593b668272e3fd9f614552efbf3"><param name="Name" value="insertColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a92806cb4c6b27f11bd1a6044da923bef"><param name="Name" value="metaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a9b99f4fbcd73531b7f70b12ce930fff0"><param name="Name" value="modelIndexChanged"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a475d267ba94bd844a069e31848bb8e8d"><param name="Name" value="operator<<"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a42408b602c7afd582f1e0ee4c2687b65"><param name="Name" value="operator>>"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a49a0c43865c3ba6a09fce612bd4d4aca"><param name="Name" value="removeColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#afd6157e6afd7081c49435d59923bd21c"><param name="Name" value="setData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a93b3f63c547cc2de052b7a0e04c8e677"><param name="Name" value="StrokeMarkItem"></OBJECT>
@@ -2683,6 +2730,10 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#ad0edce4d6979c8545629d8630d752eed"><param name="Name" value="insertColumns"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a228c64d6b6aa651f8d5d6b6a3e68f67d"><param name="Name" value="itemModel"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#afe1c039bfbe3cb9bda4540becd1558e2"><param name="Name" value="MarkModel"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613"><param name="Name" value="treeItem"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html"><param name="Name" value="TreeItem"></OBJECT>
+  <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8"><param name="Name" value="metaData"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#ae200694532a44e3b5ae09e6625275827"><param name="Name" value="modelIndexChanged"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#ad79db34a360ab2f83025fbf77b438737"><param name="Name" value="operator<<"></OBJECT>
@@ -2691,6 +2742,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a"><param name="Name" value="persistentModelIndex"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99"><param name="Name" value="removeChildren"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a075068a25df11a01d451ffa8b3cb20bb"><param name="Name" value="removeColumns"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a2dd297eb8c3ee868082bc292d9e256c9"><param name="Name" value="RootTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66"><param name="Name" value="row"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#ae9b3400f45005f2c96debc752eed9731"><param name="Name" value="setCurrentSelected"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a4984b62747ce4b6c363da479c6ad1bf0"><param name="Name" value="setData"></OBJECT>
@@ -2740,10 +2792,13 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a9d4fc95e0b4c0e121eab1dd338f5066f"><param name="Name" value="normals"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a0595965dfd45460ec35fd0afe29d1420"><param name="Name" value="setNeedNormal"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a736c7a475002f82174c0025e3ab7caaa"><param name="Name" value="triangleCount"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a08f1516efdf2e394d8d3373775c07a80"><param name="Name" value="Triangulate"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a006a3440d7973e60f1527f2854246901"><param name="Name" value="triangulate"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a006a3440d7973e60f1527f2854246901"><param name="Name" value="Triangulate"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html"><param name="Name" value="Triangulate"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a006a3440d7973e60f1527f2854246901"><param name="Name" value="triangulate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_triangulate.html#a08f1516efdf2e394d8d3373775c07a80"><param name="Name" value="Triangulate"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="triangulate_8cpp.html#ab15924eca9cb461fd3e42dacf5e5ea65"><param name="Name" value="triangulate"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="triangulate_8cpp.html#ab15924eca9cb461fd3e42dacf5e5ea65"><param name="Name" value="triangulate.cpp"></OBJECT>
@@ -2762,13 +2817,13 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_empty_tree_item.html#a087f963b5d5741e3059a860024695079"><param name="Name" value="EmptyTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a4e37399531bdc6f90b263eb17a532851"><param name="Name" value="InstanceTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_root_tree_item.html#a3252512c1a0d07f3ed5bfa4ba84fd30c"><param name="Name" value="RootTreeItem"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#a06bd655ab68d46c1c5e63b1bdfcba0c3"><param name="Name" value="SliceItem"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#abe0632359f3694952987f39ce6feebdfa79898dc72062ab6c16f49a33fbe89ed4"><param name="Name" value="Type"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa215afb337583ae2343b9d5a7b62df29"><param name="Name" value="type"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#a06bd655ab68d46c1c5e63b1bdfcba0c3"><param name="Name" value="type"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a03a42144fe4120de69bc2d4b5b5198b4a98e05550666b601c096e2c71ea954462"><param name="Name" value="Type"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a4800e57b9ff1b73bb0771acea935e02a"><param name="Name" value="type"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa215afb337583ae2343b9d5a7b62df29"><param name="Name" value="type"></OBJECT>
   <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa215afb337583ae2343b9d5a7b62df29"><param name="Name" value="StrokeMarkItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a4800e57b9ff1b73bb0771acea935e02a"><param name="Name" value="StrokeMarkTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_tree_item.html#a9040286ba73d1391c19dc548b9a44890"><param name="Name" value="TreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_volume_format.html#aaeaef0470c2befd6f3fe016f08563a4f"><param name="Name" value="VolumeFormat"></OBJECT>
@@ -2887,7 +2942,11 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#ad55b5106e4b5862bf1b325212113894f"><param name="Name" value="InstanceTreeItem"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="struct_mesh_integration.html#afa610885d73dc34f0544ee4fe90f0cf7"><param name="Name" value="MeshIntegration"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="namespace_mark_property.html#acc3171c498e47147b5a3558239a44601ad695566e951b05d0862ac4f1a4c9e2a6"><param name="Name" value="VisibleState"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a1e701b2297fb55dd5b249997f54a54a7"><param name="Name" value="visibleState"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_meta_data.html#a1e701b2297fb55dd5b249997f54a54a7"><param name="Name" value="InstanceMetaData"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#aa589264b91dafeeb18f5a728c0e11ffe"><param name="Name" value="StrokeMarkItem"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_volume.html"><param name="Name" value="Volume"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="volume_8cpp.html#a7dbe3da8b73dff42cc2130893d1e36e2"><param name="Name" value="volume.cpp"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="volume_8h.html"><param name="Name" value="volume.h"></OBJECT>
@@ -3030,6 +3089,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_data_model.html#a662af214ea336416ce3c9f26ca82dc9f"><param name="Name" value="~AbstractSliceDataModel"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_abstract_slice_editor_plugin.html#a31bc04d964ea1361b9af0fd81c1bb56d"><param name="Name" value="~AbstractSliceEditorPlugin"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_g_p_u_volume.html#a004aa4921e7257f47e8fba70d54eaeaf"><param name="Name" value="~GPUVolume"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_instance_tree_item.html#a9c8a2604fafcb1318e44ecb42fdc0bd6"><param name="Name" value="~InstanceTreeItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_main_window.html#a767824566011a82d1d75339774258614"><param name="Name" value="~MainWindow"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_mark_model.html#aa6a8455921fa58f501bb4fccaefa6841"><param name="Name" value="~MarkModel"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_m_r_c.html#a66caa183358483da3132577265d1766c"><param name="Name" value="~MRC"></OBJECT>
@@ -3039,6 +3099,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_editor_widget.html#ad70fff470c34d1029dd2770097451a5b"><param name="Name" value="~SliceEditorWidget"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_item.html#ab590ef911a05699b8c2358bfa0b643b6"><param name="Name" value="~SliceItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_slice_volume.html#a124605c0610ae0e92ef762ff2472473c"><param name="Name" value="~SliceVolume"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_item.html#a6b5daecdff06e98dbf6ddbabd69092e5"><param name="Name" value="~StrokeMarkItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_stroke_mark_tree_item.html#a5c1720afe8fd863e3196bdffbe26cc96"><param name="Name" value="~StrokeMarkTreeItem"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_editor.html#a0a05def1824f99981a3eb9ee78cf2932"><param name="Name" value="~TF1DEditor"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="class_t_f1_d_mapping_canvas.html#afe8f4dbd8938b309293e7d53f0bb5059"><param name="Name" value="~TF1DMappingCanvas"></OBJECT>

@@ -1,0 +1,16 @@
+digraph "D:/code/MRCEditor/src/algorithm" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_68267d1309a1af8e8297ef4c3efbcdba {
+    graph [ bgcolor="#ddddee", pencolor="black", label="src" fontname="Helvetica", fontsize="10", URL="dir_68267d1309a1af8e8297ef4c3efbcdba.html"]
+  dir_fbc178c12bd249518b3c0868875b8083 [shape=box, label="algorithm", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_fbc178c12bd249518b3c0868875b8083.html"];
+  }
+  dir_4730a5303449a2e0c7d1551f94d9984f [shape=box label="abstract" URL="dir_4730a5303449a2e0c7d1551f94d9984f.html"];
+  dir_5dd65160827af56e6353642206b80129 [shape=box label="model" URL="dir_5dd65160827af56e6353642206b80129.html"];
+  dir_4730a5303449a2e0c7d1551f94d9984f->dir_5dd65160827af56e6353642206b80129 [headlabel="1", labeldistance=1.5 headhref="dir_000004_000006.html"];
+  dir_5dd65160827af56e6353642206b80129->dir_4730a5303449a2e0c7d1551f94d9984f [headlabel="3", labeldistance=1.5 headhref="dir_000006_000004.html"];
+  dir_5dd65160827af56e6353642206b80129->dir_fbc178c12bd249518b3c0868875b8083 [headlabel="2", labeldistance=1.5 headhref="dir_000006_000005.html"];
+  dir_fbc178c12bd249518b3c0868875b8083->dir_4730a5303449a2e0c7d1551f94d9984f [headlabel="1", labeldistance=1.5 headhref="dir_000005_000004.html"];
+  dir_fbc178c12bd249518b3c0868875b8083->dir_5dd65160827af56e6353642206b80129 [headlabel="2", labeldistance=1.5 headhref="dir_000005_000006.html"];
+}

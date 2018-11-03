@@ -1,0 +1,13 @@
+digraph "operator&gt;&gt;"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node4 [label="operator\>\>",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="StrokeMarkItem::type",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#aa215afb337583ae2343b9d5a7b62df29"];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="StrokeMarkItem::setItemChange\lHandler",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a51b28e5fdad2d44fd0e0d73f7b301860",tooltip="This function is used to set a handler to handle some state change of the item from external..."];
+  Node4 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="StrokeMarkItem::StrokeMarkItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#aa90d9aa2139475f69b2cd417e8909436"];
+}

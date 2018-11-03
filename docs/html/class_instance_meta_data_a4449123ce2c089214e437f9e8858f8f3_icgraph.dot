@@ -1,0 +1,13 @@
+digraph "InstanceMetaData::setName"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node17 [label="InstanceMetaData::setName",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node17 -> Node18 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 [label="InstanceTreeItem::setData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_instance_tree_item.html#a98f07e33035edf4aa6e9f53e4d25dce2"];
+  Node17 -> Node19 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node19 [label="InstanceTreeItemInfoModel\l::setData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_instance_tree_item_info_model.html#a78231acd9409e820c1fac1a297a53da0"];
+  Node17 -> Node20 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node20 [label="SliceEditorWidget::\leventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0",tooltip="Reimplemented from QWidget::eventFilter. "];
+}

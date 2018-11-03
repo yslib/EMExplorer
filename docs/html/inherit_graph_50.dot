@@ -1,0 +1,17 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="TreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tree_item.html"];
+  Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="CategoryTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_category_tree_item.html"];
+  Node0 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="EmptyTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_empty_tree_item.html",tooltip="This instance of the class represents a empty node in mark tree view. "];
+  Node0 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="InstanceTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_instance_tree_item.html"];
+  Node0 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="RootTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_root_tree_item.html",tooltip="This class represents the root node in the mark tree view. "];
+  Node0 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="StrokeMarkTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html"];
+}

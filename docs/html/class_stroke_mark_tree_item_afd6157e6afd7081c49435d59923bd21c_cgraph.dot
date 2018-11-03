@@ -1,0 +1,17 @@
+digraph "StrokeMarkTreeItem::setData"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node45 [label="StrokeMarkTreeItem\l::setData",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node45 -> Node46 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node46 [label="StrokeMarkItem::setName",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a28b069b6e22d7f71aa3c53c0b284b227"];
+  Node46 -> Node47 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node47 [label="StrokeMarkItem::name",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#aaecec181336552b1d43766f3ac479943"];
+  Node45 -> Node48 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node48 [label="StrokeMarkItem::setVisible\lState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a841aa5d4fb1d896e0d477a4fdc223f6a"];
+  Node48 -> Node49 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node49 [label="StrokeMarkItem::~StrokeMarkItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a6b5daecdff06e98dbf6ddbabd69092e5"];
+  Node48 -> Node50 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node50 [label="StrokeMarkItem::itemChange",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a805906d816a5a0f54e226a58d54a9243",tooltip="This is a item state change handler. "];
+}

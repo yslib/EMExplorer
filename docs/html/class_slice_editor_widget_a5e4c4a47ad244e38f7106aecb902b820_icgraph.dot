@@ -1,0 +1,17 @@
+digraph "SliceEditorWidget::frontView"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node108 [label="SliceEditorWidget::\lfrontView",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node108 -> Node109 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node109 [label="AbstractSliceEditorPlugin\l::sliceItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_abstract_slice_editor_plugin.html#acf6f78dc8de45837e93ea40e954229c3"];
+  Node109 -> Node110 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node110 [label="HistogramWidget::Histogram\lWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_histogram_widget.html#af51939268974d652f61ee3f98461d4e6",tooltip="Constructs a widgets used for image processing for certain type type of slice in sliceEditor. "];
+  Node109 -> Node111 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node111 [label="HistogramWidget::updateData\lModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_histogram_widget.html#ad3afdcd1e87ed52d02def3c66b272e6f"];
+  Node108 -> Node112 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node112 [label="AbstractSliceEditorPlugin\l::view",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_abstract_slice_editor_plugin.html#a29873bf3e1eab96e9fbf6637b3148a1f"];
+  Node108 -> Node113 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node113 [label="MainWindow::eventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1"];
+}

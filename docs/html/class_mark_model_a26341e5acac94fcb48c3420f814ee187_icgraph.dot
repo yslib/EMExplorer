@@ -1,0 +1,47 @@
+digraph "MarkModel::modified"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node159 [label="MarkModel::modified",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node159 -> Node160 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node160 [label="MarkModel::setDirty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6",tooltip="Sets dirty bit of the mark model. "];
+  Node160 -> Node161 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node161 [label="MarkModel::rootItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#aa7e4d6a9ebf4ac59119acd01fa62eeed",tooltip="This is a convenience function to returns the root tree item pointer. "];
+  Node161 -> Node162 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node162 [label="SliceEditorWidget::\leventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0",tooltip="Reimplemented from QWidget::eventFilter. "];
+  Node160 -> Node163 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node163 [label="MarkModel::insertRows",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#ab4eacd6fc2b67e7b33b624c68892de6f"];
+  Node163 -> Node164 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node164 [label="MarkModel::insertTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a",tooltip="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..."];
+  Node163 -> Node165 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node165 [label="MarkModel::insertTreeItems",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b",tooltip="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..."];
+  Node163 -> Node162 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node160 -> Node166 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node166 [label="MarkModel::selectionModel\lOfThisModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50"];
+  Node166 -> Node167 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node167 [label="MarkManager::setMarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a",tooltip="Set new model model to the widget. "];
+  Node167 -> Node168 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node168 [label="MainWindow::open",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952"];
+  Node168 -> Node169 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node169 [label="MainWindow::eventFilter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1"];
+  Node167 -> Node170 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node170 [label="MainWindow::openMark",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da"];
+  Node170 -> Node169 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node166 -> Node171 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node171 [label="RenderWidget::setMarkModel",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70",tooltip="Sets the slice model as the given model. "];
+  Node171 -> Node168 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node171 -> Node170 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node171 -> Node172 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node172 [label="VolumeMainWindow::openMark",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5"];
+  Node166 -> Node173 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node173 [label="RenderWidget::setFrontSlice\lVisible",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365",tooltip="This property holds the visibility of the front slice when renders data with slice type render..."];
+  Node173 -> Node174 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node174 [label="SliceControlWidget\l::setControlledWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8",tooltip="Sets the controlled widget sliceWidge and volumeWidget to present. "];
+  Node174 -> Node175 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node175 [label="SliceControlWidget\l::SliceControlWidget",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6",tooltip="Constructs a widget by the given sliceWidget and volumeWidget. "];
+  Node166 -> Node176 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node176 [label="SliceEditorWidget::\lsetRightSliceVisibility",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6",tooltip="This is a convenience function to set right slice visibility. "];
+  Node176 -> Node174 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node159 -> Node169 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

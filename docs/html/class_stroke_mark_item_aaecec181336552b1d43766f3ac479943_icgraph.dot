@@ -1,0 +1,24 @@
+digraph "StrokeMarkItem::name"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node30 [label="StrokeMarkItem::name",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node30 -> Node31 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node31 [label="StrokeMarkItem::setName",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_item.html#a28b069b6e22d7f71aa3c53c0b284b227"];
+  Node31 -> Node32 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node32 [label="StrokeMarkTreeItem\l::StrokeMarkTreeItem",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html#a048deb53ecb914ae3744c58d04e5f481"];
+  Node32 -> Node33 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node33 [label="operator\>\>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$marktreeitem_8cpp.html#a42408b602c7afd582f1e0ee4c2687b65"];
+  Node31 -> Node34 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node34 [label="StrokeMarkTreeItem\l::setData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html#afd6157e6afd7081c49435d59923bd21c"];
+  Node31 -> Node35 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node35 [label="MarkItemInfoModel::\lsetData",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#a999bb8769e54b671be6f669308e6bf3e"];
+  Node35 -> Node36 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node36 [label="StrokeMarkTreeItem\l::modelIndexChanged",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html#a9b99f4fbcd73531b7f70b12ce930fff0"];
+  Node30 -> Node37 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node37 [label="StrokeMarkTreeItem\l::data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_stroke_mark_tree_item.html#ac1f21b0b743cafbeb63938e33af688f7"];
+  Node30 -> Node38 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node38 [label="MarkItemInfoModel::data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_mark_item_info_model.html#a24b51b0bb77f90e7d206fbcbe9518608",tooltip="Returns the data located in index. "];
+  Node38 -> Node36 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

@@ -41,6 +41,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="class_instance_tree_item-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">InstanceTreeItem Class Reference</div>  </div>
@@ -67,8 +68,8 @@ Collaboration diagram for InstanceTreeItem:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a180116b38bbab7eb094ace5664b1704e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a180116b38bbab7eb094ace5664b1704e">InstanceTreeItem</a> (const QString &amp;text, const QPersistentModelIndex &amp;pModelIndex, <a class="el" href="class_tree_item.html">TreeItem</a> *parent)</td></tr>
-<tr class="separator:a180116b38bbab7eb094ace5664b1704e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ccaaa49f37b333c2ad12aab4519fee4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a4ccaaa49f37b333c2ad12aab4519fee4">InstanceTreeItem</a> (<a class="el" href="class_instance_meta_data.html">InstanceMetaData</a> *<a class="el" href="class_instance_tree_item.html#a7ca65fde97e7aa68756769f79f3ee877">metaData</a>, const QPersistentModelIndex &amp;pModelIndex, <a class="el" href="class_tree_item.html">TreeItem</a> *parent)</td></tr>
+<tr class="separator:a4ccaaa49f37b333c2ad12aab4519fee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec33395849c4351937da06c6ced81d0b"><td class="memItemLeft" align="right" valign="top">QVariant&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#aec33395849c4351937da06c6ced81d0b">data</a> (int column, int role) const override</td></tr>
 <tr class="separator:aec33395849c4351937da06c6ced81d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98f07e33035edf4aa6e9f53e4d25dce2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a98f07e33035edf4aa6e9f53e4d25dce2">setData</a> (int column, const QVariant &amp;value, int role) override</td></tr>
@@ -87,14 +88,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7ca65fde97e7aa68756769f79f3ee877"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33d693e56ca52196871a7eb4ca0beec5"><td class="memItemLeft" align="right" valign="top">QAbstractItemModel *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a33d693e56ca52196871a7eb4ca0beec5">infoModel</a> () const override</td></tr>
 <tr class="separator:a33d693e56ca52196871a7eb4ca0beec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59ca2f0958b95554845f143cb7fe8c0e"><td class="memItemLeft" align="right" valign="top">QRect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a59ca2f0958b95554845f143cb7fe8c0e">boundingBox</a> () const</td></tr>
-<tr class="separator:a59ca2f0958b95554845f143cb7fe8c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe46b1d8255c65e54d178b03a68ef82b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#afe46b1d8255c65e54d178b03a68ef82b">setBoundingBox</a> (const QRect &amp;rect)</td></tr>
-<tr class="separator:afe46b1d8255c65e54d178b03a68ef82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a645da9729ab0c8b90d38c98eeba9324a"><td class="memItemLeft" align="right" valign="top">QRectF&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a645da9729ab0c8b90d38c98eeba9324a">boundingBox</a> () const</td></tr>
+<tr class="separator:a645da9729ab0c8b90d38c98eeba9324a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a895af855fa081f620441176c3d715dd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a895af855fa081f620441176c3d715dd9">setBoundingBox</a> (const QRectF &amp;rect)</td></tr>
+<tr class="separator:a895af855fa081f620441176c3d715dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad55b5106e4b5862bf1b325212113894f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#ad55b5106e4b5862bf1b325212113894f">visible</a> () const</td></tr>
 <tr class="separator:ad55b5106e4b5862bf1b325212113894f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87288f39102b83857e44cd1245dd9b92"><td class="memItemLeft" align="right" valign="top">QSharedPointer&lt; <a class="el" href="class_triangulate.html">Triangulate</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a87288f39102b83857e44cd1245dd9b92">mesh</a> () const</td></tr>
 <tr class="separator:a87288f39102b83857e44cd1245dd9b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c8a2604fafcb1318e44ecb42fdc0bd6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a9c8a2604fafcb1318e44ecb42fdc0bd6">~InstanceTreeItem</a> ()</td></tr>
+<tr class="separator:a9c8a2604fafcb1318e44ecb42fdc0bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_tree_item"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_tree_item')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_tree_item.html">TreeItem</a></td></tr>
 <tr class="memitem:ae246b4b6c35a3ab0f8a83ae1fccf2365 inherit pub_methods_class_tree_item"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tree_item.html#ae246b4b6c35a3ab0f8a83ae1fccf2365">TreeItem</a> (const QPersistentModelIndex &amp;pIndex, PTR_TYPE(<a class="el" href="class_tree_item.html">TreeItem</a>) parent=nullptr)</td></tr>
 <tr class="separator:ae246b4b6c35a3ab0f8a83ae1fccf2365 inherit pub_methods_class_tree_item"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +130,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae9b3400f45005f2c96debc752eed9731 inherit pub_methods_class_tree_item"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tree_item.html#ae9b3400f45005f2c96debc752eed9731">setCurrentSelected</a> (bool selected)</td></tr>
 <tr class="separator:ae9b3400f45005f2c96debc752eed9731 inherit pub_methods_class_tree_item"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a9d68c23ec8ef1d5452b8287ee373eb75"><td class="memItemLeft" align="right" valign="top">QDataStream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#a9d68c23ec8ef1d5452b8287ee373eb75">operator&lt;&lt;</a> (QDataStream &amp;stream, const <a class="el" href="class_instance_tree_item.html">InstanceTreeItem</a> *item)</td></tr>
+<tr class="separator:a9d68c23ec8ef1d5452b8287ee373eb75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef9c9051db8511b506f5be60e72f5b06"><td class="memItemLeft" align="right" valign="top">QDataStream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_instance_tree_item.html#aef9c9051db8511b506f5be60e72f5b06">operator&gt;&gt;</a> (QDataStream &amp;stream, <a class="el" href="class_instance_tree_item.html">InstanceTreeItem</a> *&amp;item)</td></tr>
+<tr class="separator:aef9c9051db8511b506f5be60e72f5b06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_class_tree_item"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_tree_item')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_tree_item.html">TreeItem</a></td></tr>
@@ -134,8 +144,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:ae200694532a44e3b5ae09e6625275827 inherit pro_methods_class_tree_item"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a180116b38bbab7eb094ace5664b1704e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a180116b38bbab7eb094ace5664b1704e">&#9670;&nbsp;</a></span>InstanceTreeItem()</h2>
+<a id="a4ccaaa49f37b333c2ad12aab4519fee4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ccaaa49f37b333c2ad12aab4519fee4">&#9670;&nbsp;</a></span>InstanceTreeItem()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -143,8 +153,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">InstanceTreeItem::InstanceTreeItem </td>
           <td>(</td>
-          <td class="paramtype">const QString &amp;&#160;</td>
-          <td class="paramname"><em>text</em>, </td>
+          <td class="paramtype"><a class="el" href="class_instance_meta_data.html">InstanceMetaData</a> *&#160;</td>
+          <td class="paramname"><em>metaData</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -165,12 +175,35 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_a4ccaaa49f37b333c2ad12aab4519fee4_icgraph.jpg" border="0" usemap="#class_instance_tree_item_a4ccaaa49f37b333c2ad12aab4519fee4_icgraph" alt=""/></div>
+<!-- MAP 0 -->
+</div>
+
+</div>
+</div>
+<a id="a9c8a2604fafcb1318e44ecb42fdc0bd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c8a2604fafcb1318e44ecb42fdc0bd6">&#9670;&nbsp;</a></span>~InstanceTreeItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">InstanceTreeItem::~InstanceTreeItem </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a59ca2f0958b95554845f143cb7fe8c0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59ca2f0958b95554845f143cb7fe8c0e">&#9670;&nbsp;</a></span>boundingBox()</h2>
+<a id="a645da9729ab0c8b90d38c98eeba9324a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a645da9729ab0c8b90d38c98eeba9324a">&#9670;&nbsp;</a></span>boundingBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,7 +212,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">QRect InstanceTreeItem::boundingBox </td>
+          <td class="memname">QRectF InstanceTreeItem::boundingBox </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -191,6 +224,18 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_a645da9729ab0c8b90d38c98eeba9324a_cgraph.jpg" border="0" usemap="#class_instance_tree_item_a645da9729ab0c8b90d38c98eeba9324a_cgraph" alt=""/></div>
+<!-- MAP 1 -->
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_a645da9729ab0c8b90d38c98eeba9324a_icgraph.jpg" border="0" usemap="#class_instance_tree_item_a645da9729ab0c8b90d38c98eeba9324a_icgraph" alt=""/></div>
+<!-- MAP 2 -->
+</div>
 
 </div>
 </div>
@@ -265,6 +310,12 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Implements <a class="el" href="class_tree_item.html#a3e76d45fd27cc6f9001efc9f1b8effed">TreeItem</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_aec33395849c4351937da06c6ced81d0b_cgraph.jpg" border="0" usemap="#class_instance_tree_item_aec33395849c4351937da06c6ced81d0b_cgraph" alt=""/></div>
+<!-- MAP 3 -->
+</div>
 
 </div>
 </div>
@@ -361,13 +412,7 @@ Additional Inherited Members</h2></td></tr>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_instance_tree_item_a87288f39102b83857e44cd1245dd9b92_cgraph.jpg" border="0" usemap="#class_instance_tree_item_a87288f39102b83857e44cd1245dd9b92_cgraph" alt=""/></div>
-<map name="class_instance_tree_item_a87288f39102b83857e44cd1245dd9b92_cgraph" id="class_instance_tree_item_a87288f39102b83857e44cd1245dd9b92_cgraph">
-<area shape="rect" id="node2" href="class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="215,31,356,57"/>
-<area shape="rect" id="node6" href="class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="232,81,339,108"/>
-<area shape="rect" id="node3" href="treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="404,5,489,32"/>
-<area shape="rect" id="node4" href="treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="404,56,489,83"/>
-<area shape="rect" id="node5" href="class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="537,49,709,90"/>
-</map>
+<!-- MAP 4 -->
 </div>
 
 </div>
@@ -399,6 +444,12 @@ Here is the call graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd>Returns nullptr </dd></dl>
 
 <p>Implements <a class="el" href="class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8">TreeItem</a>.</p>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_a7ca65fde97e7aa68756769f79f3ee877_icgraph.jpg" border="0" usemap="#class_instance_tree_item_a7ca65fde97e7aa68756769f79f3ee877_icgraph" alt=""/></div>
+<!-- MAP 5 -->
+</div>
 
 </div>
 </div>
@@ -448,8 +499,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="afe46b1d8255c65e54d178b03a68ef82b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe46b1d8255c65e54d178b03a68ef82b">&#9670;&nbsp;</a></span>setBoundingBox()</h2>
+<a id="a895af855fa081f620441176c3d715dd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a895af855fa081f620441176c3d715dd9">&#9670;&nbsp;</a></span>setBoundingBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -460,7 +511,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void InstanceTreeItem::setBoundingBox </td>
           <td>(</td>
-          <td class="paramtype">const QRect &amp;&#160;</td>
+          <td class="paramtype">const QRectF &amp;&#160;</td>
           <td class="paramname"><em>rect</em></td><td>)</td>
           <td></td>
         </tr>
@@ -471,6 +522,12 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_a895af855fa081f620441176c3d715dd9_cgraph.jpg" border="0" usemap="#class_instance_tree_item_a895af855fa081f620441176c3d715dd9_cgraph" alt=""/></div>
+<!-- MAP 6 -->
+</div>
 
 </div>
 </div>
@@ -524,6 +581,12 @@ Here is the call graph for this function:</div>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Implements <a class="el" href="class_tree_item.html#a4984b62747ce4b6c363da479c6ad1bf0">TreeItem</a>.</p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_a98f07e33035edf4aa6e9f53e4d25dce2_cgraph.jpg" border="0" usemap="#class_instance_tree_item_a98f07e33035edf4aa6e9f53e4d25dce2_cgraph" alt=""/></div>
+<!-- MAP 7 -->
+</div>
 
 </div>
 </div>
@@ -574,6 +637,85 @@ Here is the call graph for this function:</div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_instance_tree_item_ad55b5106e4b5862bf1b325212113894f_cgraph.jpg" border="0" usemap="#class_instance_tree_item_ad55b5106e4b5862bf1b325212113894f_cgraph" alt=""/></div>
+<!-- MAP 8 -->
+</div>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="a9d68c23ec8ef1d5452b8287ee373eb75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d68c23ec8ef1d5452b8287ee373eb75">&#9670;&nbsp;</a></span>operator<<</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QDataStream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">QDataStream &amp;&#160;</td>
+          <td class="paramname"><em>stream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_instance_tree_item.html">InstanceTreeItem</a> *&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aef9c9051db8511b506f5be60e72f5b06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef9c9051db8511b506f5be60e72f5b06">&#9670;&nbsp;</a></span>operator>></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QDataStream&amp; operator&gt;&gt; </td>
+          <td>(</td>
+          <td class="paramtype">QDataStream &amp;&#160;</td>
+          <td class="paramname"><em>stream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_instance_tree_item.html">InstanceTreeItem</a> *&amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
