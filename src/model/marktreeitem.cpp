@@ -45,7 +45,7 @@ m_infoModel(nullptr) {
 
 	//Q_ASSERT(parentItem());
 
-	m_markItem->setName(QStringLiteral("# %1 #").number(1));
+	m_markItem->setName(QStringLiteral("Mark"));
 }
 
 QVariant StrokeMarkTreeItem::data(int column, int role) const {

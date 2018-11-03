@@ -226,7 +226,7 @@ QVariant InstanceTreeItemInfoModel::data(const QModelIndex & index, int role) co
 {
 	Q_ASSERT(m_treeItem);
 	Q_ASSERT(m_metaData);
-	if (role == Qt::DisplayRole) {
+	if (role == Qt::DisplayRole || role == Qt::EditRole) {
 		const auto r = index.row();
 		const auto c = index.column();
 		if (c == 0) {
@@ -272,6 +272,20 @@ QModelIndex InstanceTreeItemInfoModel::parent(const QModelIndex & child) const
 
 bool InstanceTreeItemInfoModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
+	Q_ASSERT(m_treeItem);
+	Q_ASSERT(m_metaData);
+	if (role == Qt::EditRole) {
+		const auto r = index.row();
+		const auto c = index.column();
+		if (c == 1) {
+			switch (r)
+			{
+			case 0: {m_metaData->setName(value.toString()); return true; }
+			case 2: {m_metaData->setVisibleState(value.toBool()); return true; }
+			default: return false;
+			}
+		}
+	}
 	return false;
 }
 

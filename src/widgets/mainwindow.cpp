@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-	setWindowTitle("Window");
+	setWindowTitle("MRC Editor");
 
 	createActions();
 

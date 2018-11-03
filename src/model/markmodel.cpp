@@ -5,7 +5,6 @@
 #include "markitem.h"
 #include "model/roottreeitem.h"
 #include "model/categorytreeitem.h"
-#include "model/marktreeitem.h"
 
 #include <QStyledItemDelegate>
 #include <QScopedPointer>
@@ -266,7 +265,6 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 /**
  * \brief Creates a mark model from a file.
  * 
- * \warning This function is not completed.
  */
 MarkModel::MarkModel(const QString & fileName) :
 	m_rootItem(nullptr),
@@ -350,6 +348,9 @@ MarkModel::~MarkModel()
 	//}
 }
 
+/**
+ * \brief  Returns all tree items according to a given parent index \a parent and a \a type
+ */
 QList<TreeItem*> MarkModel::treeItems(const QModelIndex & parent, int type)
 {
 	QList<TreeItem*> items;
@@ -454,9 +455,7 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		file.open(QIODevice::WriteOnly);
 		if (!file.isOpen())
 			return false;
-		//qRegisterMetaTypeStreamOperators<QGraphicsItem*>("QGraphicsItem*");
-		//qRegisterMetaTypeStreamOperators<__Internal_Mark_Type_>("QSharedPointer<QGraphicsItem>");
-		//qRegisterMetaTypeStreamOperators<__Internal_Categroy_Type_>("QSharedPointer<CategoryItem>");
+
 
 		QDataStream stream(&file);
 		stream.setVersion(QDataStream::Qt_5_9);
@@ -524,9 +523,7 @@ QVariant MarkModel::data(const QModelIndex & index, int role) const
 }
 
 /**
- * \brief
- * \param index
- * \return
+ * \brief Reimplemeted from QAbstractItemModel::flags(const QModelIndex & index)const
  */
 Qt::ItemFlags MarkModel::flags(const QModelIndex & index) const
 {
@@ -611,6 +608,11 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 
 }
 
+/**
+ * \brief  insert \a count columns at the position \a column of \a parent
+ * 
+ * Reimplemented from QAbstractItemModel::insertColumns(int column, int count, const QModelIndex & parent)
+ */
 bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
 {
 	const auto item = treeItem(parent);
@@ -622,6 +624,9 @@ bool MarkModel::insertColumns(int column, int count, const QModelIndex & parent)
 	return success;
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::removeColumns(int column, int count, const QModelIndex & parent))
+ */
 bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 {
 	const auto item = treeItem(parent);
@@ -634,9 +639,7 @@ bool MarkModel::removeColumns(int column, int count, const QModelIndex & parent)
 }
 
 /**
- * \brief
-
- * \return
+ * \brie Reimplemented from QAbstractItemModel::insertRows(int row, int count, const QModelIndex & parent)
  */
 bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 {
@@ -654,6 +657,10 @@ bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 	return success;
 }
 
+/**
+ * \brie Reimplemented from QAbstractItemModel::removeRows(int row, int count, const QModelIndex & parent)
+ */
+
 bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
 	const auto item = treeItem(parent);
@@ -663,6 +670,9 @@ bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 	return success;
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role) const
+ */
 QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
@@ -674,6 +684,9 @@ QVariant MarkModel::headerData(int section, Qt::Orientation orientation, int rol
 	return QVariant{};
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::index(int row, int column, const QModelIndex & parent) const
+ */
 QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) const
 {
 	const auto parentItem = treeItem(parent);
@@ -682,6 +695,9 @@ QModelIndex MarkModel::index(int row, int column, const QModelIndex & parent) co
 	return createIndex(row, column, childItem);
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::parent(const QModelIndex & index) const
+ */
 QModelIndex MarkModel::parent(const QModelIndex & index) const
 {
 	//Index points to a root item
@@ -699,6 +715,9 @@ QModelIndex MarkModel::parent(const QModelIndex & index) const
 	return createIndex(parentItem->row(), 0, parentItem);
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::rowCount(const QModelIndex & parent) const
+ */
 int MarkModel::rowCount(const QModelIndex & parent) const
 {
 	//Only a item with 0 column number has children
@@ -708,6 +727,9 @@ int MarkModel::rowCount(const QModelIndex & parent) const
 	return item->childCount();
 }
 
+/**
+ * \brief Reimplemented from QAbstractItemModel::columnCount(const QModelIndex & parent) const
+ */
 int MarkModel::columnCount(const QModelIndex & parent) const
 {
 	if (parent.isValid() == false) {
