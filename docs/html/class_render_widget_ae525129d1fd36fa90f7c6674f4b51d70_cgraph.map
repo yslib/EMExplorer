@@ -1,36 +1,35 @@
 <map id="RenderWidget::setMarkModel" name="RenderWidget::setMarkModel">
-<area shape="rect" id="node2" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="248,467,429,509"/>
-<area shape="rect" id="node3" href="$class_mark_model.html#a306d5ab20a62cc6dd078272a1d94e54f" title="MarkModel::marks" alt="" coords="721,33,851,60"/>
-<area shape="rect" id="node6" href="$class_mark_model.html#a03212ad079fe25bd31b90658399d0a3e" title="MarkModel::categoryText" alt="" coords="482,5,651,32"/>
-<area shape="rect" id="node7" href="$class_mark_model.html#a2d5f433c60e500260731d025960733ba" title="MarkModel::categoryModel\lIndices" alt="" coords="477,333,656,374"/>
-<area shape="rect" id="node8" href="$class_mark_model.html#ad8d80f4f4ec00efcca27bf5cad208eb5" title="MarkModel::markMesh" alt="" coords="489,239,644,265"/>
-<area shape="rect" id="node14" href="$class_mark_model.html#a927b39237700dc4f82b68f61011f4413" title="Remove a specified mark mark. " alt="" coords="704,500,868,527"/>
-<area shape="rect" id="node24" href="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6" title="Sets dirty bit of the mark model. " alt="" coords="931,608,1069,635"/>
-<area shape="rect" id="node25" href="$class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2" title="MarkModel::removeMarks" alt="" coords="481,500,652,527"/>
-<area shape="rect" id="node26" href="$class_mark_model.html#a670db8c2f34a33ad41e4a3f3e36d6589" title="Returns the number of the marks belong to a specified category category. " alt="" coords="488,399,645,425"/>
-<area shape="rect" id="node27" href="$class_mark_model.html#abe6abbd59c1ea3c302b8cd6951d4c28f" title="Save current marks contained in the mark model. " alt="" coords="507,601,627,628"/>
-<area shape="rect" id="node31" href="$class_mark_model.html#adbcf453ef851df5c37d83972db9971ac" title="Returns the dirty bit of the mark model. " alt="" coords="507,652,626,679"/>
-<area shape="rect" id="node32" href="$class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f" title="Reset the dirty bit. " alt="" coords="491,703,642,729"/>
-<area shape="rect" id="node35" href="$class_mark_model.html#aa6a8455921fa58f501bb4fccaefa6841" title="Destroyes the mark model. " alt="" coords="483,753,650,780"/>
-<area shape="rect" id="node4" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="941,33,1059,60"/>
-<area shape="rect" id="node5" href="$class_tree_item.html#a3e76d45fd27cc6f9001efc9f1b8effed" title="TreeItem::data" alt="" coords="1150,117,1255,144"/>
-<area shape="rect" id="node9" href="$class_slice_data_identity_tester.html#a45b6a7f2aba24c64deadcaf0a20b4780" title="SliceDataIdentityTester\l::isValid" alt="" coords="708,253,864,294"/>
-<area shape="rect" id="node10" href="$class_slice_data_identity_tester.html#ab02cf2ec2b37d360ee84da41fa8b2da7" title="SliceDataIdentityTester\l::topSliceCount" alt="" coords="708,318,864,359"/>
-<area shape="rect" id="node11" href="$class_slice_data_identity_tester.html#a8b0d7ad96af0dc63659d290f1328057c" title="SliceDataIdentityTester\l::rightSliceCount" alt="" coords="708,383,864,425"/>
-<area shape="rect" id="node12" href="$class_slice_data_identity_tester.html#acbf4e40991fb2dd508145979a76badf5" title="SliceDataIdentityTester\l::frontSliceCount" alt="" coords="708,85,864,126"/>
-<area shape="rect" id="node13" href="$class_mark_model.html#ad887e7829162eaa74f1aa37995698cbf" title="This is a deleted constructor. " alt="" coords="707,151,865,177"/>
-<area shape="rect" id="node15" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="MarkModel::rowCount" alt="" coords="926,355,1074,381"/>
-<area shape="rect" id="node20" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="947,507,1053,533"/>
-<area shape="rect" id="node21" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="947,557,1053,584"/>
-<area shape="rect" id="node22" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="932,405,1068,432"/>
-<area shape="rect" id="node23" href="$class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99" title="TreeItem::removeChildren" alt="" coords="916,456,1084,483"/>
-<area shape="rect" id="node16" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="1132,355,1273,381"/>
-<area shape="rect" id="node17" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="1321,329,1407,356"/>
-<area shape="rect" id="node18" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="1321,380,1407,407"/>
-<area shape="rect" id="node19" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="1455,373,1627,414"/>
-<area shape="rect" id="node28" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="705,602,867,643"/>
-<area shape="rect" id="node29" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="705,667,867,709"/>
-<area shape="rect" id="node30" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="919,667,1081,709"/>
-<area shape="rect" id="node33" href="$class_slice_data_identity_tester.html#a2e92327a56bbadfded56758a615361f7" title="SliceDataIdentityTester\l::createTester" alt="" coords="708,733,864,774"/>
-<area shape="rect" id="node34" href="$class_slice_data_identity_tester.html#adde8293ad13b57d9d4aeb55f7afd1c65" title="SliceDataIdentityTester\l::SliceDataIdentityTester" alt="" coords="918,733,1082,774"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="248,758,429,799"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#af319ad9abc81c3b59112d9c8c08f2cab" title="MarkModel::retrieveData" alt="" coords="489,183,651,209"/>
+<area shape="rect" id="node13" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="741,5,860,32"/>
+<area shape="rect" id="node15" href="$class_mark_model.html#ac21d495d673ed2238d7c1df17fa844fb" title="This is a helper function for get specified type to items in the parent of . " alt="" coords="477,477,663,504"/>
+<area shape="rect" id="node25" href="$class_mark_model.html#abe6abbd59c1ea3c302b8cd6951d4c28f" title="Save current marks contained in the mark model. " alt="" coords="510,791,630,817"/>
+<area shape="rect" id="node26" href="$class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f" title="Reset the dirty bit. " alt="" coords="725,791,876,817"/>
+<area shape="rect" id="node32" href="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6" title="Sets dirty bit of the mark model. " alt="" coords="501,841,639,868"/>
+<area shape="rect" id="node33" href="$class_mark_model.html#adbcf453ef851df5c37d83972db9971ac" title="Returns the dirty bit of the mark model. " alt="" coords="511,892,629,919"/>
+<area shape="rect" id="node34" href="$class_mark_model.html#aa6a8455921fa58f501bb4fccaefa6841" title="Destroyes the mark model. " alt="" coords="487,943,653,969"/>
+<area shape="rect" id="node4" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="748,157,853,184"/>
+<area shape="rect" id="node5" href="$class_stroke_mark_tree_item.html#a4800e57b9ff1b73bb0771acea935e02a" title="Returns the information about the tree item. " alt="" coords="731,259,870,301"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="733,107,869,133"/>
+<area shape="rect" id="node7" href="$class_tree_item.html#a3e76d45fd27cc6f9001efc9f1b8effed" title="TreeItem::data" alt="" coords="967,31,1073,57"/>
+<area shape="rect" id="node8" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="730,325,871,352"/>
+<area shape="rect" id="node12" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="747,208,854,235"/>
+<area shape="rect" id="node9" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="977,351,1063,377"/>
+<area shape="rect" id="node10" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="977,249,1063,276"/>
+<area shape="rect" id="node11" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="1149,242,1321,283"/>
+<area shape="rect" id="node14" href="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613" title="This is a function to get the internal data structure from index. " alt="" coords="949,300,1091,327"/>
+<area shape="rect" id="node16" href="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c" title="Reimplemented from QAbstractItemModel::parent(const QModelIndex &amp; index) const. " alt="" coords="735,477,866,504"/>
+<area shape="rect" id="node19" href="$class_slice_data_identity_tester.html#a45b6a7f2aba24c64deadcaf0a20b4780" title="SliceDataIdentityTester\l::isValid" alt="" coords="723,529,879,570"/>
+<area shape="rect" id="node20" href="$class_slice_data_identity_tester.html#ab02cf2ec2b37d360ee84da41fa8b2da7" title="SliceDataIdentityTester\l::topSliceCount" alt="" coords="723,594,879,635"/>
+<area shape="rect" id="node21" href="$class_slice_data_identity_tester.html#a8b0d7ad96af0dc63659d290f1328057c" title="SliceDataIdentityTester\l::rightSliceCount" alt="" coords="723,659,879,701"/>
+<area shape="rect" id="node22" href="$class_slice_data_identity_tester.html#acbf4e40991fb2dd508145979a76badf5" title="SliceDataIdentityTester\l::frontSliceCount" alt="" coords="723,725,879,766"/>
+<area shape="rect" id="node23" href="$class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71" title="StrokeMarkItem::sliceIndex" alt="" coords="711,376,891,403"/>
+<area shape="rect" id="node24" href="$class_mark_model.html#ad887e7829162eaa74f1aa37995698cbf" title="This is a deleted constructor. " alt="" coords="721,427,880,453"/>
+<area shape="rect" id="node17" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="949,452,1091,479"/>
+<area shape="rect" id="node18" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="970,503,1070,529"/>
+<area shape="rect" id="node29" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="719,907,882,949"/>
+<area shape="rect" id="node30" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="719,842,882,883"/>
+<area shape="rect" id="node27" href="$class_slice_data_identity_tester.html#a2e92327a56bbadfded56758a615361f7" title="SliceDataIdentityTester\l::createTester" alt="" coords="942,779,1098,821"/>
+<area shape="rect" id="node28" href="$class_slice_data_identity_tester.html#adde8293ad13b57d9d4aeb55f7afd1c65" title="SliceDataIdentityTester\l::SliceDataIdentityTester" alt="" coords="1153,779,1317,821"/>
+<area shape="rect" id="node31" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="939,845,1101,886"/>
 </map>

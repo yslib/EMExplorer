@@ -1,5 +1,8 @@
 <map id="MarkModel::save" name="MarkModel::save">
-<area shape="rect" id="node2" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="173,5,336,47"/>
-<area shape="rect" id="node3" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="173,71,336,112"/>
-<area shape="rect" id="node4" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="384,71,547,112"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#a9da9d98031656c3b0ebacc02ea33361f" title="Reset the dirty bit. " alt="" coords="179,13,330,39"/>
+<area shape="rect" id="node5" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="173,64,336,105"/>
+<area shape="rect" id="node6" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="173,129,336,171"/>
+<area shape="rect" id="node3" href="$class_slice_data_identity_tester.html#a2e92327a56bbadfded56758a615361f7" title="SliceDataIdentityTester\l::createTester" alt="" coords="387,5,543,47"/>
+<area shape="rect" id="node4" href="$class_slice_data_identity_tester.html#adde8293ad13b57d9d4aeb55f7afd1c65" title="SliceDataIdentityTester\l::SliceDataIdentityTester" alt="" coords="595,5,759,47"/>
+<area shape="rect" id="node7" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="384,129,547,171"/>
 </map>

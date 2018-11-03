@@ -1,12 +1,10 @@
 <map id="TreeItem::setParentItem" name="TreeItem::setParentItem">
 <area shape="rect" id="node2" href="$class_tree_item.html#ac7f432ac0587ca037e80857eefd622f8" title="TreeItem::appendChild" alt="" coords="219,5,369,32"/>
 <area shape="rect" id="node3" href="$class_tree_item.html#a0560aa649d74a1e64b64c99b9e43bf43" title="This function replace the old child node with a new one. " alt="" coords="227,56,361,83"/>
-<area shape="rect" id="node10" href="$class_tree_item.html#ac87811c299104bb8ec72278705b8bc7e" title="TreeItem::insertChildren" alt="" coords="215,107,373,133"/>
+<area shape="rect" id="node8" href="$class_tree_item.html#ac87811c299104bb8ec72278705b8bc7e" title="TreeItem::insertChildren" alt="" coords="215,107,373,133"/>
 <area shape="rect" id="node4" href="$class_mark_model.html#ac42f11801e20c62fce0f45c60487a9f2" title="Reimplemented from QAbstractItemModel::setData(const QModelIndex &amp; index, const QVariant &amp; value..." alt="" coords="431,56,570,83"/>
-<area shape="rect" id="node5" href="$class_mark_model.html#a0b366414f5570bb3afc193bf839cc14d" title="MarkModel::addMark" alt="" coords="647,107,791,133"/>
-<area shape="rect" id="node7" href="$class_mark_model.html#ab93687bc47808ed4e34263978b372e98" title="Add marks marks by an existing category. " alt="" coords="644,157,795,184"/>
-<area shape="rect" id="node8" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="631,5,807,32"/>
-<area shape="rect" id="node9" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="628,56,811,83"/>
-<area shape="rect" id="node6" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="859,99,993,141"/>
-<area shape="rect" id="node11" href="$class_mark_model.html#ab4eacd6fc2b67e7b33b624c68892de6f" title="MarkModel::insertRows" alt="" coords="421,107,580,133"/>
+<area shape="rect" id="node5" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="631,31,807,57"/>
+<area shape="rect" id="node6" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="628,81,811,108"/>
+<area shape="rect" id="node7" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="652,133,787,174"/>
+<area shape="rect" id="node9" href="$class_mark_model.html#ab4eacd6fc2b67e7b33b624c68892de6f" title="MarkModel::insertRows" alt="" coords="421,107,580,133"/>
 </map>

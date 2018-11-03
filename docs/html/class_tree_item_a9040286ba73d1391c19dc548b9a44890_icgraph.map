@@ -1,24 +1,21 @@
 <map id="TreeItem::type" name="TreeItem::type">
-<area shape="rect" id="node2" href="$class_mark_model.html#a928d790f75f1232cf785666d8c670513" title="Retrieve marks by category. " alt="" coords="175,58,306,85"/>
-<area shape="rect" id="node3" href="$class_mark_model.html#a927b39237700dc4f82b68f61011f4413" title="Remove a specified mark mark. " alt="" coords="159,109,323,135"/>
-<area shape="rect" id="node17" href="$class_mark_model.html#ac42f11801e20c62fce0f45c60487a9f2" title="Reimplemented from QAbstractItemModel::setData(const QModelIndex &amp; index, const QVariant &amp; value..." alt="" coords="171,185,310,211"/>
-<area shape="rect" id="node23" href="$treeitem_8cpp.html#a624a5ff366aab15ba5df68d78486e2b6" title="Note:The stream operator would modified the item pointer whenever possible. " alt="" coords="198,235,283,262"/>
-<area shape="rect" id="node4" href="$class_mark_model.html#a3330a985dd52eb9c16d5483c1d0f88f2" title="MarkModel::removeMarks" alt="" coords="377,45,547,71"/>
-<area shape="rect" id="node5" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="601,88,783,129"/>
-<area shape="rect" id="node16" href="$class_slice_editor_widget.html#a700e6e3a04e9eacb2d5653c19bf6843d" title="Deletes the selected marks in three slice widget. " alt="" coords="620,5,764,47"/>
-<area shape="rect" id="node6" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="833,45,1023,71"/>
-<area shape="rect" id="node10" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="831,95,1025,122"/>
-<area shape="rect" id="node12" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="833,147,1023,188"/>
-<area shape="rect" id="node15" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="854,212,1002,253"/>
-<area shape="rect" id="node7" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="1110,45,1242,71"/>
-<area shape="rect" id="node9" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="1095,95,1257,122"/>
-<area shape="rect" id="node8" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1327,45,1489,71"/>
-<area shape="rect" id="node11" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="1073,146,1279,173"/>
-<area shape="rect" id="node13" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="1103,204,1249,245"/>
-<area shape="rect" id="node14" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1337,204,1479,245"/>
-<area shape="rect" id="node18" href="$class_mark_model.html#a0b366414f5570bb3afc193bf839cc14d" title="MarkModel::addMark" alt="" coords="390,247,534,274"/>
-<area shape="rect" id="node20" href="$class_mark_model.html#ab93687bc47808ed4e34263978b372e98" title="Add marks marks by an existing category. " alt="" coords="387,298,537,325"/>
-<area shape="rect" id="node21" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="374,146,550,173"/>
-<area shape="rect" id="node22" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="371,197,553,223"/>
-<area shape="rect" id="node19" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="625,240,759,281"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#af319ad9abc81c3b59112d9c8c08f2cab" title="MarkModel::retrieveData" alt="" coords="159,148,321,175"/>
+<area shape="rect" id="node16" href="$class_mark_model.html#ac42f11801e20c62fce0f45c60487a9f2" title="Reimplemented from QAbstractItemModel::setData(const QModelIndex &amp; index, const QVariant &amp; value..." alt="" coords="171,232,309,259"/>
+<area shape="rect" id="node19" href="$treeitem_8cpp.html#ad79db34a360ab2f83025fbf77b438737" title="operator\&lt;\&lt;" alt="" coords="197,283,283,309"/>
+<area shape="rect" id="node20" href="$treeitem_8cpp.html#a624a5ff366aab15ba5df68d78486e2b6" title="Note:The stream operator would modified the item pointer whenever possible. " alt="" coords="197,333,283,360"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a41f493af223c4e686214ab685b46a65a" title="Creates a mark model from a file. " alt="" coords="381,144,540,171"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="370,78,551,119"/>
+<area shape="rect" id="node15" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="393,195,528,237"/>
+<area shape="rect" id="node5" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="602,5,793,32"/>
+<area shape="rect" id="node9" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="600,56,795,83"/>
+<area shape="rect" id="node11" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="603,107,792,149"/>
+<area shape="rect" id="node14" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="623,173,771,214"/>
+<area shape="rect" id="node6" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="879,5,1011,32"/>
+<area shape="rect" id="node8" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="865,56,1026,83"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1096,31,1259,57"/>
+<area shape="rect" id="node10" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="843,107,1048,133"/>
+<area shape="rect" id="node12" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="872,165,1019,206"/>
+<area shape="rect" id="node13" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1107,165,1248,206"/>
+<area shape="rect" id="node17" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="373,312,549,339"/>
+<area shape="rect" id="node18" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="369,261,552,288"/>
 </map>

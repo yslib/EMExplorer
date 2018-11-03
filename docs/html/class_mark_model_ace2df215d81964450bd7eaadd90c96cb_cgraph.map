@@ -1,6 +1,7 @@
 <map id="MarkModel::rowCount" name="MarkModel::rowCount">
-<area shape="rect" id="node2" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="201,31,343,57"/>
-<area shape="rect" id="node3" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="391,5,476,32"/>
-<area shape="rect" id="node4" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="391,56,476,83"/>
-<area shape="rect" id="node5" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="524,49,696,90"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613" title="This is a function to get the internal data structure from index. " alt="" coords="201,5,343,32"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="201,56,343,83"/>
+<area shape="rect" id="node4" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="391,31,476,57"/>
+<area shape="rect" id="node5" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="391,81,476,108"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="524,74,696,115"/>
 </map>

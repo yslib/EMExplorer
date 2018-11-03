@@ -1,7 +1,4 @@
 <map id="SliceEditorWidget::categories" name="SliceEditorWidget::categories">
-<area shape="rect" id="node2" href="$class_mark_model.html#a03212ad079fe25bd31b90658399d0a3e" title="MarkModel::categoryText" alt="" coords="188,5,357,32"/>
-<area shape="rect" id="node5" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="205,57,340,98"/>
-<area shape="rect" id="node6" href="$class_slice_widget.html#ad9a08cbf4e0038e5669ac00964bbe86a" title="SliceWidget::setMarks" alt="" coords="195,123,350,149"/>
-<area shape="rect" id="node3" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="405,5,524,32"/>
-<area shape="rect" id="node4" href="$class_tree_item.html#a3e76d45fd27cc6f9001efc9f1b8effed" title="TreeItem::data" alt="" coords="572,5,677,32"/>
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="198,5,333,47"/>
+<area shape="rect" id="node3" href="$class_slice_widget.html#ad9a08cbf4e0038e5669ac00964bbe86a" title="SliceWidget::setMarks" alt="" coords="188,71,343,98"/>
 </map>

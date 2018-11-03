@@ -1,3 +1,6 @@
 <map id="StrokeMarkTreeItem::data" name="StrokeMarkTreeItem::data">
-<area shape="rect" id="node2" href="$class_stroke_mark_tree_item.html#a99fd79cb9d6fe531754b1665fe94f635" title="StrokeMarkTreeItem\l::columnCount" alt="" coords="192,5,331,47"/>
+<area shape="rect" id="node2" href="$class_stroke_mark_tree_item.html#a99fd79cb9d6fe531754b1665fe94f635" title="StrokeMarkTreeItem\l::columnCount" alt="" coords="217,5,355,47"/>
+<area shape="rect" id="node3" href="$class_stroke_mark_item.html#aaecec181336552b1d43766f3ac479943" title="StrokeMarkItem::name" alt="" coords="209,71,363,98"/>
+<area shape="rect" id="node4" href="$class_stroke_mark_item.html#aa589264b91dafeeb18f5a728c0e11ffe" title="StrokeMarkItem::visibleState" alt="" coords="192,122,380,149"/>
+<area shape="rect" id="node5" href="$class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71" title="StrokeMarkItem::sliceIndex" alt="" coords="196,173,376,199"/>
 </map>

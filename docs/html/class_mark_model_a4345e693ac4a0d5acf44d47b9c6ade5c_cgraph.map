@@ -1,4 +1,5 @@
 <map id="MarkModel::parent" name="MarkModel::parent">
-<area shape="rect" id="node2" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="184,5,325,32"/>
-<area shape="rect" id="node3" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="205,56,305,83"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613" title="This is a function to get the internal data structure from index. " alt="" coords="184,5,325,32"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="184,56,325,83"/>
+<area shape="rect" id="node4" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="205,107,305,133"/>
 </map>

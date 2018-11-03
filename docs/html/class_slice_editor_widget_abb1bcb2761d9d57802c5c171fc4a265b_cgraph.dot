@@ -1,9 +1,0 @@
-digraph "SliceEditorWidget::setOperation"
-{
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node180 [label="SliceEditorWidget::\lsetOperation",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
-  Node180 -> Node181 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node181 [label="SliceWidget::setOperation",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_widget.html#ada4f0ed0bd4b87c2f80ab7d1341b6ab9"];
-}

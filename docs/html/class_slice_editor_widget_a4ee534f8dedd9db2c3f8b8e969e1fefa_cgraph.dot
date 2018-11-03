@@ -1,9 +1,0 @@
-digraph "SliceEditorWidget::setFrontSliceVisible"
-{
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node176 [label="SliceEditorWidget::\lsetFrontSliceVisible",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
-  Node176 -> Node177 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node177 [label="SliceEditorWidget::\lsetSliceVisible",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_slice_editor_widget.html#a47c5b6f3612352e1e8844d884ae6a0fd",tooltip="This property holds visibility of the three types of slice widget. "];
-}

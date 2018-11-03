@@ -1,17 +1,18 @@
 <map id="MarkModel::setData" name="MarkModel::setData">
-<area shape="rect" id="node2" href="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c" title="MarkModel::parent" alt="" coords="201,56,331,83"/>
-<area shape="rect" id="node5" href="$class_tree_item.html#a0560aa649d74a1e64b64c99b9e43bf43" title="This function replace the old child node with a new one. " alt="" coords="199,107,333,133"/>
-<area shape="rect" id="node8" href="$class_tree_item.html#a4984b62747ce4b6c363da479c6ad1bf0" title="TreeItem::setData" alt="" coords="203,157,329,184"/>
-<area shape="rect" id="node9" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="213,208,319,235"/>
-<area shape="rect" id="node10" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="198,259,334,285"/>
-<area shape="rect" id="node11" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="MarkModel::rowCount" alt="" coords="192,309,340,336"/>
-<area shape="rect" id="node16" href="$class_mark_model.html#a68eda17b59203b69b9cfacb0e18aeca4" title="MarkModel::index" alt="" coords="203,5,329,32"/>
-<area shape="rect" id="node3" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="398,5,539,32"/>
-<area shape="rect" id="node4" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="419,107,519,133"/>
-<area shape="rect" id="node6" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="415,56,522,83"/>
-<area shape="rect" id="node7" href="$class_tree_item.html#a00100bdf5572cdd157ef8c4195d4d0d8" title="TreeItem::setParentItem" alt="" coords="388,157,549,184"/>
-<area shape="rect" id="node12" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="398,309,539,336"/>
-<area shape="rect" id="node13" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="597,284,683,311"/>
-<area shape="rect" id="node14" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="597,335,683,361"/>
-<area shape="rect" id="node15" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="731,327,903,369"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#a4345e693ac4a0d5acf44d47b9c6ade5c" title="Reimplemented from QAbstractItemModel::parent(const QModelIndex &amp; index) const. " alt="" coords="201,132,331,159"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613" title="This is a function to get the internal data structure from index. " alt="" coords="398,81,539,108"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a0560aa649d74a1e64b64c99b9e43bf43" title="This function replace the old child node with a new one. " alt="" coords="199,233,333,260"/>
+<area shape="rect" id="node9" href="$class_tree_item.html#a4984b62747ce4b6c363da479c6ad1bf0" title="TreeItem::setData" alt="" coords="203,284,329,311"/>
+<area shape="rect" id="node10" href="$class_tree_item.html#a9040286ba73d1391c19dc548b9a44890" title="TreeItem::type" alt="" coords="213,335,319,361"/>
+<area shape="rect" id="node11" href="$class_tree_item.html#aa73223e4db6840bc65a8ed303f9c52b8" title="TreeItem::metaData" alt="" coords="198,385,334,412"/>
+<area shape="rect" id="node12" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="Reimplemented from QAbstractItemModel::rowCount(const QModelIndex &amp; parent) const. " alt="" coords="192,31,340,57"/>
+<area shape="rect" id="node17" href="$class_mark_model.html#a68eda17b59203b69b9cfacb0e18aeca4" title="Reimplemented from QAbstractItemModel::index(int row, int column, const QModelIndex &amp; parent) const..." alt="" coords="203,183,329,209"/>
+<area shape="rect" id="node4" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="398,132,539,159"/>
+<area shape="rect" id="node5" href="$class_tree_item.html#a91ba04ea12214af828bb198c2b98fa66" title="TreeItem::row" alt="" coords="419,183,519,209"/>
+<area shape="rect" id="node7" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="415,233,522,260"/>
+<area shape="rect" id="node8" href="$class_tree_item.html#a00100bdf5572cdd157ef8c4195d4d0d8" title="TreeItem::setParentItem" alt="" coords="388,284,549,311"/>
+<area shape="rect" id="node13" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="398,31,539,57"/>
+<area shape="rect" id="node14" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="597,5,683,32"/>
+<area shape="rect" id="node15" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="597,56,683,83"/>
+<area shape="rect" id="node16" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="731,49,903,90"/>
 </map>

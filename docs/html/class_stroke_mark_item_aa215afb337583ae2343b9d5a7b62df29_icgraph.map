@@ -1,4 +1,6 @@
 <map id="StrokeMarkItem::type" name="StrokeMarkItem::type">
-<area shape="rect" id="node2" href="$markitem_8h.html#a3a962e8269c8258abe2e449f70fb10a9" title="operator\&lt;\&lt;" alt="" coords="200,5,285,32"/>
-<area shape="rect" id="node3" href="$markitem_8h.html#a729b42f74e271b7469b1437509ad71e0" title="operator\&gt;\&gt;" alt="" coords="200,56,285,83"/>
+<area shape="rect" id="node2" href="$markitem_8cpp.html#acf89c0ecdd63f0a932118a26bbcd1268" title="operator\&lt;\&lt;" alt="" coords="256,5,341,32"/>
+<area shape="rect" id="node3" href="$markitem_8cpp.html#aee61327b82e87baf1d936b7f97dc2d07" title="operator\&gt;\&gt;" alt="" coords="256,56,341,83"/>
+<area shape="rect" id="node4" href="$class_stroke_mark_item.html#a0b68943ad3c213665275fae17181452b" title="StrokeMarkItem::setSliceType" alt="" coords="200,107,397,133"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="445,125,580,166"/>
 </map>

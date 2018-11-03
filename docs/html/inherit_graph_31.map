@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$struct_render_options.html" title="RenderOptions" alt="" coords="5,5,113,32"/>
+<area shape="rect" id="node1" href="$class_renderable_object.html" title="RenderableObject" alt="" coords="5,5,131,32"/>
+<area shape="rect" id="node2" href="$class_g_p_u_render_object.html" title="GPURenderObject" alt="" coords="179,5,308,32"/>
 </map>

@@ -1,3 +1,4 @@
 <map id="MarkModel::removeRows" name="MarkModel::removeRows">
-<area shape="rect" id="node2" href="$class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99" title="TreeItem::removeChildren" alt="" coords="220,5,388,32"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613" title="This is a function to get the internal data structure from index. " alt="" coords="233,5,375,32"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#a5dfab5561cd6c8dd36a940bce5456c99" title="TreeItem::removeChildren" alt="" coords="220,56,388,83"/>
 </map>

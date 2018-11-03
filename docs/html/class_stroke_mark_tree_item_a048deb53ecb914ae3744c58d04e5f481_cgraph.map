@@ -1,3 +1,5 @@
 <map id="StrokeMarkTreeItem::StrokeMarkTreeItem" name="StrokeMarkTreeItem::StrokeMarkTreeItem">
-<area shape="rect" id="node2" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="200,5,372,47"/>
+<area shape="rect" id="node2" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="201,5,373,47"/>
+<area shape="rect" id="node3" href="$class_stroke_mark_item.html#a28b069b6e22d7f71aa3c53c0b284b227" title="StrokeMarkItem::setName" alt="" coords="200,71,375,98"/>
+<area shape="rect" id="node4" href="$class_stroke_mark_item.html#aaecec181336552b1d43766f3ac479943" title="StrokeMarkItem::name" alt="" coords="423,71,577,98"/>
 </map>

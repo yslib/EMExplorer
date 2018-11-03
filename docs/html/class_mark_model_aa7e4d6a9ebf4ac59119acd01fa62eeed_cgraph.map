@@ -1,0 +1,12 @@
+<map id="MarkModel::rootItem" name="MarkModel::rootItem">
+<area shape="rect" id="node2" href="$class_mark_model.html#a68eda17b59203b69b9cfacb0e18aeca4" title="Reimplemented from QAbstractItemModel::index(int row, int column, const QModelIndex &amp; parent) const..." alt="" coords="226,56,351,83"/>
+<area shape="rect" id="node6" href="$class_stroke_mark_item.html#a9b2c61e0410a45f6052fff1435c65f71" title="StrokeMarkItem::sliceIndex" alt="" coords="199,107,379,133"/>
+<area shape="rect" id="node7" href="$class_stroke_mark_item.html#a9e172d94724405391f7f55e72dc4cdbd" title="StrokeMarkItem::sliceType" alt="" coords="200,157,377,184"/>
+<area shape="rect" id="node8" href="$class_mark_model.html#a6e3f1fd96208c92ea67470a1fc952da6" title="Sets dirty bit of the mark model. " alt="" coords="219,208,358,235"/>
+<area shape="rect" id="node9" href="$class_stroke_mark_tree_item.html#a4800e57b9ff1b73bb0771acea935e02a" title="Returns the information about the tree item. " alt="" coords="219,259,358,301"/>
+<area shape="rect" id="node10" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="221,325,356,366"/>
+<area shape="rect" id="node11" href="$class_stroke_mark_item.html#aa589264b91dafeeb18f5a728c0e11ffe" title="StrokeMarkItem::visibleState" alt="" coords="195,391,383,417"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#aa5c9721176d763d2f038d6d26cab0e5c" title="TreeItem::parentItem" alt="" coords="431,5,572,32"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#a6c38bcb4d3dee2fa69c4db2c681cf613" title="This is a function to get the internal data structure from index. " alt="" coords="431,56,572,83"/>
+<area shape="rect" id="node5" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="448,107,555,133"/>
+</map>

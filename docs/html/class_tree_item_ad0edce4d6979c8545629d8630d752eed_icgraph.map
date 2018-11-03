@@ -1,4 +1,4 @@
 <map id="TreeItem::insertColumns" name="TreeItem::insertColumns">
-<area shape="rect" id="node2" href="$class_mark_model.html#ab9360b4764c027872d7e0f36295ab3fd" title="MarkModel::insertColumns" alt="" coords="221,5,398,32"/>
-<area shape="rect" id="node3" href="$class_mark_model.html#abd38e4e3c0643e023b9b5777a77596fb" title="MarkModel::removeColumns" alt="" coords="216,56,403,83"/>
+<area shape="rect" id="node2" href="$class_mark_model.html#ab9360b4764c027872d7e0f36295ab3fd" title="insert count columns at the position column of parent " alt="" coords="221,5,398,32"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#abd38e4e3c0643e023b9b5777a77596fb" title="Reimplemented from QAbstractItemModel::removeColumns(int column, int count, const QModelIndex &amp; paren..." alt="" coords="216,56,403,83"/>
 </map>
