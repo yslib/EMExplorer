@@ -27,8 +27,6 @@ class SliceControlWidget:public QWidget
 public:
     SliceControlWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget,QWidget * parent = nullptr);
 	void setControlledWidget(SliceEditorWidget* sliceWidget, RenderWidget* volumeWidget);
-
-
 private slots:
 	void onSliceTimer();
 	void updateDataModel();

@@ -200,6 +200,11 @@ private slots:
 
 	void _slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
 
+	void _slot_topViewSliceSelection(const QPoint & pos);
+
+	void _slot_rightViewSliceSelection(const QPoint & pos);
+
+	void _slot_frontViewSliceSelection(const QPoint & pos);
 private:
 
 	/**
@@ -242,6 +247,7 @@ private:
 	SliceWidget * m_topView;
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
+	QCheckBox* m_thumbnailCheckBox;
 };
 
 /**

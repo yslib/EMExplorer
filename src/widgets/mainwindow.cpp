@@ -756,9 +756,11 @@ void MainWindow::createStatusBar()
 {
 	m_statusBar = statusBar();
 	m_statusBar->showMessage(QStringLiteral("Ready"));
+
+	connect(m_imageView, &SliceEditorWidget::topSliceSelected, [this](const QPoint & pos) {m_statusBar->showMessage(QStringLiteral("Top (%1, %2)").arg(pos.x()).arg(pos.y()));});
+	connect(m_imageView, &SliceEditorWidget::rightSliceSelected, [this](const QPoint & pos){m_statusBar->showMessage(QStringLiteral("Right (%1, %2)").arg(pos.x()).arg(pos.y()));});
+	connect(m_imageView, &SliceEditorWidget::frontSliceSelected, [this](const QPoint & pos){m_statusBar->showMessage(QStringLiteral("Front (%1, %2)").arg(pos.x()).arg(pos.y()));});
 }
-
-
 
 void MainWindow::createSliceEditorPlugins() {
 	

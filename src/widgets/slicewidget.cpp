@@ -79,7 +79,7 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 		return;
 	//const auto & scRect = sceneRect();
 	const auto & scRect = m_slice->mapRectToScene(m_slice->boundingRect());
-	QImage thumbnail(QSize(200, 200), QImage::Format_RGB32);
+	QImage thumbnail(QSize(ThumbnailLength, ThumbnailLength), QImage::Format_RGB32);
 	QPainter p0(&thumbnail);
 	render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
 	p0.end();
@@ -107,13 +107,24 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 {
 	//if (event->isAccepted())
 	//	return;
-
 	const auto button = event->button();
 	const auto viewPos = event->pos();
 	const auto scenePos = mapToScene(viewPos);
 
-	m_prevViewPoint = viewPos;
+	if(m_paintNavigationView == true) {
+		const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
+		const auto & viewRectInScene = mapToScene(rect()).boundingRect();
+		const auto tRect = thumbnailRect(sliceRectInScene, viewRectInScene);
+		if(tRect.contains(viewPos)) {
+			// Mouse click in thumbnail, mapping the click position to real slice position
+			const int x = static_cast<double>(viewPos.x() - tRect.left()) /(0.2*width())*m_image.width();
+			const int y = static_cast<double>(viewPos.y() - tRect.top()) / (0.2*height())*m_image.height();
+			centerOn(m_slice->mapToScene(x, y));
+			return;
+		}
+	}
 
+	m_prevViewPoint = viewPos;
 	auto items = scene()->items(scenePos);
 
 	if (button == Qt::RightButton) {
@@ -131,7 +142,6 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 			}
 
 			const auto itemPoint = m_slice->mapFromScene(scenePos);
-
 			emit sliceSelected(itemPoint.toPoint());
 
 			if (m_state == Operation::Paint) {
@@ -244,12 +254,16 @@ void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, Slice
 		 *We assume that the size of rect of the scene is two times larger than the size of image.
 		 */
 		auto rect = inImage.rect();
-		//auto rectInView = mapFromScene(rect).boundingRect();
 		translate(rect.width() / 2, rect.height() / 2);
 
 		rect.adjust(-rect.width(), -rect.height(), 0, 0);
 
 		scene()->setSceneRect(QRectF(-10000,-10000,20000,20000));
+
+		// We need to translate the view so as to let the slice is centered in it.
+
+		
+		//scene()->setSceneRect(rect);
 	}
 	else
 	{
@@ -259,10 +273,18 @@ void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, Slice
 	*outImage = inImage;
 }
 
+void SliceWidget::moveTo(int scenex, int sceney)
+{
+	const auto viewCenter = QPoint(size().width() / 2, size().height() / 2);
+	const auto sceneCenter = mapToScene(viewCenter);
+	const auto d = QPoint(scenex,sceney) - sceneCenter;
+	translate(d.x(), d.y());
+}
+
 QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect)
 {
-	const int w = 0.2*width(), h = 0.2*height();
-	const int W = width(), H = height();
+	const auto w = 0.2*width(), h = 0.2*height();
+	const auto W = width(), H = height();
 	//if(sliceRect.contains(viewRect))
 	//{
 	//	return QRect(0,0,w,h);
@@ -338,12 +360,31 @@ void SliceWidget::clearSliceMarksHelper(SliceItem * slice)
 		item->setVisible(false);
 	}
 }
+/**
+ * \brief 
+ * \param image 
+ */
 void SliceWidget::setImage(const QImage& image)
 {
-	//set_image_helper(image);
 	const auto size = image.size();
 	const auto pos = QPoint(-size.width()/2, -size.height() / 2);
 	setImageHelper(pos, image, m_slice, &m_image);
+}
+
+void SliceWidget::setDefaultZoom()
+{
+	resetMatrix();
+	Q_ASSERT(m_slice);
+	const auto size = m_slice->pixmap().size();
+	centerOn(m_slice->mapToScene(size.width()/2,size.height()/2));		// Move the center of the image to view center
+
+	const auto widgetSize = this->size();
+	const double sx = widgetSize.width() / static_cast<double>(size.width());
+	const double sy = widgetSize.height() / static_cast<double>(size.height());
+	scale(sx, sy);			// scales the image filling the view
+
+	update();
+	updateGeometry();
 }
 
 void SliceWidget::clearSliceMarks()
@@ -375,12 +416,11 @@ void SliceWidget::moveSlice(const QPointF& dir)
 
 QSize SliceWidget::sizeHint() const
 {
-	//const auto pSize = parentWidget()->size();
-
 	const auto maxLength = std::max(m_image.width(), m_image.height());
 
-	if (maxLength < 800)
-		return m_image.size();
-	return m_image.size().scaled(800, 800, Qt::KeepAspectRatio);
+	//if (maxLength < 800)
+		//return m_image.size();
+	//qDebug() << "SliceWidget::sizeHint()" << m_image.size().scaled(800, 800, Qt::KeepAspectRatio);
+	return m_image.size().scaled(700, 700, Qt::KeepAspectRatio);
 
 }

@@ -21,8 +21,7 @@ struct SliceWidgetState {
 };
 
 class SliceWidgetPrivate {
-public:
-
+	public:
 };
 
 class SliceWidget :public QGraphicsView
@@ -45,6 +44,7 @@ public:
 	};
 
 	SliceWidget(QWidget * parent = nullptr);
+
 	void setMarks(const QList<StrokeMarkItem *> & items);
 public slots:
 
@@ -53,6 +53,8 @@ public slots:
 	void setImage(const QImage & image);
 
 	inline void setPen(const QPen & pen);
+
+	void setDefaultZoom();
 
 	inline void setNavigationViewEnabled(bool enabled);
 
@@ -117,6 +119,8 @@ private:
 
 	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
 
+	void moveTo(int scenex, int sceney);
+
 	inline  void setMarkHelper(const QList<StrokeMarkItem*>& items);
 
 	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
@@ -126,6 +130,10 @@ private:
 	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
 
 	Q_OBJECT
+
+	enum {
+		ThumbnailLength = 200
+	};
 
 	qreal m_scaleFactor;
 	bool m_paintNavigationView;
@@ -153,8 +161,7 @@ inline void SliceWidget::setOperation(int state)
 		"SliceView::setFunction", "state must be exclusive");
 	m_state = state;
 }
-//inline void SliceView::setColor(const QColor & color) { /*m_color = color;*/ }
-//inline QColor SliceView::color()const { return  QColor(); }
+
 inline void SliceWidget::setPen(const QPen & pen){m_pen = pen;}
 inline QPen SliceWidget::pen()const{return m_pen;}
 inline void SliceWidget::setNavigationViewEnabled(bool enabled)
