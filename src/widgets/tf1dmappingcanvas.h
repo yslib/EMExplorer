@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QVector2D>
 
-#include "TF1DMappingKey.h"
+#include "tf1dmappingkey.h"
 
 
 template <class T> inline

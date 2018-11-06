@@ -1,8 +1,8 @@
 #include "renderoptionwidget.h"
 #include "renderwidget.h"
-#include "TF1DEditor.h"
-#include "widgets/TF1DTextureCanvas.h"
-#include "widgets/TF1DMappingCanvas.h"
+#include "tf1deditor.h"
+#include "widgets/tf1dtexturecanvas.h"
+#include "widgets/tf1dmappingcanvas.h"
 #include "3drender/geometry/volume.h"
 
 #include <QGroupBox>

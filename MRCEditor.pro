@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = MRCEditor
 QT += core opengl gui widgets
 
-CONFIG += console
+#CONFIG += console
 
 INCLUDEPATH += src
  # source file name prefix
@@ -11,15 +11,20 @@ DEPENDPATH += src
 # header file name prefix
 MY_PREFIX_DIR = src
 
-
+unix{
+QMAKE_CXXFLAGS+= -fopenmp
+QMAKE_LFLAGS+= -fopenmp
+}
+win32{
 QMAKE_CXXFLAGS+= -openmp
-QMAKE_LFLAGS+= -openmp
+#QMAKE_LFLAGS+= -openmp
+}
 
 
 HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
-    $${MY_PREFIX_DIR}/widgets/TF1DEditor.h\
-    $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.h\
-    $${MY_PREFIX_DIR}/widgets/TF1DTextureCanvas.h\
+    $${MY_PREFIX_DIR}/widgets/tf1deditor.h\
+    $${MY_PREFIX_DIR}/widgets/tf1dmappingcanvas.h\
+    $${MY_PREFIX_DIR}/widgets/tf1dtexturecanvas.h\
     $${MY_PREFIX_DIR}/abstract/abstractsliceeditorplugin.h\
     $${MY_PREFIX_DIR}/widgets/histogramwidget.h\
     $${MY_PREFIX_DIR}/widgets/sliceeditorwidget.h\
@@ -34,7 +39,7 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/widgets/titledsliderwithspinbox.h \
     $${MY_PREFIX_DIR}/widgets/zoomwidget.h \
     $${MY_PREFIX_DIR}/algorithm/CImg.h \
-    $${MY_PREFIX_DIR}/widgets/TF1DMappingKey.h \
+    $${MY_PREFIX_DIR}/widgets/tf1dmappingkey.h \
     $${MY_PREFIX_DIR}/abstract/abstractslicedatamodel.h\
     $${MY_PREFIX_DIR}/3drender/geometry/camera.h \
     $${MY_PREFIX_DIR}/model/categorytreeitem.h \
@@ -68,11 +73,11 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/model/iteminfomodel.h \
     $${MY_PREFIX_DIR}/model/strokeitem.h \
     $${MY_PREFIX_DIR}/algorithm/bimap.h \
-    src/widgets/colorlisteditor.h
+    $${MY_PREFIX_DIR}/widgets/colorlisteditor.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
-    $${MY_PREFIX_DIR}/widgets/TF1DEditor.cpp \
-    $${MY_PREFIX_DIR}/widgets/TF1DMappingCanvas.cpp \
-    $${MY_PREFIX_DIR}/widgets/TF1DTextureCanvas.cpp \
+    $${MY_PREFIX_DIR}/widgets/tf1deditor.cpp \
+    $${MY_PREFIX_DIR}/widgets/tf1dmappingcanvas.cpp \
+    $${MY_PREFIX_DIR}/widgets/tf1dtexturecanvas.cpp \
     $${MY_PREFIX_DIR}/abstract/abstractsliceeditorplugin.cpp \
     $${MY_PREFIX_DIR}/abstract/abstractslicedatamodel.cpp \
     $${MY_PREFIX_DIR}/model/categorytreeitem.cpp \
@@ -116,5 +121,6 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/model/iteminfomodel.cpp \
     $${MY_PREFIX_DIR}/model/strokeitem.cpp \
     $${MY_PREFIX_DIR}/algorithm/bimap.cpp \
-    src/widgets/colorlisteditor.cpp
+    $${MY_PREFIX_DIR}/widgets/colorlisteditor.cpp
+
 RESOURCES += resources.qrc

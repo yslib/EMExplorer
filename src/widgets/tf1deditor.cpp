@@ -7,10 +7,10 @@
 #include <QDebug>
 
 
-#include "TF1DEditor.h"
-#include "TF1DMappingCanvas.h"
+#include "tf1deditor.h"
+#include "tf1dmappingcanvas.h"
 #include "doubleslider.h"
-#include "TF1DTextureCanvas.h"
+#include "tf1dtexturecanvas.h"
 
 TF1DEditor::TF1DEditor(QWidget *parent)
 	: QWidget(parent)
