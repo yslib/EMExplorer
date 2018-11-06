@@ -2,6 +2,8 @@
 #include <QContextMenuEvent>
 #include <QHeaderView>
 #include <QVBoxLayout>
+#include <QItemEditorFactory>
+#include <qitemdelegate.h>
 
 #include "globals.h"
 #include "marktreeviewwidget.h"
@@ -9,9 +11,7 @@
 #include "model/markmodel.h"
 #include "widgets/colorlisteditor.h"
 
-#include <iostream>
-#include <QItemEditorFactory>
-#include <qitemdelegate.h>
+
 
 
 MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
@@ -94,7 +94,7 @@ void MarkTreeView::updateAction()
 		auto d = static_cast<TreeItem*>(item.internalPointer());
 		Q_ASSERT_X(d, 
 			"MarkTreeView::updateAction", "null pointer");
-		if(d->type() == (int)TreeItemType::Category)
+        if(d->type() == static_cast<int>(TreeItemType::Category))
 		{
 			parents.insert(d);
 			m_deleteItems.insert(item);
@@ -108,9 +108,9 @@ void MarkTreeView::updateAction()
 		auto d = static_cast<TreeItem*>(item.internalPointer());
 		Q_ASSERT_X(d,
 			"MarkTreeView::updateAction", "null pointer");
-		if (d->type() == (int)TreeItemType::Root)
+        if (d->type() == static_cast<int>(TreeItemType::Root))
 			continue;
-		if (d->type() == (int)TreeItemType::Mark)
+        if (d->type() == static_cast<int>(TreeItemType::Mark))
 		{
 			if (parents.find(d->parentItem()) == parents.end())
 				m_deleteItems.insert(item);
@@ -124,7 +124,6 @@ void MarkTreeView::updateAction()
 
 void MarkTreeView::onDeleteAction()
 {
-	std::cout << "Delete Action";
 
 	// Pre-Processing: remove items whose parent has already been the list
 	foreach(const auto & index,m_deleteItems) {
@@ -228,8 +227,8 @@ TreeNodeInfoView::TreeNodeInfoView(QWidget * parent) :QTableView(parent)
 	setShowGrid(true);
 	setAlternatingRowColors(true);
 
-	auto *factory = new QItemEditorFactory();
-	auto *colorListCreator = new QStandardItemEditorCreator<ColorListEditor>();
+    auto factory = new QItemEditorFactory();
+    auto colorListCreator = new QStandardItemEditorCreator<ColorListEditor>();
 	factory->registerEditor(QVariant::Color, colorListCreator);
 
 	auto dele = new QItemDelegate;
@@ -304,8 +303,11 @@ void MarkManager::treeViewClicked(const QModelIndex& index) {
 void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous)
 {
 	Q_UNUSED(previous);
+	qDebug() << "treeViewCurrentIndexChanged";
 	const auto item = static_cast<TreeItem *>(current.internalPointer());
 	if (item != nullptr) {
+		const auto model = item->infoModel();
+		
 		m_infoView->setModel(item->infoModel());
 		if(item->type() == TreeItemType::Mark) {
 			const auto m = static_cast<StrokeMarkItem*>(item->metaData());

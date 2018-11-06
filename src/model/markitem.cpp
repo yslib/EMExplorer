@@ -110,6 +110,7 @@ static void drawHighlightSelected(
 		fgcolor.red()   > 127 ? 0 : 255,
 		fgcolor.green() > 127 ? 0 : 255,
 		fgcolor.blue()  > 127 ? 0 : 255);
+
 	painter->setPen(QPen(bgcolor, penWidth, Qt::SolidLine));
 	painter->setBrush(Qt::NoBrush);
 	painter->drawRect(item->boundingRect().adjusted(pad, pad, -pad, -pad));
@@ -136,9 +137,16 @@ m_markInfo(new StrokeMarkItemPrivate)
 
 void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-	painter->setPen(pen());
-	painter->setBrush(brush());
-	painter->drawPolyline(polygon());
+    painter->setPen(pen());
+    painter->setBrush(brush());
+    if(m_markInfo->isFilled == false){      //None filled
+        painter->drawPolyline(polygon());
+    }else{
+        painter->setBrush(QBrush(pen().color(),Qt::SolidPattern));
+        painter->drawPolygon(polygon()); // filled
+
+    }
+
 	if (option->state & QStyle::State_Selected)
 		drawHighlightSelected(this, painter, option);
 }

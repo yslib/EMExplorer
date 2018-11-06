@@ -4,7 +4,7 @@
 #include <QGraphicsScene>
 
 StrokeMarkTreeItem::
-StrokeMarkTreeItem(StrokeMarkItem* markItem, const QPersistentModelIndex & pIndex, TreeItem* parent) : TreeItem(pIndex, parent),
+StrokeMarkTreeItem(StrokeMarkItem * markItem, const QPersistentModelIndex & pIndex, TreeItem* parent) : TreeItem(pIndex, parent),
 m_markItem(nullptr), 
 m_infoModel(nullptr) {
 	m_markItem = markItem;
@@ -41,7 +41,7 @@ m_infoModel(nullptr) {
 
 	m_markItem->m_modelIndex = persistentModelIndex();
 
-	m_infoModel = new MarkItemInfoModel(markItem, nullptr);
+	m_infoModel = new MarkItemInfoModel(m_markItem, nullptr);
 
 	//Q_ASSERT(parentItem());
 
@@ -133,6 +133,7 @@ void* StrokeMarkTreeItem::metaData()
 StrokeMarkTreeItem::~StrokeMarkTreeItem()
 {
 	delete m_markItem;
+	m_markItem = nullptr;		//Without this, the program will crash.
 	m_infoModel->deleteLater();
 }
 
@@ -160,7 +161,7 @@ QDataStream & operator>>(QDataStream & stream, StrokeMarkTreeItem *& item)
  * \param mark
  * \param parent
  */
-MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem * mark, QObject * parent) :m_markItem(nullptr), QAbstractItemModel(parent)
+MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem *& mark, QObject * parent) :m_markItem(mark), QAbstractItemModel(parent)
 {
 	m_markItem = mark;
 
@@ -169,7 +170,8 @@ MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem * mark, QObject * parent) :m
 	<< QStringLiteral("Slice Type") 
 	<< QStringLiteral("Visible") 
 	<< QStringLiteral("Color") 
-	<< QStringLiteral("Length:");
+    << QStringLiteral("Length:")
+    << QStringLiteral("Fill");
 
 }
 
@@ -204,6 +206,7 @@ QVariant MarkItemInfoModel::data(const QModelIndex & index, int role) const
 				case 3:return m_markItem->visibleState();
 				case 4:return m_markItem->pen().color();	// Color
 				case 5:return m_markItem->length();
+                case 6:return m_markItem->isFilled();
 				default:return QVariant{};
 			}
 		}
@@ -283,25 +286,38 @@ bool MarkItemInfoModel::setData(const QModelIndex& index, const QVariant& value,
 	const auto c = index.column();
 	if(role == Qt::EditRole)		// Edits name of the mark
 	{
-		qDebug() << "???";
 		if( c == 1) {
-			if(r == 0) {			// Name
-				m_markItem->setName(value.toString());
-				emit dataChanged(index, index, { role });
-				return true;
-			}
-			if(r == 3) {
-				m_markItem->setVisibleState(value.toBool());
-				emit dataChanged(index, index, { role });
-				return true;
-			}
-			if(r == 4) {
-				auto p = m_markItem->pen();
-				p.setColor(qvariant_cast<QColor>(value));
-				m_markItem->setPen(p);
-				emit dataChanged(index, index, { role });
-				return true;
-			}
+
+            switch (r) {
+                case 0:
+                {
+                    m_markItem->setName(value.toString());
+                    emit dataChanged(index, index, { role });
+                    return true;
+                }
+                case 3:
+                {
+                    m_markItem->setVisibleState(value.toBool());
+                    emit dataChanged(index, index, { role });
+                    return true;
+                }
+                case 4:
+                {
+                    auto p = m_markItem->pen();
+                    p.setColor(qvariant_cast<QColor>(value));
+                    m_markItem->setPen(p);
+                    emit dataChanged(index, index, { role });
+                    return true;
+                }
+                case 6:
+                {
+                    m_markItem->setFilled(value.toBool());
+                    emit dataChanged(index,index,{role});
+                    return true;
+                }
+                default:
+                    return false;
+            }
 
 		}
 	}
@@ -347,7 +363,7 @@ Qt::ItemFlags MarkItemInfoModel::flags(const QModelIndex& index) const
 	{
 		switch(r) 
 		{
-			case 0:case 3:case 4:									// Name Visibility Color					
+            case 0:case 3:case 4:case 6:									// Name Visibility Color
 			return Qt::ItemIsEnabled | Qt::ItemIsEditable;			
 			default:return Qt::ItemIsEnabled;							// Others
 		}

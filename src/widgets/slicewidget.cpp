@@ -240,37 +240,7 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void SliceWidget::setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem*& sliceItem, QImage * outImage)
 {
-	if (sliceItem == nullptr)
-	{
-		sliceItem = new SliceItem(QPixmap::fromImage(inImage));
-
-		(sliceItem)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
-
-		sliceItem->setPos(pos);
-		m_anchorItem->setParentItem(sliceItem);
-		scene()->addItem(sliceItem);
-		/**
-		 *We need to give a exactly scene rect according to the image size for efficiency rendering.
-		 *We assume that the size of rect of the scene is two times larger than the size of image.
-		 */
-		auto rect = inImage.rect();
-		translate(rect.width() / 2, rect.height() / 2);
-
-		rect.adjust(-rect.width(), -rect.height(), 0, 0);
-
-		scene()->setSceneRect(QRectF(-10000,-10000,20000,20000));
-
-		// We need to translate the view so as to let the slice is centered in it.
-
-		
-		//scene()->setSceneRect(rect);
-	}
-	else
-	{
-		sliceItem->setPixmap(QPixmap::fromImage(inImage));
-	}
-	QSize size = inImage.size();
-	*outImage = inImage;
+	
 }
 
 void SliceWidget::moveTo(int scenex, int sceney)
@@ -368,7 +338,36 @@ void SliceWidget::setImage(const QImage& image)
 {
 	const auto size = image.size();
 	const auto pos = QPoint(-size.width()/2, -size.height() / 2);
-	setImageHelper(pos, image, m_slice, &m_image);
+
+	if (m_slice == nullptr)
+	{
+		m_slice = new SliceItem(QPixmap::fromImage(image));
+
+		(m_slice)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
+
+		m_slice->setPos(pos);
+		m_anchorItem->setParentItem(m_slice);
+		scene()->addItem(m_slice);
+		/**
+		 *We need to give a exactly scene rect according to the image size for efficiency rendering.
+		 *We assume that the size of rect of the scene is two times larger than the size of image.
+		 */
+		auto rect = image.rect();
+		translate(rect.width() / 2, rect.height() / 2);
+
+		rect.adjust(-rect.width(), -rect.height(), 0, 0);
+
+		scene()->setSceneRect(QRectF(-10000, -10000, 20000, 20000));
+
+		// We need to translate the view so as to let the slice is centered in it.
+
+		//scene()->setSceneRect(rect);
+	}
+	else
+	{
+		m_slice->setPixmap(QPixmap::fromImage(image));
+	}
+
 }
 
 void SliceWidget::setDefaultZoom()
@@ -416,11 +415,12 @@ void SliceWidget::moveSlice(const QPointF& dir)
 
 QSize SliceWidget::sizeHint() const
 {
-	const auto maxLength = std::max(m_image.width(), m_image.height());
-
+	//const auto maxLength = std::max(m_image.width(), m_image.height());
 	//if (maxLength < 800)
 		//return m_image.size();
-	//qDebug() << "SliceWidget::sizeHint()" << m_image.size().scaled(800, 800, Qt::KeepAspectRatio);
-	return m_image.size().scaled(700, 700, Qt::KeepAspectRatio);
-
+	if(m_slice == nullptr) 
+	{
+		return { 0,0 };
+	}
+	return m_slice->pixmap().size().scaled(700, 700, Qt::KeepAspectRatio);
 }

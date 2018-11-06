@@ -76,6 +76,8 @@ InstanceTreeItem::InstanceTreeItem(InstanceMetaData * metaData, const QPersisten
  */
 QVariant InstanceTreeItem::data(int column, int role) const
 {
+	if (m_metaData == nullptr)
+		return QVariant{};
 	if (role == Qt::DisplayRole)
 	{
 		if (column == 0) {
@@ -87,7 +89,7 @@ QVariant InstanceTreeItem::data(int column, int role) const
 			return m_metaData->visibleState() ? Qt::Checked : Qt::Unchecked;
 		}
 	}
-	return QVariant();
+	return QVariant{};
 }
 
 /**
@@ -98,6 +100,8 @@ QVariant InstanceTreeItem::data(int column, int role) const
  * \return
  */
 bool InstanceTreeItem::setData(int column, const QVariant& value, int role) {
+	if (m_metaData == nullptr)
+		return false;
 	if (role == Qt::EditRole) {
 		if (column == 0) {
 			m_metaData->setName(value.toString());
@@ -179,7 +183,9 @@ QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {
 InstanceTreeItem::~InstanceTreeItem() 
 {
 	delete m_metaData;
+	m_metaData = nullptr;
 	m_infoModel->deleteLater();
+	m_infoModel = nullptr;
 }
 
 QDataStream & operator<<(QDataStream & stream, const InstanceMetaData * metaData)

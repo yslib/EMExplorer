@@ -5,10 +5,10 @@
 
 class MarkItemInfoModel :public QAbstractItemModel
 {
-	StrokeMarkItem * m_markItem;
+	StrokeMarkItem *& m_markItem;
 	QVector<QString> propertyNames;
 public:
-	explicit MarkItemInfoModel(StrokeMarkItem * mark,QObject * parent);
+	explicit MarkItemInfoModel(StrokeMarkItem *& mark,QObject * parent);
 	QVariant data(const QModelIndex& index, int role) const override;
 	int columnCount(const QModelIndex& parent) const override;
 	QModelIndex index(int row, int column, const QModelIndex& parent) const override;

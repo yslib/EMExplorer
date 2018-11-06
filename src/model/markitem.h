@@ -86,20 +86,23 @@
 class StrokeMarkItem :public QGraphicsPolygonItem {
 	std::function<QVariant(StrokeMarkItem* mark,QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
 	QPersistentModelIndex m_modelIndex;
+
 	struct StrokeMarkItemPrivate
 	{
-		StrokeMarkItemPrivate():m_visibleState(true){}
+        StrokeMarkItemPrivate():m_visibleState(true),isFilled(false){}
 		QString m_name;
 		SliceType m_sliceType;
 		double m_length;
 		int m_index;
 		bool m_visibleState;
+        bool isFilled;
 
 		friend QDataStream & operator<<(QDataStream & stream,const StrokeMarkItemPrivate * info) 
 		{
 			stream << info->m_name << static_cast<quint32>(info->m_sliceType) << info->m_length << info->m_index << info->m_visibleState;
 			return stream;
 		}
+
 		friend QDataStream & operator>>(QDataStream & stream, StrokeMarkItemPrivate * info){
 			Q_ASSERT(info);
 			quint32 type;
@@ -131,6 +134,9 @@ public:
 
 	bool visibleState()const { return m_markInfo->m_visibleState; }
 	void setVisibleState(bool visible) { m_markInfo->m_visibleState = visible; }
+
+    bool isFilled()const{return m_markInfo->isFilled;}
+    void setFilled(bool fill){m_markInfo->isFilled = fill;update();}
 
 	~StrokeMarkItem();
 

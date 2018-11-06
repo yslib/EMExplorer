@@ -108,7 +108,7 @@ class CategoryTreeItem :public TreeItem
 {
 	CategoryItem m_categoryItem;
 public:
-	CategoryTreeItem(const CategoryItem& categoryItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
+	CategoryTreeItem(const CategoryItem & categoryItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
 
 	QVariant data(int column, int role) const override;
 

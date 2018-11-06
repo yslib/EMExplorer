@@ -1,5 +1,3 @@
-
-
 #ifndef COLORLISTEDITOR_H
 #define COLORLISTEDITOR_H
 
