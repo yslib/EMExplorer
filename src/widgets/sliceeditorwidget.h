@@ -269,7 +269,6 @@ inline SliceWidget * SliceEditorWidget::topView()const { return m_topView; }
  *
  * \sa SliceWidget
  */
-inline
 inline SliceWidget * SliceEditorWidget::rightView()const { return m_rightView; }
 
 /**
@@ -277,7 +276,6 @@ inline SliceWidget * SliceEditorWidget::rightView()const { return m_rightView; }
  *
  * \sa SliceWidget
  */
-inline
 inline SliceWidget * SliceEditorWidget::frontView()const { return m_frontView; }
 
 #endif // IMAGEVIEWER_H

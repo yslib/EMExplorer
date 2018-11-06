@@ -1,6 +1,6 @@
 
-#include "TF1DTextureCanvas.h"
-#include "TF1DMappingCanvas.h"
+#include "tf1dtexturecanvas.h"
+#include "tf1dmappingcanvas.h"
 #include <memory>
 #include <QDebug>
 

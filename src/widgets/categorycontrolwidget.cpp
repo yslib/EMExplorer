@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QComboBox>
 
-#include "CategoryControlWidget.h"
+#include "categorycontrolwidget.h"
 #include "sliceeditorwidget.h"
 #include "renderwidget.h"
 #include "model/mrcdatamodel.h"

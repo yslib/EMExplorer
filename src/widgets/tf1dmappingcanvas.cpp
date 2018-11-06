@@ -10,8 +10,8 @@
 #include <QMessageBox>
 #include <cmath>
 
-#include "TF1DMappingCanvas.h"
-#include "3drender/geometry/volume.h"
+#include "tf1dmappingcanvas.h"
+#include "../3drender/geometry/volume.h"
 
 bool sortFunction(TF1DMappingKey* a, TF1DMappingKey* b) 
 {
