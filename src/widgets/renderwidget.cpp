@@ -590,6 +590,8 @@ void RenderWidget::_slot_markModelDataChanged(const QModelIndex & begin, const Q
 void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 {
 	//qDebug() << "RenderWidget::_slot_currentMeshChanged " << " RenderWidget should be clicked";
+	if(m_markModel == nullptr) 
+		return;
 	const auto index = m_query.query(current);
 	//m_markModel->selectionModelOfThisModel()->clear();
 	m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);

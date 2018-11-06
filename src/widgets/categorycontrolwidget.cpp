@@ -110,16 +110,14 @@ void CategoryControlWidget::createWidgets()
 	hLayout->addWidget(m_colorAction);
 	vLayout->addLayout(hLayout);
 
-	
-
 	vLayout->addLayout(hLayout);
 	group->setLayout(vLayout);
 	mainLayout->addWidget(group);
 	mainLayout->addStretch();
 
 	setLayout(mainLayout);
-}
 
+}
 
 
 void CategoryControlWidget::updateDataModel()
@@ -150,10 +148,7 @@ void CategoryControlWidget::updateDataModel()
 
 void CategoryControlWidget::connections()
 {
-
 	connect(m_addCategoryAction, &QToolButton::clicked, this, &CategoryControlWidget::onCategoryAdded);
-	//connect(m_zoomInAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomIn);
-	//connect(m_zoomOutAction, &QToolButton::clicked, m_canvas, &SliceEditorWidget::zoomOut);
 	connect(m_penSizeCBBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int) {QPen pen = m_canvas->topView()->pen(); pen.setWidth(m_penSizeCBBox->currentData().toInt()); m_canvas->setPen(pen); });
 	connect(m_colorAction, &QToolButton::clicked, this, &CategoryControlWidget::colorChanged);
 	connect(m_categoryCBBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [this](const QString & text) {
@@ -162,7 +157,6 @@ void CategoryControlWidget::connections()
 		m_canvas->setPen(pen);
 		m_canvas->setCurrentCategory(text);
 	});
-
 }
 
 void CategoryControlWidget::setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates)

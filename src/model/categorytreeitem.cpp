@@ -111,6 +111,7 @@ bool CategoryTreeItem::setData(int column, const QVariant& value, int role) {
 	if (column >= columnCount())
 		return false;
 	if (role == Qt::EditRole) {
+		
 		m_categoryItem.setName(value.toString());
 		return true;
 	}

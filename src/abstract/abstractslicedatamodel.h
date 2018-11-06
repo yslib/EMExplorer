@@ -66,6 +66,9 @@ public:
 	inline int topSliceCount()const;
 	inline int rightSliceCount()const;
 	inline int frontSliceCount()const;
+	QSize topSliceSize()const { return m_topSliceSize; }
+	QSize rightSliceSize()const { return m_rightSliceSize; }
+	QSize frontSliceSize()const { return m_frontSliceSize; }
 	inline friend QDataStream & operator<<(QDataStream & stream, const SliceDataIdentityTester & id);
 	inline friend QDataStream & operator>>(QDataStream & stream, SliceDataIdentityTester & id);
 	inline static SliceDataIdentityTester createTester(const AbstractSliceDataModel * model);

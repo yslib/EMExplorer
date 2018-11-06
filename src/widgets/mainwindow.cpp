@@ -146,10 +146,11 @@ void MainWindow::open(const QString& fileName)
 	auto d = m_profileView->takeModel(infoModel);
 	d->deleteLater();
 }
+
 bool MainWindow::saveMark()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("Mark Save"),
-		"", QStringLiteral("Mark Files(*.mar);;Raw Files(*.raw)"));
+		"", QStringLiteral("Mark Files(*.mar);;Raw Files(*.raw);;Mask Files(*.msk)"));
 	if (fileName.isEmpty() == true)
 		return false;
 
@@ -166,6 +167,8 @@ bool MainWindow::saveMark()
 		ok = m_imageView->markModel()->save(fileName, MarkModel::MarkFormat::Raw);
 	else if (fileName.endsWith(QStringLiteral(".mar")))
 		ok = m_imageView->markModel()->save(fileName, MarkModel::MarkFormat::Binary);
+	else if (fileName.endsWith(QStringLiteral(".msk")))
+		ok = m_imageView->markModel()->save(fileName, MarkModel::MarkFormat::Mask);
 	if (ok == false) {
 		QMessageBox::critical(this,
 			QStringLiteral("Error"),
@@ -383,22 +386,18 @@ void MainWindow::setDefaultLayout()
 	splitDockWidget(m_markManagerDockWidget, m_imageViewDockWidget, Qt::Horizontal);
 	tabifyDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget);
 	tabifyDockWidget(m_markManagerDockWidget, m_profileViewDockWidget);
+	m_imageViewDockWidget->raise();
+	m_markManagerDockWidget->raise();
 }
 
 void MainWindow::setParallelLayout() {
-	//addDockWidget(Qt::LeftDockWidgetArea, m_treeViewDockWidget);
-	//tabifyDockWidget(m_treeViewDockWidget,m_profileViewDockWidget);
-	//addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
-	//splitDockWidget(m_treeViewDockWidget, m_imageViewDockWidget, Qt::Horizontal);
-	//splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
-	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
-	//splitDockWidget(m_treeViewDockWidget, m_markInfoDockWidget, Qt::Vertical);
 
 	addDockWidget(Qt::LeftDockWidgetArea, m_markManagerDockWidget);
 	addDockWidget(Qt::RightDockWidgetArea, m_controlDockWidget);
 	splitDockWidget(m_markManagerDockWidget, m_imageViewDockWidget, Qt::Horizontal);
 	splitDockWidget(m_imageViewDockWidget, m_volumeViewDockWidget,Qt::Horizontal);
 	tabifyDockWidget(m_markManagerDockWidget, m_profileViewDockWidget);
+	m_markManager->raise();
 }
 
 void MainWindow::pixelViewActionTriggered()

@@ -152,6 +152,7 @@ TF1DTextureCanvas::TF1DTextureCanvas(TF1DMappingCanvas * tf, QWidget *parent)
 TF1DTextureCanvas::~TF1DTextureCanvas()
 {
 	cleanup();
+	disconnect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &TF1DTextureCanvas::cleanup);
 }
 void TF1DTextureCanvas::initializeGL()
 {

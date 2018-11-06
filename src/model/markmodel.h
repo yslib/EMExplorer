@@ -50,9 +50,8 @@ class MarkModel :public QAbstractItemModel
 	
 	using MarkSliceList = QVector<QList<StrokeMarkItem*>>;
 	//state member
-	const AbstractSliceDataModel * m_dataModel;
+	//const AbstractSliceDataModel * m_dataModel;
 	const SliceEditorWidget * m_view;
-
 	QItemSelectionModel * const m_selectionModel;
 
 	bool m_dirty;
@@ -116,7 +115,8 @@ public:
 	enum MarkFormat
 	{
 		Binary,		///< Save mark as internal binary format
-		Raw			///< Save mark as raw format which is easily accessed by any other raw format reader
+		Raw,		///< Save mark as raw format which is easily accessed by any other raw format reader
+		Mask
 	};
 
 	/**

@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QCheckBox>
-#include <QLabel>
+#include <QToolButton>
 
 #include "globals.h"
 #include "abstract/abstractslicedatamodel.h"
@@ -202,6 +202,8 @@ void SliceEditorWidget::updateActions()
 	setTopSliceVisibility(enable);
 	setRightSliceVisibility(enable);
 	setFrontSliceVisibility(enable);
+
+	m_toolButton->setVisible(enable);
 }
 
 /**
@@ -297,8 +299,13 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_frontView->installEventFilter(this);
 	m_frontView->setNavigationViewEnabled(false);
 
-	m_thumbnailCheckBox = new QCheckBox(QStringLiteral("Navigator"), this);
-	m_thumbnailCheckBox->setTristate(false);
+
+	m_toolButton = new QToolButton(this);
+	m_toolButton->setText(QStringLiteral("Advanced"));
+	m_toolButton->setPopupMode(QToolButton::InstantPopup);
+	auto menu = new QMenu(QStringLiteral("Slice Editor"), this);
+	m_toolButton->setMenu(menu);
+	menu->addAction(QStringLiteral("Hide Navigation View"), [this](bool checked) {m_topView->setNavigationViewEnabled(checked); });
 
 	// Connections 
 	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
@@ -325,19 +332,15 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 
 	connect(this, &SliceEditorWidget::markSelected, this, &SliceEditorWidget::_slot_markSelected);
 
-	connect(m_thumbnailCheckBox, &QCheckBox::stateChanged, [this](int state) {
-		m_topView->setNavigationViewEnabled(state == Qt::Checked);
-		m_thumbnailCheckBox->setCheckState((Qt::CheckState)state);
-	});
 
 	updateActions();
 
 	setWindowTitle(QStringLiteral("Slice Editor"));
 
-	m_layout->addWidget(m_topView, 0, 0, 1, 1,Qt::AlignCenter);
+	m_layout->addWidget(m_topView, 0, 0, 1, 1);
 	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignLeft);
 	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignTop);
-	m_layout->addWidget(m_thumbnailCheckBox, 1, 1, 1, 1,Qt::AlignCenter);
+	m_layout->addWidget(m_toolButton, 1, 1, 1, 1,Qt::AlignCenter);
 
 	
 
@@ -810,10 +813,9 @@ AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel
 	setSliceIndex(SliceType::Right, 0);
 	setSliceIndex(SliceType::Top, 0);
 
-	resetZoom(true);
-
 	updateActions();
 	emit dataModelChanged();
+	resetZoom(true);
 	return t;
 }
 

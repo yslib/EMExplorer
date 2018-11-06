@@ -247,7 +247,7 @@ private:
 	SliceWidget * m_topView;
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
-	QCheckBox* m_thumbnailCheckBox;
+	QToolButton * m_toolButton;
 };
 
 /**

@@ -34,12 +34,19 @@ public:
 	int categoryCount()const;
 private:
 	void createWidgets();
+
 	void connections();
+
 	void updateDataModel();
+
 	void setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates);
+
 	void addCategoryInfoPrivate(const QString & name, const QColor & color);
+
 	QIcon createColorIcon(const QColor & color);
+
 	void onCategoryAdded();
+
 	void colorChanged();
 
 	enum class PlayDirection 

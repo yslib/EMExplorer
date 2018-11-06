@@ -11,11 +11,13 @@ DEPENDPATH += src
 # header file name prefix
 MY_PREFIX_DIR = src
 
-unix{
+unix
+{
 QMAKE_CXXFLAGS+= -fopenmp
 QMAKE_LFLAGS+= -fopenmp
 }
-win32{
+win32
+{
 QMAKE_CXXFLAGS+= -openmp
 #QMAKE_LFLAGS+= -openmp
 }

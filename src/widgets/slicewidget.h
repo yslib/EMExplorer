@@ -117,10 +117,6 @@ private:
 
 	inline static void clearSliceMarksHelper(SliceItem * slice);
 
-	void setImageHelper(const QPoint& pos, const QImage& inImage, SliceItem *& sliceItem, QImage * outImage);
-
-	void moveTo(int scenex, int sceney);
-
 	inline  void setMarkHelper(const QList<StrokeMarkItem*>& items);
 
 	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
@@ -135,13 +131,12 @@ private:
 		ThumbnailLength = 200
 	};
 
-	qreal m_scaleFactor;
+	//qreal m_scaleFactor;
 	bool m_paintNavigationView;
 	QVector<QPoint> m_paintViewPointsBuffer;
 	QPointF m_prevViewPoint;
 	QPen m_pen;
 	SliceItem * m_slice;
-	QImage m_image;
 	QImage m_thumbnail;
 	//items
 	SliceItem * m_currentPaintingSlice;

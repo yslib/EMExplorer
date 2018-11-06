@@ -147,7 +147,8 @@ void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* op
 
     }
 
-	if (option->state & QStyle::State_Selected)
+
+	if ( option != nullptr && option->state & QStyle::State_Selected)
 		drawHighlightSelected(this, painter, option);
 }
 
