@@ -18,31 +18,16 @@ m_state(Operation::None),
 m_anchorItem(nullptr),
 m_paintNavigationView(false)
 {
-
 	setScene(new QGraphicsScene(this));
-
-	//scale(m_scaleFactor, m_scaleFactor);
-
 	connect(scene(), &QGraphicsScene::selectionChanged, this, &SliceWidget::selectionChanged);
-
 	setTransformationAnchor(QGraphicsView::NoAnchor);
-
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
 	setDragMode(QGraphicsView::RubberBandDrag);
-
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-
 	const auto pixel = createAnchorItemPixmap();
 	m_anchorItem = new QGraphicsPixmapItem(pixel);
-	//const auto p = pixel.size();
-	//const QPointF point(p.width()/2.0,p.height()/2.0);
-	//m_anchorItem->setTransformOriginPoint(point);
-	
 	m_anchorItem->setVisible(false);
-
 	setStyleSheet(QStringLiteral("border:0px solid white"));
 }
 
@@ -59,7 +44,6 @@ void SliceWidget::focusInEvent(QFocusEvent* event)
 	setStyleSheet(QStringLiteral("border:1px solid red"));
 	emit sliceSelected();
 }
-
 void SliceWidget::focusOutEvent(QFocusEvent* event)
 {
 	Q_UNUSED(event);
@@ -70,7 +54,7 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 {
 	QGraphicsView::paintEvent(event);
 
-	if (m_paintNavigationView == false)
+	if (!m_paintNavigationView)
 		return;
 
 	const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
@@ -111,17 +95,15 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 	const auto viewPos = event->pos();
 	const auto scenePos = mapToScene(viewPos);
 
-	if(m_paintNavigationView == true) {
+	if(m_paintNavigationView) {
 		const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
 		const auto & viewRectInScene = mapToScene(rect()).boundingRect();
 		const auto tRect = thumbnailRect(sliceRectInScene, viewRectInScene);
 		if(tRect.contains(viewPos)) {
 			// Mouse click in thumbnail, mapping the click position to real slice position
 			const auto imageSize = m_slice->pixmap().size();
-
 			const int x = static_cast<double>(viewPos.x() - tRect.left()) /(0.2*width())*imageSize.width();
 			const int y = static_cast<double>(viewPos.y() - tRect.top()) / (0.2*height())*imageSize.height();
-			qDebug() << x << " " << y;
 			centerOn(m_slice->mapToScene(x, y));
 			return;
 		}
@@ -157,7 +139,6 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 				return;
 			}
 			else if (m_state == Operation::Selection) {
-
 				// Selecting items automatically by calling default event handler of the QGraphicsView
 				return QGraphicsView::mousePressEvent(event);
 			}
@@ -170,7 +151,6 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 				event->accept();
 				return;
 			}
-
 		}
 	}
 	event->accept();
@@ -260,7 +240,7 @@ QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRe
 	//	return QRect(0, 0, w, h);
 	//}
 	//return QRect(0,0,w,h);
-	return QRect(0, H - h, w, h);
+    return { 0,int(H - h),int(w),int(h) };
 }
 
 QGraphicsItem * SliceWidget::createMarkItem()

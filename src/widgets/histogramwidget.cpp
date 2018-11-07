@@ -1,16 +1,17 @@
 #include <qdebug.h>
-#include <QMessageBox>
+
 #include <QComboBox>
-#include <QSpinBox>
+
 #include <QLabel>
 #include <QGroupBox>
 #include <QPushButton>
 #include <cmath>
-#include <QMouseEvent>
+
 
 #include "histogramwidget.h"
 #include "model/sliceitem.h"
 #include "widgets/sliceeditorwidget.h"
+#include "widgets/doubleslider.h"
 
 
 #define cimg_display 0 //
@@ -18,58 +19,75 @@
 #include "algorithm/CImg.h"
 
 
-Histogram::Histogram(QWidget *parent):QWidget(parent),
-    m_hist{QVector<int>(BIN_COUNT)},
-    m_minValue{0},
-    m_maxValue{BIN_COUNT-1},
-    m_count{0},
-    m_mousePressed{false},
-    m_rightCursorSelected{false},
-    m_leftCursorSelected{false},
-    m_cursorEnable{true}
+Histogram::Histogram(QWidget *parent) :QWidget(parent),
+m_hist{ QVector<double>(BIN_COUNT) },
+m_minValue{ 0 },
+m_maxValue{ BIN_COUNT - 1 },
+m_count{ 0 },
+m_histUpdate(false),
+m_mousePressed{ false },
+m_rightCursorSelected{ false },
+m_leftCursorSelected{ false },
+m_cursorEnable{ true },
+xRange(QVector2D(0.f, 1.f)),
+yRange(QVector2D(0.f, 1.f)),
+padding(12),
+arrowLength(10),
+arrowWidth(3),       ///< width of the arrows at the end of coordinate axes
+xAxisText("pixel"),    ///< caption of the x axis
+yAxisText("density"),     ///< caption of the y axis
+gridSpacing(QVector2D(1.0,1.0))
 {
-    setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-    setMinimumSize(MIN_WIDTH,MIN_HEIGHT);
-    resize(MIN_WIDTH,MIN_HEIGHT);
+	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	//setMinimumSize(MIN_WIDTH,MIN_HEIGHT);
+	//resize(MIN_WIDTH,MIN_HEIGHT);
 }
 
-Histogram::Histogram(QWidget *parent, const QImage &image):Histogram(parent)
+Histogram::Histogram(QWidget *parent, const QImage &image) :Histogram(parent)
 {
-    setImage(image);
+	setImage(image);
 }
 
 void Histogram::setImage(const QImage &image)
 {
-    ///TODO: bull shit design
-	//qDebug() << image.depth() << " " << image.bytesPerLine() << " " << image.width() << " " << image.height();
-    if(image.depth() != 8 ){
+	if (image.depth() != 8)
+	{
+		qWarning("Only Support 8bit image.");
+		return;
+	}
+	m_hist.clear();
+	m_hist.resize(BIN_COUNT);
+	m_count = image.width()*image.height();
+	const unsigned char * data = image.bits();
 
-        QMessageBox::critical(this,tr("Error"),
-                              tr("Only Support 8bit image."),
-                              QMessageBox::Yes,QMessageBox::Yes);
-        return;
-    }
-
-    m_hist.clear();
-    m_hist.resize(BIN_COUNT);
-
-    m_count = image.width()*image.height();
-    const unsigned char * data = image.bits();
-    for(int i=0;i<m_count;i++)
-        m_hist[*(data+i)]++;
-    update();
-    updateGeometry();
+	m_maxGrayValue = 0;
+	for (auto h = 0; h < image.height(); h++) {
+		for (auto w = 0; w < image.width(); w++) {
+			int g = *(image.constScanLine(h) + w);
+			if (m_maxGrayValue < g) {
+				m_maxGrayValue = g;
+			}
+			m_hist[g]++;
+		}
+	}
+	m_histUpdate = true;
+	update();
+	updateGeometry();
 }
 
-QVector<int> Histogram::getHist() const
+QVector<double> Histogram::getHist() const
 {
 	return m_hist;
 }
 
-QSize Histogram::sizeHint() const
-{
-    return m_histImage.size();
+QSize Histogram::sizeHint() const {
+	return QSize(300, 150);
 }
+
+//QSize Histogram::sizeHint() const
+//{
+//    return m_histImage.size();
+//}
 
 void Histogram::setLeftCursorValue(int value)
 {
@@ -81,12 +99,12 @@ void Histogram::setLeftCursorValue(int value)
 	}
 	if (value > m_maxValue) {
 		m_maxValue = m_minValue = value;
-        emit minValueChanged(value);
-        emit maxValueChanged(value);
+		emit minValueChanged(value);
+		emit maxValueChanged(value);
 	}
 	else {
 		m_minValue = value;
-        emit minValueChanged(value);
+		emit minValueChanged(value);
 	}
 	update();
 	updateGeometry();
@@ -102,36 +120,36 @@ void Histogram::setRightCursorValue(int value)
 	}
 	if (value < m_minValue) {
 		m_minValue = m_maxValue = value;
-        emit minValueChanged(value);
-        emit maxValueChanged(value);
+		emit minValueChanged(value);
+		emit maxValueChanged(value);
 	}
 	else {
-        m_maxValue = value;
-        emit maxValueChanged(value);
-    }
-    //update will emit signal
+		m_maxValue = value;
+		emit maxValueChanged(value);
+	}
+	//update will emit signal
 	update();
 	updateGeometry();
 }
 
 int Histogram::getMinimumCursorValue() const
 {
-   return m_minValue;
+	return m_minValue;
 }
 
 int Histogram::getMaximumCursorValue() const
 {
-    return m_maxValue;
+	return m_maxValue;
 }
 
 int Histogram::getBinCount() const
 {
-   return BIN_COUNT;
+	return BIN_COUNT;
 }
 
 void Histogram::setDragEnable(bool enable)
 {
-    m_cursorEnable = enable;
+	m_cursorEnable = enable;
 }
 
 
@@ -139,283 +157,500 @@ void Histogram::setDragEnable(bool enable)
 void Histogram::paintEvent(QPaintEvent *event)
 {
 	Q_UNUSED(event);
-   QImage image(size(),QImage::Format_ARGB32_Premultiplied);
-   QPainter imagePainter(&image);
-   imagePainter.initFrom(this);
-   imagePainter.setRenderHint(QPainter::Antialiasing,true);
-   imagePainter.fillRect(rect(),QBrush(Qt::white));
 
-   qreal height = static_cast<qreal>(image.height());
-   qreal width = static_cast<qreal>(image.width());
-   qreal binWidth = width/BIN_COUNT;
+	//QImage image(size(),QImage::Format_ARGB32_Premultiplied);
+	//QPainter imagePainter(&image);
+	//imagePainter.initFrom(this);
+	//imagePainter.setRenderHint(QPainter::Antialiasing,true);
+	//imagePainter.fillRect(rect(),QBrush(Qt::white));
 
-   //Drawing histogram
-   if(m_count != 0){
-       imagePainter.setPen(QColor(0,0,0));
-       imagePainter.setBrush(QBrush(QColor(0,0,0)));
+	//qreal height = static_cast<qreal>(image.height());
+	//qreal width = static_cast<qreal>(image.width());
+	//qreal binWidth = width/BIN_COUNT;
 
-	   QVarLengthArray<qreal, 256> f(256);
-       for(int i=0;i<BIN_COUNT;i++){
-           f[i] = ((static_cast<double>(m_hist[i])/static_cast<double>(m_count)));
-       }
-	   qreal *fmax = std::max_element(f.begin(), f.end());
-	   qreal mag = 0.7 / *fmax;		//the height of the max bin is set as 0.7 of height of the widget/  
-	   for(int i=0;i<BIN_COUNT;i++)
-	   {
-		   int binHeight = f[i] * height*mag;
-		   imagePainter.drawRect(QRectF
-		   (QPointF(i*binWidth, height - binHeight), QSize(binWidth, binHeight))
-		   );
-	   }
-   }
+	////Drawing histogram
+	//if(m_count != 0){
+	//    imagePainter.setPen(QColor(0,0,0));
+	//    imagePainter.setBrush(QBrush(QColor(0,0,0)));
 
-   //Drawing lower bound and upper bound lines
-   imagePainter.setPen(QColor(255,0,0));
-   imagePainter.setBrush(QBrush(QColor(255,0,0)));
+	   // QVarLengthArray<qreal, 256> f(256);
+	//    for(int i=0;i<BIN_COUNT;i++){
+	//        f[i] = ((static_cast<double>(m_hist[i])/static_cast<double>(m_count)));
+	//    }
+	   // qreal *fmax = std::max_element(f.begin(), f.end());
+	   // qreal mag = 0.7 / *fmax;		//the height of the max bin is set as 0.7 of height of the widget/  
+	   // for(int i=0;i<BIN_COUNT;i++)
+	   // {
+		  //  int binHeight = f[i] * height*mag;
+		  //  imagePainter.drawRect(QRectF
+		  //  (QPointF(i*binWidth, height - binHeight), QSize(binWidth, binHeight))
+		  //  );
+	   // }
+	//}
 
-   qreal lowerBoundLineX = m_minValue*binWidth+binWidth/2;
-   qreal upperBoundLineX = m_maxValue*binWidth+binWidth/2;
-   imagePainter.drawLine(QPointF(lowerBoundLineX,0),QPointF(lowerBoundLineX,height));
-   imagePainter.drawLine(QPointF(upperBoundLineX,0),QPointF(upperBoundLineX,height));
+	////Drawing lower bound and upper bound lines
+	//imagePainter.setPen(QColor(255,0,0));
+	//imagePainter.setBrush(QBrush(QColor(255,0,0)));
 
-   imagePainter.end();
-   QPainter widgetPainter(this);
-   widgetPainter.drawImage(0,0,image);
+	//qreal lowerBoundLineX = m_minValue*binWidth+binWidth/2;
+	//qreal upperBoundLineX = m_maxValue*binWidth+binWidth/2;
+	//imagePainter.drawLine(QPointF(lowerBoundLineX,0),QPointF(lowerBoundLineX,height));
+	//imagePainter.drawLine(QPointF(upperBoundLineX,0),QPointF(upperBoundLineX,height));
 
+	//imagePainter.end();
+	//QPainter widgetPainter(this);
+	//widgetPainter.drawImage(0,0,image);
+
+	// draw grid
+	QPainter paint(this);
+
+	QMatrix m;
+	m.translate(0.0, static_cast<float>(height()) - 1);
+	m.scale(1.f, -1.f);
+	paint.setMatrix(m);
+
+	paint.setMatrixEnabled(true);
+	paint.setRenderHint(QPainter::Antialiasing, false);
+	paint.setPen(Qt::NoPen);
+	paint.setBrush(Qt::white);
+	paint.drawRect(0, 0, width() - 1, height() - 1);
+
+	paint.setPen(QColor(220, 220, 220));
+	paint.setRenderHint(QPainter::Antialiasing, false);
+
+	QVector2D pmin = QVector2D(0.f, 0.f);
+	QVector2D pmax = QVector2D(1.f, 1.f);
+
+	for (float f = pmin.x(); f < pmax.x() + gridSpacing.x()*0.5; f += gridSpacing.x()) {
+		QVector2D p = wtos(QVector2D(f, 0.f));
+		QVector2D a = wtos(QVector2D(0.f, 0.f));
+		QVector2D b = wtos(QVector2D(0.f, 1.f));
+		paint.drawLine(QPointF(p.x(), a.y()),
+			QPointF(p.x(), b.y()));
+	}
+
+	for (float f = pmin.y(); f < pmax.y() + gridSpacing.y()*0.5; f += gridSpacing.y()) {
+		QVector2D p = wtos(QVector2D(0.f, f));
+		QVector2D a = wtos(QVector2D(0.f, 0.f));
+		QVector2D b = wtos(QVector2D(1.f, 0.f));
+		paint.drawLine(QPointF(a.x(), p.y()),
+			QPointF(b.x(), p.y()));
+	}
+
+	// draw x and y axes
+	paint.setRenderHint(QPainter::Antialiasing, true);
+	paint.setPen(Qt::gray);
+	paint.setBrush(Qt::gray);
+
+	// draw axes independently from visible range
+	float oldx0 = xRange[0];
+	float oldx1 = xRange[1];
+	xRange[0] = 0.f;
+	xRange[1] = 1.f;
+
+	QVector2D origin = wtos(QVector2D(0.f, 0.f));
+	origin.setX(std::floor(origin.x()) + 0.5f);
+	origin.setY(std::floor(origin.y()) + 0.5f);
+
+	paint.setRenderHint(QPainter::Antialiasing, true);
+
+	paint.drawLine(QPointF(padding, origin.y()),
+		QPointF(width() - padding, origin.y()));
+
+	paint.drawLine(QPointF(origin.x(), padding),
+		QPointF(origin.x(), height() - padding));
+
+	QPointF arrow[3];
+	arrow[0] = QPointF(origin.x(), height() - padding);
+	arrow[1] = QPointF(origin.x() + arrowWidth, height() - padding - arrowLength);
+	arrow[2] = QPointF(origin.x() - arrowWidth, height() - padding - arrowLength);
+
+	paint.drawConvexPolygon(arrow, 3);
+
+	arrow[0] = QPointF(width() - padding, origin.y());
+	arrow[1] = QPointF(width() - padding - arrowLength, origin.y() - arrowWidth);
+	arrow[2] = QPointF(width() - padding - arrowLength, origin.y() + arrowWidth);
+
+	paint.drawConvexPolygon(arrow, 3);
+
+	paint.scale(-1.f, 1.f);
+	paint.rotate(180.f);
+	paint.drawText(static_cast<int>(width() - 6.2f * padding), static_cast<int>(-1 * (origin.y() - 0.8f * padding)), xAxisText);
+	paint.drawText(static_cast<int>(1.6f * padding), static_cast<int>(-1 * (height() - 1.85f * padding)), yAxisText);
+
+	paint.rotate(180.f);
+	paint.scale(-1.f, 1.f);
+
+	xRange[0] = oldx0;
+	xRange[1] = oldx1;
+
+
+	QPainter p(this);
+	drawHist(&p);
 }
 
 void Histogram::mouseMoveEvent(QMouseEvent *event)
 {
-    if(m_mousePressed == true){
-        if(m_rightCursorSelected == true){
-            int value = static_cast<qreal>(event->pos().x())/width()*BIN_COUNT;
-            m_maxValue = value<m_minValue?m_minValue:value;
-            emit maxValueChanged(m_maxValue);
-        }else if(m_leftCursorSelected == true){
-            int value = static_cast<qreal>(event->pos().x())/width()*BIN_COUNT;
-            m_minValue = value>m_maxValue?m_maxValue:value;
-            emit minValueChanged(m_minValue);
-        }
-        update();
-        updateGeometry();
-    }
+	if (m_mousePressed == true) {
+		if (m_rightCursorSelected == true) {
+			int value = static_cast<qreal>(event->pos().x()) / width()*BIN_COUNT;
+			m_maxValue = value < m_minValue ? m_minValue : value;
+			emit maxValueChanged(m_maxValue);
+		}
+		else if (m_leftCursorSelected == true) {
+			int value = static_cast<qreal>(event->pos().x()) / width()*BIN_COUNT;
+			m_minValue = value > m_maxValue ? m_maxValue : value;
+			emit minValueChanged(m_minValue);
+		}
+		update();
+		updateGeometry();
+	}
 }
 
 void Histogram::mousePressEvent(QMouseEvent * event)
 {
-    m_mousePressed = true;
-    if(m_cursorEnable == true){
-       qreal x = event->pos().x();
-       qreal dl = std::abs(x - getXofLeftCursor());
-       qreal dr = std::abs(x - getXofRightCursor());
-       if(dl < dr && dl < 5.0){
-           m_leftCursorSelected = true;
-       }else if(dr < dl && dr < 5.0){
-           m_rightCursorSelected = true;
-       }
-    }
+	m_mousePressed = true;
+	if (m_cursorEnable == true) {
+		qreal x = event->pos().x();
+		qreal dl = std::abs(x - getXofLeftCursor());
+		qreal dr = std::abs(x - getXofRightCursor());
+		if (dl < dr && dl < 5.0) {
+			m_leftCursorSelected = true;
+		}
+		else if (dr < dl && dr < 5.0) {
+			m_rightCursorSelected = true;
+		}
+	}
 }
 
 void Histogram::mouseReleaseEvent(QMouseEvent *event)
 {
 	Q_UNUSED(event);
-    if(m_mousePressed == true)
-        m_mousePressed = false;
-    m_leftCursorSelected = false;
-    m_rightCursorSelected = false;
+	if (m_mousePressed == true)
+		m_mousePressed = false;
+	m_leftCursorSelected = false;
+	m_rightCursorSelected = false;
+}
+
+void Histogram::drawHist(QPainter* painter) {
+	//return;
+
+	if (cache.isNull() || cache.rect() != rect() || m_histUpdate) //{
+	{
+		
+		cache = QPixmap(rect().size());
+		cache.fill(Qt::transparent);
+		QPainter paint(&cache);
+		// put origin in lower lefthand corner
+		QMatrix m;
+		m.translate(0.0, static_cast<float>(height()) - 1);
+		m.scale(1.f, -1.f);
+		paint.setMatrix(m);
+		paint.setMatrixEnabled(true);
+
+		// draw histogram
+		paint.setPen(Qt::NoPen);
+		paint.setBrush(QColor(200, 0, 0, 120));
+		paint.setRenderHint(QPainter::Antialiasing, true);
+
+		//TODO::
+		const auto histogramWidth = 256;
+
+		double logMaxValue = std::log(m_maxGrayValue);
+		double * histogram = m_hist.data();
+
+		QVector2D p;
+		QPointF* points = new QPointF[histogramWidth + 2];
+		int count = 0;
+
+		for (int x = 0; x < histogramWidth; ++x) {
+			float xpos = static_cast<float>(x) / histogramWidth;
+			// Do some simple clipping here, as the automatic clipping of drawPolygon()
+			// gets very slow if lots of polygons have to be clipped away, e.g. when
+			// zooming to small part of the histogram.
+			if (xpos >= xRange[0] && xpos <= xRange[1]) {
+				float value = histogram[x] > 0 ? log(histogram[x]) / logMaxValue : 0;
+				if (value > 1) value = 1;
+				p = wtos(QVector2D(xpos, value * (yRange[1] - yRange[0]) + yRange[0]));
+
+				// optimization: if the y-coord has not changed from the two last points
+				// then just update the last point's x-coord to the current one
+				if ((count >= 2) && (points[count - 2].ry() == p.y()) && (points[count - 1].ry() == p.y()) && (count >= 2)) {
+					points[count - 1].rx() = p.x();
+				}
+				else {
+					points[count].rx() = p.x();
+					points[count].ry() = p.y();
+					count++;
+				}
+			}
+		}
+
+		// Qt can't handle polygons that have more than 65536 points
+		// so we have to split the polygon
+		bool needSplit = false;
+		if (count > 65536 - 2) { // 16 bit dataset
+			needSplit = true;
+			count = 65536 - 2; // 2 points needed for closing the polygon
+		}
+
+		if (count > 0) {
+			// move x coordinate of first and last points to prevent vertical holes caused
+			// by clipping
+			points[0].rx() = wtos(QVector2D(xRange[0], 0.f)).x();
+			if (count < histogramWidth - 2) // only when last point was actually clipped
+				points[count - 1].rx() = wtos(QVector2D(xRange[1], 0.f)).x();
+
+			// needed for a closed polygon
+			p = wtos(QVector2D(0.f, yRange[0]));
+			points[count].rx() = points[count - 1].rx();
+			points[count].ry() = p.y();
+			count++;
+			p = wtos(QVector2D(0.f, yRange[0]));
+			points[count].rx() = points[0].rx();
+			points[count].ry() = p.y();
+			count++;
+
+			paint.drawPolygon(points, count);
+		}
+
+		// draw last points when splitting is needed
+		if (needSplit && false) {
+			delete[] points;
+			points = new QPointF[5];
+			count = 0;
+			for (int x = histogramWidth - 2; x < histogramWidth; ++x) {
+				float xpos = static_cast<float>(x) / histogramWidth;
+				if (xpos >= xRange[0] && xpos <= xRange[1]) {
+					float value = log(histogram[x]) / logMaxValue;
+					if (value > 1) value = 1;
+					p = wtos(QVector2D(xpos, value * (yRange[1] - yRange[0]) + yRange[0]));
+					points[x - histogramWidth + 3].rx() = p.x();
+					points[x - histogramWidth + 3].ry() = p.y();
+					count++;
+				}
+			}
+			if (count > 0) {
+				// move x coordinate of last point to prevent vertical holes caused by clipping
+				points[count - 1].rx() = wtos(QVector2D(xRange[1], 0.f)).x();
+
+				// needed for a closed polygon
+				p = wtos(QVector2D(0.f, yRange[0]));
+				points[count].rx() = points[count - 1].rx();
+				points[count].ry() = p.y();
+				count++;
+				p = wtos(QVector2D(0, yRange[0]));
+				points[count].rx() = points[0].rx();
+				points[count].ry() = p.y();
+				count++;
+
+				paint.drawPolygon(points, 5);
+			}
+		}
+		delete[] points;
+	}
+	m_histUpdate = false;
+	painter->drawPixmap(0, 0, cache);
+}
+
+QVector2D Histogram::wtos(const QVector2D& p) {
+	float sx = (p.x() - xRange[0]) / (xRange[1] - xRange[0]) * (static_cast<float>(width()) - 2 * padding - 1.5 * arrowLength) + padding;
+	float sy = (p.y() - yRange[0]) / (yRange[1] - yRange[0]) * (static_cast<float>(height()) - 2 * padding - 1.5 * arrowLength) + padding;
+	return QVector2D(sx, sy);
 }
 
 qreal Histogram::getXofLeftCursor()
 {
-    qreal binWidth = static_cast<qreal>(size().width())/BIN_COUNT;
-    qreal x = m_minValue*binWidth+binWidth/2;
-    return x;
+	qreal binWidth = static_cast<qreal>(size().width()) / BIN_COUNT;
+	qreal x = m_minValue * binWidth + binWidth / 2;
+	return x;
 }
 
 qreal Histogram::getXofRightCursor()
 {
-    qreal binWidth = static_cast<qreal>(size().width())/BIN_COUNT;
-    qreal x = m_maxValue*binWidth+binWidth/2;
-    return x;
+	qreal binWidth = static_cast<qreal>(size().width()) / BIN_COUNT;
+	qreal x = m_maxValue * binWidth + binWidth / 2;
+	return x;
+}
+
+BrightnessContrastControlWidget::BrightnessContrastControlWidget(QWidget* parent) :QWidget(parent)
+{
+	m_contrastFactor = new TitledSliderWidthDoubleSpinBox(QStringLiteral("Contrast"), Qt::Horizontal, this);
+	m_contrastFactor->setRange(0, 5);
+	m_contrastFactor->setSingleStep(0.1);
+	m_contrastFactor->setValue(1.0);
+	connect(m_contrastFactor, &TitledSliderWidthDoubleSpinBox::valueChanged, [this](double value) {emit valueChanged(); });
+	m_brightnessFactor = new TitledSliderWidthDoubleSpinBox(QStringLiteral("Brightness"), Qt::Horizontal, this);
+	m_brightnessFactor->setRange(0, 5);
+	m_brightnessFactor->setSingleStep(0.1);
+	m_brightnessFactor->setValue(1.0);
+	connect(m_brightnessFactor, &TitledSliderWidthDoubleSpinBox::valueChanged, [this](double value) {emit valueChanged(); });
+
+	auto group = new QGroupBox(QStringLiteral("Brightness and Contrast"));
+	auto layout = new QVBoxLayout;
+	layout->addWidget(m_contrastFactor);
+	layout->addWidget(m_brightnessFactor);
+	layout->addStretch(1);
+	group->setLayout(layout);
+
+	auto mainLayout = new QVBoxLayout;
+	mainLayout->addWidget(group);
+	setLayout(mainLayout);
+
+	blockSignals(true);
+	reset();
+	blockSignals(false);
+}
+
+double BrightnessContrastControlWidget::contrast() const { return m_contrastFactor->value(); }
+double BrightnessContrastControlWidget::brightness() const { return m_brightnessFactor->value(); }
+void BrightnessContrastControlWidget::reset() {
+	m_contrastFactor->setValue(1.0);
+	m_brightnessFactor->setValue(1.0);
 }
 
 /**
- * \brief Constructs a widgets used for image processing for certain 
+ * \brief Constructs a widgets used for image processing for certain
  * \a type type of slice in \a sliceEditor
- * 
+ *
  * \sa SliceEditorWidget
  */
-HistogramWidget::HistogramWidget(SliceType type, SliceEditorWidget * sliceEditor,  QWidget * parent):
-AbstractSliceViewPlugin(type,sliceEditor,parent)
+HistogramWidget::HistogramWidget(SliceType type, SliceEditorWidget * sliceEditor, QWidget * parent) :
+	AbstractSliceViewPlugin(type, sliceEditor, parent)
 {
-    createWidgets();
-
-	createConnections();
-
+	createWidgets();
 	init();
-
 	setEnabled(sliceItem(sliceType()) != nullptr);
+	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
 }
 
 void HistogramWidget::onMinValueChanged(int value)
 {
 	Q_UNUSED(value);
-    histEqualizeImage();
+	histEqualizeImage();
 }
 
 void HistogramWidget::onMaxValueChanged(int value)
 {
 	Q_UNUSED(value);
-    histEqualizeImage();
+	histEqualizeImage();
 }
 void HistogramWidget::resetOriginalImage()
 {
 
 	//m_maxSlider->blockSignals(old);
-	SliceItem * item = sliceItem(sliceType());
-
-	Q_ASSERT_X(item, "HistogramViewer::reset", "null pointer");
-	//Q_ASSERT_X(m_sliceWidget, "HistogramWidget", "null pointer");
+	//SliceItem * item = sliceItem(sliceType());
+	//Q_ASSERT_X(item, "HistogramViewer::reset", "null pointer");
 
 	const auto curIndex = currentIndex(sliceType());
-	const auto origin = originalImage(sliceType(),curIndex);
-
+	const auto origin = originalImage(sliceType(), curIndex);
+	
 	// reset slice view with original image
-	item->setPixmap(QPixmap::fromImage(origin));
-
+	//item->setPixmap(QPixmap::fromImage(origin));
 	// reset histogram with original image
-	m_hist->setImage(origin);
-
-	setImage(sliceType(),curIndex,origin);
-
-
+	//m_hist->setImage(origin);
+	m_preview->setImage(origin);
+	//setImage(sliceType(), curIndex, origin);
 	initWidgets();
+	m_result = origin;
+	
 }
 
 void HistogramWidget::filterImage()
 {
-    QString text = m_filterComboBox->currentText();
-	//TODO::get QImage
+	const auto text = m_filterWidget->text();
 
-    //int currentIndex = m_ptr->getCurrentSliceIndex();
-    //QImage slice = m_ptr->getOriginalTopSlice(currentIndex);
+	//int currentIndex = m_ptr->getCurrentSliceIndex();
+	//QImage slice = m_ptr->getOriginalTopSlice(currentIndex);
 
-	QImage slice = currentImage(sliceType()).copy();
-	
+	//m_result = currentImage(sliceType()).copy();
 
-    int width = slice.width();
-    int height = slice.height();
-    //slice.data_ptr();
-    Q_ASSERT_X(slice.depth() ==8,"HistogramViewer::onFilterButton","Only support 8-bit image.");
-    cimg_library::CImg<unsigned char> image(slice.bits(),width,height,1,1,true);
-    //filter parameters
-    if(text == "Median Filter"){
-        int kernelSize = m_medianKernelSizeSpinBox->value();
-        image.blur_median(kernelSize);
-    }else if(text == "Gaussian Filter"){
-        double sigX = m_sigmaXSpinBox->value();
-        double sigY = m_sigmaYSpinBox->value();
-        image.blur(sigX,sigY,0,true,true);
-    }
-    //m_internalUpdate = true;
-    //m_ptr->setSlice(slice,currentIndex,SliceType::SliceZ);
-    //m_model->setData(getDataIndex(m_modelIndex),QVariant::fromValue(m_ptr));
-	SliceItem * item = sliceItem(sliceType());
-	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
-	item->setPixmap(QPixmap::fromImage(slice));
 
-	setCurrentImage(sliceType(), slice);
+	const auto width = m_result.width();
+	const auto height = m_result.height();
+	//slice.data_ptr();
+	Q_ASSERT_X(m_result.depth() == 8, "HistogramViewer::onFilterButton", "Only support 8-bit image.");
+	cimg_library::CImg<unsigned char> image(m_result.bits(), width, height, 1, 1, true);
+	//filter parameters
+	if (text == "Median Filter") {
+		int kernelSize = m_filterWidget->medianKernelSize();
+		image.blur_median(kernelSize);
+	}
+	else if (text == "Gaussian Filter") {
+		double sigX = m_filterWidget->sigmaX();
+		double sigY = m_filterWidget->sigmaY();
+		image.blur(sigX, sigY, 0, true, true);
+	}
+	//m_internalUpdate = true;
+	//m_ptr->setSlice(slice,currentIndex,SliceType::SliceZ);
+	//m_model->setData(getDataIndex(m_modelIndex),QVariant::fromValue(m_ptr));
+	//SliceItem * item = sliceItem(sliceType());
+	//Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
+
+	//item->setPixmap(QPixmap::fromImage(slice));
+	//setCurrentImage(sliceType(), slice);
+
+	m_preview->setImage(m_result);
 }
 
 
 void HistogramWidget::updateDataModel() {
-	qDebug() << "Data Model Changed";
+
 	init();
 }
 
-void HistogramWidget::initWidgets() {
-	m_minSlider->blockSignals(true);
-	m_minSlider->setValue(0);
-	m_minSlider->blockSignals(false);
-	m_maxSlider->blockSignals(true);
-	m_maxSlider->setValue(255);
-	m_maxSlider->blockSignals(false);
-
-	m_contrastFactor->setValue(1.0);
-	m_brightnessFactor->setValue(1.0);
-
+void HistogramWidget::initWidgets()
+{
+	m_filterWidget->reset();
+	m_brightWidget->reset();
+	m_filterWidget->reset();
 }
 
 void HistogramWidget::init() {
 	// reset all widgets and get image to draw histogram
-
 	initWidgets();
-
 	SliceItem * item = sliceItem(sliceType());
 	const auto curImg = currentImage(sliceType());
-
 	item->setPixmap(QPixmap::fromImage(curImg));
-
-	// reset histogram with original image
-	m_hist->setImage(curImg);
-
+	m_result = curImg;
+	m_preview->setImage(curImg);
 }
 
 void HistogramWidget::histEqualizeImage()
 {
-	const auto minValue = m_minSlider->value();
-	const auto maxValue = m_maxSlider->value();
-	//qDebug() << minValue << " " << maxValue;
+	const auto minValue = m_equliWidget->minValue();
+	const auto maxValue = m_equliWidget->maxValue();
 	//update min and max value
-	QImage oriImage = originalImage(sliceType(),currentIndex(sliceType())).copy();
+
+	auto oriImage = m_result.copy();//originalImage(sliceType(), currentIndex(sliceType())).copy();
+	//QImage oriImage = currentImage(sliceType());
 
 	Q_ASSERT_X(oriImage.isNull() == false, "HistogramViewer::updateImage", "null image");
 	unsigned char *image = oriImage.bits();
 	const auto width = oriImage.width();
 	const auto height = oriImage.height();
 
-    //memory buffer is shared between CImg and QImage
-    cimg_library::CImg<unsigned char> equalizedImage(image,width,height,1,1,true);
-    equalizedImage.equalize(m_histNumSpinBox->value(),minValue,maxValue);
+	//memory buffer is shared between CImg and QImage
+	cimg_library::CImg<unsigned char> equalizedImage(image, width, height, 1, 1, true);
+	equalizedImage.equalize(m_equliWidget->equalizationLevel(), minValue, maxValue);
 
-//	qreal k = 256.0 / static_cast<qreal>(maxValue - minValue);
-//	QImage strechingImage(width, height, QImage::Format_Grayscale8);
-//	///TODO::a time-cost processure
-//	unsigned char * data = strechingImage.bits();
-//	for (int j = 0; j<height; j++) {
-//		for (int i = 0; i<width; i++) {
-//			int index = i + j * width;
-//			unsigned char pixelGrayValue = image[index];
-//			unsigned char clower = static_cast<unsigned char>(minValue);
-//			unsigned char cupper = static_cast<unsigned char>(maxValue);
-//			if (pixelGrayValue < clower) {
-//				data[index] = 0;
-//			}
-//			else if (pixelGrayValue>cupper) {
-//				data[index] = 255;
-//			}
-//			else {
-//				data[index] = static_cast<unsigned char>(pixelGrayValue* k + 0.5);
-//			}
-//		}
-//	}
-    m_hist->setImage(oriImage);			//Note:: this variable is no longer the original image.
-	SliceItem * item = sliceItem(sliceType());
-	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
+	m_preview->setImage(oriImage);			//Note:: this variable is no longer the original image.
+	//SliceItem * item = sliceItem(sliceType());
+	//Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
 	//qDebug() << item->pos();
-	item->setPixmap(QPixmap::fromImage(oriImage));
+	//item->setPixmap(QPixmap::fromImage(oriImage));
 	//qDebug() << item->pos();
-	setCurrentImage(sliceType(),oriImage);
+	//setCurrentImage(sliceType(), oriImage);
 }
 
-void HistogramWidget::updateContrastAndBrightness() 
+void HistogramWidget::updateContrastAndBrightness()
 {
-	const auto brightness = m_brightnessFactor->value();
-	const auto contrast = m_contrastFactor->value();
 
+	const auto brightness = m_brightWidget->brightness();
+	const auto contrast = m_brightWidget->contrast();
 
-	auto image = originalImage(sliceType(),currentIndex(sliceType())).copy();		// There need to use copy(), think why.
-
+	auto image = m_result.copy();//originalImage(sliceType(), currentIndex(sliceType())).copy();		// There need to use copy(), think why.
+	//auto image = currentImage(sliceType());
 	const auto width = image.width();
 	const auto height = image.height();
 	//unsigned char * imageData = image.bits();
@@ -424,8 +659,8 @@ void HistogramWidget::updateContrastAndBrightness()
 	cimg_library::CImg<unsigned char> imageHelper(
 		image.bits(),
 		image.bytesPerLine(),			// QImage requires 32-bit aligned for each scanLine, but CImg don't.
-		height, 
-		1, 
+		height,
+		1,
 		true);							// Share data
 
 	const auto mean = imageHelper.mean();
@@ -434,159 +669,234 @@ void HistogramWidget::updateContrastAndBrightness()
 
 
 #pragma omp parallel for
-	for(auto h = 0;h < height;++h) {
+	for (auto h = 0; h < height; ++h) {
 		const auto scanLine = image.scanLine(h);
-		for(auto w = 0;w<width;++w) {
+		for (auto w = 0; w < width; ++w) {
 			auto t = scanLine[w] - mean;
 			t *= contrast; //Adjust contrast
 			t += mean * brightness; // Adjust brightness
-			scanLine[w] = (t > 255.0) ? (255) : (t<0.0 ? (0):(t));
+			scanLine[w] = (t > 255.0) ? (255) : (t < 0.0 ? (0) : (t));
 		}
 	}
+	//setCurrentImage(sliceType(), image);
+	//SliceItem * item = sliceItem(sliceType());
+	//Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
+	//item->setPixmap(QPixmap::fromImage(image));
 
-	setCurrentImage(sliceType(), image);
-	m_hist->setImage(image);			//Note:: this variable is no longer the original image.
-	SliceItem * item = sliceItem(sliceType());
-	Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
-	item->setPixmap(QPixmap::fromImage(image));
+	m_preview->setImage(image);			//Note:: this variable is no longer the original image.
 }
 
 
 void HistogramWidget::createWidgets()
 {
-	m_mainLayout = new QGridLayout;
-	m_histogramLayout = new QGridLayout;
-    m_histogramGroupBox = new QGroupBox(QStringLiteral("Histogram"),this);
-    m_histogramGroupBox->setLayout(m_histogramLayout);
-    m_histNumSpinBox = new QSpinBox(this);
-    m_histNumSpinBox->setMinimum(1);
-    m_histNumSpinBox->setMaximum(10);
-    m_histNumLabel = new QLabel(QStringLiteral("Equalization Levels:"),this);
-    m_hist = new Histogram(this);
-    m_hist->setDragEnable(false);
-    m_minSlider = new TitledSliderWithSpinBox(this,QStringLiteral("Min:"));
-    m_maxSlider = new TitledSliderWithSpinBox(this,QStringLiteral("Max:"));
 
-	m_contrastFactor = new TitledSliderWidthDoubleSpinBox(QStringLiteral("Contrast"), Qt::Horizontal, this);
-	m_contrastFactor->setRange(0, 5);
-	m_contrastFactor->setSingleStep(0.1);
-	m_contrastFactor->setValue(1.0);
-	connect(m_contrastFactor, &TitledSliderWidthDoubleSpinBox::valueChanged, [this](double value) {updateContrastAndBrightness();});
-	m_brightnessFactor = new TitledSliderWidthDoubleSpinBox(QStringLiteral("Brightness"), Qt::Horizontal, this);
-	m_brightnessFactor->setRange(0, 5);
-	m_brightnessFactor->setSingleStep(0.1);
-	m_brightnessFactor->setValue(1.0);
-	connect(m_brightnessFactor, &TitledSliderWidthDoubleSpinBox::valueChanged, [this](double value) {updateContrastAndBrightness(); });
+	auto layout = new QVBoxLayout;
+	m_preview = new ImagePreviewWidget(this);
+	layout->addWidget(m_preview);
 
+	m_equliWidget = new EqualizationControlWidget(this);
+	connect(m_equliWidget, &EqualizationControlWidget::valueChanged, this, &HistogramWidget::histEqualizeImage);
+	m_brightWidget = new BrightnessContrastControlWidget(this);
+	connect(m_brightWidget, &BrightnessContrastControlWidget::valueChanged, this, &HistogramWidget::updateContrastAndBrightness);
+	m_filterWidget = new FilterControlWidget(this);
+	connect(m_filterWidget, &FilterControlWidget::filter, this, &HistogramWidget::filterImage);
 
-    m_histogramLayout->addWidget(m_hist,0,0,1,2);
-    m_histogramLayout->addWidget(m_histNumLabel,1,0);
-    m_histogramLayout->addWidget(m_histNumSpinBox,1,1);
-	m_histogramLayout->addWidget(m_minSlider, 2, 0, 1, 2);
-	m_histogramLayout->addWidget(m_maxSlider, 3, 0, 1, 2);
-	m_histogramLayout->addWidget(m_contrastFactor, 4, 0,1,2);
-	m_histogramLayout->addWidget(m_brightnessFactor, 5,0,1,2);
+	m_tabWidget = new QTabWidget(this);
+	m_tabWidget->addTab(m_equliWidget, QStringLiteral("Equalization"));
+	m_tabWidget->addTab(m_brightWidget, QStringLiteral("Brightness and Contrast"));
+	m_tabWidget->addTab(m_filterWidget, QStringLiteral("Filter"));
+	layout->addWidget(m_tabWidget);
 
-
-    m_filterLabel = new QLabel(QStringLiteral("Filters:"),this);
-    m_filterComboBox = new QComboBox(this);
-    m_filterComboBox->addItem(QStringLiteral("..."));
-    m_filterComboBox->addItem(QStringLiteral("Median Filter"));
-    m_filterComboBox->addItem(QStringLiteral("Gaussian Filter"));
-    m_filterComboBox->setEditable(false);
-    m_filterButton = new QPushButton(QStringLiteral("Filter"),this);
-	m_parameterLayout = new QGridLayout;
-
-	m_filterLayout = new QGridLayout;
-    m_filterGroupBox = new QGroupBox(QStringLiteral("Filter"),this);
-    m_filterGroupBox->setLayout(m_filterLayout);
-    m_filterLayout->addWidget(m_filterLabel,0,1);
-    m_filterLayout->addWidget(m_filterComboBox,0,2);
-    m_filterLayout->addWidget(m_filterButton,0,3);
-    m_filterLayout->addLayout(m_parameterLayout,1,0,1,3);
-    m_reset = new QPushButton(QStringLiteral("Reset"),this);
-
-    m_mainLayout->addWidget(m_histogramGroupBox,0,0);
-    m_mainLayout->addWidget(m_filterGroupBox,1,0);
-    m_mainLayout->addWidget(m_reset,2,0);
-
-
-    //![1]median parameter widgets
-    m_medianKernelSizeLabel = new QLabel(QStringLiteral("Kernel Size:"));
-    m_medianKernelSizeSpinBox = new  QSpinBox;
-    m_medianKernelSizeSpinBox->setMinimum(1);
-    m_medianKernelSizeSpinBox->setMaximum(10);
-
-    //![2]gaussian parameter widgets
-    m_sigmaXLabel = new QLabel(QStringLiteral("X sigma:"));
-    m_sigmaYLabel = new QLabel(QStringLiteral("Y sigma:"));
-    m_sigmaXSpinBox = new QDoubleSpinBox;
-    m_sigmaXSpinBox->setMinimum(0);
-    m_sigmaXSpinBox->setMaximum(10.0);
-    m_sigmaXSpinBox->setSingleStep(0.05);
-    m_sigmaYSpinBox = new QDoubleSpinBox;
-    m_sigmaYSpinBox->setMinimum(0.0);
-    m_sigmaYSpinBox->setMaximum(10.0);
-    m_sigmaYSpinBox->setSingleStep(0.05);
-
-    int maxValue = m_hist->getBinCount()-1;
-    m_maxSlider->setMaximum(maxValue);
-    m_minSlider->setMaximum(maxValue);
-    m_minSlider->setValue(0);
-    m_maxSlider->setValue(maxValue);
-	setLayout(m_mainLayout);
-
-}
-
-void HistogramWidget::createConnections()
-{
-	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, m_hist, &Histogram::setLeftCursorValue);
-	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, m_hist, &Histogram::setRightCursorValue);
-	connect(m_minSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMinValueChanged);
-	connect(m_maxSlider, &TitledSliderWithSpinBox::valueChanged, this, &HistogramWidget::onMaxValueChanged);
-	connect(m_filterButton, &QPushButton::clicked, this, &HistogramWidget::filterImage);
-	connect(m_filterComboBox, QOverload<const QString &>::of(&QComboBox::activated), [=](const QString & text) {Q_UNUSED(text);});
-	connect(m_filterComboBox, &QComboBox::currentTextChanged, [=](const QString & text) {updateParameterLayout(text);});
+	m_reset = new QPushButton(QStringLiteral("Reset"), this);
 	connect(m_reset, &QPushButton::clicked, this, &HistogramWidget::resetOriginalImage);
+	m_apply = new QPushButton(QStringLiteral("Apply"), this);
+	connect(m_apply, &QPushButton::clicked, [this]() 
+	{
+		setCurrentImage(sliceType(), m_preview->image());
+		SliceItem * item = sliceItem(sliceType());
+		item->setPixmap(QPixmap::fromImage(m_preview->image()));
+	});
+	auto buttonLayout = new QHBoxLayout;
+	buttonLayout->addWidget(m_reset);
+	buttonLayout->addWidget(m_apply);
+	layout->addLayout(buttonLayout);
+	setLayout(layout);
+
 }
 
-void HistogramWidget::updateParameterLayout(const QString &text)
+
+ImagePreviewWidget::ImagePreviewWidget(const QImage &image, QWidget *parent) :ImagePreviewWidget(parent)
 {
-    if(text == "Median Filter"){
-        m_parameterLayout->removeWidget(m_sigmaXLabel);
-        m_sigmaXLabel->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_sigmaXSpinBox);
-        m_sigmaXSpinBox->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_sigmaYLabel);
-        m_sigmaYLabel->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_sigmaYSpinBox);
-        m_sigmaYSpinBox->setParent(nullptr);
-        m_parameterLayout->addWidget(m_medianKernelSizeLabel,0,0);
-        m_parameterLayout->addWidget(m_medianKernelSizeSpinBox,0,1);
-
-    }else if(text == "Gaussian Filter"){
-        m_parameterLayout->removeWidget(m_medianKernelSizeLabel);
-        m_medianKernelSizeLabel->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_medianKernelSizeSpinBox);
-        m_medianKernelSizeSpinBox->setParent(nullptr);
-        m_parameterLayout->addWidget(m_sigmaXLabel,0,0);
-        m_parameterLayout->addWidget(m_sigmaXSpinBox,0,1);
-        m_parameterLayout->addWidget(m_sigmaYLabel,1,0);
-        m_parameterLayout->addWidget(m_sigmaYSpinBox,1,1);
-    }else{
-        m_parameterLayout->removeWidget(m_sigmaXLabel);
-        m_sigmaXLabel->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_sigmaXSpinBox);
-        m_sigmaXSpinBox->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_sigmaYLabel);
-        m_sigmaYLabel->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_sigmaYSpinBox);
-        m_sigmaYSpinBox->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_medianKernelSizeLabel);
-        m_medianKernelSizeLabel->setParent(nullptr);
-        m_parameterLayout->removeWidget(m_medianKernelSizeSpinBox);
-        m_medianKernelSizeSpinBox->setParent(nullptr);
-
-    }
+	setImage(image);
 }
 
+ImagePreviewWidget::ImagePreviewWidget(QWidget *parent) : QWidget(parent)
+{
+	auto layout = new QVBoxLayout;
+	m_preview = new QLabel(this);
+	layout->addWidget(m_preview, 1, Qt::AlignCenter);
+	m_hist = new Histogram(parent);
+	layout->addWidget(m_hist);
+
+	auto group = new QGroupBox(QStringLiteral("Preview"));
+	group->setLayout(layout);
+	auto mainLayout = new QVBoxLayout;
+	mainLayout->addWidget(group);
+
+	setLayout(mainLayout);
+}
+
+void ImagePreviewWidget::setImage(const QImage & image)
+{
+	m_preview->setPixmap(QPixmap::fromImage(image).scaled(300,300,Qt::KeepAspectRatio));
+	m_hist->setImage(image);
+	m_image = image;
+}
+
+QImage ImagePreviewWidget::image() const {
+	return m_image;
+}
+
+EqualizationControlWidget::EqualizationControlWidget(QWidget* parent) :QWidget(parent)
+{
+	auto layout = new QVBoxLayout;
+	m_doubleSlier = new DoubleSlider(this);
+	m_equalLevel = new TitledSliderWithSpinBox(this, QStringLiteral("Level:"));
+	m_equalLevel->setMaximum(10);
+	layout->addWidget(m_equalLevel);
+	layout->addWidget(m_doubleSlier);
+	layout->addStretch(1);
+
+	auto group = new QGroupBox(QStringLiteral("Equalization"), this);
+	group->setLayout(layout);
+	auto mainLayout = new QVBoxLayout;
+	mainLayout->addWidget(group);
+	setLayout(mainLayout);
+
+	blockSignals(true);
+	reset();
+	blockSignals(false);
+
+	connect(m_doubleSlier, &DoubleSlider::valuesChanged, [this](float a, float b) {emit valueChanged(); });
+	connect(m_equalLevel, &TitledSliderWithSpinBox::valueChanged, [this](int value) {emit valueChanged(); });
+}
+
+int EqualizationControlWidget::equalizationLevel() const
+{
+	return m_equalLevel->value();
+}
+
+int EqualizationControlWidget::minValue() const
+{
+	return m_doubleSlier->getMinValue() * 255;
+}
+
+int EqualizationControlWidget::maxValue() const
+{
+	return m_doubleSlier->getMaxValue() * 255;
+}
+
+void EqualizationControlWidget::reset()
+{
+	m_equalLevel->setValue(3);
+	m_doubleSlier->setValues(0.f, 1.0f);
+}
+
+
+FilterControlWidget::FilterControlWidget(QWidget* parent) :QWidget(parent) {
+
+	m_filterLabel = new QLabel(QStringLiteral("Filters:"), this);
+	m_filterComboBox = new QComboBox(this);
+	m_filterComboBox->addItem(QStringLiteral("..."));
+	m_filterComboBox->addItem(QStringLiteral("Median Filter"));
+	m_filterComboBox->addItem(QStringLiteral("Gaussian Filter"));
+	m_filterComboBox->setEditable(false);
+	connect(m_filterComboBox, QOverload<const QString&>::of(&QComboBox::currentTextChanged), this, &FilterControlWidget::updateLayout);
+	m_filterButton = new QPushButton(QStringLiteral("Filter"), this);
+	connect(m_filterButton, &QPushButton::clicked, this, &FilterControlWidget::filter);
+
+	auto filterTextLayout = new QHBoxLayout;
+	filterTextLayout->addWidget(m_filterLabel);
+	filterTextLayout->addWidget(m_filterComboBox);
+	filterTextLayout->addWidget(m_filterButton);
+
+
+	m_medianKernelController = new TitledSliderWithSpinBox(this, QStringLiteral("Median Kernel Size"));
+	m_medianKernelController->setMinimum(1);
+	m_medianKernelController->setMaximum(10);
+	m_medianKernelController->setVisible(false);
+	m_sigmaXController = new TitledSliderWidthDoubleSpinBox(QStringLiteral("SigmaX"), Qt::Horizontal, this);
+	m_sigmaXController->setMinimum(0);
+	m_sigmaXController->setMaximum(10);
+	m_sigmaXController->setVisible(false);
+	m_sigmaYController = new TitledSliderWidthDoubleSpinBox(QStringLiteral("SigmaY"), Qt::Horizontal, this);
+	m_sigmaYController->setVisible(false);
+	m_sigmaYController->setMinimum(0);
+	m_sigmaYController->setMaximum(10);
+	m_controllerLayout = new QVBoxLayout;
+	m_controllerLayout->addWidget(m_medianKernelController);
+	m_controllerLayout->addWidget(m_sigmaXController);
+	m_controllerLayout->addWidget(m_sigmaYController);
+	m_controllerLayout->addStretch(1);
+
+	auto layout = new QVBoxLayout;
+	layout->addLayout(filterTextLayout);
+	layout->addLayout(m_controllerLayout);
+
+	auto group = new QGroupBox(QStringLiteral("Filter"));
+	group->setLayout(layout);
+
+	auto mainLayout = new QVBoxLayout;
+	mainLayout->addWidget(group);
+	setLayout(mainLayout);
+
+	blockSignals(true);
+	reset();
+	blockSignals(false);
+
+}
+double FilterControlWidget::sigmaX() const
+{
+	return m_sigmaXController->value();
+}
+
+double FilterControlWidget::sigmaY() const
+{
+	return m_sigmaYController->value();
+}
+
+int FilterControlWidget::medianKernelSize() const
+{
+	return m_medianKernelController->value();
+}
+
+QString FilterControlWidget::text() const {
+	return m_filterComboBox->currentText();
+}
+
+void FilterControlWidget::reset() {
+	m_filterComboBox->setCurrentText(QStringLiteral("..."));
+	m_medianKernelController->setValue(4);
+	m_sigmaXController->setValue(1.0);
+	m_sigmaYController->setValue(1.0);
+}
+
+void FilterControlWidget::updateLayout(const QString & text)
+{
+	if (text == "Median Filter") {
+		m_medianKernelController->setVisible(true);
+		m_sigmaXController->setVisible(false);
+		m_sigmaYController->setVisible(false);
+	}
+	else if (text == "Gaussian Filter") {
+		m_medianKernelController->setVisible(false);
+		m_sigmaXController->setVisible(true);
+		m_sigmaYController->setVisible(true);
+	}
+	else {
+		m_medianKernelController->setVisible(false);
+		m_sigmaXController->setVisible(false);
+		m_sigmaYController->setVisible(false);
+
+	}
+}

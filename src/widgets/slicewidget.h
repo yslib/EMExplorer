@@ -57,7 +57,8 @@ public slots:
 	void setDefaultZoom();
 
 	inline void setNavigationViewEnabled(bool enabled);
-	inline bool navigationViewEnabled()const { return m_paintNavigationView; };
+
+	bool navigationViewEnabled()const { return m_paintNavigationView; };
 
 	inline QPen pen()const;
 

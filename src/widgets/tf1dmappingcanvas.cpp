@@ -808,18 +808,6 @@ void TF1DMappingCanvas::drawHistogram(QPainter& paint)
         paint.setBrush(QColor(200, 0, 0, 120));
         paint.setRenderHint(QPainter::Antialiasing, true);
 		
-
-
-        /*
-         * This function is disabled now.
-         * Because we plan to remove the Volume class and replace a new one later.
-         * In order to keep old code, Three uninitialized variables are defined for compiling.
-         * You are expected to complete the code like this later
-         *    int histogramWidth = volume->getBucketCount();
-         *    double logMaxValue = log(volume->getMaxIsoValue());
-         *    double* histogram = volume->getIsosurfaceStat();
-        */
-
         //TODO::
 		const auto histogramWidth = 256;
 

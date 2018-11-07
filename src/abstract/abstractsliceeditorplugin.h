@@ -16,6 +16,7 @@ class AbstractSliceEditorPlugin:public QWidget
 public:
     AbstractSliceEditorPlugin(SliceEditorWidget * sliceEditor, QWidget * parent = nullptr);
 	virtual  ~AbstractSliceEditorPlugin() = default;
+
 	//AbstractSliceEditorPlugin(const AbstractSliceEditorPlugin &) = delete;
 protected:
 
@@ -44,7 +45,6 @@ private:
 };
 
 
-
 class AbstractSliceViewPlugin:public AbstractSliceEditorPlugin {
 public:
 	AbstractSliceViewPlugin(SliceType type, SliceEditorWidget * sliceEditor, QWidget * parent = nullptr);
@@ -53,5 +53,7 @@ protected:
 private:
 	SliceType m_sliceType;
 };
+
+
 
 #endif // ABSTRACTPLUGIN_H
