@@ -278,8 +278,8 @@ QSize RenderWidget::sizeHint() const
  */
 void RenderWidget::initializeGL()
 {
-	if (initializeOpenGLFunctions() == false) {
-		qFatal("initializeOpenGLFunctions failed");
+	if (!initializeOpenGLFunctions()) {
+		//qFatal("initializeOpenGLFunctions failed");
 		return;
 	}
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &RenderWidget::cleanup);

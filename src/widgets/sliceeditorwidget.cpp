@@ -305,7 +305,11 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_toolButton->setPopupMode(QToolButton::InstantPopup);
 	auto menu = new QMenu(QStringLiteral("Slice Editor"), this);
 	m_toolButton->setMenu(menu);
-	menu->addAction(QStringLiteral("Hide Navigation View"), [this](bool checked) {m_topView->setNavigationViewEnabled(checked); });
+	QAction * hideAction = new QAction(QStringLiteral("Hid Navigation View"));
+	hideAction->setCheckable(true);
+	hideAction->setChecked(m_topView->navigationViewEnabled());
+	connect(hideAction, &QAction::triggered, [this](bool checked) {m_topView->setNavigationViewEnabled(checked); });
+	menu->addAction(hideAction);
 
 	// Connections 
 	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
@@ -331,22 +335,14 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::_slot_frontViewSliceSelection);
 
 	connect(this, &SliceEditorWidget::markSelected, this, &SliceEditorWidget::_slot_markSelected);
-
-
 	updateActions();
-
 	setWindowTitle(QStringLiteral("Slice Editor"));
-
 	m_layout->addWidget(m_topView, 0, 0, 1, 1);
 	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignLeft);
 	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignTop);
 	m_layout->addWidget(m_toolButton, 1, 1, 1, 1,Qt::AlignCenter);
-
-	
-
 	setLayout(m_layout);
 }
-
 /**
  * \brief Reimplemented from QWidget::eventFilter
  *

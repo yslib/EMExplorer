@@ -157,7 +157,8 @@ TF1DTextureCanvas::~TF1DTextureCanvas()
 void TF1DTextureCanvas::initializeGL()
 {
 
-	initializeOpenGLFunctions();
+	if (!initializeOpenGLFunctions())
+		return;
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &TF1DTextureCanvas::cleanup);
 	//glBegin();

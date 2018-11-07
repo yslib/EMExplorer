@@ -11,25 +11,17 @@
 
 int main(int argc, char *argv[])
 {
-
-
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
-
-    // For macOS, QSurfaceFormat muse be set before QApplication created
-
-
-
-    //QSurfaceFormat fmt;
-    //fmt.setVersion(3,3);
-    //fmt.setDepthBufferSize(24);
-    //fmt.setStencilBufferSize(8);
-    //fmt.setProfile(QSurfaceFormat::CoreProfile);
-    //QSurfaceFormat::setDefaultFormat(fmt);
-
-
+#ifndef  WIN32
+    QSurfaceFormat fmt;
+    fmt.setVersion(3,3);
+    fmt.setDepthBufferSize(24);
+    fmt.setStencilBufferSize(8);
+    fmt.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(fmt);
+#endif
 	QApplication a(argc, argv);
-
 	QCommandLineParser parser;
 	parser.addOptions({
 			{QStringLiteral("f"), QStringLiteral("Slice data or marks data file path."), QStringLiteral("path")},	// An option with value
