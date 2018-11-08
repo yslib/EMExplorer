@@ -11,6 +11,7 @@
 #include <QAbstractItemView>
 #include <QPainter>
 #include <QDebug>
+#include <cstring>
 
 
 /**
