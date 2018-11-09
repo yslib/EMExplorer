@@ -480,7 +480,7 @@ bool MRC::readDataFromFileHelper(FILE *fp)
             }
         }else if(MRC_MODE_FLOAT == m_header.mode){
             //float * buffer = new float[m_mrcDataSize*sizeof(float)];
-            std::unique_ptr<MRCFloat[]> buffer(new float[dataCount*sizeof(MRCFloat)]);
+            std::unique_ptr<MRCFloat[]> buffer(new float[dataCount]);
             const int readCount = fread(buffer.get(),elemSize,dataCount,fp);
             if(readCount != dataCount){
                 std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
@@ -488,11 +488,11 @@ bool MRC::readDataFromFileHelper(FILE *fp)
             }
             if(true == noError){
                 //Mapping float type to unsigned char type
-                float dmin = static_cast<float>(m_header.dmin);
-                float dmax = static_cast<float>(m_header.dmax);
+                const float dmin = static_cast<float>(m_header.dmin);
+                const float dmax = static_cast<float>(m_header.dmax);
                 double k = 256.0/(dmax-dmin);
                 for(size_t i =0;i<dataCount;i++){
-                    static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>(k*buffer[i]);
+                    static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>((buffer[i]-dmin)/(dmax-dmin)*256);
                 }
 				m_header.mode = MRC_MODE_BYTE;
             }
