@@ -25,8 +25,12 @@ public:
 	virtual QImage rightSlice(int index)const;
 	virtual QImage frontSlice(int index)const;
 
-	virtual unsigned char * data()=0;
-	virtual const unsigned char * constData()const = 0;
+	//virtual unsigned char * data()=0;
+	//virtual const unsigned char * constData()const = 0;
+
+	virtual int dataType() = 0;
+	virtual void * rawData() = 0;
+	virtual const void * constRawData() = 0;
 
 	virtual ~AbstractSliceDataModel();
 private:

@@ -219,9 +219,12 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 	QGraphicsView::mouseReleaseEvent(event);
 }
 
-QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect)
+QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRect)const
 {
-	const auto w = 0.2*width(), h = 0.2*height();
+	//const auto w = 0.2*width(), h = 0.2*height();
+	auto s = sliceRect.size().toSize();
+	s.scale(width()*0.2, height()*0.2, Qt::KeepAspectRatio);
+
 	const auto W = width(), H = height();
 	//if(sliceRect.contains(viewRect))
 	//{
@@ -240,7 +243,7 @@ QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRe
 	//	return QRect(0, 0, w, h);
 	//}
 	//return QRect(0,0,w,h);
-    return { 0,int(H - h),int(w),int(h) };
+    return { 0,int(H - s.height()),s.width(),s.height() };
 }
 
 QGraphicsItem * SliceWidget::createMarkItem()
@@ -282,7 +285,6 @@ void SliceWidget::setMarkHelper(
 	}
 
 }
-
 
 inline
 void SliceWidget::clearSliceMarksHelper(SliceItem * slice)

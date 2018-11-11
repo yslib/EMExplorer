@@ -57,7 +57,7 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	bool									m_rightSliceVisible;
 	bool									m_topSliceVisible;
 	void loadDataAndGradientToTexture();
-	const AbstractSliceDataModel*			m_dataModel;
+	//const AbstractSliceDataModel*			m_dataModel;
 	RenderWidget							*m_renderer;
 
 public://ShaderDataInterface
@@ -85,7 +85,7 @@ public://ShaderDataInterface
 	QSize windowSize() const override;
 public:
 ;
-	SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans,
+	SliceVolume(const void * data,int x,int y,int z, const QMatrix4x4 & trans,
 		const VolumeFormat & fmt = VolumeFormat(),
 		RenderWidget * renderer = nullptr);
 

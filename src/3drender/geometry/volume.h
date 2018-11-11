@@ -29,7 +29,8 @@ enum VoxelType { UInt8, Float32 };
 enum VoxelFormat { Grayscale, RGB, RGBA };
 
 
-struct VolumeFormat {
+struct VolumeFormat 
+{
 	VoxelFormat fmt;
 	VoxelType type;
 	VolumeFormat() :fmt(Grayscale), type(UInt8) {}
@@ -85,24 +86,13 @@ public:
 	GPUVolume(const void * data, int xSize, int ySize, int zSize,const QMatrix4x4 &trans,const VolumeFormat & fmt = VolumeFormat());
 
 	virtual bool initializeGLResources() = 0;
-
 	virtual void destroyGLResources() = 0;
-
 	void setTransform(const QMatrix4x4 & trans);
-
 	QMatrix4x4 transform()const;
-
 	virtual bool render()=0;
-
 	virtual ~GPUVolume(){}
 };
+
 inline void GPUVolume::setTransform(const QMatrix4x4& trans) {m_trans = trans;}
 inline QMatrix4x4 GPUVolume::transform() const { return  m_trans; }
-
-
-
-
-
-
-
 #endif // VOLUME_H

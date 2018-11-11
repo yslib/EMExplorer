@@ -26,7 +26,9 @@ Volume::Volume(const void* data, int xSize, int ySize, int zSize, const VolumeFo
 	case VoxelFormat::RGBA:voxelChannel = 4; break;
 	}
 	size_t bytes = 0;
-	switch (m_fmt.type) {
+
+	switch (m_fmt.type) 
+	{
 	case VoxelType::UInt8:
 		m_data.reset(reinterpret_cast<unsigned char*>(new unsigned char[xSize*ySize*zSize*voxelChannel]));
 		m_isoStat.reset(new double[256]);
@@ -37,7 +39,9 @@ Volume::Volume(const void* data, int xSize, int ySize, int zSize, const VolumeFo
 		bytes = xSize * ySize*zSize * sizeof(float)*voxelChannel;
 		break;
 	}
-	if (m_data != nullptr) {
+
+	if (m_data != nullptr) 
+	{
 		std::memcpy(m_data.get(), data, bytes);
 	}
 	if(m_isoStat != nullptr)
@@ -56,6 +60,7 @@ void Volume::calcIsoStat() {
 	//		}
 	//	}
 	//}
+#pragma omp parallel for
 	for (int i = 0; i < m_zSize; ++i) {
 		const auto zNext = (i < m_zSize - 1) ? m_xSize * m_ySize : 0;
 		for (int j = 0; j < m_ySize; ++j) {
@@ -86,8 +91,8 @@ void Volume::calcIsoStat() {
 		m_maxIsoValue = std::max(m_maxIsoValue, m_isoStat[i]);
 }
 
-GPUVolume::GPUVolume(const void* data, int xSize, int ySize, int zSize,const QMatrix4x4 & trans ,const VolumeFormat& fmt) 
-:Volume(data, xSize, ySize, zSize) 
+GPUVolume::GPUVolume(const void * data, int xSize, int ySize, int zSize,const QMatrix4x4 & trans ,const VolumeFormat& fmt) 
+:Volume(data, xSize, ySize, zSize,fmt) 
 {
 	setTransform(trans);
 }

@@ -352,7 +352,8 @@ private:
 		void * data;
 		bool own;
 		MRCDataPrivate() = default;
-		~MRCDataPrivate() {
+		~MRCDataPrivate() 
+		{
 			if (data && own)
 				free(data);
 			data = nullptr;
@@ -376,6 +377,11 @@ private:
 			d->own = true;			//own the data
 			d->ref = 1;
 			d->data = malloc(width*height*slice*elemSize);
+			if(d->data == nullptr) {
+				delete d;
+				d = nullptr;
+				return nullptr;
+			}
 			return d;
 		}
 
@@ -391,15 +397,7 @@ public:
 	*/
 	explicit MRC(const std::string & fileName);
 	//image and image stack
-	/**
-	* @brief  
-	* @param data 
-	* @param width 
-	* @param height
-	* @param slice 
-	* @param DimensionType
-	*
-	*/
+
 	MRC(void * data,			
 		int width,
 		int height,
@@ -500,6 +498,10 @@ inline T MRC::property(int index)const
 template <typename T>
 T* MRC::data() const
 {
+	if(std::is_same<T,void>::value) 
+	{
+		return static_cast<T*>(m_d->data);
+	}
 	bool canConvert;
 	switch (dataType())
 	{

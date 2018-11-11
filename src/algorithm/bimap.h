@@ -6,6 +6,7 @@
 #include <QPersistentModelIndex>
 
 
+
 template<typename T>
 class KeyTraits;
 
@@ -26,6 +27,7 @@ public :
 	static KeyType invalid() 
 	{
 		return -1;
+
     }
 };
 
@@ -69,6 +71,8 @@ public:
 template<typename T1,typename T2,
 typename Key1Traits = KeyTraits<T1>,
 typename Key2Traits = KeyTraits<T2>>
+
+
 
 class BiMap {
     std::unordered_map<T1,T2,typename Key1Traits::KeyHash>	m_index2Id;

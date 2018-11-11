@@ -121,7 +121,7 @@ private:
 
 	inline  void setMarkHelper(const QList<StrokeMarkItem*>& items);
 
-	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect);
+	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect) const;
 
 	QGraphicsItem * createMarkItem();
 

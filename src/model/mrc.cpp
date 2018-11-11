@@ -471,7 +471,6 @@ bool MRC::readDataFromFileHelper(FILE *fp)
 		//transform into byte8 type
 		this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
 
-
         if(MRC_MODE_BYTE == m_header.mode){
             const int readCount = fread(m_d->data,elemSize,dataCount,fp);
             if(readCount != dataCount){
@@ -482,10 +481,13 @@ bool MRC::readDataFromFileHelper(FILE *fp)
             //float * buffer = new float[m_mrcDataSize*sizeof(float)];
             std::unique_ptr<MRCFloat[]> buffer(new float[dataCount]);
             const int readCount = fread(buffer.get(),elemSize,dataCount,fp);
-            if(readCount != dataCount){
+
+            if(readCount != dataCount)
+			{
                 std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
                 noError = false;
             }
+
             if(true == noError){
                 //Mapping float type to unsigned char type
                 const float dmin = static_cast<float>(m_header.dmin);
@@ -494,8 +496,10 @@ bool MRC::readDataFromFileHelper(FILE *fp)
                 for(size_t i =0;i<dataCount;i++){
                     static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>((buffer[i]-dmin)/(dmax-dmin)*256);
                 }
-				m_header.mode = MRC_MODE_BYTE;
             }
+
+
+			m_header.mode = MRC_MODE_BYTE;
         }else if(MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode){
 			std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
 			const int readCount = fread(buffer.get(), elemSize, dataCount, fp);

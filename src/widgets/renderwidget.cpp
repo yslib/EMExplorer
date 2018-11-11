@@ -716,7 +716,18 @@ void RenderWidget::updateVolumeData()
 	QMatrix4x4 I;
 	I.setToIdentity();
 
-	m_volume.reset(new SliceVolume(m_dataModel, I, VolumeFormat(), this));
+	// Decide data format
+
+	VolumeFormat fmt;
+	fmt.fmt = VoxelFormat::Grayscale;			// AbstractSliceDataModel only support 1-channel data
+	if(m_dataModel->dataType() == 0)		// uint8
+	{
+		fmt.type = VoxelType::UInt8;
+	}else if(m_dataModel->dataType() == 1) {
+		fmt.type = VoxelType::Float32;
+	}
+
+	m_volume.reset(new SliceVolume(m_dataModel->constRawData(),x,y,z,I, fmt, this));
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();

@@ -43,19 +43,6 @@ void SliceVolume::loadDataAndGradientToTexture() {
 	//m_gradientTexture.destroy();
 	if(m_initialized == true)
 		return;
-	//if(m_gradientTexture == nullptr) {
-	//	m_gradientTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
-	//	m_gradientTexture->setMagnificationFilter(QOpenGLTexture::Linear);
-	//	m_gradientTexture->setMinificationFilter(QOpenGLTexture::Linear);
-	//	m_gradientTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
-	//	m_gradientTexture->setSize(x, y, z);
-	//	m_gradientTexture->setFormat(QOpenGLTexture::RGB8_UNorm);
-	//	m_gradientTexture->allocateStorage();
-	//	m_gradientTexture->setData(QOpenGLTexture::RGB, QOpenGLTexture::UInt8, d);
-	//}else {
-	//	
-	//}
-
 	if(m_volumeTexture == nullptr) {
 		m_volumeTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
 		m_volumeTexture->setMagnificationFilter(QOpenGLTexture::Linear);
@@ -64,7 +51,27 @@ void SliceVolume::loadDataAndGradientToTexture() {
 		m_volumeTexture->setSize(x, y, z);
 		m_volumeTexture->setFormat(QOpenGLTexture::R16F);
 		m_volumeTexture->allocateStorage();
-		m_volumeTexture->setData(QOpenGLTexture::Red, QOpenGLTexture::UInt8, data());
+		const auto fmt = format();
+
+		QOpenGLTexture::PixelFormat pfmt;
+		QOpenGLTexture::PixelType ptype;
+
+		switch (fmt.fmt) 
+		{
+			case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
+			case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
+			case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA;
+			default: Q_ASSERT(false);
+		}
+
+		switch (fmt.type) 
+		{
+		case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
+		case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
+			default: Q_ASSERT(false);
+		}
+
+		m_volumeTexture->setData(pfmt,ptype,data());
 	}
 }
 
@@ -72,8 +79,7 @@ unsigned SliceVolume::volumeTexId() const {
 	return m_volumeTexture->textureId();
 }
 QVector3D SliceVolume::voxelSize() const {
-	Q_ASSERT_X(m_dataModel, "SliceVolume::voxelSize", "null pointer");
-	return QVector3D(m_dataModel->frontSliceCount(), m_dataModel->rightSliceCount(), m_dataModel->topSliceCount());
+	return QVector3D(xLength(), yLength(), zLength());
 }
 unsigned SliceVolume::startPosTexIdx() const {
 	return m_fbo->textures()[0];
@@ -161,8 +167,8 @@ QSize SliceVolume::windowSize() const {
 	return m_renderer->size();
 }
 
-SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
-	GPUVolume(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount(), trans, fmt)
+SliceVolume::SliceVolume(const void * data, int x, int y, int z, const QMatrix4x4 & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
+	GPUVolume(data, x, y ,z, trans, fmt)
 	, m_fbo(nullptr)
 	//, m_gradientTexture(nullptr)
 	, m_positionVBO(QOpenGLBuffer::VertexBuffer)
@@ -178,20 +184,11 @@ SliceVolume::SliceVolume(const AbstractSliceDataModel * data, const QMatrix4x4 &
 	, m_currentShader(nullptr)
 	, m_sliceShader(nullptr)
 	, m_initialized(false)
-	, m_dataModel(data)
 {
-
-	const auto z = m_dataModel->topSliceCount();
-	const auto y = m_dataModel->rightSliceCount();
-	const auto x = m_dataModel->frontSliceCount();
-
 	QVector3D scale = QVector3D(x, y, z);
 	scale.normalize();
 	m_normalizeTransform.setToIdentity();
 	m_normalizeTransform.scale(scale);
-
-
-
 	setRenderWidget(renderer);
 }
 
@@ -306,9 +303,9 @@ bool SliceVolume::render() {
 	if (m_sliceMode == true) {
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 
-		const auto topCoord = float(m_renderer->d_ptr->topSliceIndex) / float(m_dataModel->topSliceCount());
-		const auto rightCoord = float(m_renderer->d_ptr->rightSliceIndex) / float(m_dataModel->rightSliceCount());
-		const auto frontCoord = float(m_renderer->d_ptr->frontSliceIndex) / float(m_dataModel->frontSliceCount());
+		const auto topCoord = float(m_renderer->d_ptr->topSliceIndex) / float(zLength());
+		const auto rightCoord = float(m_renderer->d_ptr->rightSliceIndex) / float(yLength());
+		const auto frontCoord = float(m_renderer->d_ptr->frontSliceIndex) / float(xLength());
 
 		m_sliceShader->load(this);
 		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj);
@@ -366,7 +363,6 @@ bool SliceVolume::render() {
 		QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
 		// Draw Front to fbo 
 		glfuncs->glDrawBuffer(GL_COLOR_ATTACHMENT0);
-
 		glfuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfuncs->glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
 		// Draw Back to fbo 
