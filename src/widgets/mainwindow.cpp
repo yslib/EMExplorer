@@ -421,7 +421,7 @@ void MainWindow::pixelViewActionTriggered()
 	}
 	
 	pixelViewDlg = new PixelWidget(type, m_imageView, this);
-	pixelViewDlg->setWindowFlag(Qt::Window);
+        pixelViewDlg->setWindowFlags(Qt::Window);
 	pixelViewDlg->setWindowTitle(windowTitle);
 	pixelViewDlg->show();
 	pixelViewDlg->setAttribute(Qt::WA_DeleteOnClose);

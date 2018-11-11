@@ -5,9 +5,9 @@
 //#include <QList>
 #include <QAbstractGraphicsShapeItem>
 #include <QPersistentModelIndex>
-#include <qcoreapplication.h>
 #include <QPen>
 #include <QScopedPointer>
+#include <functional>
 
 //#include <QtContainerFwd>
 

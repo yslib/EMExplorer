@@ -13,14 +13,16 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
-#ifndef  WIN32
-    QSurfaceFormat fmt;
-    fmt.setVersion(3,3);
-    fmt.setDepthBufferSize(24);
-    fmt.setStencilBufferSize(8);
-    fmt.setProfile(QSurfaceFormat::CoreProfile);
-    QSurfaceFormat::setDefaultFormat(fmt);
-#endif
+
+//#ifndef  WIN32
+//    QSurfaceFormat fmt;
+//    fmt.setVersion(3,3);
+//    fmt.setDepthBufferSize(24);
+//    fmt.setStencilBufferSize(8);
+//    fmt.setProfile(QSurfaceFormat::CoreProfile);
+//    QSurfaceFormat::setDefaultFormat(fmt);
+//#endif
+
 	QApplication a(argc, argv);
 	QCommandLineParser parser;
 	parser.addOptions({
