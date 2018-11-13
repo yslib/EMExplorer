@@ -36,23 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	,m_toolBar(nullptr)
 	//,m_parser(nullptr)
 {
-	//These functions need to be called in order.
-
-	// Parsing command line parameters
-
-	//m_parser.reset(new QCommandLineParser);
-
-	//m_parser->addOptions({
-	//	{QStringLiteral("f"), QStringLiteral("Slice data or marks data files path."), QStringLiteral("path")},	// An option with value
-	//	{QStringLiteral("s"), QStringLiteral("Open a main window which only has slice view.")},					// An option
-	//	{QStringLiteral("v"), QStringLiteral("Open a window which only has a volume view.")},
-	//	{QStringLiteral("m"), QStringLiteral("Run marking function for view slice window.")}
-	//});
-	//m_parser->process(*qApp);
-
-
-
-
 
 	setWindowTitle("MRC Editor");
 
@@ -470,6 +453,7 @@ void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 	m_zoomOutAction->setEnabled(state & (FocusInSliceView));
 	m_resetAction->setEnabled(state & (FocusInSliceView | FocusInSliceWidget));
 	m_markAction->setEnabled(state & (FocusInTopSliceView));
+	m_markAction->setEnabled(state & (FocusInTopSliceView));
 	m_markSelectionAction->setEnabled(state & (FocusInTopSliceView));		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
 	m_anchorAction->setEnabled(state &(FocusInSliceView));
 
@@ -636,6 +620,21 @@ void MainWindow::createWidget()
 	m_toolBar->addWidget(m_markAction);
 	m_markButtonGroup->addButton(m_markAction);
 
+	m_markEraseAction = new QToolButton(this);
+	m_markEraseAction->setToolTip(QStringLiteral("Erase Mark"));
+	m_markEraseAction->setCheckable(true);
+	m_markEraseAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	m_markEraseAction->setIcon(QIcon(":icons/resources/icons/eraser.png"));
+	connect(m_markEraseAction,&QToolButton::toggled,[this](bool enable) 
+	{
+		m_imageView->topView()->setOperation(SliceWidget::Operation::Erase);
+		m_imageView->rightView()->setOperation(SliceWidget::Operation::Erase);
+		m_imageView->frontView()->setOperation(SliceWidget::Operation::Erase);
+	});
+	m_toolBar->addWidget(m_markEraseAction);
+	m_markButtonGroup->addButton(m_markEraseAction);
+	
+
 	// Selection Tool Button
 	m_markSelectionAction = new QToolButton(this);
 	m_markSelectionAction->setToolTip(QStringLiteral("Select Mark"));
@@ -723,6 +722,7 @@ void MainWindow::createActions()
 
 	//save mark action
 	m_saveAction = new QAction(QIcon(":/icons/resources/icons/save_as.png"), QStringLiteral("Save Mark"), this);
+
 	m_saveAction->setToolTip(QStringLiteral("Save Mark"));
 	m_toolBar->addAction(m_saveAction);
 	connect(m_saveAction, &QAction::triggered, this, &MainWindow::saveMark);

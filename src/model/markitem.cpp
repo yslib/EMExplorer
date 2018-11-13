@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <cmath>
+#include <QVector2D>
 
 //StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type, bool visible) : QGraphicsItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible)
 //{
@@ -122,7 +123,8 @@ static void drawHighlightSelected(
 
 StrokeMarkItem::StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent) :
 QGraphicsPolygonItem(parent),
-m_markInfo(new StrokeMarkItemPrivate)
+m_markInfo(new StrokeMarkItemPrivate),
+m_erase(false)
 {
 	setPolygon(path);
 	updateLength();
@@ -130,7 +132,8 @@ m_markInfo(new StrokeMarkItemPrivate)
 
 StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : 
 QGraphicsPolygonItem(parent),
-m_markInfo(new StrokeMarkItemPrivate)
+m_markInfo(new StrokeMarkItemPrivate),
+m_erase(false)
 {
 	updateLength();
 }
@@ -139,17 +142,31 @@ void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* op
 {
     painter->setPen(pen());
     painter->setBrush(brush());
-    if(m_markInfo->isFilled == false){      //None filled
-        painter->drawPolyline(polygon());
-    }else{
-        painter->setBrush(QBrush(pen().color(),Qt::SolidPattern));
-        painter->drawPolygon(polygon()); // filled
+	if(!m_erase) {
+		if (m_markInfo->isFilled == false) {      //None filled
+			painter->drawPolyline(polygon());
+		}
+		else {
+			painter->setBrush(QBrush(pen().color(), Qt::SolidPattern));
+			painter->drawPolygon(polygon()); // filled
 
-    }
+		}
+		if (option != nullptr && option->state & QStyle::State_Selected)
+			drawHighlightSelected(this, painter, option);
+	}else {	
+		/*Being erased, we draw the segments only*/
+		if(!m_markInfo->isFilled) {
+			for(const auto & poly:m_segments) {
+				painter->drawPolyline(poly);
+			}
+		}else {
+			painter->setBrush(QBrush(pen().color(), Qt::SolidPattern));
+			for(const auto & poly:m_segments) {
+				painter->drawPolygon(poly,Qt::OddEvenFill);
+			}
+		}
+	}
 
-
-	if ( option != nullptr && option->state & QStyle::State_Selected)
-		drawHighlightSelected(this, painter, option);
 }
 
 void StrokeMarkItem::appendPoint(const QPointF& p)
@@ -174,10 +191,67 @@ void StrokeMarkItem::setItemChangeHandler(
 	m_itemChangeHandler = handler;
 }
 
+void StrokeMarkItem::beginErase() 
+{
+	m_erase = true;
+	m_segments.clear();
+	const auto p = polygon();
+	m_segments << p;
+}
+
+void StrokeMarkItem::erase(const QPointF & center, double radius)
+{
+	if (!m_erase)
+		return;
+
+	const auto its = findPolygon(center, radius);
+	QList<QPolygonF> newPolygons;
+	for(const auto &it:its) 
+	{
+		newPolygons.append(dividePolygon(*it, center, radius));
+		m_segments.erase(it);
+	}
+	m_segments.append(newPolygons);
+	update();
+}
+
+QVector<StrokeMarkItem*> StrokeMarkItem::endErase(bool residue, bool* empty) 
+{
+	m_erase = false;
+	QVector < StrokeMarkItem * > residues;
+	if(m_segments.isEmpty()) {
+		if (empty) *empty = true;
+		return residues;
+	}
+
+	setPolygon(m_segments.first());
+	update(boundingRect());
+	updateLength();
+	update();
+	
+	if(residue) {
+		for(auto i = 1;i<m_segments.size();i++) {
+			auto m = new StrokeMarkItem(m_segments[i], parentItem());
+			m->setFilled(this->isFilled());
+			m->setVisibleState(this->visibleState());
+			m->setName(this->name() + "*");
+			m->setSliceType(this->sliceType());
+			m->setSliceIndex(this->sliceIndex());
+			m->setPen(m->pen());
+			residues << m;
+		}
+	}
+
+	if (empty) *empty = false;
+
+	return residues;
+}
+
 StrokeMarkItem::~StrokeMarkItem()
 {
 	delete m_markInfo;
 	m_markInfo = nullptr;
+
 }
 
 void StrokeMarkItem::createPropertyInfo()
@@ -209,6 +283,93 @@ void StrokeMarkItem::updateLength()
 	const auto dx = p0.x() - p1.x();
 	const auto dy = p0.y() - p1.y();
 	m_markInfo->m_length += std::sqrt(dx*dx + dy * dy);
+
+	//return polygon().length();
+}
+
+QVector<QList<QPolygonF>::Iterator> StrokeMarkItem::findPolygon(const QPointF& center, double radius)
+{
+	QVector<QList<QPolygonF>::Iterator> iters;
+	for(auto it = m_segments.begin();it != m_segments.end();++it) {
+		if (rectIntersectWithCircle(center, radius, it->boundingRect()))
+			iters << it;
+	}
+	return iters;
+}
+
+bool StrokeMarkItem::intersectsWithCircle(const QPointF& center, double radius, const QPointF& point) 
+{
+	const auto v = center - point;
+	return (v.x()*v.x() + v.y()*v.y()) <= radius * radius;
+}
+
+bool StrokeMarkItem::rectIntersectWithCircle(const QPointF& center, double radius, const QRectF& rect) {
+	QPointF p;
+	const auto cRect = rect.center();
+	if(center.x() < cRect.x() && center.y() <=cRect.y()) 
+	{
+		p = { 2*cRect.x() -  center.x() , center.y() };
+	}
+	else if(center.x() >= cRect.x() && center.y() > cRect.y() ) 
+	{
+		p = { center.x(),2*cRect.y() - center.y()};
+	}
+	else if(center.x() < cRect.x() && center.y() > cRect.y()) 
+	{
+		p = { 2 * cRect.x() - center.x(),2 * cRect.y() - center.y() };
+	}
+	QVector2D v(p - rect.topRight());
+	v.setX(std::max(v.x(), 0.f));
+	v.setY(std::max(v.y(), 0.f));
+	return v.lengthSquared() < radius*radius;
+}
+
+QList<QPolygonF> StrokeMarkItem::dividePolygon(const QPolygonF & poly, const QPointF & center, double radius)
+{
+	QList<QPolygonF> polygons;
+	if (poly.size() == 0)
+		return polygons;
+
+	enum {In,Out};
+	auto state = Out;
+	int clipBegin;
+
+	QVector<QPair<int, int>> ends;
+
+	for(auto i = 0 ;i<poly.size();i++) 
+	{
+		const auto p = poly[i];
+		if(intersectsWithCircle(center,radius,p)) {
+			if(state == Out) {
+				state = In;
+				clipBegin = i;
+			}
+		}else {
+			if(state == In) {
+				state = Out;
+				ends << qMakePair(clipBegin, i);
+			}
+		}
+
+	}
+
+	int i = 0;
+	for(const auto &p:ends) {
+		QPolygonF s;
+		for(;i<p.first;i++)  
+			s << poly[i];
+		i = p.second;
+		polygons << s;
+	}
+	//const auto endSegment = ends.end();
+	QPolygonF s;
+	for(;i<poly.size();i++) 
+	{
+		s << poly[i];
+	}
+	polygons << s;
+
+	return polygons;
 }
 
 /**

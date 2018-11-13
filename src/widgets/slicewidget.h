@@ -40,7 +40,12 @@ public:
 		/*
 		 * This action will select marks by clicking the item or dragging a rubber.
 		 */
-		Selection = 2
+		Selection = 2,
+
+		/*
+		 *This action allow to erase mark partially
+		 */
+		Erase = 3
 	};
 
 	SliceWidget(QWidget * parent = nullptr);
@@ -144,6 +149,7 @@ private:
 	SliceItem * m_currentPaintingSlice;
 	StrokeMarkItem * m_paintingItem;
 	AnchorItem * m_anchorItem;
+	QList<StrokeMarkItem *> m_erasingMarks;
 	//state variable
 	bool m_paint;
 	bool m_selection;
@@ -154,7 +160,8 @@ inline void SliceWidget::setOperation(int state)
 {
 	Q_ASSERT_X(state == Operation::Paint || 
 		state == Operation::Selection||
-		state == Operation::None,
+		state == Operation::None ||
+		state == Operation::Erase,
 		"SliceView::setFunction", "state must be exclusive");
 	m_state = state;
 }

@@ -97,6 +97,7 @@ class StrokeMarkItem :public QGraphicsPolygonItem {
 		bool m_visibleState;
         bool isFilled;
 
+
 		friend QDataStream & operator<<(QDataStream & stream,const StrokeMarkItemPrivate * info) 
 		{
 			stream << info->m_name << static_cast<quint32>(info->m_sliceType) << info->m_length << info->m_index << info->m_visibleState;
@@ -112,6 +113,11 @@ class StrokeMarkItem :public QGraphicsPolygonItem {
 		}
 
 	}*m_markInfo;
+
+
+	bool m_erase;
+	QList<QPolygonF> m_segments;
+
 
 public:
 
@@ -138,6 +144,13 @@ public:
     bool isFilled()const{return m_markInfo->isFilled;}
     void setFilled(bool fill){m_markInfo->isFilled = fill;update();}
 
+	void beginErase();
+	void erase(const QPointF & center,double radius);
+	QVector<StrokeMarkItem*> endErase(bool residue = false, bool* empty = nullptr);
+	
+	bool valid()const { return !m_erase; }
+
+
 	~StrokeMarkItem();
 
 	friend QDataStream & operator<<(QDataStream & stream, const StrokeMarkItem * item);
@@ -146,6 +159,10 @@ public:
 private:
 	void createPropertyInfo();
 	void updateLength();
+	QVector<QList<QPolygonF>::Iterator> findPolygon(const QPointF& center, double radius);
+	static bool intersectsWithCircle(const QPointF & center, double radius, const QPointF& point);
+	static bool rectIntersectWithCircle(const QPointF & center, double radius, const QRectF & rect);
+	static QList<QPolygonF> dividePolygon(const QPolygonF & poly, const QPointF & center, double radius);
 	
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;

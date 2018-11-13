@@ -305,7 +305,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_toolButton->setPopupMode(QToolButton::InstantPopup);
 	auto menu = new QMenu(QStringLiteral("Slice Editor"), this);
 	m_toolButton->setMenu(menu);
-	QAction * hideAction = new QAction(QStringLiteral("Hid Navigation View"));
+	QAction * hideAction = new QAction(QStringLiteral("Hide Navigation View"));
 	hideAction->setCheckable(true);
 	hideAction->setChecked(m_topView->navigationViewEnabled());
 	connect(hideAction, &QAction::triggered, [this](bool checked) {m_topView->setNavigationViewEnabled(checked); });
@@ -567,10 +567,14 @@ QStringList SliceEditorWidget::categoryText() const
 	return list;
 }
 
-bool SliceEditorWidget::removeMark(StrokeMarkItem* mark)
+bool SliceEditorWidget::removeMark(StrokeMarkItem * mark)
 {
 	const auto parent = m_markModel->parent(mark->modelIndex());
 	m_markModel->removeRows(mark->modelIndex().row(), 1, parent);
+
+	/// TODO:: 
+	delete mark;
+
 	return true;
 }
 

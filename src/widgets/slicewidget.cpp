@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "model/sliceitem.h"
 #include "model/markitem.h"
+#include "model/markmodel.h"
 
 SliceWidget::SliceWidget(QWidget *parent) :QGraphicsView(parent),
 //m_scaleFactor(0.5),
@@ -95,14 +96,15 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 	const auto viewPos = event->pos();
 	const auto scenePos = mapToScene(viewPos);
 
-	if(m_paintNavigationView) {
+	if (m_paintNavigationView) {
 		const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
 		const auto & viewRectInScene = mapToScene(rect()).boundingRect();
 		const auto tRect = thumbnailRect(sliceRectInScene, viewRectInScene);
-		if(tRect.contains(viewPos)) {
+		if (tRect.contains(viewPos)) {
 			// Mouse click in thumbnail, mapping the click position to real slice position
+
 			const auto imageSize = m_slice->pixmap().size();
-			const int x = static_cast<double>(viewPos.x() - tRect.left()) /(0.2*width())*imageSize.width();
+			const int x = static_cast<double>(viewPos.x() - tRect.left()) / (0.2*width())*imageSize.width();
 			const int y = static_cast<double>(viewPos.y() - tRect.top()) / (0.2*height())*imageSize.height();
 			centerOn(m_slice->mapToScene(x, y));
 			return;
@@ -142,11 +144,25 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 				// Selecting items automatically by calling default event handler of the QGraphicsView
 				return QGraphicsView::mousePressEvent(event);
 			}
+			else if (m_state == Operation::Erase) {
+				m_erasingMarks.clear();
+
+				for (const auto i : items) {
+					auto m = qgraphicsitem_cast<StrokeMarkItem*>(i);
+					if (m)
+					{
+						m_erasingMarks << m;
+						m->beginErase();
+					}
+				}
+				qDebug() << "Begin Erasing:" << m_erasingMarks.count() << " in totals";
+				return;
+			}
 			else if (m_state == Operation::None) {
 				// Set Anchor
 				const auto siz = m_anchorItem->pixmap().size();
-				const auto originItemPoint = QPointF(siz.width()/2.0,siz.height()/2.0);
-				m_anchorItem->setPos(itemPoint-originItemPoint);
+				const auto originItemPoint = QPointF(siz.width() / 2.0, siz.height() / 2.0);
+				m_anchorItem->setPos(itemPoint - originItemPoint);
 				m_anchorItem->setVisible(true);
 				event->accept();
 				return;
@@ -185,13 +201,23 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		return QGraphicsView::mouseMoveEvent(event);
 	}
+	else if (m_state == Operation::Erase)
+	{
+		const auto scPos = mapToScene(viewPos);
+
+		for (const auto m : m_erasingMarks)
+		{
+			qDebug() << "Erasing:" << m;
+			m->erase(m->mapFromScene(scPos), 10);
+		}
+		return;
+	}
 
 	QGraphicsView::mouseMoveEvent(event);
 }
 
 void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-
 	if (m_state == None)
 		return;
 
@@ -201,16 +227,46 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 	}
 
 	Qt::MouseButton button = event->button();
+
 	if (m_state == Operation::Paint)			//create a mark
 	{
-		if (m_currentPaintingSlice == nullptr) {
+		if (m_currentPaintingSlice == nullptr)
+		{
 			event->accept();
 			return;
 		}
+
 		m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(event->pos())));
 		if (m_currentPaintingSlice == m_slice)
 			emit markAdded(m_paintingItem);
 		m_currentPaintingSlice = nullptr;
+		event->accept();
+		return;
+	}
+	else if (m_state == Operation::Erase)
+	{
+		for (const auto m : m_erasingMarks)
+		{
+			bool empty;
+			auto residues = m->endErase(true, &empty);
+
+			qDebug() << "End Erase: Residue count:" << residues.size() << " Empty:"<<empty;
+
+			for (const auto &n : residues)
+			{
+				emit markAdded(n);
+				n->setFlags(QGraphicsItem::ItemIsSelectable);
+				n->setPen(m_pen);
+			}
+			if (empty)
+			{
+				QModelIndex index = m->modelIndex();
+				auto model = const_cast<QAbstractItemModel*>(index.model());
+				// Temporally
+				model->removeRow(index.row(), model->parent(index));
+				delete m;
+			}
+		}
 
 		event->accept();
 		return;
@@ -226,6 +282,7 @@ QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRe
 	s.scale(width()*0.2, height()*0.2, Qt::KeepAspectRatio);
 
 	const auto W = width(), H = height();
+
 	//if(sliceRect.contains(viewRect))
 	//{
 	//	return QRect(0,0,w,h);
@@ -243,7 +300,8 @@ QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRe
 	//	return QRect(0, 0, w, h);
 	//}
 	//return QRect(0,0,w,h);
-    return { 0,int(H - s.height()),s.width(),s.height() };
+
+	return { 0,int(H - s.height()),s.width(),s.height() };
 }
 
 QGraphicsItem * SliceWidget::createMarkItem()
@@ -301,13 +359,13 @@ void SliceWidget::clearSliceMarksHelper(SliceItem * slice)
 	}
 }
 /**
- * \brief 
- * \param image 
+ * \brief
+ * \param image
  */
 void SliceWidget::setImage(const QImage& image)
 {
 	const auto size = image.size();
-	const auto pos = QPoint(-size.width()/2, -size.height() / 2);
+	const auto pos = QPoint(-size.width() / 2, -size.height() / 2);
 
 	if (m_slice == nullptr)
 	{
@@ -327,7 +385,7 @@ void SliceWidget::setImage(const QImage& image)
 
 		rect.adjust(-rect.width(), -rect.height(), 0, 0);
 
-		scene()->setSceneRect(QRectF(-10000,-10000,20000,20000));
+		scene()->setSceneRect(QRectF(-10000, -10000, 20000, 20000));
 
 		// We need to translate the view so as to let the slice is centered in it.
 
@@ -346,7 +404,7 @@ void SliceWidget::setDefaultZoom()
 	resetMatrix();
 	Q_ASSERT(m_slice);
 	const auto size = m_slice->pixmap().size();
-	centerOn(m_slice->mapToScene(size.width()/2,size.height()/2));		// Move the center of the image to view center
+	centerOn(m_slice->mapToScene(size.width() / 2, size.height() / 2));		// Move the center of the image to view center
 
 	const auto widgetSize = this->size();
 	const double sx = widgetSize.width() / static_cast<double>(size.width());
@@ -389,7 +447,7 @@ QSize SliceWidget::sizeHint() const
 	//const auto maxLength = std::max(m_image.width(), m_image.height());
 	//if (maxLength < 800)
 		//return m_image.size();
-	if(m_slice == nullptr) 
+	if (m_slice == nullptr)
 	{
 		return { 0,0 };
 	}

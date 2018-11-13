@@ -123,6 +123,7 @@ private:
 	//
 	QButtonGroup *m_markButtonGroup;
 	QToolButton *m_markAction;
+	QToolButton *m_markEraseAction;
 	QToolButton *m_markSelectionAction;
 	QToolButton *m_anchorAction;
 
