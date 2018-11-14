@@ -7,59 +7,6 @@
 #include <cmath>
 #include <QVector2D>
 
-//StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent, int index, const QString & name, const QColor & color, SliceType type, bool visible) : QGraphicsItem(parent), AbstractMarkItem(name, 0.0, color, type, index, visible)
-//{
-//}
-//
-//
-//QRectF StrokeMarkItem::unionWith(const QRectF & rect, const QPointF & p)
-//{
-//	const QPointF &topLeft = rect.topLeft();
-//	const QPointF &bottomRight = rect.bottomRight();
-//	QPointF newTopLeft = QPointF(std::min(p.x(), topLeft.x()), std::min(p.y(), topLeft.y()));
-//	QPointF newBottomRight = QPointF(std::max(p.x(), bottomRight.x()), std::max(p.y(), bottomRight.y()));
-//	return QRectF(newTopLeft, newBottomRight);
-//}
-//
-//void StrokeMarkItem::addPoint(const QPointF& p)
-//{
-//	prepareGeometryChange();
-//	m_boundingRect = unionWith(m_boundingRect, p);
-//	m_points << p;
-//	update();
-//}
-//
-//void StrokeMarkItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
-//{
-//	Q_UNUSED(painter);
-//	Q_UNUSED(option);
-//	Q_UNUSED(widget);
-//}
-//
-//
-//void StrokeMarkItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
-//{
-//
-//	QGraphicsItem::mousePressEvent(event);
-//}
-//
-//void StrokeMarkItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-//{
-//
-//	QGraphicsItem::mouseMoveEvent(event);
-//}
-//
-//void StrokeMarkItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
-//{
-//
-//	QGraphicsItem::mouseReleaseEvent(event);
-//}
-//
-//void StrokeMarkItem::wheelEvent(QGraphicsSceneWheelEvent * event)
-//{
-//
-//	QGraphicsItem::wheelEvent(event);
-//}
 
 /*!
 \internal
@@ -69,6 +16,8 @@ Highlights \a item as selected.
 NOTE: This function is a duplicate of qt_graphicsItem_highlightSelected() in 
 	qgraphicsitem.cpp!
 */
+
+#define DEBUG_MARK_ERASE
 
 static void drawHighlightSelected(
 	QGraphicsItem *item, QPainter *painter, const QStyleOptionGraphicsItem *option)
@@ -127,7 +76,7 @@ m_markInfo(new StrokeMarkItemPrivate),
 m_erase(false)
 {
 	setPolygon(path);
-	updateLength();
+	//updateLength();
 }
 
 StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : 
@@ -135,7 +84,7 @@ QGraphicsPolygonItem(parent),
 m_markInfo(new StrokeMarkItemPrivate),
 m_erase(false)
 {
-	updateLength();
+	//updateLength();
 }
 
 void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -175,7 +124,7 @@ void StrokeMarkItem::appendPoint(const QPointF& p)
 	poly.append(p);
 	setPolygon(poly);
 	update(boundingRect());
-	updateLength();
+	//updateLength();
 }
 
 
@@ -201,17 +150,22 @@ void StrokeMarkItem::beginErase()
 
 void StrokeMarkItem::erase(const QPointF & center, double radius)
 {
-	if (!m_erase)
+	if (!m_erase) 
+	{
+		qWarning("Erase state is invalid");
 		return;
-
+	}
+		
 	const auto its = findPolygon(center, radius);
-	QList<QPolygonF> newPolygons;
+	QLinkedList<QPolygonF> newPolygons;
+
 	for(const auto &it:its) 
 	{
-		newPolygons.append(dividePolygon(*it, center, radius));
+		newPolygons += dividePolygon(*it, center, radius);		// splice
 		m_segments.erase(it);
 	}
-	m_segments.append(newPolygons);
+
+	m_segments += newPolygons;			// splice
 	update();
 }
 
@@ -226,12 +180,21 @@ QVector<StrokeMarkItem*> StrokeMarkItem::endErase(bool residue, bool* empty)
 
 	setPolygon(m_segments.first());
 	update(boundingRect());
-	updateLength();
+	//updateLength();
 	update();
-	
+
+	/*If the size is 0, the following loop will not hit the end condition*/
+	if (m_segments.size() <= 1) {
+		if (empty)
+			*empty = false;
+		return residues;
+	}
+		
+
 	if(residue) {
-		for(auto i = 1;i<m_segments.size();i++) {
-			auto m = new StrokeMarkItem(m_segments[i], parentItem());
+		
+		for(auto it = (++m_segments.begin());it !=m_segments.end();++it) {
+			auto m = new StrokeMarkItem(*it, parentItem());
 			m->setFilled(this->isFilled());
 			m->setVisibleState(this->visibleState());
 			m->setName(this->name() + "*");
@@ -243,7 +206,6 @@ QVector<StrokeMarkItem*> StrokeMarkItem::endErase(bool residue, bool* empty)
 	}
 
 	if (empty) *empty = false;
-
 	return residues;
 }
 
@@ -269,33 +231,42 @@ void StrokeMarkItem::createPropertyInfo()
 	setData(MarkProperty::PropertyInfo, QVariant::fromValue(propertyInfos));*/
 }
 
-void StrokeMarkItem::updateLength()
-{
-	const auto  & poly = polygon();
-	const int c = poly.count();
-	if (c <= 1)
-	{
-		m_markInfo->m_length = 0;
-		return;
-	}
-	const auto &p0 = poly[c - 2];
-	const auto &p1 = poly[c - 1];
-	const auto dx = p0.x() - p1.x();
-	const auto dy = p0.y() - p1.y();
-	m_markInfo->m_length += std::sqrt(dx*dx + dy * dy);
+//void StrokeMarkItem::updateLength()
+//{
+//	const auto  & poly = polygon();
+//	const int c = poly.count();
+//	if (c <= 1)
+//	{
+//		m_markInfo->m_length = 0;
+//		return;
+//	}
+//	const auto &p0 = poly[c - 2];
+//	const auto &p1 = poly[c - 1];
+//	const auto dx = p0.x() - p1.x();
+//	const auto dy = p0.y() - p1.y();
+//
+//	m_markInfo->m_length += std::sqrt(dx*dx + dy * dy);
+//
+//
+//	//return polygon().length();
+//}
 
-	//return polygon().length();
-}
-
-QVector<QList<QPolygonF>::Iterator> StrokeMarkItem::findPolygon(const QPointF& center, double radius)
+QVector<QLinkedList<QPolygonF>::iterator> StrokeMarkItem::findPolygon(const QPointF& center, double radius)
 {
-	QVector<QList<QPolygonF>::Iterator> iters;
+	QVector<QLinkedList<QPolygonF>::iterator> iters;
 	for(auto it = m_segments.begin();it != m_segments.end();++it) {
-		if (rectIntersectWithCircle(center, radius, it->boundingRect()))
+		
+		if (rectIntersectWithCircle(center, radius, it->boundingRect())) {
 			iters << it;
+#ifdef DEBUG_MARK_ERASE
+			qDebug() << "Erase range:" << center << "," << radius << " Mark BoundingRect:" << it->boundingRect();
+#endif
+		}
+			
 	}
 	return iters;
 }
+
 
 bool StrokeMarkItem::intersectsWithCircle(const QPointF& center, double radius, const QPointF& point) 
 {
@@ -308,25 +279,38 @@ bool StrokeMarkItem::rectIntersectWithCircle(const QPointF& center, double radiu
 	const auto cRect = rect.center();
 	if(center.x() < cRect.x() && center.y() <=cRect.y()) 
 	{
-		p = { 2*cRect.x() -  center.x() , center.y() };
+		//p = { 2*cRect.x() -  center.x() , center.y() };
+		p = { 2 * cRect.x() - center.x(),2 * cRect.y() - center.y() };
 	}
-	else if(center.x() >= cRect.x() && center.y() > cRect.y() ) 
+	else if(center.x() >= cRect.x() && center.y() < cRect.y() ) 
 	{
 		p = { center.x(),2*cRect.y() - center.y()};
 	}
-	else if(center.x() < cRect.x() && center.y() > cRect.y()) 
+	else if(center.x() < cRect.x() && center.y() >= cRect.y()) 
 	{
-		p = { 2 * cRect.x() - center.x(),2 * cRect.y() - center.y() };
+		//p = { 2 * cRect.x() - center.x(),2 * cRect.y() - center.y() };
+		p = { 2 * cRect.x() - center.x() , center.y() };
 	}
-	QVector2D v(p - rect.topRight());
+	QVector2D v(p - rect.bottomRight());
 	v.setX(std::max(v.x(), 0.f));
 	v.setY(std::max(v.y(), 0.f));
 	return v.lengthSquared() < radius*radius;
 }
 
-QList<QPolygonF> StrokeMarkItem::dividePolygon(const QPolygonF & poly, const QPointF & center, double radius)
+
+QRectF StrokeMarkItem::unionWith(const QRectF & rect, const QPointF & p)
 {
-	QList<QPolygonF> polygons;
+	const auto &topLeft = rect.topLeft();
+	const auto &bottomRight = rect.bottomRight();
+	const auto  newTopLeft = QPointF(std::min(p.x(), topLeft.x()), std::min(p.y(), topLeft.y()));
+	const auto newBottomRight = QPointF(std::max(p.x(), bottomRight.x()), std::max(p.y(), bottomRight.y()));
+	return {newTopLeft, newBottomRight};
+}
+
+
+QLinkedList<QPolygonF> StrokeMarkItem::dividePolygon(const QPolygonF& poly, const QPointF& center, double radius)
+{
+	QLinkedList<QPolygonF> polygons;
 	if (poly.size() == 0)
 		return polygons;
 
@@ -353,13 +337,29 @@ QList<QPolygonF> StrokeMarkItem::dividePolygon(const QPolygonF & poly, const QPo
 
 	}
 
+	// Corner case
+	if(state == In) 
+	{
+		ends << qMakePair(clipBegin, poly.size());
+	}
+
 	int i = 0;
+
+	// Reconstructs polygons with points except for range in ends
+
 	for(const auto &p:ends) {
 		QPolygonF s;
 		for(;i<p.first;i++)  
 			s << poly[i];
 		i = p.second;
-		polygons << s;
+		if(s.size() > 1) {
+			polygons << s;
+		}
+#ifdef DEBUG_MARK_ERASE
+		if (s.size() == 1) {
+			qDebug() << "1-point polygon";
+		}
+#endif
 	}
 	//const auto endSegment = ends.end();
 	QPolygonF s;
@@ -367,7 +367,16 @@ QList<QPolygonF> StrokeMarkItem::dividePolygon(const QPolygonF & poly, const QPo
 	{
 		s << poly[i];
 	}
-	polygons << s;
+	if(s.size() > 1) {
+
+		polygons << s;
+	}
+
+#ifdef DEBUG_MARK_ERASE
+	if (s.size() == 1) {
+		qDebug() << "1-point polygon";
+	}
+#endif
 
 	return polygons;
 }

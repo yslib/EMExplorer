@@ -7,6 +7,9 @@
 #include "model/markitem.h"
 #include "model/markmodel.h"
 
+
+#define DEBUG_MARK_ERASE
+
 SliceWidget::SliceWidget(QWidget *parent) :QGraphicsView(parent),
 //m_scaleFactor(0.5),
 m_currentPaintingSlice(nullptr),
@@ -146,16 +149,6 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 			}
 			else if (m_state == Operation::Erase) {
 				m_erasingMarks.clear();
-
-				for (const auto i : items) {
-					auto m = qgraphicsitem_cast<StrokeMarkItem*>(i);
-					if (m)
-					{
-						m_erasingMarks << m;
-						m->beginErase();
-					}
-				}
-				qDebug() << "Begin Erasing:" << m_erasingMarks.count() << " in totals";
 				return;
 			}
 			else if (m_state == Operation::None) {
@@ -204,11 +197,21 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 	else if (m_state == Operation::Erase)
 	{
 		const auto scPos = mapToScene(viewPos);
-
-		for (const auto m : m_erasingMarks)
-		{
-			qDebug() << "Erasing:" << m;
-			m->erase(m->mapFromScene(scPos), 10);
+		auto items = scene()->items(scPos);
+		for (const auto i : items) {
+			auto m = qgraphicsitem_cast<StrokeMarkItem*>(i);
+			if (m)
+			{
+				const auto itr = m_erasingMarks.find(m);
+				if(itr == m_erasingMarks.end()) {
+					m_erasingMarks << m;
+					m->beginErase();
+#ifdef DEBUG_MARK_ERASE
+					qDebug() << "Erasing:" << m;
+#endif
+				}
+				m->erase(m->mapFromScene(scPos), 10);
+			}
 		}
 		return;
 	}
@@ -243,14 +246,18 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 		event->accept();
 		return;
 	}
+
 	else if (m_state == Operation::Erase)
 	{
+
 		for (const auto m : m_erasingMarks)
 		{
 			bool empty;
 			auto residues = m->endErase(true, &empty);
 
-			qDebug() << "End Erase: Residue count:" << residues.size() << " Empty:"<<empty;
+#ifdef DEBUG_MARK_ERASE
+			qDebug() << "mouseReleaseEvent: End Erase: Residue count:" << residues.size() << " Empty:"<<empty;
+#endif
 
 			for (const auto &n : residues)
 			{
@@ -264,7 +271,6 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 				auto model = const_cast<QAbstractItemModel*>(index.model());
 				// Temporally
 				model->removeRow(index.row(), model->parent(index));
-				delete m;
 			}
 		}
 
@@ -300,6 +306,7 @@ QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRe
 	//	return QRect(0, 0, w, h);
 	//}
 	//return QRect(0,0,w,h);
+
 
 	return { 0,int(H - s.height()),s.width(),s.height() };
 }

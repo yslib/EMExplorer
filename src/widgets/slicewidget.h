@@ -1,6 +1,7 @@
 #ifndef SLICEVIEW_H
 #define SLICEVIEW_H
 #include <QGraphicsView>
+#include <QSet>
 #include "model/markitem.h"
 
 class SliceItem;
@@ -149,7 +150,7 @@ private:
 	SliceItem * m_currentPaintingSlice;
 	StrokeMarkItem * m_paintingItem;
 	AnchorItem * m_anchorItem;
-	QList<StrokeMarkItem *> m_erasingMarks;
+	QSet<StrokeMarkItem *> m_erasingMarks;
 	//state variable
 	bool m_paint;
 	bool m_selection;
