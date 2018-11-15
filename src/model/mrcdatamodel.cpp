@@ -1,5 +1,7 @@
 #include "mrcdatamodel.h"
 #include "mrc.h"
+#include <omp.h>
+
 #include <QDebug>
 
 MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):
@@ -212,33 +214,41 @@ void MRCDataModel::adjustImage(QImage& image) const {
 	const auto  height = image.height();
 	const auto width = image.width();
 
+	omp_lock_t lock;
+
 	auto sum = 0.0;
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (auto i = 0; i < height; i++)
 	{
 		const auto scanLine = image.scanLine(i);
 		for (auto j = 0; j < width; j++)
 		{
+			//omp_set_lock(&lock);
 			sum += scanLine[j];
+			//omp_unset_lock(&lock);
 		}
 	}
 
 	const auto mean = sum / (width*height);
 
-	auto var = 0;
-#pragma omp parallel for
+	auto var = 0.0;
+//#pragma omp parallel for
 	for (auto i = 0; i < height; i++)
 	{
 		const auto scanLine = image.scanLine(i);
 		for (auto j = 0; j < width; j++)
 		{
+			//omp_set_lock(&lock);
 			var += (scanLine[j] - mean)*(scanLine[j]-mean);
+			//omp_unset_lock(&lock);
 		}
 	}
 	var = std::sqrt(var/(width*height));
 
 	const auto min = mean - 3 * var;
 	const auto max = mean + 3 * var;
+
+	//qDebug() << "mean:" << mean << " var:" << var;
 
 #pragma omp parallel for
 	for (auto i = 0; i < height; i++)
