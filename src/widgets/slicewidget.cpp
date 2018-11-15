@@ -8,7 +8,7 @@
 #include "model/markmodel.h"
 
 
-#define DEBUG_MARK_ERASE
+//#define DEBUG_MARK_ERASE
 
 SliceWidget::SliceWidget(QWidget *parent) :QGraphicsView(parent),
 //m_scaleFactor(0.5),
@@ -240,8 +240,13 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 		}
 
 		m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(event->pos())));
-		if (m_currentPaintingSlice == m_slice)
-			emit markAdded(m_paintingItem);
+		if (m_currentPaintingSlice == m_slice) {
+			if (m_paintingItem->polygon().size() > 3)
+				emit markAdded(m_paintingItem);
+			else
+				delete m_paintingItem;
+		}
+			
 		m_currentPaintingSlice = nullptr;
 		event->accept();
 		return;

@@ -50,7 +50,6 @@
 * dmean
 * ispg
 * nversion: year*10+version
-
 */
 
 
@@ -336,10 +335,10 @@ private:
 	/*The MRC Header is MRC2014 Version. Reading
 	http://www.ccpem.ac.uk/mrc_format/mrc2014.php for more details*/
 
-	
 
 
-    //Type Definition
+
+	//Type Definition
 
 
 	//static constexpr  std::tuple<std::string, DataType,int> tables[] = {{"asdf",DataType::Integer32,32},{}};
@@ -352,7 +351,7 @@ private:
 		void * data;
 		bool own;
 		MRCDataPrivate() = default;
-		~MRCDataPrivate() 
+		~MRCDataPrivate()
 		{
 			if (data && own)
 				free(data);
@@ -377,7 +376,7 @@ private:
 			d->own = true;			//own the data
 			d->ref = 1;
 			d->data = malloc(width*height*slice*elemSize);
-			if(d->data == nullptr) {
+			if (d->data == nullptr) {
 				delete d;
 				d = nullptr;
 				return nullptr;
@@ -398,7 +397,7 @@ public:
 	explicit MRC(const std::string & fileName);
 	//image and image stack
 
-	MRC(void * data,			
+	MRC(void * data,
 		int width,
 		int height,
 		int slice, ImageDimensionType DimensionType, DataType dataType = MRC::DataType::Integer8);
@@ -430,7 +429,9 @@ public:
 	DataType propertyType(int index)const;
 	template<typename T> T property(int index)const;
 	template<typename T> T * data()const;
-    //template<typename T> auto dataWithType()const;
+	float minValue()const;
+	float maxValue()const;
+	//template<typename T> auto dataWithType()const;
 	DataType dataType()const;
 	std::string info()const;
 	virtual ~MRC()noexcept;
@@ -498,7 +499,7 @@ inline T MRC::property(int index)const
 template <typename T>
 T* MRC::data() const
 {
-	if(std::is_same<T,void>::value) 
+	if (std::is_same<T, void>::value)
 	{
 		return static_cast<T*>(m_d->data);
 	}
@@ -532,11 +533,11 @@ T* MRC::data() const
 	else
 		return nullptr;
 }
-inline void MRC::detach(){if (m_d != nullptr && --m_d->ref == 0)delete m_d;}
-inline void MRC::copyHeaderBuffer(unsigned char* dst, const unsigned char* src, int size){memcpy(dst, src, size);}
-inline bool MRC::isOpened() const{return m_opened;}
-inline int MRC::width() const{return m_header.nx;}
+inline void MRC::detach() { if (m_d != nullptr && --m_d->ref == 0)delete m_d; }
+inline void MRC::copyHeaderBuffer(unsigned char* dst, const unsigned char* src, int size) { memcpy(dst, src, size); }
+inline bool MRC::isOpened() const { return m_opened; }
+inline int MRC::width() const { return m_header.nx; }
 inline int MRC::height() const { return m_header.ny; }
-inline int MRC::slice() const{return m_header.nz;}
-inline int MRC::propertyCount() const{return 32;}
+inline int MRC::slice() const { return m_header.nz; }
+inline int MRC::propertyCount() const { return 32; }
 #endif // MRC_H

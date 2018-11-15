@@ -573,7 +573,7 @@ bool SliceEditorWidget::removeMark(StrokeMarkItem * mark)
 	m_markModel->removeRows(mark->modelIndex().row(), 1, parent);
 
 	/// TODO:: 
-	delete mark;
+	//delete mark;
 
 	return true;
 }

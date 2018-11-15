@@ -11,7 +11,7 @@
 	}		
 
 
-Volume::Volume(const void* data, int xSize, int ySize, int zSize, const VolumeFormat& fmt):
+Volume::Volume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat& fmt):
 	m_xSize(xSize)
 	, m_ySize(ySize)
 	, m_zSize(zSize)
@@ -20,10 +20,11 @@ Volume::Volume(const void* data, int xSize, int ySize, int zSize, const VolumeFo
 	, m_isoStat(nullptr)
 {
 	int voxelChannel = 0;
-	switch (m_fmt.fmt) {
-	case VoxelFormat::Grayscale:voxelChannel = 1; break;
-	case VoxelFormat::RGB:voxelChannel = 3; break;
-	case VoxelFormat::RGBA:voxelChannel = 4; break;
+	switch (m_fmt.fmt) 
+	{
+		case VoxelFormat::Grayscale:voxelChannel = 1; break;
+		case VoxelFormat::RGB:voxelChannel = 3; break;
+		case VoxelFormat::RGBA:voxelChannel = 4; break;
 	}
 	size_t bytes = 0;
 
@@ -36,7 +37,8 @@ Volume::Volume(const void* data, int xSize, int ySize, int zSize, const VolumeFo
 		break;
 	case VoxelType::Float32:
 		m_data.reset(reinterpret_cast<unsigned char*>(new float[xSize*ySize*zSize*voxelChannel]));
-		bytes = xSize * ySize*zSize * sizeof(float)*voxelChannel;
+		m_isoStat.reset(new double[256]);
+		bytes = xSize * ySize * zSize * sizeof(float)*voxelChannel;
 		break;
 	}
 
@@ -44,8 +46,10 @@ Volume::Volume(const void* data, int xSize, int ySize, int zSize, const VolumeFo
 	{
 		std::memcpy(m_data.get(), data, bytes);
 	}
+
 	if(m_isoStat != nullptr)
 		calcIsoStat();
+
 }
 
 void Volume::calcIsoStat() {
@@ -60,6 +64,10 @@ void Volume::calcIsoStat() {
 	//		}
 	//	}
 	//}
+	// We don't support histogram for float type volume data
+	if (m_fmt.type == VoxelType::Float32)		
+		return;
+
 #pragma omp parallel for
 	for (int i = 0; i < m_zSize; ++i) {
 		const auto zNext = (i < m_zSize - 1) ? m_xSize * m_ySize : 0;
@@ -81,7 +89,6 @@ void Volume::calcIsoStat() {
 				for (auto m = minValue; m <= maxValue; ++m) {
 					m_isoStat[m] += 1.0;
 				}
-					
 			}
 		}
 	}

@@ -17,7 +17,7 @@ NOTE: This function is a duplicate of qt_graphicsItem_highlightSelected() in
 	qgraphicsitem.cpp!
 */
 
-#define DEBUG_MARK_ERASE
+//#define DEBUG_MARK_ERASE
 
 static void drawHighlightSelected(
 	QGraphicsItem *item, QPainter *painter, const QStyleOptionGraphicsItem *option)
@@ -369,6 +369,7 @@ QLinkedList<QPolygonF> StrokeMarkItem::dividePolygon(const QPolygonF& poly, cons
 	}
 	if(s.size() > 1) {
 
+		// Polygon that only have 1 point will be discarded
 		polygons << s;
 	}
 

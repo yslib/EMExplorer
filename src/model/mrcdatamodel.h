@@ -25,11 +25,11 @@ private:
     QSharedPointer<MRC> m_d;
 
 
-	unsigned char float2uint(float v);
-
+	//void initCache();
 	//template<typename T>
 	//QImage extractImage(const std::function<int(int,int)> & indexFunc, const T * data, int width, int height);
 
+	void adjustImage(QImage & image) const;
 
 };
 

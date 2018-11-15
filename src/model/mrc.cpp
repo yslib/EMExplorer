@@ -5,14 +5,14 @@
 
 #include "mrc.h"
 
-MRC::MRC():MRC("",false)
+MRC::MRC() :MRC("", false)
 {
-    //Do Nothing
+	//Do Nothing
 }
 
-MRC::MRC(const std::string &fileName):MRC(fileName,false)
+MRC::MRC(const std::string &fileName) : MRC(fileName, false)
 {
-    open(fileName);
+	open(fileName);
 }
 
 MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType DimensionType, DataType dataType)
@@ -49,12 +49,12 @@ MRC::MRC(void * data, int width, int height, int slice, ImageDimensionType Dimen
 	m_opened = true;
 }
 
-MRC::MRC(void * data, 
+MRC::MRC(void * data,
 	int width,
-	int height, 
-	int volumeZ, 
-	int volumeCount, 
-	VolumeDimensionType type, 
+	int height,
+	int volumeZ,
+	int volumeCount,
+	VolumeDimensionType type,
 	DataType dataType)
 {
 	(void)(data);
@@ -78,11 +78,11 @@ MRC::MRC(const MRC & otherMRC, void * data)
 
 MRC::MRC(const MRC &rhs)
 {
-    m_header = rhs.m_header;
+	m_header = rhs.m_header;
 	m_d = rhs.m_d;
 	++m_d->ref;		//reference count increasement
 	memcpy(hdBuffer, rhs.hdBuffer, MRC_HEADER_SIZE);
-    m_opened = rhs.m_opened;
+	m_opened = rhs.m_opened;
 }
 
 MRC::MRC(MRC && rhs) noexcept
@@ -96,13 +96,13 @@ MRC::MRC(MRC && rhs) noexcept
 
 MRC & MRC::operator=(const MRC &rhs)
 {
-    if(this == &rhs)return *this;
-    m_header = rhs.m_header;
+	if (this == &rhs)return *this;
+	m_header = rhs.m_header;
 	m_d = rhs.m_d;
 	++m_d->ref;
 	memcpy(hdBuffer, rhs.hdBuffer, MRC_HEADER_SIZE);
-    m_opened = rhs.m_opened;
-    return *this;
+	m_opened = rhs.m_opened;
+	return *this;
 }
 
 MRC & MRC::operator=(MRC && rhs) noexcept
@@ -116,33 +116,33 @@ MRC & MRC::operator=(MRC && rhs) noexcept
 
 MRC MRC::fromData(void* data, int width, int height, int slice, DataType type)
 {
-	return MRC(data,width,height,slice,ImageDimensionType::ImageStack,type);
+	return MRC(data, width, height, slice, ImageDimensionType::ImageStack, type);
 }
-MRC MRC::fromMRC(const MRC & otherMRC,unsigned char * data)
+MRC MRC::fromMRC(const MRC & otherMRC, unsigned char * data)
 {
-    return MRC(otherMRC,data);
+	return MRC(otherMRC, data);
 }
 bool MRC::open(const std::string &fileName)
 {
 	detach();
-    FILE * fp = fopen(fileName.c_str(),"rb");
-    if(fp != nullptr){
-        bool noError = true;
-        if(true == noError){
-            noError = headerReadHelper(fp,&m_header);
-        }
-        if(true == noError){
-            noError = readDataFromFileHelper(fp);
-        }
-        m_opened = noError;
-        fclose(fp);
-    }
-    return m_opened;
+	FILE * fp = fopen(fileName.c_str(), "rb");
+	if (fp != nullptr) {
+		bool noError = true;
+		if (true == noError) {
+			noError = headerReadHelper(fp, &m_header);
+		}
+		if (true == noError) {
+			noError = readDataFromFileHelper(fp);
+		}
+		m_opened = noError;
+		fclose(fp);
+	}
+	return m_opened;
 }
 bool MRC::save(const std::string & fileName, MRC::Format format)
 {
 	FILE * fp = fopen(fileName.c_str(), "wb");
-    if (fp == nullptr) {
+	if (fp == nullptr) {
 		std::cerr << "Cannot create file\n";
 		return false;
 	}
@@ -175,12 +175,12 @@ bool MRC::save(const std::string & fileName, MRC::Format format)
 
 std::string MRC::propertyName(int index)const
 {
-	static const char *name[] = 
+	static const char *name[] =
 	{
 		"NX:",
 		"NY:",
 		"NZ:",
-		"MODE:", 
+		"MODE:",
 		"NX START:" ,
 		"NY START:" ,
 		"NZ START:" ,
@@ -208,7 +208,7 @@ std::string MRC::propertyName(int index)const
 		"nVersion:",
 		"xorg:",
 		"yorg:",
-		"zorg:" 
+		"zorg:"
 	};
 	return std::string(name[index]);
 }
@@ -247,9 +247,19 @@ MRC::DataType MRC::propertyType(int index)const
 		DataType::Real32,			//xorg
 		DataType::Real32,			//yorg
 		DataType::Real32,			//zorg
-	};		
+	};
 
 	return types[index];
+}
+
+float MRC::minValue() const
+{
+	return m_header.dmin;
+}
+
+float MRC::maxValue() const
+{
+	return m_header.dmax;
 }
 
 //const unsigned char *MRC::data() const
@@ -334,49 +344,49 @@ void MRC::UpdateDminDmaxDmeanRMSHelper()
 //Only for byte and float data
 bool MRC::headerReadHelper(FILE * fp, MRCHeader *hd)
 {
-    if(fp == nullptr)return false;
-    rewind(fp);
-    //unsigned char hdBuffer[MRC_HEADER_SIZE];
-    int elemSize = 0;
-    elemSize = fread(hdBuffer,sizeof(unsigned char),MRC_HEADER_SIZE,fp);
-    if(elemSize != MRC_HEADER_SIZE){
-        std::cerr<<"ERROR:Read "<<elemSize<<" of "<<MRC_HEADER_SIZE<<std::endl;
-        return false;
-    }
-    memcpy(&hd->nx,hdBuffer+NX_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->ny,hdBuffer+NY_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->nz,hdBuffer+NZ_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->mode,hdBuffer+MODE_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->nxstart,hdBuffer+NXSTART_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->nystart,hdBuffer+NYSTART_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->nzstart,hdBuffer+NZSTART_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->mx,hdBuffer+MX_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->my,hdBuffer+MY_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->mz,hdBuffer+MZ_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->xlen,hdBuffer+XLEN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->ylen,hdBuffer+YLEN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->zlen,hdBuffer+ZLEN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->alpha,hdBuffer+ALPHA_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->beta,hdBuffer+BETA_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->gamma,hdBuffer+GAMMA_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->mapc,hdBuffer+MAPC_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->mapr,hdBuffer+MAPR_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->maps,hdBuffer+MAPS_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->dmin,hdBuffer+DMIN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->dmax,hdBuffer+DMAX_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->dmean,hdBuffer+DMEAN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->ispg,hdBuffer+ISPG_OFFSET,sizeof(MRCInt32));
-    memcpy(&hd->nsymbt,hdBuffer+NSYMBT_OFFSET,sizeof(MRCInt32));
+	if (fp == nullptr)return false;
+	rewind(fp);
+	//unsigned char hdBuffer[MRC_HEADER_SIZE];
+	int elemSize = 0;
+	elemSize = fread(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
+	if (elemSize != MRC_HEADER_SIZE) {
+		std::cerr << "ERROR:Read " << elemSize << " of " << MRC_HEADER_SIZE << std::endl;
+		return false;
+	}
+	memcpy(&hd->nx, hdBuffer + NX_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->ny, hdBuffer + NY_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->nz, hdBuffer + NZ_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->mode, hdBuffer + MODE_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->nxstart, hdBuffer + NXSTART_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->nystart, hdBuffer + NYSTART_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->nzstart, hdBuffer + NZSTART_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->mx, hdBuffer + MX_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->my, hdBuffer + MY_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->mz, hdBuffer + MZ_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->xlen, hdBuffer + XLEN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->ylen, hdBuffer + YLEN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->zlen, hdBuffer + ZLEN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->alpha, hdBuffer + ALPHA_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->beta, hdBuffer + BETA_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->gamma, hdBuffer + GAMMA_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->mapc, hdBuffer + MAPC_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->mapr, hdBuffer + MAPR_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->maps, hdBuffer + MAPS_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->dmin, hdBuffer + DMIN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->dmax, hdBuffer + DMAX_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->dmean, hdBuffer + DMEAN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->ispg, hdBuffer + ISPG_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->nsymbt, hdBuffer + NSYMBT_OFFSET, sizeof(MRCInt32));
 
-    //memcpy(hd,hdBuffer,sizeof(24*4));
-    memcpy(hd->extType,hdBuffer+EXTTYP_OFFSET,sizeof(char)*4);
-    memcpy(&hd->nversion,hdBuffer+NVERSION_OFFSET,sizeof(MRCInt32));
+	//memcpy(hd,hdBuffer,sizeof(24*4));
+	memcpy(hd->extType, hdBuffer + EXTTYP_OFFSET, sizeof(char) * 4);
+	memcpy(&hd->nversion, hdBuffer + NVERSION_OFFSET, sizeof(MRCInt32));
 
-    memcpy(&hd->xorg,hdBuffer+XORIGIN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->yorg,hdBuffer+YORIGIN_OFFSET,sizeof(MRCFloat));
-    memcpy(&hd->zorg,hdBuffer+ZORIGIN_OFFSET,sizeof(MRCFloat));
+	memcpy(&hd->xorg, hdBuffer + XORIGIN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->yorg, hdBuffer + YORIGIN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->zorg, hdBuffer + ZORIGIN_OFFSET, sizeof(MRCFloat));
 
-    return true;
+	return true;
 }
 
 bool MRC::headerWriteHelper(FILE * fp, MRCHeader * hd)
@@ -384,36 +394,36 @@ bool MRC::headerWriteHelper(FILE * fp, MRCHeader * hd)
 	if (fp == nullptr)return false;
 	unsigned char hdBuffer[MRC_HEADER_SIZE];
 	memcpy(hdBuffer + NX_OFFSET, &hd->nx, sizeof(MRCInt32));
-	memcpy(hdBuffer + NY_OFFSET, &hd->ny,sizeof(MRCInt32));
-	memcpy(hdBuffer + NZ_OFFSET, &hd->nz,sizeof(MRCInt32));
-	memcpy(hdBuffer + MODE_OFFSET, &hd->mode,sizeof(MRCInt32));
+	memcpy(hdBuffer + NY_OFFSET, &hd->ny, sizeof(MRCInt32));
+	memcpy(hdBuffer + NZ_OFFSET, &hd->nz, sizeof(MRCInt32));
+	memcpy(hdBuffer + MODE_OFFSET, &hd->mode, sizeof(MRCInt32));
 	memcpy(hdBuffer + NXSTART_OFFSET, &hd->nxstart, sizeof(MRCInt32));
-	memcpy(hdBuffer + NYSTART_OFFSET, &hd->nystart,  sizeof(MRCInt32));
+	memcpy(hdBuffer + NYSTART_OFFSET, &hd->nystart, sizeof(MRCInt32));
 	memcpy(hdBuffer + NZSTART_OFFSET, &hd->nzstart, sizeof(MRCInt32));
-	memcpy(hdBuffer + MX_OFFSET, &hd->mx,  sizeof(MRCInt32));
-	memcpy(hdBuffer + MY_OFFSET, &hd->my,  sizeof(MRCInt32));
-	memcpy(hdBuffer + MZ_OFFSET, &hd->mz,  sizeof(MRCInt32));
+	memcpy(hdBuffer + MX_OFFSET, &hd->mx, sizeof(MRCInt32));
+	memcpy(hdBuffer + MY_OFFSET, &hd->my, sizeof(MRCInt32));
+	memcpy(hdBuffer + MZ_OFFSET, &hd->mz, sizeof(MRCInt32));
 	memcpy(hdBuffer + XLEN_OFFSET, &hd->xlen, sizeof(MRCFloat));
-	memcpy(hdBuffer + YLEN_OFFSET, &hd->ylen,  sizeof(MRCFloat));
-	memcpy(hdBuffer + ZLEN_OFFSET, &hd->zlen,  sizeof(MRCFloat));
-	memcpy(hdBuffer + ALPHA_OFFSET, &hd->alpha,sizeof(MRCFloat));
+	memcpy(hdBuffer + YLEN_OFFSET, &hd->ylen, sizeof(MRCFloat));
+	memcpy(hdBuffer + ZLEN_OFFSET, &hd->zlen, sizeof(MRCFloat));
+	memcpy(hdBuffer + ALPHA_OFFSET, &hd->alpha, sizeof(MRCFloat));
 	memcpy(hdBuffer + BETA_OFFSET, &hd->beta, sizeof(MRCFloat));
-	memcpy(hdBuffer + GAMMA_OFFSET, &hd->gamma,sizeof(MRCFloat));
+	memcpy(hdBuffer + GAMMA_OFFSET, &hd->gamma, sizeof(MRCFloat));
 	memcpy(hdBuffer + MAPC_OFFSET, &hd->mapc, sizeof(MRCInt32));
-	memcpy(hdBuffer + MAPR_OFFSET, &hd->mapr,  sizeof(MRCInt32));
+	memcpy(hdBuffer + MAPR_OFFSET, &hd->mapr, sizeof(MRCInt32));
 	memcpy(hdBuffer + MAPS_OFFSET, &hd->maps, sizeof(MRCInt32));
-	memcpy(hdBuffer + DMIN_OFFSET, &hd->dmin,  sizeof(MRCFloat));
+	memcpy(hdBuffer + DMIN_OFFSET, &hd->dmin, sizeof(MRCFloat));
 	memcpy(hdBuffer + DMAX_OFFSET, &hd->dmax, sizeof(MRCFloat));
 	memcpy(hdBuffer + DMEAN_OFFSET, &hd->dmean, sizeof(MRCFloat));
-	memcpy(hdBuffer + ISPG_OFFSET, &hd->ispg,sizeof(MRCInt32));
+	memcpy(hdBuffer + ISPG_OFFSET, &hd->ispg, sizeof(MRCInt32));
 	memcpy(hdBuffer + NSYMBT_OFFSET, &hd->nsymbt, sizeof(MRCInt32));
 
 	//memcpy(hd,hdBuffer,sizeof(24*4));
-	memcpy(hdBuffer + EXTTYP_OFFSET, &hd->extType,  sizeof(char) * 4);
+	memcpy(hdBuffer + EXTTYP_OFFSET, &hd->extType, sizeof(char) * 4);
 	memcpy(hdBuffer + NVERSION_OFFSET, &hd->nversion, sizeof(MRCInt32));
-	memcpy(hdBuffer + XORIGIN_OFFSET, &hd->xorg,sizeof(MRCFloat));
-	memcpy(hdBuffer + YORIGIN_OFFSET, &hd->yorg,  sizeof(MRCFloat));
-	memcpy(hdBuffer + ZORIGIN_OFFSET, &hd->zorg,sizeof(MRCFloat));
+	memcpy(hdBuffer + XORIGIN_OFFSET, &hd->xorg, sizeof(MRCFloat));
+	memcpy(hdBuffer + YORIGIN_OFFSET, &hd->yorg, sizeof(MRCFloat));
+	memcpy(hdBuffer + ZORIGIN_OFFSET, &hd->zorg, sizeof(MRCFloat));
 	rewind(fp);
 	fwrite(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
 	return true;
@@ -421,92 +431,92 @@ bool MRC::headerWriteHelper(FILE * fp, MRCHeader * hd)
 
 std::string MRC::propertyInfoString(const MRCHeader *header) const
 {
-    std::stringstream ss;
-    ss<<"NX:"<<header->nx<<std::endl
-    <<"NY:"<<header->ny<<std::endl
-    <<"NZ:"<<header->nz<<std::endl
-    <<"MODE:"<<header->mode<<std::endl
-    <<"NX START:"<<header->nxstart<<std::endl
-    <<"NY START:"<<header->nystart<<std::endl
-    <<"NZ START:"<<header->nzstart<<std::endl
-    <<"MX:"<<header->mx<<std::endl
-    <<"MY:"<<header->my<<std::endl
-    <<"MZ:"<<header->my<<std::endl
-    <<"XLEN:"<<header->xlen<<std::endl
-    <<"YLEN:"<<header->ylen<<std::endl
-    <<"ZLEN:"<<header->zlen<<std::endl
-    <<"Alpha:"<<header->alpha<<std::endl
-    <<"Beta:"<<header->beta<<std::endl
-    <<"Gamma:"<<header->gamma<<std::endl
-    <<"mapc:"<<header->mapc<<std::endl
-    <<"mapr:"<<header->mapr<<std::endl
-    <<"mapr:"<<header->maps<<std::endl
-    <<"dmin:"<<header->dmax<<std::endl
-    <<"dmax:"<<header->dmin<<std::endl
-    <<"dmean:"<<header->dmean<<std::endl
-    <<"ispg:"<<header->ispg<<std::endl
-    <<"nysmbt:"<<header->nystart<<std::endl
-    <<"ExtTyp:"<<header->extType[0]<<" "<<header->extType[1]<<" "<<header->extType[2]<<" "<<header->extType[3]<<std::endl
-    <<"nVersion:"<<header->nversion<<std::endl
-    <<"xorg:"<<header->xorg<<std::endl
-    <<"yorg:"<<header->yorg<<std::endl
-    <<"zorg:"<<header->zorg<<std::endl;
-    return ss.str();
+	std::stringstream ss;
+	ss << "NX:" << header->nx << std::endl
+		<< "NY:" << header->ny << std::endl
+		<< "NZ:" << header->nz << std::endl
+		<< "MODE:" << header->mode << std::endl
+		<< "NX START:" << header->nxstart << std::endl
+		<< "NY START:" << header->nystart << std::endl
+		<< "NZ START:" << header->nzstart << std::endl
+		<< "MX:" << header->mx << std::endl
+		<< "MY:" << header->my << std::endl
+		<< "MZ:" << header->my << std::endl
+		<< "XLEN:" << header->xlen << std::endl
+		<< "YLEN:" << header->ylen << std::endl
+		<< "ZLEN:" << header->zlen << std::endl
+		<< "Alpha:" << header->alpha << std::endl
+		<< "Beta:" << header->beta << std::endl
+		<< "Gamma:" << header->gamma << std::endl
+		<< "mapc:" << header->mapc << std::endl
+		<< "mapr:" << header->mapr << std::endl
+		<< "mapr:" << header->maps << std::endl
+		<< "dmin:" << header->dmax << std::endl
+		<< "dmax:" << header->dmin << std::endl
+		<< "dmean:" << header->dmean << std::endl
+		<< "ispg:" << header->ispg << std::endl
+		<< "nysmbt:" << header->nystart << std::endl
+		<< "ExtTyp:" << header->extType[0] << " " << header->extType[1] << " " << header->extType[2] << " " << header->extType[3] << std::endl
+		<< "nVersion:" << header->nversion << std::endl
+		<< "xorg:" << header->xorg << std::endl
+		<< "yorg:" << header->yorg << std::endl
+		<< "zorg:" << header->zorg << std::endl;
+	return ss.str();
 }
 
 bool MRC::readDataFromFileHelper(FILE *fp)
 {
-    bool noError = true;
-    if(true == noError){
-        if(fp == nullptr){
-            noError = false;
-        }
-    }
-    if(true == noError){
-        fseek(fp,MRC_HEADER_SIZE,SEEK_SET);
+	bool noError = true;
+	if (true == noError) {
+		if (fp == nullptr) {
+			noError = false;
+		}
+	}
+	if (true == noError) {
+		fseek(fp, MRC_HEADER_SIZE, SEEK_SET);
 
 		const size_t dataCount = m_header.nx*m_header.ny*m_header.nz;
 		const size_t elemSize = typeSize(dataType());
+		std::cout << "data count :" << dataCount << " element size:" << elemSize << std::endl;
 
-		//transform into byte8 type
-		this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
 
-        if(MRC_MODE_BYTE == m_header.mode){
-            const int readCount = fread(m_d->data,elemSize,dataCount,fp);
-            if(readCount != dataCount){
-                std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
-                noError =false;
-            }
-        }else if(MRC_MODE_FLOAT == m_header.mode){
-            //float * buffer = new float[m_mrcDataSize*sizeof(float)];
-            std::unique_ptr<MRCFloat[]> buffer(new float[dataCount]);
-            const int readCount = fread(buffer.get(),elemSize,dataCount,fp);
 
-            if(readCount != dataCount)
+		if (MRC_MODE_BYTE == m_header.mode) {
+			//transform into byte8 type
+			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
+			const int readCount = fread(m_d->data, elemSize, dataCount, fp);
+			if (readCount != dataCount) {
+				std::cerr << "Runtime Error: Reading size error." << __LINE__ << std::endl;
+				noError = false;
+			}
+		}
+		else if (MRC_MODE_FLOAT == m_header.mode) {
+			//float * buffer = new float[m_mrcDataSize*sizeof(float)];
+			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, elemSize);
+			if (this->m_d == nullptr)
 			{
-                std::cerr<<"Runtime Error: Reading size error."<<__LINE__<<std::endl;
-                noError = false;
-            }
+				std::cerr << "Create data pointer failed\n";
+				return false;
+			}
+			//std::unique_ptr<MRCFloat[]> buffer(new float[dataCount]);
+			const int readCount = fread(this->m_d->data, elemSize, dataCount, fp);
 
-            if(true == noError){
-                //Mapping float type to unsigned char type
-                const float dmin = static_cast<float>(m_header.dmin);
-                const float dmax = static_cast<float>(m_header.dmax);
-                double k = 256.0/(dmax-dmin);
-                for(size_t i =0;i<dataCount;i++){
-                    static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt8>((buffer[i]-dmin)/(dmax-dmin)*256);
-                }
-            }
+			if (readCount != dataCount)
+			{
+				std::cerr << "Runtime Error: Reading size error. Read Count:" << readCount << ". DataCount: " << dataCount << ". >>>" << __LINE__ << std::endl;
+				noError = false;
+			}
+			m_header.mode = MRC_MODE_FLOAT;
 
-
-			m_header.mode = MRC_MODE_BYTE;
-        }else if(MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode){
+		}
+		else if (MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode) {
 			std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
 			const int readCount = fread(buffer.get(), elemSize, dataCount, fp);
 			if (readCount != dataCount) {
 				std::cerr << "Runtime Error: Reading size error." << __LINE__ << std::endl;
 				noError = false;
 			}
+			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
 			if (true == noError) {
 				auto dmin = static_cast<MRCInt16>(m_header.dmin);
 				auto dmax = static_cast<MRCInt16>(m_header.dmax);
@@ -515,12 +525,12 @@ bool MRC::readDataFromFileHelper(FILE *fp)
 					static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt16>(k*buffer[i]);
 			}
 			m_header.mode = MRC_MODE_BYTE;
-        }
+		}
 		else {
 			std::cerr << "Unsupported Formate now.\n";
 			return false;
 		}
-    }
+	}
 
-    return (noError);
+	return (noError);
 }

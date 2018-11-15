@@ -49,7 +49,7 @@ void SliceVolume::loadDataAndGradientToTexture() {
 		m_volumeTexture->setMinificationFilter(QOpenGLTexture::Linear);
 		m_volumeTexture->setWrapMode(QOpenGLTexture::ClampToEdge);
 		m_volumeTexture->setSize(x, y, z);
-		m_volumeTexture->setFormat(QOpenGLTexture::R16F);
+		m_volumeTexture->setFormat(QOpenGLTexture::R16F);		//Internal format
 		m_volumeTexture->allocateStorage();
 		const auto fmt = format();
 
@@ -60,7 +60,7 @@ void SliceVolume::loadDataAndGradientToTexture() {
 		{
 			case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
 			case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
-			case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA;
+			case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;;
 			default: Q_ASSERT(false);
 		}
 
@@ -69,9 +69,9 @@ void SliceVolume::loadDataAndGradientToTexture() {
 		case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
 		case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
 			default: Q_ASSERT(false);
-		}
 
-		m_volumeTexture->setData(pfmt,ptype,data());
+		}
+		m_volumeTexture->setData(pfmt,ptype,data());		//External format
 	}
 }
 
