@@ -31,7 +31,8 @@ enum RenderMode {
 	SliceTexture = 1,
 	LineMesh = 2,
 	FillMesh = 4,
-	DVR = 8
+	DVR = 8,
+	Modulo = 16
 };
 
 struct RenderOptions {
@@ -177,10 +178,13 @@ private:
 	QOpenGLShaderProgram					*m_selectShader;
 	QOpenGLFramebufferObject				*m_pickFBO;
 
+	// Boundingbox
+	QOpenGLShaderProgram					*m_boundingBoxShader;
+	QOpenGLBuffer							 m_boundingBoxVBO;
+	QOpenGLVertexArrayObject				 m_boundingBoxVAO;
+
 	friend class RenderParameterWidget;
-
 	friend class TriangleMesh;
-
 	friend class SliceVolume;
 };
 

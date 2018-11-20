@@ -99,6 +99,45 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 	this->setUniformValue("halfway", (float)H.x(), (float)H.y(), (float)H.z());
 }
 
+
+RayCastingModuloShader::RayCastingModuloShader() :ShaderProgram()
+{
+	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/raycast_gradient_modulo_based_v_glsl");
+	addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/raycast_gradient_modulo_based_f.glsl");
+	link();
+}
+void RayCastingModuloShader::load(const ShaderDataInterface* data)
+{
+	this->bind();
+	QVector3D L = data->lightDirection();
+	QVector3D H = L - data->cameraTowards();
+	if (H.length() > 1e-10) H.normalize();
+
+	const auto w = data->windowSize().width();
+	const auto h = data->windowSize().height();
+
+	QMatrix4x4 otho;
+	otho.setToIdentity();
+	otho.ortho(0, w, 0, h, -10, 100);
+	this->setUniformValue("othoMatrix", otho);
+
+	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->volumeTexId());
+	this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE, data->startPosTexIdx());
+	this->setUniformSampler("texEndPos", GL_TEXTURE1, GL_TEXTURE_RECTANGLE, data->endPosTexIdx());
+	this->setUniformSampler("texTransfunc", GL_TEXTURE2, GL_TEXTURE_1D, data->transferFunctionsTexId());
+	this->setUniformSampler("texGradient", GL_TEXTURE4, GL_TEXTURE_3D, data->gradientTexId());
+
+	this->setUniformValue("viewMatrix", data->viewMatrix());
+	this->setUniformValue("step", data->rayStep());
+	this->setUniformValue("ka", data->ambient());
+	this->setUniformValue("ks", data->specular());
+	this->setUniformValue("kd", data->diffuse());
+	this->setUniformValue("shininess", data->shininess());
+	this->setUniformValue("lightdir", (float)L.x(), (float)L.y(), (float)L.z());
+	this->setUniformValue("halfway", (float)H.x(), (float)H.y(), (float)H.z());
+}
+
+
 PositionShader::PositionShader() :ShaderProgram()
 {
 	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/position_v.glsl");

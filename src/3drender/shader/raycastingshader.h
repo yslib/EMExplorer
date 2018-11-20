@@ -9,6 +9,14 @@ public:
 	RayCastingShader();
 	void load(const ShaderDataInterface * data)override;
 };
+
+class RayCastingModuloShader :public ShaderProgram
+{
+public:
+	RayCastingModuloShader();
+	void load(const ShaderDataInterface * data)override;
+};
+
 class PositionShader :public ShaderProgram
 {
 public:
@@ -22,7 +30,6 @@ public:
 	SliceShader();
 	void load(const ShaderDataInterface * data)override;
 };
-
 
 
 #endif // RAYCASTINGSHADER_H

@@ -58,5 +58,7 @@
         <file>resources/shaders/pick_shader_f.glsl</file>
         <file>resources/shaders/pick_shader_v.glsl</file>
         <file>resources/shaders/mesh_shader_t.glsl</file>
+        <file>resources/shaders/raycast_gradient_modulo_based_f.glsl</file>
+        <file>resources/shaders/raycast_gradient_modulo_based_v_glsl</file>
     </qresource>
 </RCC>

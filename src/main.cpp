@@ -8,12 +8,16 @@
 #include <QTimer>
 #include <QSurfaceFormat>
 
+#include <vector>
+
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("cadcg");
 	QCoreApplication::setApplicationName("MRC Marker");
 
+
+	//qDebug() << (~c);
 //#ifndef  WIN32
 //    QSurfaceFormat fmt;
 //    fmt.setVersion(3,3);
@@ -22,7 +26,6 @@ int main(int argc, char *argv[])
 //    fmt.setProfile(QSurfaceFormat::CoreProfile);
 //    QSurfaceFormat::setDefaultFormat(fmt);
 //#endif
-
 	QApplication a(argc, argv);
 	QCommandLineParser parser;
 	parser.addOptions({

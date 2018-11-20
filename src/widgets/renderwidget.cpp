@@ -12,172 +12,47 @@
 #include "model/markitem.h"
 
 
-const static int triIndex[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35 };
-
-static QVector<QVector2D> cubeTex = {
-	{ 0.f,0.f },{ 1.0f,0.f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-{ 0.f,0.f },{ 0.f,1.0f },{ 0.f,0.f },
-};
-
-static QVector<QVector3D> cubeNor = {
-	{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,-1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ 0.f,0.f,1.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ -1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 1.0f,0.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,-1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-{ 0.f,1.f,0.f },
-};
-
-
 static QVector<QVector3D> cubeVertex =
 {
-	//back
-	{ 0.5f, -0.5f, -0.5f },
-{ -0.5f, -0.5f, -0.5f },
-{ 0.5f,  0.5f, -0.5f },
-{ -0.5f,  0.5f, -0.5f } ,
-{ 0.5f,  0.5f, -0.5f } ,
-{ -0.5f, -0.5f, -0.5f } ,
-//front
-{ -0.5f, -0.5f,  0.5f },
-{ 0.5f, -0.5f,  0.5f },
-{ 0.5f,  0.5f,  0.5f },
-{ 0.5f,  0.5f,  0.5f },
-{ -0.5f,  0.5f,  0.5f },
-{ -0.5f, -0.5f,  0.5f },
-//left
-{ -0.5f,  0.5f,  0.5f },
-{ -0.5f,  0.5f, -0.5f },
-{ -0.5f, -0.5f, -0.5f },
-{ -0.5f, -0.5f, -0.5f },
-{ -0.5f, -0.5f,  0.5f },
-{ -0.5f,  0.5f,  0.5f },
-//right
-{ 0.5f,  0.5f, -0.5f },
-{ 0.5f,  0.5f,  0.5f },
-{ 0.5f, -0.5f, -0.5f } ,
-{ 0.5f, -0.5f,  0.5f } ,
-{ 0.5f, -0.5f, -0.5f } ,
-{ 0.5f,  0.5f,  0.5f } ,
-//bottom
-{ -0.5f, -0.5f, -0.5f },
-{ 0.5f, -0.5f, -0.5f },
-{ 0.5f, -0.5f,  0.5f },
-{ 0.5f, -0.5f,  0.5f } ,
-{ -0.5f, -0.5f,  0.5f } ,
-{ -0.5f, -0.5f, -0.5f }  ,
-//up
-{ 0.5f,  0.5f, -0.5f }  ,
-{ -0.5f,  0.5f, -0.5f }  ,
-{ 0.5f,  0.5f,  0.5f }  ,
-{ -0.5f,  0.5f,  0.5f } ,
-{ 0.5f,  0.5f,  0.5f } ,
-{ -0.5f,  0.5f, -0.5f }
+	{0.0f,1.0f,0.0f},{1,1,0},{1,1,1},{0,1,1},			// Top
+	{0.0f,0.0f,0.0f},{0,0,1},{1,0,1},{1,0,0},			// Bottom
+	{0.0f,0.0f,0.0f},{0,1,0},{0,1,1},{0,0,1},			// Left
+	{1.0f,0.0f,0.0f},{1,0,1},{1,1,1},{1,1,0},			// Right
+	{0.0f,0.0f,0.0f},{1,0,0},{1,1,0},{0,1,0},			// Front
+	{1.0f,0.0f,1.0f},{0,0,1},{0,1,1},{1,1,1}			// Back
 };
 
-static QVector<QVector3D> cubeVert =
+static int cubeVertIndex[] =
 {
-	//back
-	{ 0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
-{ -0.5f, -0.5f, -0.5f },{ 0.f,0.f,-1.f },
-{ 0.5f,  0.5f, -0.5f },{ 0.f,0.f,-1.f },
-{ -0.5f,  0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
-{ 0.5f,  0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
-{ -0.5f, -0.5f, -0.5f } ,{ 0.f,0.f,-1.f },
-//front
-{ -0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ 0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ 0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ 0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ -0.5f,  0.5f,  0.5f },{ 0.f,0.f,1.f },
-{ -0.5f, -0.5f,  0.5f },{ 0.f,0.f,1.f },
-//left
-{ -0.5f,  0.5f,  0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f,  0.5f, -0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f, -0.5f, -0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f, -0.5f, -0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f, -0.5f,  0.5f },{ -1.0f,0.f,0.f },
-{ -0.5f,  0.5f,  0.5f },{ -1.0f,0.f,0.f },
-//right
-{ 0.5f,  0.5f, -0.5f },{ 1.0f,0.f,0.f },
-{ 0.5f,  0.5f,  0.5f },{ 1.0f,0.f,0.f },
-{ 0.5f, -0.5f, -0.5f } ,{ 1.0f,0.f,0.f },
-{ 0.5f, -0.5f,  0.5f } ,{ 1.0f,0.f,0.f },
-{ 0.5f, -0.5f, -0.5f } ,{ 1.0f,0.f,0.f },
-{ 0.5f,  0.5f,  0.5f } ,{ 1.0f,0.f,0.f },
-//bottom
-{ -0.5f, -0.5f, -0.5f },{ 0.f,-1.f,0.f },
-{ 0.5f, -0.5f, -0.5f },{ 0.f,-1.f,0.f },
-{ 0.5f, -0.5f,  0.5f },{ 0.f,-1.f,0.f },
-{ 0.5f, -0.5f,  0.5f } ,{ 0.f,-1.f,0.f },
-{ -0.5f, -0.5f,  0.5f } ,{ 0.f,-1.f,0.f },
-{ -0.5f, -0.5f, -0.5f }  ,{ 0.f,-1.f,0.f },
-//up
-{ 0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
-{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
-{ 0.5f,  0.5f,  0.5f }  ,{ 0.f,1.f,0.f },
-{ -0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
-{ 0.5f,  0.5f,  0.5f } ,{ 0.f,1.f,0.f },
-{ -0.5f,  0.5f, -0.5f }  ,{ 0.f,1.f,0.f },
+	2,6,7,3,	// top
+	0,1,5,4,	// bottom
+	1,0,2,3,	// left
+	4,5,7,6,	// right
+	0,4,6,2,	// front
+	5,1,3,7		// back
 };
 
-#define GLERROR(str)									\
-	{													\
-		GLenum err;										\
-		while ((err = glGetError()) != GL_NO_ERROR)		\
-		{												\
-			std::cout<<err<<" "<<str<<std::endl;		\
-		}												\
-	}													\
+static const char boundingBoxVertexShader[] = "#version 330\n"
+"uniform mat4 modelViewMat;\n"
+"uniform mat4 projMat;\n"
+"layout(location = 0) in vec3 vertex;\n"
+"void main()\n"
+"{\n"
+"	gl_Position = projMat * modelViewMat*vec4(vertex, 1.0);\n"
+"}\n";
 
-
-
+static const char boundingBoxFragShader[] = "#version 330\n"
+"out vec4 fgColor;\n"
+"void main()\n"
+"{\n"
+"	fgColor = vec4(1.0f, 0.0f, 0.0f, 1.0);\n"
+"}\n";
 
 
 
 /**
  * \brief Creates a widget for rendering
- * 
+ *
  * \note OpenGL 3.3 ProfileCore is needed.
  */
 RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
@@ -194,6 +69,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_volume(nullptr),
 	m_meshShader(nullptr),
 	m_selectShader(nullptr),
+	m_boundingBoxShader(nullptr),
 	m_pickFBO(nullptr),
 	d_ptr(new RenderWidgetPrivate(this))
 {
@@ -206,7 +82,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 
 /**
  * \brief Sets the data model as the given \a model
- * 
+ *
  * \note This function will emit requireTransferFunction() signal and dataModelChanged() signal
  */
 void RenderWidget::setDataModel(AbstractSliceDataModel * model)
@@ -220,12 +96,12 @@ void RenderWidget::setDataModel(AbstractSliceDataModel * model)
 
 /**
  * \brief Sets the slice model as the given \a model
- * 
+ *
  * \note This function will emit markModelChanged() signal
  */
 void RenderWidget::setMarkModel(MarkModel* model)
 {
-	if(m_markModel != nullptr && m_markModel != model) {
+	if (m_markModel != nullptr && m_markModel != model) {
 		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
@@ -247,7 +123,7 @@ void RenderWidget::setMarkModel(MarkModel* model)
 
 /**
  * \brief Returns the volume object
- * 
+ *
  * \sa GPUVolume
  */
 GPUVolume* RenderWidget::volume() const
@@ -273,7 +149,7 @@ QSize RenderWidget::sizeHint() const
 
 /**
  * \brief Reimplemented from QOpenGLWidget::initializeGL()
- * 
+ *
  * Initializes OpenGL related resources.
  */
 void RenderWidget::initializeGL()
@@ -315,6 +191,31 @@ void RenderWidget::initializeGL()
 		qFatal("Select shader is not linked.");
 		return;
 	}
+
+
+	// Bounding box resources
+
+		// boundingbox
+	m_boundingBoxShader = new QOpenGLShaderProgram;
+	m_boundingBoxShader->create();
+	m_boundingBoxShader->addShaderFromSourceCode(QOpenGLShader::Vertex, boundingBoxVertexShader);
+	m_boundingBoxShader->addShaderFromSourceCode(QOpenGLShader::Fragment, boundingBoxFragShader);
+	if (m_boundingBoxShader->link() == false)
+	{
+		qFatal("Boundingbox Shader is not linked");
+	}
+	m_boundingBoxVAO.create();
+	Q_ASSERT_X(m_boundingBoxVAO.isCreated(), "", " bb vao");
+	m_boundingBoxVAO.bind();
+	m_boundingBoxVBO.create();
+	m_boundingBoxVBO.bind();
+	m_boundingBoxVBO.allocate(cubeVertex.constData(), sizeof(QVector3D)*cubeVertex.size());
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
+
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
+
 	doneCurrent();
 }
 
@@ -322,7 +223,7 @@ void RenderWidget::initializeGL()
 
 /**
  * \brief Reimplemented from QOpenGLWidget::resizeGL()
- * 
+ *
  * \note This function will emit windowResize(int w,int h) signal
  */
 void RenderWidget::resizeGL(int w, int h)
@@ -343,7 +244,7 @@ void RenderWidget::resizeGL(int w, int h)
 
 /**
  * \brief Reimplemented from QOpenGLWidget::paintGL()
- * 
+ *
  * Rendering code here
  */
 void RenderWidget::paintGL()
@@ -365,18 +266,35 @@ void RenderWidget::paintGL()
 	m_camera.setCenter(d->volumeNormalTransform*world*QVector3D(0.5, 0.5, 0.5));
 
 	if (m_volume != nullptr) {
-		if (renderMode == RenderMode::DVR)
-			m_volume->sliceMode(false);
-		else {
-			m_volume->sliceMode(true);
+		if (renderMode & RenderMode::DVR) {
+			//m_volume->sliceMode(false);
+			m_volume->setRenderType(SliceVolume::RenderType::DVR);
+		}
+		else if (renderMode & RenderMode::SliceTexture) {
+			//m_volume->sliceMode(true)
+			m_volume->setRenderType(SliceVolume::RenderType::Slice);
 			m_volume->setSliceSphereCoord(d->options->sliceNormal);
+		}
+		else if (renderMode & RenderMode::Modulo) {
+			m_volume->setRenderType(SliceVolume::RenderType::Modulo);
 		}
 
 		m_volume->setTransform(world);
 		m_volume->render();
+		if (renderMode | RenderMode::SliceTexture) {
+			m_boundingBoxVAO.bind();
+			m_boundingBoxVBO.bind();
+			m_boundingBoxShader->bind();
+			m_boundingBoxShader->setUniformValue("modelViewMat", camera().view()*world*d->volumeNormalTransform);
+			m_boundingBoxShader->setUniformValue("projMat", m_proj);
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glDrawArrays(GL_QUADS, 0, 24);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 	}
 
-	if (renderMode != RenderMode::DVR) {
+	if (renderMode & RenderMode::DVR) {
 
 		const auto viewMatrix = camera().view();
 		const auto cameraPos = camera().position();
@@ -392,7 +310,7 @@ void RenderWidget::paintGL()
 			m_selectShader->setUniformValue("modelMatrix", world);
 
 			for (int i = 0; i < m_integration.size(); i++) {
-				if(m_integration[i].visible == true) {
+				if (m_integration[i].visible == true) {
 					const auto color = idToColor(i);
 					m_selectShader->setUniformValue("pickColor", color);
 					m_integration[i].mesh->render();
@@ -501,7 +419,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 		const auto previous = d->selectedObjectId;
 		d->selectedObjectId = selectMesh(p.x(), p.y());
 
-	
+
 		_slot_currentMeshChanged(d->selectedObjectId, previous);
 		d->enableStartPicking = false;
 		repaint();			// Show the result immediately
@@ -571,11 +489,11 @@ void RenderWidget::setFrontSliceVisible(bool check) {
  */
 void RenderWidget::_slot_markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role)
 {
-	if (begin != end || begin.isValid() ==false)
+	if (begin != end || begin.isValid() == false)
 		return;
-	if(role[0] == Qt::CheckStateRole) {
+	if (role[0] == Qt::CheckStateRole) {
 		const auto id = m_query.query(begin);
-		if(id != -1) {
+		if (id != -1) {
 			const auto item = static_cast<InstanceTreeItem*>(begin.internalPointer());
 			m_integration[id].visible = item->visible();
 			update();
@@ -590,7 +508,7 @@ void RenderWidget::_slot_markModelDataChanged(const QModelIndex & begin, const Q
 void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 {
 	//qDebug() << "RenderWidget::_slot_currentMeshChanged " << " RenderWidget should be clicked";
-	if(m_markModel == nullptr) 
+	if (m_markModel == nullptr)
 		return;
 	const auto index = m_query.query(current);
 	//m_markModel->selectionModelOfThisModel()->clear();
@@ -605,7 +523,7 @@ void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& curren
 	const QModelIndex& previous) {
 
 	const auto treeItem = static_cast<TreeItem*>(current.internalPointer());
-	if(treeItem != nullptr) {
+	if (treeItem != nullptr) {
 		if (treeItem->type() == TreeItemType::Mark) {
 
 			// The parent item of a mark item, which should be a mesh item should also be selected
@@ -644,7 +562,7 @@ void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & 
 }
 
 /**
- * \brief This is a private 
+ * \brief This is a private
  */
 void RenderWidget::updateMark() {
 
@@ -653,7 +571,7 @@ void RenderWidget::updateMark() {
 	{
 		return;
 	}
-	
+
 	m_integration.clear();
 	m_query.clear();
 	//const auto cates = m_markModel->categoryText();
@@ -686,7 +604,7 @@ void RenderWidget::updateMark() {
 				d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
 				this));
 			ptr->initializeGLResources();
-			m_integration.push_back({ptr,color,true});
+			m_integration.push_back({ ptr,color,true });
 
 			const auto id = m_integration.size() - 1;
 			m_query.addQueryPair(inst->persistentModelIndex(), id);
@@ -696,7 +614,7 @@ void RenderWidget::updateMark() {
 }
 
 /**
- * \brief 
+ * \brief
  */
 void RenderWidget::updateVolumeData()
 {
@@ -720,14 +638,15 @@ void RenderWidget::updateVolumeData()
 
 	VolumeFormat fmt;
 	fmt.fmt = VoxelFormat::Grayscale;			// AbstractSliceDataModel only support 1-channel data
-	if(m_dataModel->dataType() == 0)		// uint8
+	if (m_dataModel->dataType() == 0)		// uint8
 	{
 		fmt.type = VoxelType::UInt8;
-	}else if(m_dataModel->dataType() == 1) {
+	}
+	else if (m_dataModel->dataType() == 1) {
 		fmt.type = VoxelType::Float32;
 	}
 
-	m_volume.reset(new SliceVolume(m_dataModel->constRawData(),x,y,z,I, fmt, this));
+	m_volume.reset(new SliceVolume(m_dataModel->constRawData(), x, y, z, I, fmt, this));
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();
@@ -766,17 +685,24 @@ void RenderWidget::cleanup()
 	m_tfTexture = nullptr;
 	delete m_pickFBO;
 	m_pickFBO = nullptr;
+	delete m_boundingBoxShader;
+	m_boundingBoxShader = nullptr;
+
+
+	m_boundingBoxVAO.destroy();
+	m_boundingBoxVBO.destroy();
+
 
 	doneCurrent();
 }
 
 /**
  * \brief Destroyes the render widget.
- * 
+ *
  * \note disconnect the QOpenGLContext::aboutToBeDestroyed() signal from QOpenGLContext links to \a RenderWidget::cleanup() is necessary
- * Because the context is not destroyed yet after the widget is destroyed. The signal still emits and will activate a empty slot and the 
- * program will crash. 
- * 
+ * Because the context is not destroyed yet after the widget is destroyed. The signal still emits and will activate a empty slot and the
+ * program will crash.
+ *
  * \sa QOpenGLContext RenderWidget:cleanup()
  */
 RenderWidget::~RenderWidget()

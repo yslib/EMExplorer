@@ -115,6 +115,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* par
 	m_renderTypeCCBox = new QComboBox(this);
 	m_renderTypeCCBox->addItem(QStringLiteral("DVR"));
 	m_renderTypeCCBox->addItem(QStringLiteral("FillMesh"));
+	m_renderTypeCCBox->addItem(QStringLiteral("Modulo"));
 
 	connect(m_renderTypeCCBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), this, &RenderParameterWidget::renderTypeChanged);
 
@@ -260,13 +261,15 @@ void RenderParameterWidget::transferFunctionChanged() {
 
 void RenderParameterWidget::renderTypeChanged(const QString& text) {
 
-	if (text == QStringLiteral("DVR")) {
-		m_renderOptions->mode = (RenderMode::DVR);
+	if (text == QStringLiteral("DVR")) 
+	{
+		m_renderOptions->mode = (DVR);
 	}
 	else if (text == QStringLiteral("FillMesh")) {
-		m_renderOptions->mode = RenderMode(RenderMode::SliceTexture&RenderMode::FillMesh);
+		m_renderOptions->mode = RenderMode(RenderMode::SliceTexture);
+	}else if(text == QStringLiteral("Modulo")) {
+		m_renderOptions->mode = RenderMode(RenderMode::Modulo);
 	}
-
 	emit optionsChanged();
 }
 
@@ -274,7 +277,6 @@ void RenderParameterWidget::tfButtonClicked() {
 
 	m_tfEditor->setVisible(true);
 }
-
 
 /**
  * \brief  Sets \a widget of \a RenderWidget to present

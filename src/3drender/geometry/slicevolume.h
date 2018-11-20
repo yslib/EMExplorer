@@ -14,10 +14,19 @@
 // Forward Declaration
 class AbstractSliceDataModel;
 class RenderWidget;
-
+enum class RenderType;
 
 class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 {
+public:
+	enum RenderType {
+		DVR,
+		Slice,
+		Modulo
+	};
+
+private:
+
 	Q_OBJECT
 	
 	QOpenGLBuffer							m_positionVBO;
@@ -30,7 +39,8 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	 */
 	PositionShader							*m_positionShader;
 	SliceShader								*m_sliceShader;
-	RayCastingShader						*m_currentShader;
+	ShaderProgram							*m_currentShader;
+	
 	QOpenGLFramebufferObject				*m_fbo;
 	//QOpenGLTexture							*m_gradientTexture;
 	QOpenGLTexture							*m_volumeTexture;
@@ -41,6 +51,8 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 	QOpenGLBuffer							m_rayCastingTextureVBO;
 
 	//GradientCalculator						m_gradCalc;
+	QHash<RenderType, ShaderProgram*>		m_shaders;
+
 
 
 	int										m_topSlice;
@@ -52,7 +64,8 @@ class SliceVolume :public QObject, public GPUVolume, public ShaderDataInterface
 
 
 	bool									m_initialized;
-	bool									m_sliceMode;
+	RenderType								m_renderType;
+
 	bool									m_frontSliceVisible;
 	bool									m_rightSliceVisible;
 	bool									m_topSliceVisible;
@@ -84,7 +97,8 @@ public://ShaderDataInterface
 	QVector3D volumeBound() const override;
 	QSize windowSize() const override;
 public:
-;
+
+
 	SliceVolume(const void * data,int x,int y,int z, const QMatrix4x4 & trans,
 		const VolumeFormat & fmt = VolumeFormat(),
 		RenderWidget * renderer = nullptr);
@@ -94,7 +108,16 @@ public:
 	void destroyGLResources() override;
 	bool render()override;
 
-	void sliceMode(bool enable);
+	//void sliceMode(bool enable);
+	//bool isSliceMode()const { return m_sliceMode; }
+
+	void setRenderType(RenderType type) 
+	{
+		m_renderType = type; 
+	}
+	RenderType renderType()const { return m_renderType; }
+
+
 	void setSliceSphereCoord(const QVector3D & coord);
 
 	void setFrontSliceVisible(bool check) { m_frontSliceVisible = check; }
@@ -113,7 +136,7 @@ private:
 	static double clamp(double v, double a, double b) { if (v < a)return a; if (v > b)return b; return v; }
 };
 
-inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
+//inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
 
 inline void SliceVolume::setSliceSphereCoord(const QVector3D & coord)
 {

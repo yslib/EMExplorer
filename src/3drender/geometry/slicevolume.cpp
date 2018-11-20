@@ -1,4 +1,5 @@
 #include <QOpenGLFramebufferObject>
+#include <QDebug>
 
 #include "slicevolume.h"
 #include "abstract/abstractslicedatamodel.h"
@@ -26,6 +27,15 @@ static float positionVert[] = {
 //	0, yCoord, zCoord ,
 //	xCoord, yCoord, zCoord ,
 //};
+
+#define GLERROR(str)									\
+	{													\
+		GLenum err;										\
+		while ((err = glfuncs->glGetError()) != GL_NO_ERROR)		\
+		{												\
+			std::cout<<err<<" "<<str<<std::endl;		\
+		}												\
+	}													\
 
 
 void SliceVolume::loadDataAndGradientToTexture() {
@@ -176,12 +186,14 @@ SliceVolume::SliceVolume(const void * data, int x, int y, int z, const QMatrix4x
 	, m_positionEBO(QOpenGLBuffer::IndexBuffer)
 //	, m_gradCalc(data->constData(), data->frontSliceCount(), data->rightSliceCount(), data->topSliceCount())
 	, m_renderer(renderer)
-	, m_sliceMode(false)
+	//, m_sliceMode(false)
+	, m_renderType(RenderType::DVR)
 	, m_frontSliceVisible(true)
 	, m_rightSliceVisible(true)
 	, m_topSliceVisible(true)
 	, m_positionShader(nullptr)
 	, m_currentShader(nullptr)
+
 	, m_sliceShader(nullptr)
 	, m_initialized(false)
 {
@@ -211,9 +223,9 @@ bool SliceVolume::initializeGLResources() {
 	// Initialize Front and back face texture
 	m_positionShader = new PositionShader;
 	m_positionShader->link();
-	Q_ASSERT_X(m_positionShader->isLinked(), "VolumeWidget::initializeGL", "positionShader linking failed.");
+	Q_ASSERT_X(m_positionShader->isLinked(), "SliceVolume::initializeGLResources", "positionShader linking failed.");
 	m_positionVAO.create();
-	Q_ASSERT_X(m_positionVAO.isCreated(), "VolumeWidget::initializeGL", "VAO is not created.");
+	Q_ASSERT_X(m_positionVAO.isCreated(), "SliceVolume::initializeGLResources", "VAO is not created.");
 	QOpenGLVertexArrayObject::Binder positionVAOBinder(&m_positionVAO);
 	m_positionVBO.create();
 	m_positionVBO.bind();
@@ -229,6 +241,9 @@ bool SliceVolume::initializeGLResources() {
 	m_positionVBO.release();
 
 	// Initilize ray casting shader
+
+	m_shaders.clear();
+
 	m_currentShader = new RayCastingShader;
 	m_currentShader->link();
 	Q_ASSERT_X(m_currentShader->isLinked(), "VolumeWidget::initializeGL", "currentShader linking failed.");
@@ -244,6 +259,11 @@ bool SliceVolume::initializeGLResources() {
 	glfuncs->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
 	m_rayCastingTextureVBO.release();
 
+	m_shaders[RenderType::DVR] = m_currentShader;
+	auto modulo = new RayCastingModuloShader;
+	Q_ASSERT_X(modulo->link(),"SliceVolume::initializeGLResources","Modulo shader linking failed");
+	m_shaders[RenderType::Modulo] = modulo;
+
 	m_sliceShader = new SliceShader;
 	m_sliceShader->link();
 
@@ -254,13 +274,9 @@ bool SliceVolume::initializeGLResources() {
 	m_axisAlignedSliceVBO.allocate(6 * 3 * sizeof(float));
 	glfuncs->glEnableVertexAttribArray(0);
 	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
-
 	//load volume data and gradient
 	loadDataAndGradientToTexture();
-
 	setFramebufferSize(windowSize().width(), windowSize().height());
-
-
 	return (m_initialized = true);
 }
 
@@ -273,26 +289,33 @@ void SliceVolume::destroyGLResources()
 	m_rayCastingTextureVBO.destroy();
 	m_axisAlignedSliceVAO.destroy();
 	m_axisAlignedSliceVBO.destroy();
-
 //	delete m_gradientTexture;
 //	m_gradientTexture = nullptr;
-
 	delete m_volumeTexture;
 	m_volumeTexture = nullptr;
 
 	delete m_positionShader;
 	m_positionShader = nullptr;
-	delete m_currentShader;
-	m_currentShader = nullptr;
+	//delete m_currentShader;
+	//m_currentShader = nullptr;
 	delete m_sliceShader;
 	m_sliceShader = nullptr;
 	delete m_fbo;
 	m_fbo = nullptr;
 
+	//for(auto itr = m_shaders.begin();itr != m_shaders.end();++itr) 
+	//{
+	//	delete *itr;
+	//	*itr = nullptr;
+	//}
+	for (auto s : m_shaders)
+		delete s;
+
 	m_initialized = false;
 }
 
-bool SliceVolume::render() {
+bool SliceVolume::render() 
+{
 	if (m_renderer == nullptr || m_fbo == nullptr)
 		return false;
 
@@ -300,7 +323,8 @@ bool SliceVolume::render() {
 	if (glfuncs == nullptr)
 		return false;
 
-	if (m_sliceMode == true) {
+	if (m_renderType == RenderType::Slice) {
+			// Mesh rendering
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 
 		const auto topCoord = float(m_renderer->d_ptr->topSliceIndex) / float(zLength());
@@ -349,15 +373,13 @@ bool SliceVolume::render() {
 			m_axisAlignedSliceVBO.write(0, front, sizeof(front));
 			glfuncs->glDrawArrays(GL_QUADS, 0, 4);
 		}
-
 		const auto sliceCoords = sliceCoord(m_A, m_B, m_C, m_D);
-
 		m_axisAlignedSliceVBO.write(0, sliceCoords.constData(), sizeof(QVector3D)*sliceCoords.size());
 		glfuncs->glDrawArrays(GL_TRIANGLE_FAN, 0, sliceCoords.size());
-
 		m_sliceShader->release();
+
 	}
-	else {
+	else{		// Volume rendering
 		m_fbo->bind();
 		m_positionShader->load(this);
 		QOpenGLVertexArrayObject::Binder binder1(&m_positionVAO);
@@ -380,12 +402,17 @@ bool SliceVolume::render() {
 		glfuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfuncs->glEnable(GL_TEXTURE_RECTANGLE);
 		glfuncs->glEnable(GL_TEXTURE_3D);
+
+
+		m_currentShader = m_shaders[m_renderType];
 		m_currentShader->load(this);
+		
 		QOpenGLVertexArrayObject::Binder binder2(&m_rayCastingTextureVAO);
 		glfuncs->glDrawArrays(GL_QUADS, 0, 4);
         glfuncs->glDisable(GL_TEXTURE_RECTANGLE);
 		glfuncs->glDisable(GL_TEXTURE_3D);
 		glfuncs->glDisable(GL_BLEND);
+
 		m_currentShader->release();
 	}
 	return true;
@@ -402,7 +429,8 @@ void SliceVolume::setFramebufferSize(int w, int h) {
     m_fbo = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
 	m_fbo->addColorAttachment(w, h);
 
-	static QVector<QVector2D> rayCastingVB = {
+	static QVector<QVector2D> rayCastingVB =
+	{
 		{ 0.0f,0.0f },
 		{ 0.0,static_cast<float>(h) },
 		{ static_cast<float>(w),static_cast<float>(h) },
