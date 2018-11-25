@@ -238,7 +238,7 @@ void RenderWidget::resizeGL(int w, int h)
 	if (m_pickFBO != nullptr);
 	delete m_pickFBO;
 	m_pickFBO = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
-
+	//glViewport(0, 0, w, h);
 	emit windowResized(w, h);
 }
 
@@ -281,7 +281,9 @@ void RenderWidget::paintGL()
 
 		m_volume->setTransform(world);
 		m_volume->render();
-		if (renderMode | RenderMode::SliceTexture) {
+
+		if (renderMode & RenderMode::SliceTexture) {
+
 			m_boundingBoxVAO.bind();
 			m_boundingBoxVBO.bind();
 			m_boundingBoxShader->bind();
@@ -294,7 +296,7 @@ void RenderWidget::paintGL()
 		}
 	}
 
-	if (renderMode & RenderMode::DVR) {
+	if (renderMode & RenderMode::SliceTexture) {
 
 		const auto viewMatrix = camera().view();
 		const auto cameraPos = camera().position();

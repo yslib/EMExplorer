@@ -428,8 +428,7 @@ void SliceVolume::setFramebufferSize(int w, int h) {
 		delete m_fbo;
     m_fbo = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
 	m_fbo->addColorAttachment(w, h);
-
-	static QVector<QVector2D> rayCastingVB =
+	QVector<QVector2D> rayCastingVB =
 	{
 		{ 0.0f,0.0f },
 		{ 0.0,static_cast<float>(h) },
