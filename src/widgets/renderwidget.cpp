@@ -1,5 +1,6 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFramebufferObject>
+#include <QPainter>
 #include <QMenu>
 
 #include "renderwidget.h"
@@ -136,7 +137,7 @@ GPUVolume* RenderWidget::volume() const
  */
 QSize RenderWidget::minimumSizeHint() const
 {
-	return QSize(400, 300);
+	return { 400,300 };
 }
 
 /**
@@ -144,7 +145,7 @@ QSize RenderWidget::minimumSizeHint() const
  */
 QSize RenderWidget::sizeHint() const
 {
-	return QSize(800, 600);
+	return { 800,600 };
 }
 
 /**
@@ -394,7 +395,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 	else if (event->buttons() & Qt::LeftButton)
 	{
-		m_camera.rotation(dx, dy, QVector3D(0, 0, 0));
+		m_camera.rotation(dx, dy);
 	}
 	else if (event->buttons() == Qt::RightButton)
 	{
@@ -560,6 +561,17 @@ void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& curren
  */
 void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
 {
+
+}
+
+void RenderWidget::drawCoordinate() 
+{
+	QVector<QVector3D> axisX = { {0.0f,0.0f,0.f},{1.0f,0.0f,0.0f} };
+	QVector<QVector3D> axisY = { {0.0f,0.0f,0.f},{0.0f,1.0f,0.0f} };
+	QVector<QVector3D> axisZ = { {0.0f,0.0f,0.f},{0.0f,0.0f,1.0f} };
+
+	auto view = m_camera.view();
+	view.setColumn(4, QVector4D(10,10,10,1));
 
 }
 

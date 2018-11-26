@@ -435,6 +435,7 @@ void SliceVolume::setFramebufferSize(int w, int h) {
 		{ static_cast<float>(w),static_cast<float>(h) },
 		{ static_cast<float>(w),0.0 }
 	};
+
 	m_rayCastingTextureVBO.bind();
 	m_rayCastingTextureVBO.write(0, rayCastingVB.constData(), rayCastingVB.count() * 2 * sizeof(GLfloat));
 	m_rayCastingTextureVBO.release();

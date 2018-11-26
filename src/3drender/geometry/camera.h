@@ -3,6 +3,7 @@
 
 #include "qmath.h"
 #include <QMatrix4x4>
+#include <QQuaternion>
 
 
 
@@ -174,7 +175,8 @@ public:
 	m_front(center-position),
 	m_worldUp(up),
 	m_movementSpeed(SPEED),
-	m_mouseSensitivity(SENSITIVITY), 
+	m_mouseSensitivity(SENSITIVITY),
+	m_center(center),
 	m_zoom(ZOOM)
 	{
 
@@ -197,25 +199,28 @@ public:
 	QVector3D position()const { return m_position; }
 
 	void setCenter(const QVector3D & center) {
-		m_front = (center - m_position);
-		m_right = QVector3D::crossProduct(m_front, m_worldUp);
-		m_up = QVector3D::crossProduct(m_right, m_front);
+		m_center = center;
+
+		m_front = (m_center - m_position).normalized();
+		m_right = QVector3D::crossProduct(m_front, m_worldUp).normalized();
+		m_up = QVector3D::crossProduct(m_right, m_front).normalized();
 	}
 
 	void movement(const QVector3D & direction, float deltaTime)
 	{
-		auto velocity = m_movementSpeed * direction*deltaTime;
+		const auto velocity = m_movementSpeed * direction*deltaTime;
 		m_position += velocity;
 	}
 
-	void rotation(float xoffset, float yoffset,const QVector3D & center)
+	void rotation(float xoffset, float yoffset)
 	{
 		xoffset *= m_mouseSensitivity;
 		yoffset *= m_mouseSensitivity;
-		double theta = 4.0 * (std::fabs(xoffset) + std::fabs(yoffset));
-		QVector3D v = (m_right*xoffset) + (m_up*yoffset);
-		QVector3D axis = QVector3D::crossProduct(v, -m_front).normalized();
-		updateCameraVectors(axis, center, theta);
+		const auto theta = 4.0 * (std::fabs(xoffset) + std::fabs(yoffset));
+		const auto v = ((m_right*xoffset) + (m_up*yoffset));
+		const auto axis = QVector3D::crossProduct(v, -m_front).normalized();
+
+		updateCameraVectors(axis,theta);
 
 	}
 	void processMouseScroll(float yoffset)
@@ -229,20 +234,24 @@ public:
 	}
 private:
 
-	void updateCameraVectors(const QVector3D & axis, const QVector3D& center, double theta)
+	void updateCameraVectors(const QVector3D & axis,double theta)
 	{
-		QMatrix4x4 rotation;
-		rotation.setToIdentity();
-		rotation.rotate(theta, axis);
-
-		m_position = (rotation * m_position);
-		m_front = (rotation * m_front);
-		m_up = (rotation * m_up);
+		//QMatrix4x4 rotation;
+		//rotation.setToIdentity();
+		//rotation.rotate(theta, axis);
+		const auto rotation = QQuaternion::fromAxisAndAngle(axis, theta);
+		QMatrix4x4 translation;
+		translation.setToIdentity();
+		translation.translate(-m_center);
+		m_position = translation.inverted()*(rotation * (translation * m_position));
+		m_front = (rotation * m_front.normalized());
+		m_up = (rotation * m_up.normalized());
 		m_right = QVector3D::crossProduct(m_front, m_up);
 		m_up = QVector3D::crossProduct(m_right, m_front);
 		m_front.normalize();
 		m_right.normalize();
 		m_up.normalize();
+		qDebug() << "asix:" << axis << " front:" << m_front << " up" << m_up << " right:" << m_right;
 	}
 };
 

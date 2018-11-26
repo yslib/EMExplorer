@@ -121,6 +121,7 @@ protected:
 	void			mousePressEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	void			mouseReleaseEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+	
 signals:
 	void			markModelChanged();
 	void			dataModelChanged();
@@ -142,6 +143,8 @@ private slots:
 	void			_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
 
 private:
+	void			drawCoordinate();
+
 	RenderWidgetPrivate* const d_ptr;
 	Q_DECLARE_PRIVATE(RenderWidget);
 
