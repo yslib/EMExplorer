@@ -1,6 +1,6 @@
 #include "mrcdatamodel.h"
 #include "mrc.h"
-#include <omp.h>
+
 
 #include <QDebug>
 
@@ -10,6 +10,10 @@ MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):
 {
 	Q_ASSERT_X(m_d->isOpened(), 
 		"MRCDataModel::MRCDataModel", "Invalid MRC Data.");
+	preCalc();
+
+	m_ompLock =new omp_lock_t;
+	omp_init_lock(m_ompLock);
 }
 /**
  * \brief  Returns the data type of the internal data
@@ -209,46 +213,50 @@ inline int MRCDataModel::frontSliceCount() const
 	return m_d->height();
 }
 
+MRCDataModel::~MRCDataModel() 
+{
+	omp_destroy_lock(m_ompLock);
+	delete m_ompLock;
+}
+
 void MRCDataModel::adjustImage(QImage& image) const {
 
 	const auto  height = image.height();
 	const auto width = image.width();
 
-	omp_lock_t lock;
+//	omp_lock_t lock;
+//
+//	auto sum = 0.0;
+////#pragma omp parallel for
+//	for (auto i = 0; i < height; i++)
+//	{
+//		const auto scanLine = image.scanLine(i);
+//		for (auto j = 0; j < width; j++)
+//		{
+//			//omp_set_lock(&lock);
+//			sum += scanLine[j];
+//			//omp_unset_lock(&lock);
+//		}
+//	}
+//
+//	const auto mean = sum / (width*height);
+//
+//	auto var = 0.0;
+////#pragma omp parallel for
+//	for (auto i = 0; i < height; i++)
+//	{
+//		const auto scanLine = image.scanLine(i);
+//		for (auto j = 0; j < width; j++)
+//		{
+//			//omp_set_lock(&lock);
+//			var += (scanLine[j] - mean)*(scanLine[j]-mean);
+//			//omp_unset_lock(&lock);
+//		}
+//	}
+//	var = std::sqrt(var/(width*height));
 
-	auto sum = 0.0;
-//#pragma omp parallel for
-	for (auto i = 0; i < height; i++)
-	{
-		const auto scanLine = image.scanLine(i);
-		for (auto j = 0; j < width; j++)
-		{
-			//omp_set_lock(&lock);
-			sum += scanLine[j];
-			//omp_unset_lock(&lock);
-		}
-	}
-
-	const auto mean = sum / (width*height);
-
-	auto var = 0.0;
-//#pragma omp parallel for
-	for (auto i = 0; i < height; i++)
-	{
-		const auto scanLine = image.scanLine(i);
-		for (auto j = 0; j < width; j++)
-		{
-			//omp_set_lock(&lock);
-			var += (scanLine[j] - mean)*(scanLine[j]-mean);
-			//omp_unset_lock(&lock);
-		}
-	}
-	var = std::sqrt(var/(width*height));
-
-	const auto min = mean - 3 * var;
-	const auto max = mean + 3 * var;
-
-	//qDebug() << "mean:" << mean << " var:" << var;
+	const auto min = m_statistic.mean - 3 * m_statistic.var;
+	const auto max = m_statistic.mean + 3 * m_statistic.var;
 
 #pragma omp parallel for
 	for (auto i = 0; i < height; i++)
@@ -259,5 +267,69 @@ void MRCDataModel::adjustImage(QImage& image) const {
 			const auto v = (scanLine[j] - min) / (max - min) * 255.0;
 			scanLine[j] = v < 0 ? 0 : (v > 255 ? 255 : v);
 		}
+	}
+}
+
+
+
+void MRCDataModel::preCalc() 
+{
+
+	m_statistic.var = 0.0;
+	m_statistic.mean = 0.0;
+	const auto count = m_d->width() * m_d->height() * m_d->slice();
+
+	// Calculate mean and var
+	switch (m_d->dataType())
+	{
+		case MRC::DataType::Integer8:
+		{
+			const auto data = m_d->data<MRC::MRCUInt8>();
+//#pragma omp parallel for
+			for(auto i = 0;i<count;i++) 
+			{
+//				omp_set_lock(m_ompLock);
+				m_statistic.mean += data[i];
+//				omp_unset_lock(m_ompLock);
+			}
+				
+			m_statistic.mean /= count;
+
+//#pragma omp parallel for
+			for (auto i = 0; i < count; i++) 
+			{
+//				omp_set_lock(m_ompLock);
+				m_statistic.var += (data[i] - m_statistic.mean)*(data[i] - m_statistic.mean);
+//				omp_unset_lock(m_ompLock);
+			}
+				
+			m_statistic.var = std::sqrt(m_statistic.var / count);
+		}
+		break;
+		case MRC::DataType::Real32:
+		{
+			const auto dmin = m_d->minValue();
+			const auto dmax = m_d->maxValue();
+			const auto data = m_d->data<MRC::MRCFloat>();
+			Q_ASSERT_X(data != nullptr, "MRCDataModel::originalFrontSlice", "type error");
+//#pragma omp parallel for
+			for(auto i = 0;i<count;i++) 
+			{
+//				omp_set_lock(m_ompLock);
+				m_statistic.mean += (data[i] - dmin) / (dmax - dmin) * 255;
+//				omp_unset_lock(m_ompLock);
+			}
+			m_statistic.mean /= count;
+
+//#pragma omp parallel for
+			for (auto i = 0; i < count; i++) {
+				const auto value = (data[i] - dmin) / (dmax - dmin) * 255;
+//				omp_set_lock(m_ompLock);
+				m_statistic.var += (value - m_statistic.mean)*(value - m_statistic.mean);
+//				omp_unset_lock(m_ompLock);
+			}
+			m_statistic.var = std::sqrt(m_statistic.var / count);
+		}
+		break;
 	}
 }

@@ -197,7 +197,7 @@ public:
 		return view;
 	}
 	QVector3D position()const { return m_position; }
-
+	QVector3D center()const { return m_center; }
 	void setCenter(const QVector3D & center) {
 		m_center = center;
 
@@ -251,7 +251,7 @@ private:
 		m_front.normalize();
 		m_right.normalize();
 		m_up.normalize();
-		qDebug() << "asix:" << axis << " front:" << m_front << " up" << m_up << " right:" << m_right;
+		//qDebug() << "asix:" << axis << " front:" << m_front << " up" << m_up << " right:" << m_right;
 	}
 };
 

@@ -33,6 +33,26 @@ private:
 	QOpenGLBuffer							m_positionEBO;
 	QOpenGLVertexArrayObject				m_positionVAO;
 
+	struct PolyResource
+	{
+		QOpenGLVertexArrayObject *vao;
+		QOpenGLBuffer *vbo;
+		int nVertex;
+
+		PolyResource():nVertex(0),
+		vao(new QOpenGLVertexArrayObject),
+		vbo(new QOpenGLBuffer) {}
+		~PolyResource()
+		{
+			vao->destroy();
+			vbo->destroy();
+			delete vao;
+			delete vbo;
+		}
+	};
+	QVector<PolyResource> m_polys;
+	bool m_polygonUpdate;
+
 	/*
 	 * Prefer raw pointer rather than smart pointer to manage following qt OpenGL helper classes.
 	 * Because these class need to explicitly initialize/destroy so as to deferred instance.
@@ -47,13 +67,15 @@ private:
 
 	QOpenGLBuffer							m_axisAlignedSliceVBO;
 	QOpenGLVertexArrayObject				m_axisAlignedSliceVAO;
+
+	QOpenGLBuffer							m_arbitrarySliceVBO;
+	QOpenGLVertexArrayObject				m_arbitrarySliceVAO;
+	QVector<QVector3D>						m_arbitrarySliceVertex;
 	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
 	QOpenGLBuffer							m_rayCastingTextureVBO;
 
-	//GradientCalculator						m_gradCalc;
+	//GradientCalculator					m_gradCalc;
 	QHash<RenderType, ShaderProgram*>		m_shaders;
-
-
 
 	int										m_topSlice;
 	int										m_rightSlice;
@@ -134,6 +156,10 @@ private:
 	static bool isInRange(double v) { return v >= 0 && v <= 1; }
 	static int getSign(double v) { if (v >= 0)return 1;  if (v < 0)return -1; }
 	static double clamp(double v, double a, double b) { if (v < a)return a; if (v > b)return b; return v; }
+	static void makeConvexPolygon(double A, double B, double C, QVector<QVector3D>& vertex);
+	void updatePolygons();
+	void drawEntryPoint();
+	static QVector3D sliceNormal(const QVector<QVector3D> & slice);
 };
 
 //inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
@@ -148,9 +174,13 @@ inline void SliceVolume::setSliceSphereCoord(const QVector3D & coord)
 	const auto y = r* sinPhi * std::cos(qDegreesToRadians(theta))+0.5;
 	const auto z = r * std::cos(qDegreesToRadians(phi))+0.5;
 	m_A = x-0.5;
-	m_B = y -0.5;
-	m_C = z -0.5;
+	m_B = y-0.5;
+	m_C = z-0.5;
 	m_D = -x * (m_A) - y * ( m_B) - z * (m_C);
+
+	m_polygonUpdate = true;
+	//const auto arbitrary = sliceCoord(m_A, m_B, m_C, m_D);
+
 }
 
 

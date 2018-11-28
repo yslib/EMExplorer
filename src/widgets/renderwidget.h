@@ -17,6 +17,8 @@
 
 
 
+
+
 class MarkModel;
 class AbstractSliceDataModel;
 class ShaderProgram;
@@ -113,7 +115,7 @@ public:
 	GPUVolume*	    volume()const;
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
 	QSize			sizeHint() const Q_DECL_OVERRIDE;
-    ~RenderWidget()override;
+					~RenderWidget()override;
 protected:
 	void			initializeGL() Q_DECL_OVERRIDE;
 	void			resizeGL(int w, int h) Q_DECL_OVERRIDE;
@@ -143,7 +145,9 @@ private slots:
 	void			_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
 
 private:
-	void			drawCoordinate();
+	void			drawCoordinate(QPainter* painter);
+	void			drawThreeAxis();
+	QMatrix4x4		worldMatrix()const;
 
 	RenderWidgetPrivate* const d_ptr;
 	Q_DECLARE_PRIVATE(RenderWidget);
@@ -181,10 +185,14 @@ private:
 	QOpenGLShaderProgram					*m_selectShader;
 	QOpenGLFramebufferObject				*m_pickFBO;
 
+	QOpenGLShaderProgram					*m_trivialShader;
 	// Boundingbox
-	QOpenGLShaderProgram					*m_boundingBoxShader;
 	QOpenGLBuffer							 m_boundingBoxVBO;
 	QOpenGLVertexArrayObject				 m_boundingBoxVAO;
+
+	// axis
+	QOpenGLBuffer							 m_axisVBO;
+	QOpenGLVertexArrayObject				 m_axisVAO;
 
 	friend class RenderParameterWidget;
 	friend class TriangleMesh;

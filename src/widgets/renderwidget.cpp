@@ -33,7 +33,14 @@ static int cubeVertIndex[] =
 	5,1,3,7		// back
 };
 
-static const char boundingBoxVertexShader[] = "#version 330\n"
+QVector<QVector3D> axisVertex
+{
+	{0.f,0.f,0.f},{1.0f,0.f,0.f},						// X axis
+	{0.f,0.f,0.f},{0.f,1.f,0.f},						// Y axis
+	{0.f,0.f,0.f},{0.f,0.f,1.f}							// Z axis
+};
+
+static const char trivialVertexShader[] = "#version 330\n"
 "uniform mat4 modelViewMat;\n"
 "uniform mat4 projMat;\n"
 "layout(location = 0) in vec3 vertex;\n"
@@ -42,11 +49,12 @@ static const char boundingBoxVertexShader[] = "#version 330\n"
 "	gl_Position = projMat * modelViewMat*vec4(vertex, 1.0);\n"
 "}\n";
 
-static const char boundingBoxFragShader[] = "#version 330\n"
+static const char trivialFragShader[] = "#version 330\n"
 "out vec4 fgColor;\n"
+"uniform vec4 color;\n"
 "void main()\n"
 "{\n"
-"	fgColor = vec4(1.0f, 0.0f, 0.0f, 1.0);\n"
+"	fgColor = color;\n"
 "}\n";
 
 
@@ -70,7 +78,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_volume(nullptr),
 	m_meshShader(nullptr),
 	m_selectShader(nullptr),
-	m_boundingBoxShader(nullptr),
+	m_trivialShader(nullptr),
 	m_pickFBO(nullptr),
 	d_ptr(new RenderWidgetPrivate(this))
 {
@@ -194,19 +202,19 @@ void RenderWidget::initializeGL()
 	}
 
 
-	// Bounding box resources
-
-		// boundingbox
-	m_boundingBoxShader = new QOpenGLShaderProgram;
-	m_boundingBoxShader->create();
-	m_boundingBoxShader->addShaderFromSourceCode(QOpenGLShader::Vertex, boundingBoxVertexShader);
-	m_boundingBoxShader->addShaderFromSourceCode(QOpenGLShader::Fragment, boundingBoxFragShader);
-	if (m_boundingBoxShader->link() == false)
+	// Trival Shader
+	m_trivialShader = new QOpenGLShaderProgram;
+	m_trivialShader->create();
+	m_trivialShader->addShaderFromSourceCode(QOpenGLShader::Vertex, trivialVertexShader);
+	m_trivialShader->addShaderFromSourceCode(QOpenGLShader::Fragment, trivialFragShader);
+	if (m_trivialShader->link() == false)
 	{
 		qFatal("Boundingbox Shader is not linked");
 	}
+
+	// Bounding box
 	m_boundingBoxVAO.create();
-	Q_ASSERT_X(m_boundingBoxVAO.isCreated(), "", " bb vao");
+	Q_ASSERT_X(m_boundingBoxVAO.isCreated(), "", "bounding box vao");
 	m_boundingBoxVAO.bind();
 	m_boundingBoxVBO.create();
 	m_boundingBoxVBO.bind();
@@ -214,8 +222,16 @@ void RenderWidget::initializeGL()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
 
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
+	// Axis
+	m_axisVAO.create();
+	Q_ASSERT_X(m_axisVAO.isCreated(), "", "axis vao");
+	m_axisVAO.bind();
+	m_axisVBO.create();
+	m_axisVBO.bind();
+	m_axisVBO.allocate(sizeof(QVector3D) * 2);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
+
 
 	doneCurrent();
 }
@@ -252,19 +268,21 @@ void RenderWidget::paintGL()
 {
 	//Q_ASSERT_X(m_parameterWidget != nullptr, "VolumeWidget::paintGL", "null pointer");
 	Q_D(RenderWidget);
+	glEnable(GL_DEPTH_TEST);
 
 	const auto renderMode = d->options->mode;
 	//
-	const auto xs = d->options->xSpacing;
-	const auto ys = d->options->ySpacing;
-	const auto zs = d->options->zSpacing;
+	const auto world = worldMatrix();
 
-	QMatrix4x4 world;
-	world.setToIdentity();
-	world.scale(xs, ys, zs);
+	const auto center = d->volumeNormalTransform*world*QVector3D(0.5, 0.5, 0.5);
 
-	//
-	m_camera.setCenter(d->volumeNormalTransform*world*QVector3D(0.5, 0.5, 0.5));
+	//update camera center
+	m_camera.setCenter(center);
+
+	// update coordinate origin
+	//axisVertex = { center,center + QVector3D{1.0f,0.0f,0.0f},center,center + QVector3D{0.0f,1.0f,0.0f}, center,center + QVector3D{0.0f,0.0f,1.0f}};
+	//m_axisVBO.write(0,axisVertex.constData(), sizeof(QVector3D)*axisVertex.size());
+
 
 	if (m_volume != nullptr) {
 		if (renderMode & RenderMode::DVR) {
@@ -274,11 +292,11 @@ void RenderWidget::paintGL()
 		else if (renderMode & RenderMode::SliceTexture) {
 			//m_volume->sliceMode(true)
 			m_volume->setRenderType(SliceVolume::RenderType::Slice);
-			m_volume->setSliceSphereCoord(d->options->sliceNormal);
 		}
 		else if (renderMode & RenderMode::Modulo) {
 			m_volume->setRenderType(SliceVolume::RenderType::Modulo);
 		}
+		m_volume->setSliceSphereCoord(d->options->sliceNormal);
 
 		m_volume->setTransform(world);
 		m_volume->render();
@@ -287,13 +305,18 @@ void RenderWidget::paintGL()
 
 			m_boundingBoxVAO.bind();
 			m_boundingBoxVBO.bind();
-			m_boundingBoxShader->bind();
-			m_boundingBoxShader->setUniformValue("modelViewMat", camera().view()*world*d->volumeNormalTransform);
-			m_boundingBoxShader->setUniformValue("projMat", m_proj);
+			m_trivialShader->bind();
+			m_trivialShader->setUniformValue("modelViewMat", camera().view()*world*d->volumeNormalTransform);
+			m_trivialShader->setUniformValue("projMat", m_proj);
+			m_trivialShader->setUniformValue("color", QVector4D{ 1.0f,0.0f,0.0f,1.0f });
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glDrawArrays(GL_QUADS, 0, 24);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			m_trivialShader->release();
+			m_boundingBoxVAO.release();
+
 		}
 	}
 
@@ -373,6 +396,12 @@ void RenderWidget::paintGL()
 
 		m_meshShader->release();
 	}
+
+	drawThreeAxis();
+
+
+
+	glDisable(GL_DEPTH_TEST);		// Depth test must be closed if draw something with QPainter next
 }
 
 void RenderWidget::mousePressEvent(QMouseEvent* event)
@@ -564,15 +593,80 @@ void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & 
 
 }
 
-void RenderWidget::drawCoordinate() 
+void RenderWidget::drawCoordinate(QPainter* painter)
 {
-	QVector<QVector3D> axisX = { {0.0f,0.0f,0.f},{1.0f,0.0f,0.0f} };
-	QVector<QVector3D> axisY = { {0.0f,0.0f,0.f},{0.0f,1.0f,0.0f} };
-	QVector<QVector3D> axisZ = { {0.0f,0.0f,0.f},{0.0f,0.0f,1.0f} };
+	const auto view = m_camera.view();
 
+	const QPen pen(Qt::red, 2, Qt::SolidLine);
+
+	//qDebug() << view.column(0) <<" "<< view.column(1) << " " << view.column(2);
+
+	const auto axisX = (m_proj * view.column(0)).toVector2DAffine().toPointF();
+	const auto axisY = (m_proj * view.column(1)).toVector2DAffine().toPointF();
+	const auto axisZ = (m_proj * view.column(2)).toVector2DAffine().toPointF();
+
+	const auto o = QPointF{ 100.f,static_cast<float>((size().height() - 100)) };
+
+	const QVector<QLineF> lines{ {o,axisX},{o,axisY},{o,axisZ} };
+
+	painter->setPen(pen);
+	painter->drawLines(lines);
+}
+
+//QLineF RenderWidget::lineOnScreen(const QVector3D& begin, const QVector3D& end) 
+//{
+//	const auto view = QMatrix4x4(m_camera.view().toGenericMatrix<3,3>());
+//
+//}
+
+void RenderWidget::drawThreeAxis()
+{
+	//Q_D(RenderWidget);
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+	const auto wh = size();
+	glViewport(0, 0, wh.width()*0.1, wh.height()*0.1);
+	//const auto view = QMatrix4x4(m_camera.view().toGenericMatrix<3, 3>());
 	auto view = m_camera.view();
-	view.setColumn(4, QVector4D(10,10,10,1));
+	const auto pos = view.column(3).toVector3D().normalized();
+	auto newPos = (pos - m_camera.center()).normalized() + m_camera.center();
+	view.setColumn(3, QVector4D(pos, 1.0));
 
+	m_trivialShader->bind();
+	m_trivialShader->setUniformValue("modelViewMat", view);
+	m_trivialShader->setUniformValue("projMat", m_proj);
+	glLineWidth(2.0f);
+	{
+		QOpenGLVertexArrayObject::Binder binder(&m_axisVAO);
+		m_axisVBO.bind();
+		QVector<QVector3D> lineX = { {0.f,0.f,0.f},{1.0f,0.0f,0.0f} };
+		QVector<QVector3D> lineY = { {0.f,0.f,0.f},{0.0f,1.0f,0.0f} };
+		QVector<QVector3D> lineZ = { {0.f,0.f,0.f},{0.0f,0.0f,1.0f} };
+		m_axisVBO.write(0, lineX.constData(),sizeof(QVector3D) * lineX.size());
+		m_trivialShader->setUniformValue("color", QVector4D{ 1.0f,0.0f,0.0f,1.0f });
+		glDrawArrays(GL_LINES, 0, 2);
+		m_axisVBO.write(0, lineY.constData(),sizeof(QVector3D) * lineY.size());
+		m_trivialShader->setUniformValue("color", QVector4D{ 0.0f,1.0f,0.0f,1.0f });
+		glDrawArrays(GL_LINES, 0, 2);
+		m_axisVBO.write(0, lineZ.constData(),sizeof(QVector3D) * lineZ.size());
+		m_trivialShader->setUniformValue("color", QVector4D{ 0.0f,0.0f,1.0f,1.0f });
+		glDrawArrays(GL_LINES, 0, 2);
+
+	}
+	glLineWidth(1.0f);
+	m_trivialShader->release();
+	glViewport(0, 0, wh.width(), wh.height());
+}
+
+QMatrix4x4 RenderWidget::worldMatrix() const
+{
+	const auto xs = d_ptr->options->xSpacing;
+	const auto ys = d_ptr->options->ySpacing;
+	const auto zs = d_ptr->options->zSpacing;
+	QMatrix4x4 world;
+	world.setToIdentity();
+	world.scale(xs, ys, zs);
+	return world;
 }
 
 /**
@@ -645,8 +739,10 @@ void RenderWidget::updateVolumeData()
 
 	d->volumeNormalTransform.setToIdentity();		//Transform size from (1,1,1) to (x/N,y/N,z/N)
 	d->volumeNormalTransform.scale(m_scale);
+
 	QMatrix4x4 I;
 	I.setToIdentity();
+	I.translate(-0.5, -0.5, -0.5);
 
 	// Decide data format
 
@@ -699,8 +795,8 @@ void RenderWidget::cleanup()
 	m_tfTexture = nullptr;
 	delete m_pickFBO;
 	m_pickFBO = nullptr;
-	delete m_boundingBoxShader;
-	m_boundingBoxShader = nullptr;
+	delete m_trivialShader;
+	m_trivialShader = nullptr;
 
 
 	m_boundingBoxVAO.destroy();
