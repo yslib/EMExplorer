@@ -11,7 +11,7 @@
 	}		
 
 
-Volume::Volume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat& fmt):
+Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, const VolumeFormat& fmt):
 	m_xSize(xSize)
 	, m_ySize(ySize)
 	, m_zSize(zSize)
@@ -19,7 +19,7 @@ Volume::Volume(const void * data, int xSize, int ySize, int zSize, const VolumeF
 	, m_data(nullptr)
 	, m_isoStat(nullptr)
 {
-	int voxelChannel = 0;
+	auto voxelChannel = 0;
 	switch (m_fmt.fmt) 
 	{
 		case VoxelFormat::Grayscale:voxelChannel = 1; break;

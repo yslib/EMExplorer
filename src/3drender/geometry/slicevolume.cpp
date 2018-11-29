@@ -19,27 +19,6 @@ static float positionVert[] = {
 	xCoord, yCoord, zCoord ,
 };
 
-//static float positionVertX[] = {
-//	0-offset,0-offset,0-offset,
-//	xCoord-offset, 0-offset, 0-offset ,
-//	0 - offset, yCoord-offset, 0 -offset,
-//	xCoord - offset, yCoord - offset, 0 - offset ,
-//	0, 0, zCoord ,
-//	xCoord, 0, zCoord ,
-//	0, yCoord, zCoord ,
-//	xCoord, yCoord, zCoord ,
-//};
-
-//static float positionVert[] = {
-//	-0.5,-0.5,-0.5,
-//	0.5, 1.0, 1.0 ,
-//	0, yCoord, 0 ,
-//	xCoord, yCoord, 0 ,
-//	0, 0, zCoord ,
-//	xCoord, 0, zCoord ,
-//	0, yCoord, zCoord ,
-//	xCoord, yCoord, zCoord ,
-//};
 
 #define GLERROR(str)									\
 	{													\
@@ -59,7 +38,6 @@ void SliceVolume::loadDataAndGradientToTexture() {
 	//	m_gradCalc.calcGradent();		//Time-consuming
 
 	//const auto d = m_gradCalc.data3();
-
 	const auto z = zLength();
 	const auto y = yLength();
 	const auto x = xLength();
@@ -81,111 +59,132 @@ void SliceVolume::loadDataAndGradientToTexture() {
 
 		switch (fmt.fmt)
 		{
-		case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
-		case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
-		case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;;
-		default: Q_ASSERT(false);
+			case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
+			case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
+			case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;;
+			default: Q_ASSERT(false);
 		}
 
 		switch (fmt.type)
 		{
-		case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
-		case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
-		default: Q_ASSERT(false);
-
+			case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
+			case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
+			default: Q_ASSERT(false);
 		}
 		m_volumeTexture->setData(pfmt, ptype, data());		//External format
 	}
 }
 
-unsigned SliceVolume::volumeTexId() const {
+unsigned SliceVolume::volumeTexId() const 
+{
 	return m_volumeTexture->textureId();
 }
-QVector3D SliceVolume::voxelSize() const {
+QVector3D SliceVolume::voxelSize() const 
+{
 	return QVector3D(xLength(), yLength(), zLength());
 }
-unsigned SliceVolume::startPosTexIdx() const {
+unsigned SliceVolume::startPosTexIdx() const 
+{
 	return m_fbo->textures()[0];
 }
-unsigned SliceVolume::endPosTexIdx() const {
+unsigned SliceVolume::endPosTexIdx() const 
+{
 	return m_fbo->textures()[1];
 }
-unsigned SliceVolume::gradientTexId() const {
+unsigned SliceVolume::gradientTexId() const 
+{
 	return 0;
 	//return m_gradientTexture->textureId();
 }
-float SliceVolume::rayStep() const {
+float SliceVolume::rayStep() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::rayStep", "null pointer");
 	return m_renderer->m_rayStep;
 }
-unsigned SliceVolume::transferFunctionsTexId() const {
+unsigned SliceVolume::transferFunctionsTexId() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::transferFunctionsTexId", "null pointer");
 	//qDebug() << m_renderer->m_tfTexture;
 	if (m_renderer->m_tfTexture == nullptr) return 0;
 	return m_renderer->m_tfTexture->textureId();
 }
-QVector3D SliceVolume::cameraPos() const {
+QVector3D SliceVolume::cameraPos() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraPos", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.position();
 }
-QVector3D SliceVolume::cameraTowards() const {
+QVector3D SliceVolume::cameraTowards() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::Towards", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.front();
 }
-QVector3D SliceVolume::cameraUp() const {
+QVector3D SliceVolume::cameraUp() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraUp", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.up();
 }
-QVector3D SliceVolume::cameraRight() const {
+QVector3D SliceVolume::cameraRight() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraRight", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.right();
 }
-QMatrix4x4 SliceVolume::viewMatrix() const {
+QMatrix4x4 SliceVolume::viewMatrix() const 
+{
 	const auto & cam = m_renderer->camera();
 	return cam.view();
 }
-QMatrix4x4 SliceVolume::worldMatrix() const {
+QMatrix4x4 SliceVolume::worldMatrix() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::worldMatrix", "null pointer");
 	return m_normalizeTransform * transform();
 }
-QMatrix4x4 SliceVolume::othoMatrix() const {
+QMatrix4x4 SliceVolume::othoMatrix() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::othoMatrix", "null pointer");
 	return m_renderer->m_otho;
 }
-QMatrix4x4 SliceVolume::perspMatrix() const {
+QMatrix4x4 SliceVolume::perspMatrix() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::perspMatrix", "null pointer");
 	return m_renderer->m_proj;
 }
-QVector3D SliceVolume::lightDirection() const {
+QVector3D SliceVolume::lightDirection() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::lightDirection", "null pointer");
 
 	return m_renderer->d_ptr->options->lightDirection;
 }
-float SliceVolume::ambient() const {
+float SliceVolume::ambient() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::ambient", "null pointer");
 	return m_renderer->d_ptr->options->ambient;
 }
-float SliceVolume::diffuse() const {
+float SliceVolume::diffuse() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::diffuse", "null pointer");
 	return m_renderer->d_ptr->options->diffuse;
 }
-float SliceVolume::shininess() const {
+float SliceVolume::shininess() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::shininess", "null pointer");
 	return m_renderer->d_ptr->options->shininess;
 }
-float SliceVolume::specular() const {
+float SliceVolume::specular() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::specular", "null pointer");
 	return m_renderer->d_ptr->options->specular;
 }
-QVector3D SliceVolume::volumeBound() const {
+QVector3D SliceVolume::volumeBound() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::volumeBound", "null pointer");
 	return m_renderer->m_volumeBound;
 }
-QSize SliceVolume::windowSize() const {
+QSize SliceVolume::windowSize() const 
+{
 	Q_ASSERT_X(m_renderer, "SliceVolume::windowSize", "null pointer");
 	return m_renderer->size();
 }
@@ -253,32 +252,33 @@ bool SliceVolume::initializeGLResources() {
 	m_positionEBO.allocate(faceIndex, sizeof(faceIndex));
 	m_positionVBO.release();
 
-	// Initilize ray casting shader
+	// initialize  shaders
 
 	m_shaders.clear();
-
 	m_currentShader = new RayCastingShader;
-	m_currentShader->link();
-	Q_ASSERT_X(m_currentShader->isLinked(), "VolumeWidget::initializeGL", "currentShader linking failed.");
-	m_rayCastingTextureVAO.create();
-	QOpenGLVertexArrayObject::Binder binder(&m_rayCastingTextureVAO);
-	m_rayCastingTextureVBO.create();
-	m_rayCastingTextureVBO.bind();
-	m_currentShader->bind();
-	m_rayCastingTextureVBO.allocate(8 * sizeof(GLfloat));
-	glfuncs->glEnableVertexAttribArray(0);
-	glfuncs->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
-	glfuncs->glEnableVertexAttribArray(1);
-	glfuncs->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
-	m_rayCastingTextureVBO.release();
-
+	Q_ASSERT_X(m_currentShader->link(), "SliceVolume::initializeGLResources", "RayCastingShader linking failed.");
 	m_shaders[RenderType::DVR] = m_currentShader;
+
 	auto modulo = new RayCastingModuloShader;
-	Q_ASSERT_X(modulo->link(), "SliceVolume::initializeGLResources", "Modulo shader linking failed");
+	Q_ASSERT_X(modulo->link(), "SliceVolume::initializeGLResources", "RayCastingModulo shader linking failed.");
 	m_shaders[RenderType::Modulo] = modulo;
 
 	m_sliceShader = new SliceShader;
-	m_sliceShader->link();
+	Q_ASSERT_X(m_sliceShader->link(),"SliceVolume::initializeGLResources","Slice shader linking failed.");
+
+	// Ray casting vao
+	{
+		m_rayCastingTextureVAO.create();
+		QOpenGLVertexArrayObject::Binder binder(&m_rayCastingTextureVAO);
+		m_rayCastingTextureVBO.create();
+		m_rayCastingTextureVBO.bind();
+		m_rayCastingTextureVBO.allocate(8 * sizeof(GLfloat));
+		glfuncs->glEnableVertexAttribArray(0);
+		glfuncs->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+		glfuncs->glEnableVertexAttribArray(1);
+		glfuncs->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+		m_rayCastingTextureVBO.release();
+	}
 
 	// axis-aligned slice vao and vbo
 	{
@@ -293,6 +293,7 @@ bool SliceVolume::initializeGLResources() {
 		glfuncs->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));	//texture coord
 
 	}
+
 	// arbitrary slice vao and vbo
 	{
 		m_arbitrarySliceVAO.create();
@@ -309,11 +310,12 @@ bool SliceVolume::initializeGLResources() {
 
 	m_polys.resize(6);
 	for (int i = 0; i < 6; i++) {
+		m_polys[i].vao = new QOpenGLVertexArrayObject;
+		m_polys[i].vbo = new QOpenGLBuffer;
 		auto & vao = m_polys[i].vao;
 		auto & vbo = m_polys[i].vbo;
 		vao->create();
 		QOpenGLVertexArrayObject::Binder binder(vao);
-
 		vbo->create();
 		vbo->bind();
 		glfuncs->glEnableVertexAttribArray(0);
@@ -321,9 +323,6 @@ bool SliceVolume::initializeGLResources() {
 		glfuncs->glEnableVertexAttribArray(1);
 		glfuncs->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));	//texture coord
 	}
-
-	//
-
 
 	//load volume data and gradient
 	loadDataAndGradientToTexture();
@@ -346,7 +345,12 @@ void SliceVolume::destroyGLResources()
 
 	for(auto & item:m_polys) 
 	{
-		item.~PolyResource();
+		item.vao->destroy();
+		item.vao->destroy();
+		delete item.vao;
+		delete item.vbo;
+		item.vao = nullptr;
+		item.vbo = nullptr;
 	}
 
 	delete m_volumeTexture;

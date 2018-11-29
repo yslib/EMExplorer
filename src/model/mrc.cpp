@@ -2,6 +2,7 @@
 #include <cassert>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 
 #include "mrc.h"
 
@@ -125,49 +126,65 @@ MRC MRC::fromMRC(const MRC & otherMRC, unsigned char * data)
 bool MRC::open(const std::string &fileName)
 {
 	detach();
-	FILE * fp = fopen(fileName.c_str(), "rb");
-	if (fp != nullptr) {
-		bool noError = true;
-		if (true == noError) {
-			noError = headerReadHelper(fp, &m_header);
+	//FILE * fp = fopen(fileName.c_str(), "rb");
+	std::ifstream inFile(fileName.c_str(), std::ifstream::binary);
+	if (inFile.is_open()) {
+		auto noError = true;
+		if (noError) 
+		{
+			noError = headerReadHelper(inFile, &m_header);
 		}
-		if (true == noError) {
-			noError = readDataFromFileHelper(fp);
+		if (noError) 
+		{
+			noError = readDataFromFileHelper(inFile);
 		}
 		m_opened = noError;
-		fclose(fp);
 	}
 	return m_opened;
 }
 bool MRC::save(const std::string & fileName, MRC::Format format)
 {
-	FILE * fp = fopen(fileName.c_str(), "wb");
-	if (fp == nullptr) {
+	//FILE * fp = fopen(fileName.c_str(), "wb");
+	std::ofstream out;
+
+	if (!out.is_open() ) {
 		std::cerr << "Cannot create file\n";
 		return false;
 	}
-	size_t elemSize = typeSize(dataType());
-	size_t dataCount = m_header.nx*m_header.ny*m_header.nz;
+	const auto elemSize = typeSize(dataType());
+	const auto dataCount = m_header.nx*m_header.ny*m_header.nz;
 	if (format == Format::MRC) {
-		headerWriteHelper(fp, &m_header);
-		fseek(fp, MRC_HEADER_SIZE, SEEK_SET);
-		size_t count = fwrite(m_d->data, elemSize, dataCount, fp);
-		if (count != dataCount) {
+		headerWriteHelper(out, &m_header);
+		//fseek(fp, MRC_HEADER_SIZE, SEEK_SET);
+		//size_t count = fwrite(m_d->data, elemSize, dataCount, fp);
+		out.seekp(MRC_HEADER_SIZE, out.beg);
+		out.write(static_cast<char*>(m_d->data), elemSize*dataCount);
+		const auto end = out.tellp();
+		out.seekp(MRC_HEADER_SIZE, out.beg);
+		const auto begin = out.tellp();
+		const auto count = end - begin;
+
+		if (count != dataCount*elemSize) {
 			std::cerr << count << " of " << dataCount << " Byte(s) have(has) been written\n";
-			fclose(fp);
 			return false;
 		}
 	}
 	else if (format == Format::RAW) {
-		rewind(fp);
-		size_t count = fwrite(m_d->data, elemSize, dataCount, fp);
-		if (count != dataCount) {
+		//rewind(fp);
+
+		//const auto count = fwrite(m_d->data, elemSize, dataCount, fp);
+		//out.seekp(MRC_HEADER_SIZE, out.beg);
+		out.write(static_cast<char*>(m_d->data), elemSize*dataCount);
+		const auto end = out.tellp();
+		out.seekp(0, out.beg);
+		const auto begin = out.tellp();
+		const auto count = end - begin;
+
+		if (count != dataCount * elemSize) {
 			std::cerr << count << " of " << dataCount << " Byte(s) have(has) been written\n";
-			fclose(fp);
 			return false;
 		}
 	}
-	fclose(fp);
 	return true;
 }
 
@@ -342,13 +359,19 @@ void MRC::UpdateDminDmaxDmeanRMSHelper()
 }
 
 //Only for byte and float data
-bool MRC::headerReadHelper(FILE * fp, MRCHeader *hd)
+bool MRC::headerReadHelper(std::ifstream & in, MRCHeader *hd)
 {
-	if (fp == nullptr)return false;
-	rewind(fp);
-	//unsigned char hdBuffer[MRC_HEADER_SIZE];
-	int elemSize = 0;
-	elemSize = fread(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
+	if (!in.is_open())
+		return false;
+	in.seekg(0, in.beg);
+	//rewind(fp);
+	unsigned char hdBuffer[MRC_HEADER_SIZE];
+	//int elemSize = 0;
+	//elemSize = fread(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
+	in.read((char*)hdBuffer, MRC_HEADER_SIZE);
+
+	const auto elemSize = in.gcount();
+
 	if (elemSize != MRC_HEADER_SIZE) {
 		std::cerr << "ERROR:Read " << elemSize << " of " << MRC_HEADER_SIZE << std::endl;
 		return false;
@@ -389,9 +412,9 @@ bool MRC::headerReadHelper(FILE * fp, MRCHeader *hd)
 	return true;
 }
 
-bool MRC::headerWriteHelper(FILE * fp, MRCHeader * hd)
+bool MRC::headerWriteHelper(std::ofstream & out, MRCHeader * hd)
 {
-	if (fp == nullptr)return false;
+	if (!out.is_open())return false;
 	unsigned char hdBuffer[MRC_HEADER_SIZE];
 	memcpy(hdBuffer + NX_OFFSET, &hd->nx, sizeof(MRCInt32));
 	memcpy(hdBuffer + NY_OFFSET, &hd->ny, sizeof(MRCInt32));
@@ -424,8 +447,11 @@ bool MRC::headerWriteHelper(FILE * fp, MRCHeader * hd)
 	memcpy(hdBuffer + XORIGIN_OFFSET, &hd->xorg, sizeof(MRCFloat));
 	memcpy(hdBuffer + YORIGIN_OFFSET, &hd->yorg, sizeof(MRCFloat));
 	memcpy(hdBuffer + ZORIGIN_OFFSET, &hd->zorg, sizeof(MRCFloat));
-	rewind(fp);
-	fwrite(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
+
+	out.seekp(0, out.beg);
+	//fwrite(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE);
+	out.write((char*)hdBuffer, MRC_HEADER_SIZE);
+
 	return true;
 }
 
@@ -464,29 +490,34 @@ std::string MRC::propertyInfoString(const MRCHeader *header) const
 	return ss.str();
 }
 
-bool MRC::readDataFromFileHelper(FILE *fp)
+bool MRC::readDataFromFileHelper(std::ifstream& in)
 {
 	bool noError = true;
 	if (true == noError) {
-		if (fp == nullptr) {
+		if (!in.is_open()) {
 			noError = false;
 		}
 	}
 	if (true == noError) {
-		fseek(fp, MRC_HEADER_SIZE, SEEK_SET);
 
-		const size_t dataCount = m_header.nx*m_header.ny*m_header.nz;
-		const size_t elemSize = typeSize(dataType());
+		in.seekg(MRC_HEADER_SIZE, in.beg);
+		const size_t dataCount = static_cast<size_t>(m_header.nx)*static_cast<size_t>(m_header.ny)*static_cast<size_t>(m_header.nz);		// size_t is important
+		const auto elemSize = typeSize(dataType());
 		std::cout << "data count :" << dataCount << " element size:" << elemSize << std::endl;
-
-
-
 		if (MRC_MODE_BYTE == m_header.mode) {
 			//transform into byte8 type
 			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
-			const int readCount = fread(m_d->data, elemSize, dataCount, fp);
-			if (readCount != dataCount) {
-				std::cerr << "Runtime Error: Reading size error." << __LINE__ << std::endl;
+
+			//const auto begin = in.tellg();
+			//in.seekg(0, in.end);
+			//const auto end = in.tellg();
+			//std::cout << "Max file size supported:"<<end-begin<<" bytes.\n";
+			//in.seekg(MRC_HEADER_SIZE, in.beg);
+
+			in.read((char*)m_d->data, dataCount*elemSize);
+			const auto readCount = in.gcount();
+			if (readCount != dataCount * elemSize) {
+				std::cerr << "Runtime Error: Reading size error.>>>" << __LINE__ << std::endl;
 				noError = false;
 			}
 		}
@@ -499,9 +530,11 @@ bool MRC::readDataFromFileHelper(FILE *fp)
 				return false;
 			}
 			//std::unique_ptr<MRCFloat[]> buffer(new float[dataCount]);
-			const int readCount = fread(this->m_d->data, elemSize, dataCount, fp);
+			in.read((char*)m_d->data, dataCount*elemSize);
+			const auto readCount = in.gcount();
+			//const size_t readCount = fread(this->m_d->data, elemSize, dataCount, fp);
 
-			if (readCount != dataCount)
+			if (readCount != dataCount*elemSize)
 			{
 				std::cerr << "Runtime Error: Reading size error. Read Count:" << readCount << ". DataCount: " << dataCount << ". >>>" << __LINE__ << std::endl;
 				noError = false;
@@ -511,23 +544,26 @@ bool MRC::readDataFromFileHelper(FILE *fp)
 		}
 		else if (MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode) {
 			std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
-			const int readCount = fread(buffer.get(), elemSize, dataCount, fp);
-			if (readCount != dataCount) {
-				std::cerr << "Runtime Error: Reading size error." << __LINE__ << std::endl;
+			in.read((char*)m_d->data, dataCount*elemSize);
+			const auto readCount = in.gcount();
+			//const size_t readCount = fread(buffer.get(), elemSize, dataCount, fp);
+			if (readCount != dataCount * elemSize) {
+				std::cerr << "Runtime Error: Reading size error.>>>" << __LINE__ << std::endl;
 				noError = false;
 			}
 			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
 			if (true == noError) {
-				auto dmin = static_cast<MRCInt16>(m_header.dmin);
-				auto dmax = static_cast<MRCInt16>(m_header.dmax);
-				double k = 256.0 / (dmax - dmin);
+				const auto dmin = static_cast<MRCInt16>(m_header.dmin);
+				const auto dmax = static_cast<MRCInt16>(m_header.dmax);
+				const auto k = 256.0 / (dmax - dmin);
 				for (size_t i = 0; i < dataCount; i++)
 					static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt16>(k*buffer[i]);
 			}
 			m_header.mode = MRC_MODE_BYTE;
 		}
-		else {
-			std::cerr << "Unsupported Formate now.\n";
+		else 
+		{
+			std::cerr << "Unsupported Format now.\n";
 			return false;
 		}
 	}

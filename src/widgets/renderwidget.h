@@ -176,7 +176,7 @@ private:
 	//Mark Mesh
 
 	QList<MeshIntegration>					m_integration;
-	BiMap<QPersistentModelIndex,int>			m_query;
+	BiMap<QPersistentModelIndex,int>		m_query;
 
 	QScopedPointer<SliceVolume>				m_volume;
 

@@ -457,101 +457,75 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		if (!file.isOpen())
 			return false;
 
-
 		QDataStream stream(&file);
 		stream.setVersion(QDataStream::Qt_5_8);
-
 		stream << static_cast<qint32>(MagicNumber);			// Magic Number first
 		stream << m_identity;								// Identity Tester
 		stream << static_cast<TreeItem*>(m_rootItem);		// Root Item
-
 		resetDirty();
 		return true;
 	}
 	else if (format == MarkFormat::Raw)
 	{
 		//resetDirt();
-
 		//QImage origin = m_dataModel->originalTopSlice(0);
 		const auto topSize = m_identity.topSliceSize();
 		QImage slice(topSize, QImage::Format_Grayscale8);
 		slice.fill(Qt::black);
-		const auto width = slice.width(), height = slice.height(), depth = m_identity.rightSliceSize().width();
+		const size_t width = slice.width(), height = slice.height(), depth = m_identity.rightSliceSize().width();
 		QScopedPointer<char> buffer(new char[width * height * depth]);
-		auto sliceCount = 0;
+		size_t sliceCount = 0;
 		Q_ASSERT(width == slice.bytesPerLine());
 		for(const auto & items: m_topSliceVisibleMarks) {
-			
 			QPainter p(&slice);
 			for(const auto & item: items) {
-				const auto mark = (item);				
-				if (mark != nullptr) {
-					//const auto & poly = mark->polygon();
-					//auto pen = mark->pen();
-					//pen.setColor(Qt::black);
-					//p.setPen(pen);
-					//mark->paint();
-
-					//p.drawPolyline(poly);
-
-					mark->paint(&p, nullptr, nullptr);
-
-					//
-
+				if (item != nullptr) {
+					item->paint(&p, nullptr, nullptr);
 				}
-				
 			}
-
-			// Because QImage is 32bit-aligned, so we need write it for every scan line
-			for(auto i = 0 ;i<height; i++) 
-				std::memcpy(buffer.data() + width * height * sliceCount + i*width, slice.bits(), slice.bytesPerLine());
-			
+			// Because QImage is 32bit-aligned, so we need write it for each scan line
+			for(auto i = size_t(0) ;i < height; i++) 
+				std::memcpy(buffer.data() + width * height * sliceCount + i*width, slice.bits()+i*slice.bytesPerLine(), slice.bytesPerLine());
 			sliceCount++;
+			slice.fill(Qt::black);
 		}
-		slice.fill(Qt::black);
 
 		QFile out(fileName);
 		out.open(QIODevice::WriteOnly);
-
 		if (!out.isOpen())
 			return false;
-		out.write(static_cast<const char *>(buffer.data()), width*height*depth);
-
+		out.write(static_cast<const char *>(buffer.data()), width*height*depth*sizeof(char));
 		resetDirty();
-
 		return true;
+
 	}else if(MarkFormat::Mask == format) {
 		const auto topSize = m_identity.topSliceSize();
 		QImage slice(topSize, QImage::Format_ARGB32_Premultiplied);
 		slice.fill(Qt::black);
-		const auto width = slice.width(), height = slice.height(), depth = m_identity.rightSliceSize().width();
+		const size_t width = slice.width(), height = slice.height(), depth = m_identity.rightSliceSize().width();
 		QScopedPointer<int> buffer(new int[width * height * depth]);
-		auto sliceCount = 0;
+
+		size_t sliceCount = 0;
 
 		for (const auto & items : m_topSliceVisibleMarks) {
-			int * offset = buffer.get() + sliceCount * width*height;
+			const auto offset = buffer.get() + sliceCount * width*height;
 			QPainter p(&slice);
-			for (const auto & item : items) {
-				const auto mark = (item);
-				if (mark != nullptr) {
-					mark->paint(&p, nullptr, nullptr);
+			for (const auto & item : items) 
+				if (item != nullptr) 
+					item->paint(&p, nullptr, nullptr);
+				
+			for (auto h = size_t(0); h < height; h++) {
+				for (auto w = size_t(0); w < width; w++) {
+					const QColor color = slice.pixel(w, h);
+					offset[h*width + w] = color.red() + color.green() * 255 + color.blue() * 255 * 255;		// Convert RGB Color to a integer by a one-to-one mapping
 				}
 			}
-			for (auto h = 0; h < height; h++) {
-				for (auto w = 0; w < width; w++) {
-					QColor color = slice.pixel(w, h);
-					offset[h*width + w] = color.red() + color.green() * 255 + color.blue() * 255 * 255;
-				}
-			}
-
 			sliceCount++;
+			slice.fill(Qt::black);
 		}
-
-		slice.fill(Qt::black);
 
 		QFile out(fileName);
 		out.open(QIODevice::WriteOnly);
-
 		if (!out.isOpen())
 			return false;
 		out.write(reinterpret_cast<const char *>(buffer.data()), width*height*depth*sizeof(int));
@@ -570,6 +544,7 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
  * \param role
  * \return
  */
+
 QVariant MarkModel::data(const QModelIndex & index, int role) const
 {
 	if (index.isValid() == false)

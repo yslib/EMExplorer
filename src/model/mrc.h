@@ -369,7 +369,8 @@ private:
 			d->data = data;
 			return d;
 		}
-		static MRCDataPrivate * create(int width, int height, int slice, size_t elemSize)
+
+		static MRCDataPrivate * create(size_t width, size_t height, size_t slice, size_t elemSize)
 		{
 			MRCDataPrivate *d = nullptr;
 			d = new MRCDataPrivate;
@@ -444,14 +445,14 @@ private:
 	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } { (void)fileName; }
 	void udpateNVersionFiled(int year, int version = 0);
 	void UpdateDminDmaxDmeanRMSHelper();
-	bool headerReadHelper(FILE *fp, MRCHeader * header);
-	bool headerWriteHelper(FILE * fp, MRCHeader * header);
+	bool headerReadHelper(std::ifstream & in, MRCHeader * header);
+	bool headerWriteHelper(std::ofstream & out, MRCHeader * header);
 	void createMRCHeader();
 	void updateMRCHeader();
 	static inline void copyHeaderBuffer(unsigned char* dst, const unsigned char* src, int size);
 	size_t typeSize(MRC::DataType type) const;
 	std::string propertyInfoString(const MRCHeader *header)const;
-	bool readDataFromFileHelper(FILE * fp);
+	bool readDataFromFileHelper(std::ifstream& in);
 	inline void detach();
 };
 

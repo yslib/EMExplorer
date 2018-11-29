@@ -53,7 +53,7 @@ class Volume
 	double m_maxIsoValue;
 
 public:
-	Volume(const void * data, int xSize, int ySize, int zSize, const VolumeFormat & fmt = VolumeFormat());
+	Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, const VolumeFormat & fmt = VolumeFormat());
 	int xLength()const;
 	int yLength()const;
 	int zLength()const;

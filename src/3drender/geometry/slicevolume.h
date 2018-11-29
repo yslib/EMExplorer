@@ -38,17 +38,10 @@ private:
 		QOpenGLVertexArrayObject *vao;
 		QOpenGLBuffer *vbo;
 		int nVertex;
-
 		PolyResource():nVertex(0),
-		vao(new QOpenGLVertexArrayObject),
-		vbo(new QOpenGLBuffer) {}
-		~PolyResource()
-		{
-			vao->destroy();
-			vbo->destroy();
-			delete vao;
-			delete vbo;
-		}
+		vao(nullptr),
+		vbo(nullptr){}
+		~PolyResource() = default;	// These OpenGL resources related pointer members can not be managed by RAII, their life must be controlled by us manually.
 	};
 	QVector<PolyResource> m_polys;
 	bool m_polygonUpdate;

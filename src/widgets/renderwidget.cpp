@@ -279,11 +279,6 @@ void RenderWidget::paintGL()
 	//update camera center
 	m_camera.setCenter(center);
 
-	// update coordinate origin
-	//axisVertex = { center,center + QVector3D{1.0f,0.0f,0.0f},center,center + QVector3D{0.0f,1.0f,0.0f}, center,center + QVector3D{0.0f,0.0f,1.0f}};
-	//m_axisVBO.write(0,axisVertex.constData(), sizeof(QVector3D)*axisVertex.size());
-
-
 	if (m_volume != nullptr) {
 		if (renderMode & RenderMode::DVR) {
 			//m_volume->sliceMode(false);
@@ -297,7 +292,6 @@ void RenderWidget::paintGL()
 			m_volume->setRenderType(SliceVolume::RenderType::Modulo);
 		}
 		m_volume->setSliceSphereCoord(d->options->sliceNormal);
-
 		m_volume->setTransform(world);
 		m_volume->render();
 
@@ -316,10 +310,8 @@ void RenderWidget::paintGL()
 
 			m_trivialShader->release();
 			m_boundingBoxVAO.release();
-
 		}
 	}
-
 	if (renderMode & RenderMode::SliceTexture) {
 
 		const auto viewMatrix = camera().view();
@@ -362,27 +354,11 @@ void RenderWidget::paintGL()
 			QColor color = m_integration[i].color;
 
 			if (i == d->selectedObjectId) {
-				//glClear(GL_STENCIL_BUFFER_BIT);
-				//glEnable(GL_STENCIL_TEST);
-				//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-				//glStencilFunc(GL_ALWAYS, 1, 0xFF);
-				//glStencilMask(0xFF);
 				color = m_integration[i].color.lighter(150);
-				//m_meshShader->setUniformValue("objectColor", color);
-				//m_markMeshes[i]->render();
-
-				//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-				//glStencilMask(0x00);
-				//glDisable(GL_DEPTH_TEST);
-				//m_meshShader->setUniformValue("outlining", true);
 				m_meshShader->setUniformValue("outlining", false);
 				m_meshShader->setUniformValue("objectColor", color);
 				m_meshShader->setUniformValue("modelMatrix", world);
 				m_integration[i].mesh->render();
-				//glStencilMask(0xFF);
-				//glEnable(GL_DEPTH_TEST);
-				//glDisable(GL_STENCIL_TEST);
 			}
 			else {
 				m_meshShader->setUniformValue("outlining", false);
@@ -390,17 +366,10 @@ void RenderWidget::paintGL()
 				m_meshShader->setUniformValue("modelMatrix", world);
 				m_integration[i].mesh->render();
 			}
-
-
 		}
-
 		m_meshShader->release();
 	}
-
 	drawThreeAxis();
-
-
-
 	glDisable(GL_DEPTH_TEST);		// Depth test must be closed if draw something with QPainter next
 }
 
