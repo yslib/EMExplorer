@@ -108,6 +108,66 @@ void MarkModel::updateMarkVisibleHelper(StrokeMarkItem * mark)
 	mark->setVisible(visible);
 	setDirty();
 }
+QSharedPointer<char> MarkModel::rawMarks() const
+{
+
+	const auto topSize = tester().topSliceSize();
+	QImage slice(topSize, QImage::Format_Grayscale8);
+	slice.fill(Qt::black);
+	const size_t width = slice.width(), height = slice.height(), depth = tester().rightSliceSize().width();
+	QSharedPointer<char> buffer(new char[width * height * depth], [](char * obj) {delete[] obj; });
+	size_t sliceCount = 0;
+	Q_ASSERT(width == slice.bytesPerLine());
+	const auto visibleMarks = topVisibleMarks();
+	QPainter p;
+	for (const auto & items : visibleMarks) {
+		p.begin(&slice);
+		for (const auto & item : items) {
+			if (item != nullptr) {
+				item->paint(&p, nullptr, nullptr);
+			}
+		}
+		p.end();
+		//qDebug() << "Slice:" << sliceCount << " count:" << items.size();
+		// Because QImage is 32bit-aligned, so we need write it for each scan line
+		for (auto i = size_t(0); i < height; i++)
+			std::memcpy(buffer.data() + width * height * sliceCount + i * width, slice.bits() + i * slice.bytesPerLine(), slice.bytesPerLine());
+		sliceCount++;
+		
+		slice.fill(Qt::black);		// This will also use paint device
+	}
+
+	return buffer;
+}
+QSharedPointer<int> MarkModel::markMask() const
+{
+	const auto topSize = tester().topSliceSize();
+	QImage slice(topSize, QImage::Format_ARGB32_Premultiplied);
+	slice.fill(Qt::black);
+	const size_t width = slice.width(), height = slice.height(), depth = tester().rightSliceSize().width();
+	QSharedPointer<int> buffer(new int[width * height * depth], [](int * obj) {delete[] obj; });
+
+	size_t sliceCount = 0;
+	const auto visibleMarks = topVisibleMarks();
+	QPainter p(&slice);
+	for (const auto & items : visibleMarks) {
+		const auto offset = buffer.data() + sliceCount * width*height;
+		
+		for (const auto & item : items)
+			if (item != nullptr)
+				item->paint(&p, nullptr, nullptr);
+
+		for (auto h = size_t(0); h < height; h++) {
+			for (auto w = size_t(0); w < width; w++) {
+				const QColor color = slice.pixel(w, h);
+				offset[h*width + w] = color.red() + color.green() * 255 + color.blue() * 255 * 255;		// Convert RGB Color to a integer by a one-to-one mapping
+			}
+		}
+		sliceCount++;
+		slice.fill(Qt::black);
+	}
+	return buffer;
+}
 void MarkModel::retrieveData(TreeItem * root, TreeItemType type, int column, QVector<QVariant>& data, int role)
 {
 	if (root == nullptr)
@@ -469,27 +529,28 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 	{
 		//resetDirt();
 		//QImage origin = m_dataModel->originalTopSlice(0);
-		const auto topSize = m_identity.topSliceSize();
-		QImage slice(topSize, QImage::Format_Grayscale8);
-		slice.fill(Qt::black);
-		const size_t width = slice.width(), height = slice.height(), depth = m_identity.rightSliceSize().width();
-		QScopedPointer<char> buffer(new char[width * height * depth]);
-		size_t sliceCount = 0;
-		Q_ASSERT(width == slice.bytesPerLine());
-		for(const auto & items: m_topSliceVisibleMarks) {
-			QPainter p(&slice);
-			for(const auto & item: items) {
-				if (item != nullptr) {
-					item->paint(&p, nullptr, nullptr);
-				}
-			}
-			// Because QImage is 32bit-aligned, so we need write it for each scan line
-			for(auto i = size_t(0) ;i < height; i++) 
-				std::memcpy(buffer.data() + width * height * sliceCount + i*width, slice.bits()+i*slice.bytesPerLine(), slice.bytesPerLine());
-			sliceCount++;
-			slice.fill(Qt::black);
-		}
-
+		const auto topSize = tester().topSliceSize();
+		//QImage slice(topSize, QImage::Format_Grayscale8);
+		//slice.fill(Qt::black);
+		const size_t width = topSize.width(), height = topSize.height(), depth = tester().rightSliceSize().width();
+		//QSharedPointer<char> buffer(new char[width * height * depth], [](char * obj) {delete[] obj; });
+		//size_t sliceCount = 0;
+		//Q_ASSERT(width == slice.bytesPerLine());
+		//const auto visibleMarks = topVisibleMarks();
+		//for(const auto & items: visibleMarks) {
+		//	QPainter p(&slice);
+		//	for(const auto & item: items) {
+		//		if (item != nullptr) {
+		//			item->paint(&p, nullptr, nullptr);
+		//		}
+		//	}
+		//	// Because QImage is 32bit-aligned, so we need write it for each scan line
+		//	for(auto i = size_t(0) ;i < height; i++) 
+		//		std::memcpy(buffer.data() + width * height * sliceCount + i*width, slice.bits()+i*slice.bytesPerLine(), slice.bytesPerLine());
+		//	sliceCount++;
+		//	slice.fill(Qt::black);
+		//}
+		const auto buffer = rawMarks();
 		QFile out(fileName);
 		out.open(QIODevice::WriteOnly);
 		if (!out.isOpen())
@@ -499,31 +560,32 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		return true;
 
 	}else if(MarkFormat::Mask == format) {
-		const auto topSize = m_identity.topSliceSize();
-		QImage slice(topSize, QImage::Format_ARGB32_Premultiplied);
-		slice.fill(Qt::black);
-		const size_t width = slice.width(), height = slice.height(), depth = m_identity.rightSliceSize().width();
-		QScopedPointer<int> buffer(new int[width * height * depth]);
-
-		size_t sliceCount = 0;
-
-		for (const auto & items : m_topSliceVisibleMarks) {
-			const auto offset = buffer.get() + sliceCount * width*height;
-			QPainter p(&slice);
-			for (const auto & item : items) 
-				if (item != nullptr) 
-					item->paint(&p, nullptr, nullptr);
-				
-			for (auto h = size_t(0); h < height; h++) {
-				for (auto w = size_t(0); w < width; w++) {
-					const QColor color = slice.pixel(w, h);
-					offset[h*width + w] = color.red() + color.green() * 255 + color.blue() * 255 * 255;		// Convert RGB Color to a integer by a one-to-one mapping
-				}
-			}
-			sliceCount++;
-			slice.fill(Qt::black);
-		}
-
+		//const auto topSize = tester().topSliceSize();
+		//QImage slice(topSize, QImage::Format_ARGB32_Premultiplied);
+		const auto topSize = tester().topSliceSize();
+		//slice.fill(Qt::black);
+		//const size_t width = slice.width(), height = slice.height(), depth = tester().rightSliceSize().width();
+		//QSharedPointer<int> buffer(new int[width * height * depth],[](int * obj) {delete[] obj;});
+		const size_t width = topSize.width(), height = topSize.height(), depth = tester().rightSliceSize().width();
+		//size_t sliceCount = 0;
+		//const auto visibleMarks = topVisibleMarks();
+		//for (const auto & items : visibleMarks) {
+		//	const auto offset = buffer.data() + sliceCount * width*height;
+		//	QPainter p(&slice);
+		//	for (const auto & item : items) 
+		//		if (item != nullptr) 
+		//			item->paint(&p, nullptr, nullptr);
+		//		
+		//	for (auto h = size_t(0); h < height; h++) {
+		//		for (auto w = size_t(0); w < width; w++) {
+		//			const QColor color = slice.pixel(w, h);
+		//			offset[h*width + w] = color.red() + color.green() * 255 + color.blue() * 255 * 255;		// Convert RGB Color to a integer by a one-to-one mapping
+		//		}
+		//	}
+		//	sliceCount++;
+		//	slice.fill(Qt::black);
+		//}
+		const auto buffer = markMask();
 		QFile out(fileName);
 		out.open(QIODevice::WriteOnly);
 		if (!out.isOpen())

@@ -145,10 +145,8 @@ public:
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 	bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-
 	bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
-
 	TreeItem * treeItem(const QModelIndex& index) const;
 	TreeItem * rootItem() const;
 
@@ -162,6 +160,14 @@ public:
 	bool removeTreeItem(TreeItem* item);
 	bool removeTreeItems(const QList<TreeItem*> & items);
 	QItemSelectionModel * selectionModelOfThisModel()const {return m_selectionModel;};
+
+	MarkSliceList topVisibleMarks()const { return m_topSliceVisibleMarks; }
+	MarkSliceList rightVisibleMarks()const { return m_rightSliceVisibleMarks; }
+	MarkSliceList frontVisibleMarks()const { return m_frontSliceVisibleMarks; }
+	const SliceDataIdentityTester & tester()const { return m_identity;}
+
+	QSharedPointer<char> rawMarks()const;
+	QSharedPointer<int> markMask()const;
 	
 
 	static void retrieveData(TreeItem * root, TreeItemType type, int column, QVector<QVariant> & data, int role);

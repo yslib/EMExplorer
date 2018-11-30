@@ -11,7 +11,7 @@
 	}		
 
 
-Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, const VolumeFormat& fmt):
+Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, const VolumeFormat& fmt) :
 	m_xSize(xSize)
 	, m_ySize(ySize)
 	, m_zSize(zSize)
@@ -20,15 +20,15 @@ Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, cons
 	, m_isoStat(nullptr)
 {
 	auto voxelChannel = 0;
-	switch (m_fmt.fmt) 
+	switch (m_fmt.fmt)
 	{
-		case VoxelFormat::Grayscale:voxelChannel = 1; break;
-		case VoxelFormat::RGB:voxelChannel = 3; break;
-		case VoxelFormat::RGBA:voxelChannel = 4; break;
+	case VoxelFormat::Grayscale:voxelChannel = 1; break;
+	case VoxelFormat::RGB:voxelChannel = 3; break;
+	case VoxelFormat::RGBA:voxelChannel = 4; break;
 	}
 	size_t bytes = 0;
 
-	switch (m_fmt.type) 
+	switch (m_fmt.type)
 	{
 	case VoxelType::UInt8:
 		m_data.reset(reinterpret_cast<unsigned char*>(new unsigned char[xSize*ySize*zSize*voxelChannel]));
@@ -42,13 +42,60 @@ Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, cons
 		break;
 	}
 
-	if (m_data != nullptr) 
+	if (m_data != nullptr)
 	{
 		std::memcpy(m_data.get(), data, bytes);
 	}
 
-	if(m_isoStat != nullptr)
+	if (m_isoStat != nullptr)
 		calcIsoStat();
+
+}
+
+/**
+ * \brief  Blends the \a data with current data of the value
+ *
+ * \note Only \a sourceVoxelType with \a VoxelType::UInt8 and \a sourceVoxelFormat with VoxelFormat::Grayscale are accepted so far.
+ */
+void Volume::blend(
+	int xpos,
+	int ypos,
+	int zpos,
+	void * data,
+	size_t xlen,
+	size_t ylen,
+	size_t zlen,
+	VolumeFormat sourceVolumeFormat)
+{
+	const size_t width = m_xSize;
+	const size_t height = m_ySize;
+	const size_t slice = m_zSize;
+
+	Q_ASSERT_X(xlen <= width, "Volume::blend", "out of range");
+	Q_ASSERT_X(ylen <= height, "Volume::blend", "out of range");
+	Q_ASSERT_X(zlen <= slice, "Volume::blend", "out of range");
+
+	if (sourceVolumeFormat .fmt!= VoxelFormat::Grayscale || sourceVolumeFormat.type != VoxelType::UInt8)
+		return;
+
+	const auto p = static_cast<unsigned char*>(data);
+
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+	for (auto z = 0; z < zlen; z++) {
+		for (auto y = 0; y < ylen; y++) {
+			for (auto x = 0; x < xlen; x++) {
+				const auto index = (x + xpos) + (y + ypos)*width + (z + zpos)*width * height;
+				const auto sourceIndex = x + y * xlen + z * xlen * ylen;
+				const auto d = p[sourceIndex];
+				if(d) 
+				{
+					m_data[index] = d;
+				}
+			}
+		}
+	}
 
 }
 
@@ -65,7 +112,7 @@ void Volume::calcIsoStat() {
 	//	}
 	//}
 	// We don't support histogram for float type volume data
-	if (m_fmt.type == VoxelType::Float32)		
+	if (m_fmt.type == VoxelType::Float32)
 		return;
 
 #pragma omp parallel for
@@ -98,8 +145,8 @@ void Volume::calcIsoStat() {
 		m_maxIsoValue = std::max(m_maxIsoValue, m_isoStat[i]);
 }
 
-GPUVolume::GPUVolume(const void * data, int xSize, int ySize, int zSize,const QMatrix4x4 & trans ,const VolumeFormat& fmt) 
-:Volume(data, xSize, ySize, zSize,fmt) 
+GPUVolume::GPUVolume(const void * data, int xSize, int ySize, int zSize, const QMatrix4x4 & trans, const VolumeFormat& fmt)
+	:Volume(data, xSize, ySize, zSize, fmt)
 {
 	setTransform(trans);
 }

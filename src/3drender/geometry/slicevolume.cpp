@@ -42,8 +42,9 @@ void SliceVolume::loadDataAndGradientToTexture() {
 	const auto y = yLength();
 	const auto x = xLength();
 	//m_gradientTexture.destroy();
-	if (m_initialized == true)
+	if (m_initialized == true) {
 		return;
+	}
 	if (m_volumeTexture == nullptr) {
 		m_volumeTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
 		m_volumeTexture->setMagnificationFilter(QOpenGLTexture::Linear);
@@ -52,138 +53,119 @@ void SliceVolume::loadDataAndGradientToTexture() {
 		m_volumeTexture->setSize(x, y, z);
 		m_volumeTexture->setFormat(QOpenGLTexture::R16F);		//Internal format
 		m_volumeTexture->allocateStorage();
-		const auto fmt = format();
-
-		QOpenGLTexture::PixelFormat pfmt;
-		QOpenGLTexture::PixelType ptype;
-
-		switch (fmt.fmt)
-		{
-			case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
-			case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
-			case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;;
-			default: Q_ASSERT(false);
-		}
-
-		switch (fmt.type)
-		{
-			case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
-			case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
-			default: Q_ASSERT(false);
-		}
-		m_volumeTexture->setData(pfmt, ptype, data());		//External format
+		reloadVolumeData();
 	}
 }
 
-unsigned SliceVolume::volumeTexId() const 
+unsigned SliceVolume::volumeTexId() const
 {
 	return m_volumeTexture->textureId();
 }
-QVector3D SliceVolume::voxelSize() const 
+QVector3D SliceVolume::voxelSize() const
 {
 	return QVector3D(xLength(), yLength(), zLength());
 }
-unsigned SliceVolume::startPosTexIdx() const 
+unsigned SliceVolume::startPosTexIdx() const
 {
 	return m_fbo->textures()[0];
 }
-unsigned SliceVolume::endPosTexIdx() const 
+unsigned SliceVolume::endPosTexIdx() const
 {
 	return m_fbo->textures()[1];
 }
-unsigned SliceVolume::gradientTexId() const 
+unsigned SliceVolume::gradientTexId() const
 {
 	return 0;
 	//return m_gradientTexture->textureId();
 }
-float SliceVolume::rayStep() const 
+float SliceVolume::rayStep() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::rayStep", "null pointer");
 	return m_renderer->m_rayStep;
 }
-unsigned SliceVolume::transferFunctionsTexId() const 
+unsigned SliceVolume::transferFunctionsTexId() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::transferFunctionsTexId", "null pointer");
 	//qDebug() << m_renderer->m_tfTexture;
 	if (m_renderer->m_tfTexture == nullptr) return 0;
 	return m_renderer->m_tfTexture->textureId();
 }
-QVector3D SliceVolume::cameraPos() const 
+QVector3D SliceVolume::cameraPos() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraPos", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.position();
 }
-QVector3D SliceVolume::cameraTowards() const 
+QVector3D SliceVolume::cameraTowards() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::Towards", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.front();
 }
-QVector3D SliceVolume::cameraUp() const 
+QVector3D SliceVolume::cameraUp() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraUp", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.up();
 }
-QVector3D SliceVolume::cameraRight() const 
+QVector3D SliceVolume::cameraRight() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraRight", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.right();
 }
-QMatrix4x4 SliceVolume::viewMatrix() const 
+QMatrix4x4 SliceVolume::viewMatrix() const
 {
 	const auto & cam = m_renderer->camera();
 	return cam.view();
 }
-QMatrix4x4 SliceVolume::worldMatrix() const 
+QMatrix4x4 SliceVolume::worldMatrix() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::worldMatrix", "null pointer");
 	return m_normalizeTransform * transform();
 }
-QMatrix4x4 SliceVolume::othoMatrix() const 
+QMatrix4x4 SliceVolume::othoMatrix() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::othoMatrix", "null pointer");
 	return m_renderer->m_otho;
 }
-QMatrix4x4 SliceVolume::perspMatrix() const 
+QMatrix4x4 SliceVolume::perspMatrix() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::perspMatrix", "null pointer");
 	return m_renderer->m_proj;
 }
-QVector3D SliceVolume::lightDirection() const 
+QVector3D SliceVolume::lightDirection() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::lightDirection", "null pointer");
 
 	return m_renderer->d_ptr->options->lightDirection;
 }
-float SliceVolume::ambient() const 
+float SliceVolume::ambient() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::ambient", "null pointer");
 	return m_renderer->d_ptr->options->ambient;
 }
-float SliceVolume::diffuse() const 
+float SliceVolume::diffuse() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::diffuse", "null pointer");
 	return m_renderer->d_ptr->options->diffuse;
 }
-float SliceVolume::shininess() const 
+float SliceVolume::shininess() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::shininess", "null pointer");
 	return m_renderer->d_ptr->options->shininess;
 }
-float SliceVolume::specular() const 
+float SliceVolume::specular() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::specular", "null pointer");
 	return m_renderer->d_ptr->options->specular;
 }
-QVector3D SliceVolume::volumeBound() const 
+QVector3D SliceVolume::volumeBound() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::volumeBound", "null pointer");
 	return m_renderer->m_volumeBound;
 }
-QSize SliceVolume::windowSize() const 
+QSize SliceVolume::windowSize() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::windowSize", "null pointer");
 	return m_renderer->size();
@@ -264,7 +246,7 @@ bool SliceVolume::initializeGLResources() {
 	m_shaders[RenderType::Modulo] = modulo;
 
 	m_sliceShader = new SliceShader;
-	Q_ASSERT_X(m_sliceShader->link(),"SliceVolume::initializeGLResources","Slice shader linking failed.");
+	Q_ASSERT_X(m_sliceShader->link(), "SliceVolume::initializeGLResources", "Slice shader linking failed.");
 
 	// Ray casting vao
 	{
@@ -343,7 +325,7 @@ void SliceVolume::destroyGLResources()
 	m_arbitrarySliceVAO.destroy();
 	m_arbitrarySliceVBO.destroy();
 
-	for(auto & item:m_polys) 
+	for (auto & item : m_polys)
 	{
 		item.vao->destroy();
 		item.vao->destroy();
@@ -381,10 +363,10 @@ bool SliceVolume::render()
 	if (glfuncs == nullptr)
 		return false;
 
-	if (m_polygonUpdate) 
+	if (m_polygonUpdate)
 	{
 		m_polygonUpdate = false;
-		 m_arbitrarySliceVertex = sliceCoord(m_A, m_B, m_C, m_D);
+		m_arbitrarySliceVertex = sliceCoord(m_A, m_B, m_C, m_D);
 		m_arbitrarySliceVBO.bind();
 		m_arbitrarySliceVBO.write(0, m_arbitrarySliceVertex.constData(), sizeof(QVector3D)*m_arbitrarySliceVertex.size());
 		m_arbitrarySliceVBO.release();
@@ -610,16 +592,16 @@ void SliceVolume::updatePolygons()
 	}
 
 	QVector<QVector3D> faces[6];
-	for(int i=0;i<6;i++) {
+	for (int i = 0; i < 6; i++) {
 		for (const auto & v : oneside) {
-			switch(i) {
-				case 0:if (v.x() == 0.0)faces[i].push_back(v);break;
-				case 1:if (v.x() == 1.0)faces[i].push_back(v);break;
-				case 2:if (v.y() == 0.0)faces[i].push_back(v);break;
-				case 3:if (v.y() == 1.0)faces[i].push_back(v);break;
-				case 4:if (v.z() == 0.0)faces[i].push_back(v);break;
-				case 5:if (v.z() == 1.0)faces[i].push_back(v);break;
-				default:Q_ASSERT(false);
+			switch (i) {
+			case 0:if (v.x() == 0.0)faces[i].push_back(v); break;
+			case 1:if (v.x() == 1.0)faces[i].push_back(v); break;
+			case 2:if (v.y() == 0.0)faces[i].push_back(v); break;
+			case 3:if (v.y() == 1.0)faces[i].push_back(v); break;
+			case 4:if (v.z() == 0.0)faces[i].push_back(v); break;
+			case 5:if (v.z() == 1.0)faces[i].push_back(v); break;
+			default:Q_ASSERT(false);
 			}
 		}
 
@@ -642,7 +624,7 @@ void SliceVolume::drawEntryPoint() {
 	if (glfuncs == nullptr)
 		return;
 	for (const auto & poly : m_polys) {
-		if(poly.nVertex) {
+		if (poly.nVertex) {
 			QOpenGLVertexArrayObject::Binder binder(poly.vao);
 			glfuncs->glDrawArrays(GL_TRIANGLE_FAN, 0, poly.nVertex);
 		}
@@ -651,6 +633,35 @@ void SliceVolume::drawEntryPoint() {
 	QOpenGLVertexArrayObject::Binder binder(&m_arbitrarySliceVAO);
 	glfuncs->glDrawArrays(GL_TRIANGLE_FAN, 0, m_arbitrarySliceVertex.size());
 	//glfuncs->glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, 0);
+}
+
+void SliceVolume::reloadVolumeData()
+{
+	if (!m_volumeTexture)
+		return;
+
+
+	const auto fmt = format();
+	QOpenGLTexture::PixelFormat pfmt;
+	QOpenGLTexture::PixelType ptype;
+
+	switch (fmt.fmt)
+	{
+		case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
+		case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
+		case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;;
+		default: Q_ASSERT(false);
+	}
+
+	switch (fmt.type)
+	{
+		case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
+		case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
+		default: Q_ASSERT(false);
+	}
+
+	m_volumeTexture->setData(pfmt, ptype, data());		//External format
+
 }
 
 QVector3D SliceVolume::sliceNormal(const QVector<QVector3D>& slice) {

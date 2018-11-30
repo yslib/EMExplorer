@@ -112,14 +112,13 @@ public://ShaderDataInterface
 	QVector3D volumeBound() const override;
 	QSize windowSize() const override;
 public:
-
-
 	SliceVolume(const void * data,int x,int y,int z, const QMatrix4x4 & trans,
 		const VolumeFormat & fmt = VolumeFormat(),
 		RenderWidget * renderer = nullptr);
 
 	void setRenderWidget(RenderWidget * widget);
 	bool initializeGLResources() override;
+	void reloadVolumeData();
 	void destroyGLResources() override;
 	bool render()override;
 

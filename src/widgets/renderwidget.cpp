@@ -654,10 +654,10 @@ void RenderWidget::updateMark() {
 	//const auto cates = m_markModel->categoryText();
 	makeCurrent();
 
+	// update mark mesh
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
-
 	QMatrix4x4 trans;
 	trans.setToIdentity();
 	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
@@ -687,6 +687,18 @@ void RenderWidget::updateMark() {
 			m_query.addQueryPair(inst->persistentModelIndex(), id);
 		}
 	}
+
+	// update volume data (time-consuming)
+	if(m_volume != nullptr) {
+		const auto p = m_markModel->rawMarks();
+		VolumeFormat fmt;
+		fmt.fmt = VoxelFormat::Grayscale;
+		fmt.type = VoxelType::UInt8;
+		m_volume->blend(0, 0, 0, p.data(), x, y, z, fmt);
+
+		m_volume->reloadVolumeData();
+	}
+
 	doneCurrent();
 }
 

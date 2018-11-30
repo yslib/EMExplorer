@@ -58,11 +58,16 @@ public:
 	int yLength()const;
 	int zLength()const;
 
+	/**
+	 * \brief  Returns a histogram of this volume data. The histogram is made of 256 bins.
+	 */
 	double * isoStat()const { return m_isoStat.get(); }
 	double maxIsoValue()const { return m_maxIsoValue; }
-
 	const void * data()const;
 	const VolumeFormat & format()const;
+
+	void blend(int xpos, int ypos, int zpos,void * data, size_t xlen, size_t ylen, size_t zlen,VolumeFormat sourceVolumeFormat);
+
 	virtual ~Volume();
 private:
 	void calcIsoStat();
