@@ -504,16 +504,17 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 		const size_t dataCount = static_cast<size_t>(m_header.nx)*static_cast<size_t>(m_header.ny)*static_cast<size_t>(m_header.nz);		// size_t is important
 		const auto elemSize = typeSize(dataType());
 		std::cout << "data count :" << dataCount << " element size:" << elemSize << std::endl;
+		
 		if (MRC_MODE_BYTE == m_header.mode) {
 			//transform into byte8 type
-			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
+			//this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, elemSize);
 
 			//const auto begin = in.tellg();
 			//in.seekg(0, in.end);
 			//const auto end = in.tellg();
 			//std::cout << "Max file size supported:"<<end-begin<<" bytes.\n";
 			//in.seekg(MRC_HEADER_SIZE, in.beg);
-
+			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, elemSize);
 			in.read((char*)m_d->data, dataCount*elemSize);
 			const auto readCount = in.gcount();
 			if (readCount != dataCount * elemSize) {
@@ -544,7 +545,8 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 		}
 		else if (MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode) {
 			std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
-			in.read((char*)m_d->data, dataCount*elemSize);
+			in.read(reinterpret_cast<char*>(buffer.get()), dataCount*elemSize);
+
 			const auto readCount = in.gcount();
 			//const size_t readCount = fread(buffer.get(), elemSize, dataCount, fp);
 			if (readCount != dataCount * elemSize) {

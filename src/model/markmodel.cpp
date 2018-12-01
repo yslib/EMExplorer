@@ -122,11 +122,9 @@ QSharedPointer<char> MarkModel::rawMarks() const
 	QPainter p;
 	for (const auto & items : visibleMarks) {
 		p.begin(&slice);
-		for (const auto & item : items) {
-			if (item != nullptr) {
+		for (const auto & item : items) 
+			if (item != nullptr) 
 				item->paint(&p, nullptr, nullptr);
-			}
-		}
 		p.end();
 		//qDebug() << "Slice:" << sliceCount << " count:" << items.size();
 		// Because QImage is 32bit-aligned, so we need write it for each scan line
@@ -152,11 +150,11 @@ QSharedPointer<int> MarkModel::markMask() const
 	QPainter p(&slice);
 	for (const auto & items : visibleMarks) {
 		const auto offset = buffer.data() + sliceCount * width*height;
-		
+		p.begin(&slice);
 		for (const auto & item : items)
 			if (item != nullptr)
 				item->paint(&p, nullptr, nullptr);
-
+		p.end();
 		for (auto h = size_t(0); h < height; h++) {
 			for (auto w = size_t(0); w < width; w++) {
 				const QColor color = slice.pixel(w, h);

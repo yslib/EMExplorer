@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	//,m_parser(nullptr)
 {
 
-	setWindowTitle("MRC Editor");
+	setWindowTitle("EMExplorer");
 
 	createActions();
 
@@ -82,14 +82,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::initializeForSliceViewWindow() 
 {
 	setWindowTitle(QStringLiteral("Slice View"));
-
-
-
 }
 
-void MainWindow::initializeForVolumeViewWindow() {
+void MainWindow::initializeForVolumeViewWindow() 
+{
 	setWindowTitle(QStringLiteral("Volume Render"));
-
 }
 
 
