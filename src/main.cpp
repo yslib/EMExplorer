@@ -9,6 +9,7 @@
 #include <QSurfaceFormat>
 
 #include <vector>
+#include <qmath.h>
 
 
 int main(int argc, char *argv[])
@@ -26,6 +27,9 @@ int main(int argc, char *argv[])
 //    fmt.setProfile(QSurfaceFormat::CoreProfile);
 //    QSurfaceFormat::setDefaultFormat(fmt);
 //#endif
+	
+
+
 	QApplication a(argc, argv);
 	QCommandLineParser parser;
 	parser.addOptions({

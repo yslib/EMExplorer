@@ -60,7 +60,6 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/algorithm/gradientcalculator.h \
     $${MY_PREFIX_DIR}/3drender/shader/raycastingshader.h \
     $${MY_PREFIX_DIR}/3drender/geometry/mesh.h \
-    $${MY_PREFIX_DIR}/3drender/geometry/geometry.h \
     $${MY_PREFIX_DIR}/3drender/geometry/volume.h \
     $${MY_PREFIX_DIR}/3drender/geometry/slicevolume.h \
     $${MY_PREFIX_DIR}/3drender/geometry/renderobject.h \
@@ -76,7 +75,10 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/model/strokeitem.h \
     $${MY_PREFIX_DIR}/algorithm/bimap.h \
     $${MY_PREFIX_DIR}/widgets/colorlisteditor.h \
-    $${MY_PREFIX_DIR}/abstract/widgetplugininterface.h
+    $${MY_PREFIX_DIR}/abstract/widgetplugininterface.h \
+    $${MY_PREFIX_DIR}/base/arithmetic.h \
+    $${MY_PREFIX_DIR}/base/geometry.h \
+    $${MY_PREFIX_DIR}/base/transformation.h
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/tf1deditor.cpp \
     $${MY_PREFIX_DIR}/widgets/tf1dmappingcanvas.cpp \
@@ -125,6 +127,7 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/model/strokeitem.cpp \
     $${MY_PREFIX_DIR}/algorithm/bimap.cpp \
     $${MY_PREFIX_DIR}/widgets/colorlisteditor.cpp \
-    $${MY_PREFIX_DIR}/abstract/widgetplugininterface.cpp
+    $${MY_PREFIX_DIR}/abstract/widgetplugininterface.cpp \
+    $${MY_PREFIX_DIR}/base/geometry.cpp
 
 RESOURCES += resources.qrc

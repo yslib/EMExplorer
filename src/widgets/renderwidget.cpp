@@ -12,6 +12,9 @@
 #include "globals.h"
 #include "model/markitem.h"
 
+#include "base/geometry.h"
+
+#include "base/transformation.h"
 
 static QVector<QVector3D> cubeVertex =
 {
@@ -56,6 +59,7 @@ static const char trivialFragShader[] = "#version 330\n"
 "{\n"
 "	fgColor = color;\n"
 "}\n";
+
 
 
 
@@ -275,6 +279,16 @@ void RenderWidget::paintGL()
 	const auto world = worldMatrix();
 
 	const auto center = d->volumeNormalTransform*world*QVector3D(0.5, 0.5, 0.5);
+
+	/*ysl::Transform worldTransform = toTransform(world);
+	ysl::Transform normalizedTransform = toTransform(d->volumeNormalTransform);
+	ysl::Vector3f vec{ 0.5,0.5,0.5 };
+
+	const auto centerVector3f = (normalizedTransform * worldTransform) * vec;
+	qDebug() << "QVector3D:" << center << " ysl::Vector3f" << toQVector3D(centerVector3f);*/
+
+
+	//*Vector3f{ 0.5,0.5,0.5 };
 
 	//update camera center
 	m_camera.setCenter(center);

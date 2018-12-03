@@ -8,8 +8,8 @@
 #include "3drender/geometry/camera.h"
 #include "3drender/shader/shaderprogram.h"
 #include "3drender/geometry/mesh.h"
-
 #include "algorithm/bimap.h"
+
 
 #include <QOpenGLTexture>
 #include <QTreeView>
@@ -177,7 +177,6 @@ private:
 
 	QList<MeshIntegration>					m_integration;
 	BiMap<QPersistentModelIndex,int>		m_query;
-
 	QScopedPointer<SliceVolume>				m_volume;
 
 
