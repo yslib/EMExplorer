@@ -111,6 +111,7 @@ public:
 	void			setMarkModel(MarkModel * model);
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
 	FocusCamera     camera()const { return m_camera; }
+	FocusCameraEx	cameraEx()const { return m_cameraEx; }
 	QSharedPointer<RenderOptions> options()const;
 	GPUVolume*	    volume()const;
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
@@ -145,7 +146,7 @@ private slots:
 	void			_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
 
 private:
-	void			drawCoordinate(QPainter* painter);
+	//void			drawCoordinate(QPainter* painter);
 	void			drawThreeAxis();
 	QMatrix4x4		worldMatrix()const;
 
@@ -166,6 +167,7 @@ private:
 	QMatrix4x4								m_proj;
 	QMatrix4x4								m_otho;
 	FocusCamera								m_camera;		//view matrix in this
+	FocusCameraEx							m_cameraEx;
 
 	QVector3D								m_voxelSize;
 	QVector3D								m_volumeBound;

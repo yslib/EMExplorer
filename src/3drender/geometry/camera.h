@@ -53,8 +53,6 @@ public:
 	QVector3D m_right;
 	QVector3D m_worldUp;
 
-
-
 	// Euler Angles for a fps camera
 	float m_yaw;
 	float m_pitch;
@@ -179,8 +177,6 @@ public:
 	QVector3D m_worldUp;
 	QVector3D m_center;
 
-
-
 	// Camera options
 	float m_movementSpeed;
 	float m_mouseSensitivity;
@@ -198,7 +194,9 @@ public:
 	{
 
 		m_right = QVector3D::crossProduct(m_front, m_worldUp);
+		qDebug() << "Constructor: right" << m_right;
 		m_up = QVector3D::crossProduct(m_right, m_front);
+		qDebug() << "Constructor:up" << m_up;
 		//updateCameraVectors(QVector3D(0,1,0),QVector3D(0,0,0),0);
 	}
 
@@ -218,7 +216,7 @@ public:
 	QVector3D center()const { return m_center; }
 	void setCenter(const QVector3D & center) {
 		m_center = center;
-
+		qDebug() << "Camera: center:" << m_center << " postion:" << m_position;
 		m_front = (m_center - m_position).normalized();
 		m_right = QVector3D::crossProduct(m_front, m_worldUp).normalized();
 		m_up = QVector3D::crossProduct(m_right, m_front).normalized();
@@ -227,17 +225,23 @@ public:
 
 	void movement(const QVector3D & direction, float deltaTime)
 	{
-		const auto velocity = m_movementSpeed * direction*deltaTime;
+		const auto velocity = m_movementSpeed * direction * deltaTime;
 		m_position += velocity;
+
+		qDebug() << "In FocusCamera::movement speed:" << m_movementSpeed << " direction:" << direction << " detaTime:" << deltaTime << " new postiion:" << m_position;
+
 	}
 
 	void rotation(float xoffset, float yoffset)
 	{
 		xoffset *= m_mouseSensitivity;
 		yoffset *= m_mouseSensitivity;
+
 		const auto theta = 4.0 * (std::fabs(xoffset) + std::fabs(yoffset));
 		const auto v = ((m_right*xoffset) + (m_up*yoffset));
 		const auto axis = QVector3D::crossProduct(v, -m_front).normalized();
+
+		qDebug() << "In FoucsCamera::rotation: v:" << v << " axis:" << axis;
 
 		updateCameraVectors(axis,theta);
 
@@ -262,11 +266,17 @@ private:
 		QMatrix4x4 translation;
 		translation.setToIdentity();
 		translation.translate(-m_center);
+		qDebug() << "FocusCamera::updateCameraVectors";
 		m_position = translation.inverted()*(rotation * (translation * m_position));
+		qDebug() << "m_postiion:" << m_position;
 		m_front = (rotation * m_front.normalized());
+		qDebug() << "m_front:" << m_front;
 		m_up = (rotation * m_up.normalized());
+		qDebug() << "m_up:" << m_up;
 		m_right = QVector3D::crossProduct(m_front, m_up);
+		qDebug() << "m_right:" << m_right;
 		m_up = QVector3D::crossProduct(m_right, m_front);
+		qDebug() << "m_up:" << m_up;
 		m_front.normalize();
 		m_right.normalize();
 		m_up.normalize();
@@ -304,7 +314,9 @@ public:
 	{
 
 		m_right = ysl::Vector3f::Cross(m_front, m_worldUp);
+		std::cout << "ConstructorEx right:" << m_right << std::endl;
 		m_up = ysl::Vector3f::Cross(m_right, m_front);
+		std::cout << "ConstructroEx up:" << m_up << std::endl;
 		//updateCameraVectors(QVector3D(0,1,0),QVector3D(0,0,0),0);
 	}
 
@@ -321,10 +333,13 @@ public:
 	}
 
 	ysl::Point3f position()const { return m_position; }
+
 	ysl::Point3f center()const { return m_center; }
+
 	void setCenter(const ysl::Point3f & center) 
 	{
 		m_center = center;
+		std::cout << "Ex: center:" << m_center << " position:" << m_position << std::endl;
 		m_front = (m_center - m_position).Normalized();
 		m_right = ysl::Vector3f::Cross(m_front, m_worldUp).Normalized();
 		m_up = ysl::Vector3f::Cross(m_right, m_front).Normalized();
@@ -335,6 +350,7 @@ public:
 	{
 		const auto velocity = m_movementSpeed * direction*deltaTime;
 		m_position += velocity;
+		std::cout << "In FocusCamera::movement speed:" << m_movementSpeed << " direction:" << direction << " detaTime:" << deltaTime << " new postiion:" << m_position << std::endl;
 	}
 
 	void rotation(float xoffset, float yoffset)
@@ -344,7 +360,7 @@ public:
 		const auto theta = 4.0 * (std::fabs(xoffset) + std::fabs(yoffset));
 		const auto v = ((m_right*xoffset) + (m_up*yoffset));
 		const auto axis = ysl::Vector3f::Cross(v, -m_front).Normalized();
-
+		std::cout << "In FoucsCameraEx::rotation: v:" << v << " axis:" << axis << std::endl;
 		updateCameraVectors(axis, theta);
 
 	}
@@ -357,32 +373,30 @@ public:
 		if (m_zoom >= 45.0f)
 			m_zoom = 45.0f;
 	}
+
 private:
 
 	void updateCameraVectors(const ysl::Vector3f & axis, double theta)
 	{
 		ysl::Transform rotation;
 		rotation.SetRotate(axis,theta);
-		//const auto rotation = QQuaternion::fromAxisAndAngle(toQVector3D(axis), theta);
-
-		//QMatrix4x4 translation;
-		//translation.setToIdentity();
-		//translation.translate(-m_center);
-
 		ysl::Transform translation;
 		translation.SetTranslate(-m_center.x,-m_center.y,-m_center.z);
-
+		std::cout << "FocusCamera::updateCamearaVectors:";
 		m_position = translation.Inversed()*(rotation * (translation * m_position));
-
-
+		std::cout <<"m_position:"<< m_position << std::endl;
 		m_front = (rotation * m_front.Normalized());
+		std::cout << "m_front:" << m_front << " " << std::endl;
 		m_up = (rotation * m_up.Normalized());
+		std::cout << "m_up" << m_up;
 		m_right = ysl::Vector3f::Cross(m_front, m_up);
+		std::cout << "m_right:" << m_right << std::endl;
 		m_up = ysl::Vector3f::Cross(m_right, m_front);
+		std::cout << "m_up:" << m_up << std::endl;
 		m_front.Normalize();
 		m_right.Normalize();
 		m_up.Normalize();
-		//qDebug() << "asix:" << axis << " front:" << m_front << " up" << m_up << " right:" << m_right;
+
 	}
 };
 

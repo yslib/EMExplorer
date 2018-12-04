@@ -96,15 +96,25 @@ public://ShaderDataInterface
 	unsigned int gradientTexId() const override;
 	float rayStep() const override;
 	unsigned int transferFunctionsTexId() const override;
+
 	QVector3D cameraPos() const override;
+
 	QVector3D cameraTowards() const override;
+
 	QVector3D cameraUp() const override;
+
 	QVector3D cameraRight() const override;
+
 	QMatrix4x4 viewMatrix() const override;
+
 	QMatrix4x4 worldMatrix() const override;
+
 	QMatrix4x4 othoMatrix() const override;
+
 	QMatrix4x4 perspMatrix() const override;
+
 	QVector3D lightDirection() const override;
+
 	float ambient() const override;
 	float diffuse() const override;
 	float shininess() const override;

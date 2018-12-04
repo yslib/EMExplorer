@@ -3,6 +3,8 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
+#include "base/geometry.h"
+#include "base/transformation.h"
 
 class ShaderDataInterface
 {
@@ -29,13 +31,13 @@ public:
 	virtual unsigned int transferFunctionsTexId()const = 0;
 
 	// camera parameters
-	virtual QVector3D     cameraPos()const = 0;
-	virtual QVector3D     cameraTowards()const = 0;
-	virtual QVector3D     cameraUp()const = 0;
-	virtual QVector3D     cameraRight()const = 0;
+	virtual QVector3D cameraPos() const = 0;
+	virtual QVector3D cameraTowards() const = 0;
+	virtual QVector3D cameraUp() const = 0;
+	virtual QVector3D cameraRight() const = 0;
 
 	// matrix parameters
-	virtual QMatrix4x4    viewMatrix()const = 0;
+	virtual QMatrix4x4 viewMatrix() const = 0;
 	virtual QMatrix4x4	  worldMatrix()const = 0;
 	virtual QMatrix4x4	  othoMatrix()const = 0;
 	virtual QMatrix4x4    perspMatrix()const = 0;

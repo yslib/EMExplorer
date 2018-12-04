@@ -127,8 +127,6 @@ namespace ysl
 			return *this;
 		}
 
-
-
 		Vector2<T> operator-()
 		{
 			return Vector2<T>(-x, -y);
@@ -176,8 +174,13 @@ namespace ysl
 			const Float len = LengthSquared();
 			*this /= len;
 		}
+		
+		T * Data()
+		{
+			return &x;
+		}
 
-		T * data()
+		const T * ConstData()const
 		{
 			return &x;
 		}
@@ -311,7 +314,12 @@ namespace ysl
 			return !(*this == p);
 		}
 
-		T * data()
+		T * Data()
+		{
+			return &x;
+		}
+
+		const T * ConstData()const
 		{
 			return &x;
 		}
@@ -395,19 +403,18 @@ namespace ysl
 			return *this;
 		}
 
-		template<typename U>
-		Vector3<T> operator/(const U & s)const 
+		
+		Vector3<T> operator/(Float s)const 
 		{
 			assert(!IsNaN(s));
-			const Float inv = static_cast<Float>(1) / s;
+			const auto inv = static_cast<Float>(1) / s;
 			return Vector3<T>(x*inv, y*inv, z*inv);
 		}
 
-		template<typename U>
-		Vector3<T> & operator/=(const U & s) 
+		Vector3<T> &operator/=(Float s) 
 		{
 			assert(!IsNaN(s));
-			const Float inv = static_cast<Float>(1) / s;
+			const auto inv = static_cast<Float>(1) / s;
 			x *= inv; y *= inv; z *= inv;
 			return *this;
 		}
@@ -433,8 +440,8 @@ namespace ysl
 		{
 			return Vector3<T>{
 				v1.y * v2.z - v1.z * v2.y,
-					v1.z * v2.x - v1.x * v2.z,
-					v1.x * v2.y - v1.y * v2.x};
+				v1.z * v2.x - v1.x * v2.z,
+				v1.x * v2.y - v1.y * v2.x};
 		}
 
 		Float LengthSquared()const { return x * x + y * y + z * z; }
@@ -448,7 +455,7 @@ namespace ysl
 			return (*this) / len;
 		}
 
-		void Normalize()const
+		void Normalize()
 		{
 			//if len is too small?
 			const auto len = Length();
@@ -460,7 +467,12 @@ namespace ysl
 			return x == 0 && y == 0 && z == 0;
 		}
 
-		T * data()
+		T * Data()
+		{
+			return &x;
+		}
+
+		const T * ConstData()const
 		{
 			return &x;
 		}
@@ -476,8 +488,8 @@ namespace ysl
 	}
 
 
-	template<typename T, typename U> 
-	Vector3<T> operator*(const U & s, const Vector3<T> & v)
+	template<typename T> 
+	Vector3<T> operator*(Float s,const Vector3<T> & v)
 	{
 		return v * s;
 	}
@@ -653,7 +665,12 @@ namespace ysl
 			return Vector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
 		}
 		
-		T * data()
+		T * Data()
+		{
+			return &x;
+		}
+
+		const T * ConstData()const
 		{
 			return &x;
 		}
@@ -802,9 +819,11 @@ namespace ysl
 		*/
 
 		bool isIntersectWith(const AABB & b)const;
+
 		/*
 		* return the common part of two bounding box
 		*/
+
 		AABB intersectWith(const AABB & b) const;
 
 		/*
@@ -884,9 +903,6 @@ namespace ysl
 
 }
 
-
-
-
 #ifdef YSL_TO_QT
 
 inline
@@ -900,6 +916,7 @@ QVector3D toQVector3D(const ysl::Point3f & p)
 {
 	return { p[0],p[1],p[2] };
 }
+
 #endif
 
 

@@ -90,30 +90,35 @@ unsigned SliceVolume::transferFunctionsTexId() const
 	if (m_renderer->m_tfTexture == nullptr) return 0;
 	return m_renderer->m_tfTexture->textureId();
 }
+
 QVector3D SliceVolume::cameraPos() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraPos", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.position();
 }
+
 QVector3D SliceVolume::cameraTowards() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::Towards", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.front();
 }
+
 QVector3D SliceVolume::cameraUp() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraUp", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.up();
 }
+
 QVector3D SliceVolume::cameraRight() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraRight", "null pointer");
 	const auto & cam = m_renderer->camera();
 	return cam.right();
 }
+
 QMatrix4x4 SliceVolume::viewMatrix() const
 {
 	const auto & cam = m_renderer->camera();
@@ -137,7 +142,6 @@ QMatrix4x4 SliceVolume::perspMatrix() const
 QVector3D SliceVolume::lightDirection() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::lightDirection", "null pointer");
-
 	return m_renderer->d_ptr->options->lightDirection;
 }
 float SliceVolume::ambient() const

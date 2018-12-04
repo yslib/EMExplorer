@@ -13,6 +13,7 @@
 #include "slicewidget.h"			//enum SliceType
 #include "markcategorydialog.h"
 #include "model/categorytreeitem.h"
+
 #include <QColorDialog>
 #include <QTimer>
 

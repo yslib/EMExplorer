@@ -114,7 +114,7 @@ namespace  ysl {
 								}
 							}
 							else if (ipiv[k] > 1)
-								YSL_ASSERT_X(false, "Matrix4x4::Inverse", "Singular matrix in MatrixInvert");
+								assert(false);
 						}
 					}
 				}
@@ -126,7 +126,7 @@ namespace  ysl {
 				indxr[i] = irow;
 				indxc[i] = icol;
 				if (minv[icol][icol] == 0.f)
-					YSL_ASSERT_X(false, "Matrix4x4::Inverse", "Singular matrix in MatrixInvert");
+					assert(false);
 
 				// Set $m[icol][icol]$ to one by scaling row _icol_ appropriately
 				Float pivinv = 1. / minv[icol][icol];
@@ -172,6 +172,16 @@ namespace  ysl {
 			return os;
 		}
 
+		Float * Data()
+		{
+			return *m;
+		}
+
+		const Float * ConstData()const
+		{
+			return *m;
+		}
+
 		Float m[4][4];
 	};
 
@@ -213,10 +223,10 @@ namespace  ysl {
 
 		void Transpose();
 
-		friend Transform Transpose(const Transform & trans)
-		{
-			return { trans.m_inv, trans.m_m };
-		}
+		//friend Transform Transpose(const Transform & trans)
+		//{
+		//	return { trans.m_inv, trans.m_m };
+		//}
 
 		bool operator==(const Transform& t) const;
 
@@ -256,6 +266,17 @@ namespace  ysl {
 
 		void SetRotateZ(Float degrees);
 
+		const Float * ConstMatrixData()const;
+
+		Float * MatrixData();
+
+		const Float * ConstInverseMatrixData()const;
+
+		Float* InverseMatrixData();
+
+		std::shared_ptr<Matrix4x4> ColumnMajorMatrix() const;
+
+
 		Transform operator*(const Transform & trans)const;
 
 		template<typename T> Point3<T> operator*(const Point3<T> & p)const;
@@ -280,23 +301,23 @@ namespace  ysl {
 	};
 
 	inline
-		Transform
-		Transform::Transposed() const
+	Transform
+	Transform::Transposed() const
 	{
-		return { m_inv, m_m };
+		return { m_inv.Transposed(), m_m.Transposed() };
 	}
 
 	inline
-		void
-		Transform::Transpose()
+	void
+	Transform::Transpose()
 	{
-		m_m.Inverse();
-		m_inv.Inverse();
+		m_inv.Transpose();
+		m_m.Transposed();
 	}
 
 	inline
-		bool
-		Transform::operator==(const Transform& t) const
+	bool
+	Transform::operator==(const Transform& t) const
 	{
 		return t.m_m == m_m;
 	}
@@ -422,7 +443,7 @@ namespace  ysl {
 	void 
 	Transform::SetRotate(Float x, Float y, Float z, Float degrees)
 	{
-		YSL_ASSERT_X(false, "Transform::SetRotate", "Not implemented yet.");
+		//YSL_ASSERT_X(false, "Transform::SetRotate", "Not implemented yet.");
 		Vector3f axis = { x,y,z };
 		Vector3f a = axis.Normalized();
 		const auto sinTheta = std::sin(DegreesToRadians(degrees));
@@ -512,13 +533,36 @@ namespace  ysl {
 		m_inv = m_m.Inversed();
 	}
 
+	inline const Float* Transform::ConstMatrixData() const
+	{
+		return m_m.ConstData();
+	}
 
+	inline Float* Transform::MatrixData()
+	{
+		return m_m.Data();
+	}
+
+	inline const Float* Transform::ConstInverseMatrixData() const
+	{
+		return m_inv.ConstData();
+	}
+
+	inline Float* Transform::InverseMatrixData() 
+	{
+		return m_inv.Data();
+	}
+
+	inline std::shared_ptr<Matrix4x4> Transform::ColumnMajorMatrix() const
+	{
+		return std::make_shared<Matrix4x4>(m_m.Transposed());
+	}
 
 	template<typename T> inline
 		Point3<T>
 		Transform::operator*(const Point3<T> & p) const
 	{
-		const auto x = p[0], y = p[2], z = p[3];
+		const auto x = p[0], y = p[1], z = p[2];
 		const auto rx = m_m.m[0][0] * x + m_m.m[0][1] * y + m_m.m[0][2] * z + m_m.m[0][3];
 		const auto ry = m_m.m[1][0] * x + m_m.m[1][1] * y + m_m.m[1][2] * z + m_m.m[1][3];
 		const auto rz = m_m.m[2][0] * x + m_m.m[2][1] * y + m_m.m[2][2] * z + m_m.m[2][3];
@@ -543,14 +587,17 @@ namespace  ysl {
 	Ray Transform::operator*(const Ray& ray) const
 	{
 		YSL_ASSERT_X(false, "Transform::operator*(const Ray& ray)", "Not implemented yet.");
+		return Ray{ ysl::Vector3f{},ysl::Point3f{} };
 	}
 
 	template <typename T>
 	AABB Transform::operator*(const AABB& aabb) const
 	{
 		YSL_ASSERT_X(false, "Transform::operator*(const AABB& aabb)", "Not implemented yet.");
+		return AABB{};
 	}
 
+	inline
 	Transform
 	Transform::operator*(const Transform & trans)const
 	{

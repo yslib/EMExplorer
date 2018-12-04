@@ -77,6 +77,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_dataModel(dataModel),
 	//m_parameterWidget(widget),
 	m_camera(QVector3D(0.f, 0.f, 10.f)),
+	m_cameraEx(ysl::Point3f{0.f,0.f,10.f}),
 	m_rayStep(0.02),
 	m_tfTexture(nullptr),
 	m_volume(nullptr),
@@ -292,6 +293,7 @@ void RenderWidget::paintGL()
 
 	//update camera center
 	m_camera.setCenter(center);
+	m_cameraEx.setCenter(ysl::Point3f{center.x(),center.y(),center.z()});
 
 	if (m_volume != nullptr) {
 		if (renderMode & RenderMode::DVR) {
@@ -404,15 +406,25 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	{
 		const auto direction = m_camera.up()*dy + m_camera.right()*dx;
 		m_camera.movement(direction, 0.002);
+		//qDebug() << "In RenderWidget::mouseMoveEvent: m_camera.up():" << m_camera.up() << " m_camera.right()" << m_camera.right() << " direction:" << direction;
+
+		const auto directionEx = m_cameraEx.up()*dy+ dx * m_cameraEx.right();
+		m_cameraEx.movement(directionEx, 0.002);
+		//std::cout << "In RenderWidget::mouseMoveEvent: m_cameraEx.up():" << m_cameraEx.up() << " m_camera.right()" << m_cameraEx.right() << " direction:" << directionEx << std::endl;
+
 	}
 	else if (event->buttons() & Qt::LeftButton)
 	{
 		m_camera.rotation(dx, dy);
+		m_cameraEx.rotation(dx, dy);
 	}
 	else if (event->buttons() == Qt::RightButton)
 	{
 		const auto direction = m_camera.front()*dy;
 		m_camera.movement(direction, 0.01);
+
+		const auto directionEx = m_cameraEx.front()*dy;
+		m_cameraEx.movement(directionEx, 0.01);
 	}
 	d->lastMousePos = p;
 	//
@@ -576,25 +588,25 @@ void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & 
 
 }
 
-void RenderWidget::drawCoordinate(QPainter* painter)
-{
-	const auto view = m_camera.view();
-
-	const QPen pen(Qt::red, 2, Qt::SolidLine);
-
-	//qDebug() << view.column(0) <<" "<< view.column(1) << " " << view.column(2);
-
-	const auto axisX = (m_proj * view.column(0)).toVector2DAffine().toPointF();
-	const auto axisY = (m_proj * view.column(1)).toVector2DAffine().toPointF();
-	const auto axisZ = (m_proj * view.column(2)).toVector2DAffine().toPointF();
-
-	const auto o = QPointF{ 100.f,static_cast<float>((size().height() - 100)) };
-
-	const QVector<QLineF> lines{ {o,axisX},{o,axisY},{o,axisZ} };
-
-	painter->setPen(pen);
-	painter->drawLines(lines);
-}
+//void RenderWidget::drawCoordinate(QPainter* painter)
+//{
+//	const auto view = m_camera.view();
+//
+//	const QPen pen(Qt::red, 2, Qt::SolidLine);
+//
+//	//qDebug() << view.column(0) <<" "<< view.column(1) << " " << view.column(2);
+//
+//	const auto axisX = (m_proj * view.column(0)).toVector2DAffine().toPointF();
+//	const auto axisY = (m_proj * view.column(1)).toVector2DAffine().toPointF();
+//	const auto axisZ = (m_proj * view.column(2)).toVector2DAffine().toPointF();
+//
+//	const auto o = QPointF{ 100.f,static_cast<float>((size().height() - 100)) };
+//
+//	const QVector<QLineF> lines{ {o,axisX},{o,axisY},{o,axisZ} };
+//
+//	painter->setPen(pen);
+//	painter->drawLines(lines);
+//}
 
 //QLineF RenderWidget::lineOnScreen(const QVector3D& begin, const QVector3D& end) 
 //{
