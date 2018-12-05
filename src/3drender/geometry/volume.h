@@ -2,18 +2,21 @@
 #define VOLUME_H
 
 #include <memory>
-#include <QMatrix4x4>
+#include "base/transformation.h"
 
 
 struct VolumeFormat;
 
 
 class RenderableObject {
-	QMatrix4x4 m_trans;
+	ysl::Transform m_trans;
 public:
 	virtual bool render() = 0;
-	void setTransform(const QMatrix4x4 & trans);
-	QMatrix4x4 transform()const;
+
+	void setTransform(const ysl::Transform& trans);
+
+	ysl::Transform transform() const;
+
 	virtual ~RenderableObject() = 0;
 };
 
@@ -84,20 +87,20 @@ inline Volume::~Volume() {}
 
 class GPUVolume :public Volume
 {
-	QMatrix4x4 m_trans;
+	ysl::Transform m_trans;
 public:
-	GPUVolume() :Volume(nullptr, 0, 0, 0) { m_trans.setToIdentity(); }
+	GPUVolume() :Volume(nullptr, 0, 0, 0) {}
 
-	GPUVolume(const void * data, int xSize, int ySize, int zSize,const QMatrix4x4 &trans,const VolumeFormat & fmt = VolumeFormat());
+	GPUVolume(const void * data, int xSize, int ySize, int zSize,const ysl::Transform & trans,const VolumeFormat & fmt = VolumeFormat());
 
 	virtual bool initializeGLResources() = 0;
 	virtual void destroyGLResources() = 0;
-	void setTransform(const QMatrix4x4 & trans);
-	QMatrix4x4 transform()const;
+	void setTransform(const ysl::Transform& trans);
+	ysl::Transform transform() const;
 	virtual bool render()=0;
 	virtual ~GPUVolume(){}
 };
 
-inline void GPUVolume::setTransform(const QMatrix4x4& trans) {m_trans = trans;}
-inline QMatrix4x4 GPUVolume::transform() const { return  m_trans; }
+inline void GPUVolume::setTransform(const ysl::Transform& trans) {m_trans = trans;}
+inline ysl::Transform GPUVolume::transform() const { return  m_trans; }
 #endif // VOLUME_H

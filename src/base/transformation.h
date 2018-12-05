@@ -7,24 +7,148 @@
 #include "geometry.h"
 //#include "arithmetic.h"
 
-#include <valarray>
-
-#define HSL_MATRIX_COLUMN_MAJOR
-
-#ifdef YSL_TO_QT
-#include <QMatrix4x4>
-#endif
 
 
 namespace  ysl {
 
+	struct Matrix4x4;
+
+	struct Matrix3x3;
+
+	struct Matrix3x3
+	{
+		Float m[3][3];
+		Matrix3x3()
+		{
+			m[0][0] = m[1][1] = m[2][3] = 1.0f;
+			m[0][1] = m[0][2] = m[1][0] = m[1][2] = m[2][0] = m[2][1] = 0.f;
+		}
+		Matrix3x3(Float mat[3][3])
+		{
+			::memcpy(m, mat, sizeof(Float) * 9);
+		}
+		Matrix3x3(Float t00, Float t01, Float t02, Float t10, Float t11, Float t12, Float t20, Float t21, Float t22)
+		{
+			m[0][0] = t00;
+			m[0][1] = t01;
+			m[0][2] = t02;
+			m[1][0] = t10;
+			m[1][1] = t11;
+			m[1][2] = t12;
+			m[2][0] = t20;
+			m[2][1] = t21;
+			m[2][2] = t22;
+		}
+
+		Matrix3x3(const Matrix4x4 & mat);
+
+		Matrix3x3(Float mat[4][4])
+		{
+			m[0][0] = mat[0][0];
+			m[0][1] = mat[0][1];
+			m[0][2] = mat[0][2];
+			m[1][0] = mat[1][0];
+			m[1][1] = mat[1][1];
+			m[1][2] = mat[1][2];
+			m[2][0] = mat[2][0];
+			m[2][1] = mat[2][1];
+			m[2][2] = mat[2][2];
+		}
+
+
+		bool operator==(const Matrix3x3 &m2) const {
+			for (auto i = 0; i < 3; ++i)
+				for (auto j = 0; j < 3; ++j)
+					if (m[i][j] != m2.m[i][j]) return false;
+			return true;
+		}
+		bool operator!=(const Matrix3x3 &m2) const {
+			for (auto i = 0; i < 3; ++i)
+				for (auto j = 0; j < 3; ++j)
+					if (m[i][j] != m2.m[i][j]) return true;
+			return false;
+		}
+
+		Matrix3x3& operator/=(const Float & s)
+		{
+			const auto inv = 1.0 / s;
+			(*this) *= inv;
+			return *this;
+		}
+
+		Matrix3x3& operator*=(const Float & s)
+		{
+			for (auto i = 0; i < 3; ++i)
+				for (auto j = 0; j < 3; ++j)
+					m[i][j] *= s;
+			return *this;
+		}
+
+
+		void Transpose()
+		{
+			for (auto i = 0; i < 3; i++) {
+				for (auto j = 0; j < 3; j++) {
+					const auto t = m[i][j];
+					m[i][j] = m[j][i];
+					m[j][i] = t;
+				}
+			}
+		}
+
+		Matrix3x3 Transposed()const
+		{
+			Matrix3x3 mat
+			{	m[0][0], m[1][0], m[2][0],
+				m[0][1], m[1][1], m[2][1],
+				m[0][2], m[1][2], m[2][2]
+			};
+			return mat;
+		}
+
+		Float Det()const
+		{
+			return m[0][0] * m[1][1] * m[2][2] +
+				m[0][1] * m[1][2] * m[2][0]
+				+ m[0][2] * m[1][0] * m[2][1]
+				- m[0][0] * m[1][2] * m[2][1]
+				- m[0][1] * m[1][0] * m[2][2]
+				- m[0][2] * m[1][1] * m[2][0];
+		}
+
+		void Inverse()
+		{
+			*this = Inversed();
+		}
+
+		Matrix3x3 Inversed()const
+		{
+			const auto det = Det();
+			if (std::fabs(det) <= 0.00001)
+			{
+				return Matrix3x3{};
+			}
+			Matrix3x3 mat
+			{
+				m[1][1] * m[2][2] - m[2][1] * m[1][2],-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),m[0][1] * m[1][2] - m[0][2] * m[1][1],
+				m[1][2] * m[2][0] - m[2][2] * m[1][0],-(m[0][2] * m[2][0] - m[2][2] * m[0][0]),m[0][2] * m[1][0] - m[0][0] * m[1][2],
+				m[1][0] * m[2][1] - m[2][0] * m[1][1],-(m[0][0] * m[2][1] - m[2][0] * m[0][1]),m[0][0] * m[1][1] - m[0][1] * m[1][0]
+			};
+			mat /= det;
+			return mat;
+		}
+
+	};
+
 	struct Matrix4x4 {
 		// Matrix4x4 Public Methods
+
+		typedef	Float(*MatrixDataType)[4];
 		Matrix4x4()
 		{
 			m[0][0] = m[1][1] = m[2][2] = m[3][3] = 1.f;
 			m[0][1] = m[0][2] = m[0][3] = m[1][0] = m[1][2] = m[1][3] = m[2][0] =
-				m[2][1] = m[2][3] = m[3][0] = m[3][1] = m[3][2] = 0.f;
+			m[2][1] = m[2][3] = m[3][0] = m[3][1] = m[3][2] = 0.f;
 		}
 
 		Matrix4x4(Float mat[4][4])
@@ -85,6 +209,12 @@ namespace  ysl {
 				m[0][2], m[1][2], m[2][2], m[3][2],
 				m[0][3], m[1][3], m[2][3], m[3][3]);
 			return mat;
+		}
+
+		Matrix3x3 NormalMatrix()const
+		{
+			Matrix3x3 mat3x3{Inversed().Transposed()};
+			return mat3x3;
 		}
 
 		void Inverse()
@@ -165,21 +295,21 @@ namespace  ysl {
 		friend std::ostream &operator<<(std::ostream &os, const Matrix4x4 &m)
 		{
 			os << "[" <<
-				m.m[0][0] << "," << m.m[0][1] << "," << m.m[0][2] << "," << m.m[0][3] << "]\n" <<
-				m.m[1][0] << "," << m.m[1][1] << "," << m.m[1][2] << "," << m.m[1][3] << "]\n" <<
-				m.m[2][0] << "," << m.m[2][1] << "," << m.m[2][2] << "," << m.m[2][3] << "]\n" <<
-				m.m[3][0] << "," << m.m[3][1] << "," << m.m[3][2] << "," << m.m[3][3] << "]\n";
+				m.m[0][0] << ", " << m.m[0][1] << ", " << m.m[0][2] << ", " << m.m[0][3] << "]\n" <<
+				m.m[1][0] << ", " << m.m[1][1] << ", " << m.m[1][2] << ", " << m.m[1][3] << "]\n" <<
+				m.m[2][0] << ", " << m.m[2][1] << ", " << m.m[2][2] << ", " << m.m[2][3] << "]\n" <<
+				m.m[3][0] << ", " << m.m[3][1] << ", " << m.m[3][2] << ", " << m.m[3][3] << "]\n";
 			return os;
 		}
 
-		Float * Data()
+		Float * FlatData()
 		{
 			return *m;
 		}
 
-		const Float * ConstData()const
+		MatrixDataType MatrixData()
 		{
-			return *m;
+			return m;
 		}
 
 		Float m[4][4];
@@ -218,15 +348,9 @@ namespace  ysl {
 
 		}
 
-
 		Transform Transposed() const;
 
 		void Transpose();
-
-		//friend Transform Transpose(const Transform & trans)
-		//{
-		//	return { trans.m_inv, trans.m_m };
-		//}
 
 		bool operator==(const Transform& t) const;
 
@@ -234,13 +358,19 @@ namespace  ysl {
 
 		bool IsIdentity() const;
 
-		Transform Inversed()const { return Transform{m_inv,m_m};}
+		Transform Inversed()const { return Transform{ m_inv,m_m }; }
 
 		const Matrix4x4& Matrix() const;
 
 		const Matrix4x4& InverseMatrix() const;
 
-		void LookAt(const Point3f & eye, const Point3f & center, const Vector3f & up);
+		void SetLookAt(const Point3f & eye, const Point3f & center, const Vector3f & up);
+
+		void SetOrtho(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane);
+
+		void SetPerspective(Float vertcialAngle, Float aspectRation, Float nearPlane, Float farPlane);
+
+		void SetFrustum(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane);
 
 		void SetTranslate(const Vector3f& t);
 
@@ -274,8 +404,7 @@ namespace  ysl {
 
 		Float* InverseMatrixData();
 
-		std::shared_ptr<Matrix4x4> ColumnMajorMatrix() const;
-
+		ysl::Matrix4x4 ColumnMajorMatrix() const;
 
 		Transform operator*(const Transform & trans)const;
 
@@ -286,7 +415,6 @@ namespace  ysl {
 		template<typename T> Ray operator*(const Ray & ray)const;
 
 		template<typename T> AABB operator*(const AABB & aabb)const;
-
 
 
 		friend std::ostream &operator<<(std::ostream &os, const Transform & t)
@@ -300,24 +428,40 @@ namespace  ysl {
 		Matrix4x4 m_inv;
 	};
 
+
+	inline 
+	Matrix3x3::Matrix3x3(const Matrix4x4& mat)
+	{
+		m[0][0] = mat.m[0][0];
+		m[0][1] = mat.m[0][1];
+		m[0][2] = mat.m[0][2];
+		m[1][0] = mat.m[1][0];
+		m[1][1] = mat.m[1][1];
+		m[1][2] = mat.m[1][2];
+		m[2][0] = mat.m[2][0];
+		m[2][1] = mat.m[2][1];
+		m[2][2] = mat.m[2][2];
+	}
+
+
 	inline
-	Transform
-	Transform::Transposed() const
+		Transform
+		Transform::Transposed() const
 	{
 		return { m_inv.Transposed(), m_m.Transposed() };
 	}
 
 	inline
-	void
-	Transform::Transpose()
+		void
+		Transform::Transpose()
 	{
 		m_inv.Transpose();
 		m_m.Transposed();
 	}
 
 	inline
-	bool
-	Transform::operator==(const Transform& t) const
+		bool
+		Transform::operator==(const Transform& t) const
 	{
 		return t.m_m == m_m;
 	}
@@ -355,20 +499,68 @@ namespace  ysl {
 		return m_inv;
 	}
 
-	inline 
-	void 
-	Transform::LookAt(const Point3f& eye, const Point3f& center, const Vector3f& up)
+	inline
+		void
+		Transform::SetLookAt(const Point3f& eye, const Point3f& center, const Vector3f& up)
 	{
 		const auto direction = (center - eye).Normalized();
-		const auto right = Vector3f::Cross(direction, up.Normalized());
+		const auto right = Vector3f::Cross(direction, up).Normalized();
 		const auto newUp = Vector3f::Cross(right, direction).Normalized();
+
+		m_inv = Matrix4x4
+		{
+			right.x,newUp.x,-direction.x,eye.x,
+			right.y,newUp.y,-direction.y,eye.y,
+			right.z,newUp.z,-direction.z,eye.z,
+			0.f,0.f,0.f,1.0f
+		};
+		// In right-hand coordinates system, the direction of direction components is different from left-hand coordinates system.
+		m_m = m_inv.Inversed();
+	}
+
+	inline void Transform::SetOrtho(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
+	{
+		const auto width = right - left;
+		const auto height = top - bottom;
+		const auto clip = farPlane - nearPlane;
+		if (width == 0.0 || height == 0.0 || clip == 0.0)
+		{
+			return;
+		}
+
+		m_m = Matrix4x4{
+			2.0f / width,0.0f,0.0f,-(right + left) / width,
+			0.0f,2.0f / height,0.0f,-(top + bottom) / height,
+			0.0f,0.0f,-2.0f / clip,-(farPlane + nearPlane) / clip,
+			0.0f,0.0f,0.0f,1.0f
+		};
+		m_inv = m_m.Inversed();
+	}
+
+	inline void Transform::SetPerspective(Float vertcialAngle, Float aspectRation, Float nearPlane, Float farPlane)
+	{
+		const auto top = std::tan(DegreesToRadians(vertcialAngle / 2))*nearPlane;
+		const auto right = top * aspectRation;
+		SetFrustum(-right, right, top, -top, nearPlane, farPlane);
+	}
+
+	inline void Transform::SetFrustum(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
+	{
+		const auto width = right - left;
+		const auto height = top - bottom;
+		const auto clip = farPlane - nearPlane;
+
+		if (width == 0.0 || height == 0.0 || clip == 0.0)
+		{
+			return;
+		}
 
 		m_m = Matrix4x4
 		{
-			right.x,newUp.x,direction.x,eye.x,
-			right.y,newUp.y,direction.y,eye.y,
-			right.z,newUp.z,direction.z,eye.z,
-			0.f,0.f,0.f,1.0f
+			2.f * nearPlane / width,0.0f,(right + left) / width,0.0f,
+			0.0f,2.f * nearPlane / height,(top + bottom) / height,0.0f,
+			0.0f,0.0f,-(farPlane + nearPlane) / clip,-2.f * farPlane*nearPlane / clip,
+			0.0f,0.0f,-1.0f,0.0f
 		};
 		m_inv = m_m.Inversed();
 	}
@@ -393,16 +585,16 @@ namespace  ysl {
 		   0.f, 0.f, 0.f, 1.f };
 	}
 
-	inline 
-	void 
-	Transform::SetTranslate(Float* t)
+	inline
+		void
+		Transform::SetTranslate(Float* t)
 	{
 		SetTranslate(t[0], t[1], t[2]);
 	}
 
-	inline 
-	void 
-	Transform::SetScale(const Vector3f& s)
+	inline
+		void
+		Transform::SetScale(const Vector3f& s)
 	{
 		SetScale(s[0], s[1], s[2]);
 	}
@@ -432,16 +624,16 @@ namespace  ysl {
 		SetScale(s[0], s[1], s[2]);
 	}
 
-	inline 
-	void 
-	Transform::SetRotate(const Vector3f & axis, Float degrees)
+	inline
+		void
+		Transform::SetRotate(const Vector3f & axis, Float degrees)
 	{
 		SetRotate(axis[0], axis[1], axis[2], degrees);
 	}
 
-	inline 
-	void 
-	Transform::SetRotate(Float x, Float y, Float z, Float degrees)
+	inline
+		void
+		Transform::SetRotate(Float x, Float y, Float z, Float degrees)
 	{
 		//YSL_ASSERT_X(false, "Transform::SetRotate", "Not implemented yet.");
 		Vector3f axis = { x,y,z };
@@ -470,16 +662,16 @@ namespace  ysl {
 		m_inv = m.Inversed();
 	}
 
-	inline 
-	void 
-	Transform::SetRotate(Float* a, Float degrees)
+	inline
+		void
+		Transform::SetRotate(Float* a, Float degrees)
 	{
 		SetRotate(a[0], a[1], a[2], degrees);
 	}
 
-	inline 
-	void 
-	Transform::SetRotateX(Float degrees)
+	inline
+		void
+		Transform::SetRotateX(Float degrees)
 	{
 		const auto radians = DegreesToRadians(degrees);
 		const auto sinTheta = std::sin(radians);
@@ -496,9 +688,9 @@ namespace  ysl {
 
 	}
 
-	inline 
-	void 
-	Transform::SetRotateY(Float degrees)
+	inline
+		void
+		Transform::SetRotateY(Float degrees)
 	{
 		const auto radians = DegreesToRadians(degrees);
 		const auto sinTheta = std::sin(radians);
@@ -514,9 +706,9 @@ namespace  ysl {
 		m_inv = m_m.Inversed();
 	}
 
-	inline 
-	void 
-	Transform::SetRotateZ(Float degrees)
+	inline
+		void
+		Transform::SetRotateZ(Float degrees)
 	{
 		const auto radians = DegreesToRadians(degrees);
 		const auto sinTheta = std::sin(radians);
@@ -533,29 +725,9 @@ namespace  ysl {
 		m_inv = m_m.Inversed();
 	}
 
-	inline const Float* Transform::ConstMatrixData() const
+	inline ysl::Matrix4x4 Transform::ColumnMajorMatrix() const
 	{
-		return m_m.ConstData();
-	}
-
-	inline Float* Transform::MatrixData()
-	{
-		return m_m.Data();
-	}
-
-	inline const Float* Transform::ConstInverseMatrixData() const
-	{
-		return m_inv.ConstData();
-	}
-
-	inline Float* Transform::InverseMatrixData() 
-	{
-		return m_inv.Data();
-	}
-
-	inline std::shared_ptr<Matrix4x4> Transform::ColumnMajorMatrix() const
-	{
-		return std::make_shared<Matrix4x4>(m_m.Transposed());
+		return m_m.Transposed();
 	}
 
 	template<typename T> inline
@@ -568,8 +740,8 @@ namespace  ysl {
 		const auto rz = m_m.m[2][0] * x + m_m.m[2][1] * y + m_m.m[2][2] * z + m_m.m[2][3];
 		const auto rw = m_m.m[3][0] * x + m_m.m[3][1] * y + m_m.m[3][2] * z + m_m.m[3][3];
 
-		if (rw == 1)return Point3<T>{rx,ry,rz};
-		return Point3<T>{ rx,ry,rz } / rw;
+		if (rw == 1)return Point3<T>{rx, ry, rz};
+		return Point3<T>{ rx, ry, rz } / rw;
 	}
 
 	template<typename T> inline
@@ -598,13 +770,11 @@ namespace  ysl {
 	}
 
 	inline
-	Transform
-	Transform::operator*(const Transform & trans)const
+		Transform
+		Transform::operator*(const Transform & trans)const
 	{
-		return {this->m_m*trans.m_m,trans.m_inv*this->m_inv};
+		return { this->m_m*trans.m_m,trans.m_inv*this->m_inv };
 	}
-
-
 }
 
 #ifdef YSL_TO_QT

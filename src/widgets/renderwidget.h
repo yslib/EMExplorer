@@ -95,7 +95,7 @@ public:
 	bool enableStartPicking;
 	QSharedPointer<RenderOptions> options;
 	QPoint lastMousePos;
-	QMatrix4x4 volumeNormalTransform;
+	ysl::Transform volumeNormalTransform;
 
 };
 
@@ -148,7 +148,8 @@ private slots:
 private:
 	//void			drawCoordinate(QPainter* painter);
 	void			drawThreeAxis();
-	QMatrix4x4		worldMatrix()const;
+
+	ysl::Transform worldMatrix() const;
 
 	RenderWidgetPrivate* const d_ptr;
 	Q_DECLARE_PRIVATE(RenderWidget);
@@ -164,8 +165,8 @@ private:
 	AbstractSliceDataModel					*m_dataModel;
 	//RenderParameterWidget					*m_parameterWidget;
 
-	QMatrix4x4								m_proj;
-	QMatrix4x4								m_otho;
+	ysl::Transform							m_proj;
+	ysl::Transform							m_otho;
 	FocusCamera								m_camera;		//view matrix in this
 	FocusCameraEx							m_cameraEx;
 

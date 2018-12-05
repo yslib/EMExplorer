@@ -145,7 +145,7 @@ void Volume::calcIsoStat() {
 		m_maxIsoValue = std::max(m_maxIsoValue, m_isoStat[i]);
 }
 
-GPUVolume::GPUVolume(const void * data, int xSize, int ySize, int zSize, const QMatrix4x4 & trans, const VolumeFormat& fmt)
+GPUVolume::GPUVolume(const void * data, int xSize, int ySize, int zSize, const ysl::Transform & trans, const VolumeFormat& fmt)
 	:Volume(data, xSize, ySize, zSize, fmt)
 {
 	setTransform(trans);

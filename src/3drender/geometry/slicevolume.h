@@ -73,7 +73,7 @@ private:
 	int										m_topSlice;
 	int										m_rightSlice;
 	int										m_frontSlice;
-	QMatrix4x4								m_normalizeTransform;
+	ysl::Transform							m_normalizeTransform;
 
 	double									m_A, m_B, m_C, m_D;
 
@@ -97,23 +97,23 @@ public://ShaderDataInterface
 	float rayStep() const override;
 	unsigned int transferFunctionsTexId() const override;
 
-	QVector3D cameraPos() const override;
+	ysl::Point3f cameraPos() const override;
 
-	QVector3D cameraTowards() const override;
+	ysl::Vector3f cameraTowards() const override;
 
-	QVector3D cameraUp() const override;
+	ysl::Vector3f cameraUp() const override;
 
-	QVector3D cameraRight() const override;
+	ysl::Vector3f cameraRight() const override;
 
-	QMatrix4x4 viewMatrix() const override;
+	ysl::Transform viewMatrix() const override;
 
-	QMatrix4x4 worldMatrix() const override;
+	ysl::Transform worldMatrix() const override;
 
-	QMatrix4x4 othoMatrix() const override;
+	ysl::Transform othoMatrix() const override;
 
-	QMatrix4x4 perspMatrix() const override;
+	ysl::Transform perspMatrix() const override;
 
-	QVector3D lightDirection() const override;
+	ysl::Vector3f lightDirection() const override;
 
 	float ambient() const override;
 	float diffuse() const override;
@@ -122,7 +122,7 @@ public://ShaderDataInterface
 	QVector3D volumeBound() const override;
 	QSize windowSize() const override;
 public:
-	SliceVolume(const void * data,int x,int y,int z, const QMatrix4x4 & trans,
+	SliceVolume(const void * data,int x,int y,int z, const ysl::Transform & trans,
 		const VolumeFormat & fmt = VolumeFormat(),
 		RenderWidget * renderer = nullptr);
 

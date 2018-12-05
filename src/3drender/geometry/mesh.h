@@ -14,6 +14,7 @@ typedef QVector3D Vector3f;
 typedef QVector2D Point2f;
 typedef QMatrix4x4 Transform3;
 
+
 class RenderWidget;
 
 class TriangleMesh{

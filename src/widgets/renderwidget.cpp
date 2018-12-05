@@ -252,10 +252,12 @@ void RenderWidget::resizeGL(int w, int h)
 {
 	// Update projection matrices
 	const double aspect = GLfloat(w) / h;
-	m_proj.setToIdentity();
-	m_otho.setToIdentity();
-	m_otho.ortho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
-	m_proj.perspective(45.f, aspect, 0.01f, 100.f);
+
+	//m_proj.setToIdentity();
+	//m_otho.setToIdentity();
+
+	m_otho.SetOrtho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
+	m_proj.SetPerspective(45.f, aspect, 0.01f, 100.f);
 
 	if (m_pickFBO != nullptr);
 	delete m_pickFBO;
@@ -279,7 +281,7 @@ void RenderWidget::paintGL()
 	//
 	const auto world = worldMatrix();
 
-	const auto center = d->volumeNormalTransform*world*QVector3D(0.5, 0.5, 0.5);
+	const auto center = d->volumeNormalTransform*world*ysl::Point3f{ 0.5, 0.5, 0.5 };
 
 	/*ysl::Transform worldTransform = toTransform(world);
 	ysl::Transform normalizedTransform = toTransform(d->volumeNormalTransform);
@@ -290,10 +292,10 @@ void RenderWidget::paintGL()
 
 
 	//*Vector3f{ 0.5,0.5,0.5 };
-
+	
 	//update camera center
-	m_camera.setCenter(center);
-	m_cameraEx.setCenter(ysl::Point3f{center.x(),center.y(),center.z()});
+	m_camera.setCenter(toQVector3D(center));
+	m_cameraEx.setCenter(center);
 
 	if (m_volume != nullptr) {
 		if (renderMode & RenderMode::DVR) {
@@ -316,8 +318,8 @@ void RenderWidget::paintGL()
 			m_boundingBoxVAO.bind();
 			m_boundingBoxVBO.bind();
 			m_trivialShader->bind();
-			m_trivialShader->setUniformValue("modelViewMat", camera().view()*world*d->volumeNormalTransform);
-			m_trivialShader->setUniformValue("projMat", m_proj);
+			m_trivialShader->setUniformValue("modelViewMat", (cameraEx().view()*world*d->volumeNormalTransform).ColumnMajorMatrix().m);
+			m_trivialShader->setUniformValue("projMat", m_proj.ColumnMajorMatrix().m);
 			m_trivialShader->setUniformValue("color", QVector4D{ 1.0f,0.0f,0.0f,1.0f });
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -333,6 +335,17 @@ void RenderWidget::paintGL()
 		const auto viewMatrix = camera().view();
 		const auto cameraPos = camera().position();
 
+		const auto viewMatrixEx = cameraEx().view();
+		//const auto cameraPosEx = cameraEx().position();
+
+		const auto xs = d_ptr->options->xSpacing;
+		const auto ys = d_ptr->options->ySpacing;
+		const auto zs = d_ptr->options->zSpacing;
+
+
+		//QMatrix4x4 world;
+		//world.setToIdentity();
+		//world.scale(xs,ys,zs);
 
 		if (d->enableStartPicking == true) {
 			m_pickFBO->bind();
@@ -340,11 +353,11 @@ void RenderWidget::paintGL()
 
 			m_selectShader->bind();
 			m_selectShader->setUniformValue("viewMatrix", viewMatrix);
-			m_selectShader->setUniformValue("projMatrix", m_proj);
-			m_selectShader->setUniformValue("modelMatrix", world);
+			m_selectShader->setUniformValue("projMatrix", m_proj.ColumnMajorMatrix().m);
+			m_selectShader->setUniformValue("modelMatrix", world.ColumnMajorMatrix().m);
 
 			for (int i = 0; i < m_integration.size(); i++) {
-				if (m_integration[i].visible == true) {
+				if (m_integration[i].visible) {
 					const auto color = idToColor(i);
 					m_selectShader->setUniformValue("pickColor", color);
 					m_integration[i].mesh->render();
@@ -355,10 +368,10 @@ void RenderWidget::paintGL()
 		}
 
 		m_meshShader->bind();
-		m_meshShader->setUniformValue("viewMatrix", viewMatrix);
-		m_meshShader->setUniformValue("projMatrix", m_proj);
-		m_meshShader->setUniformValue("modelMatrix", world);
-		m_meshShader->setUniformValue("normalMatrix", world.normalMatrix());
+		m_meshShader->setUniformValue("viewMatrix", viewMatrixEx.ColumnMajorMatrix().m);
+		m_meshShader->setUniformValue("projMatrix", m_proj.ColumnMajorMatrix().m);
+		m_meshShader->setUniformValue("modelMatrix", world.ColumnMajorMatrix().m);
+		m_meshShader->setUniformValue("normalMatrix", world.Matrix().NormalMatrix().Transposed().m);
 		m_meshShader->setUniformValue("lightPos", cameraPos);
 		m_meshShader->setUniformValue("viewPos", cameraPos);
 
@@ -373,13 +386,13 @@ void RenderWidget::paintGL()
 				color = m_integration[i].color.lighter(150);
 				m_meshShader->setUniformValue("outlining", false);
 				m_meshShader->setUniformValue("objectColor", color);
-				m_meshShader->setUniformValue("modelMatrix", world);
+				m_meshShader->setUniformValue("modelMatrix", world.ColumnMajorMatrix().m);
 				m_integration[i].mesh->render();
 			}
 			else {
 				m_meshShader->setUniformValue("outlining", false);
 				m_meshShader->setUniformValue("objectColor", color);
-				m_meshShader->setUniformValue("modelMatrix", world);
+				m_meshShader->setUniformValue("modelMatrix", world.ColumnMajorMatrix().m);
 				m_integration[i].mesh->render();
 			}
 		}
@@ -629,7 +642,7 @@ void RenderWidget::drawThreeAxis()
 
 	m_trivialShader->bind();
 	m_trivialShader->setUniformValue("modelViewMat", view);
-	m_trivialShader->setUniformValue("projMat", m_proj);
+	m_trivialShader->setUniformValue("projMat", m_proj.ColumnMajorMatrix().m);
 	glLineWidth(2.0f);
 	{
 		QOpenGLVertexArrayObject::Binder binder(&m_axisVAO);
@@ -653,14 +666,14 @@ void RenderWidget::drawThreeAxis()
 	glViewport(0, 0, wh.width(), wh.height());
 }
 
-QMatrix4x4 RenderWidget::worldMatrix() const
+ysl::Transform RenderWidget::worldMatrix() const
 {
 	const auto xs = d_ptr->options->xSpacing;
 	const auto ys = d_ptr->options->ySpacing;
 	const auto zs = d_ptr->options->zSpacing;
-	QMatrix4x4 world;
-	world.setToIdentity();
-	world.scale(xs, ys, zs);
+
+	ysl::Transform world;
+	world.SetScale(xs, ys, zs);
 	return world;
 }
 
@@ -684,9 +697,9 @@ void RenderWidget::updateMark() {
 	const auto z = m_dataModel->topSliceCount();
 	const auto y = m_dataModel->rightSliceCount();
 	const auto x = m_dataModel->frontSliceCount();
-	QMatrix4x4 trans;
-	trans.setToIdentity();
-	trans.scale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
+	ysl::Transform trans;
+	trans.SetScale(1 / static_cast<double>(x), 1 / static_cast<double>(y), 1 / static_cast<double>(z));
+
 	{
 		const auto instances = m_markModel->treeItems(QModelIndex(), TreeItemType::Instance);
 		const QColor color = Qt::red;
@@ -698,13 +711,15 @@ void RenderWidget::updateMark() {
 			const auto nV = mesh->vertexCount();
 			const auto nT = mesh->triangleCount();
 			const auto n = mesh->normals();
+			auto T = d->volumeNormalTransform*trans;
+			
 			auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v,
 				n,
 				nullptr,
 				nV,
 				idx,
 				nT,
-				d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
+				toQMatrix4x4(T),		//Make mesh coordinate matching with normalized volume coordinates
 				this));
 			ptr->initializeGLResources();
 			m_integration.push_back({ ptr,color,true });
@@ -741,15 +756,16 @@ void RenderWidget::updateVolumeData()
 
 	Q_D(RenderWidget);
 
-	QVector3D m_scale = QVector3D(x, y, z);
-	m_scale.normalize();
+	auto m_scale = ysl::Vector3f(x, y, z);
+	m_scale.Normalize();
 
-	d->volumeNormalTransform.setToIdentity();		//Transform size from (1,1,1) to (x/N,y/N,z/N)
-	d->volumeNormalTransform.scale(m_scale);
+	//d->volumeNormalTransform.setToIdentity();		//Transform size from (1,1,1) to (x/N,y/N,z/N)
+	d->volumeNormalTransform.SetScale(m_scale);
 
-	QMatrix4x4 I;
-	I.setToIdentity();
-	I.translate(-0.5, -0.5, -0.5);
+	//QMatrix4x4 I;
+	//I.setToIdentity();
+	ysl::Transform I;
+	I.SetTranslate(-0.5, -0.5, -0.5);
 
 	// Decide data format
 

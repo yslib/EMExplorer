@@ -71,18 +71,20 @@ RayCastingShader::RayCastingShader() :ShaderProgram()
 void RayCastingShader::load(const ShaderDataInterface* data)
 {
 	this->bind();
-	QVector3D L = data->lightDirection();
-	QVector3D H = L - data->cameraTowards();
-	if (H.length() > 1e-10) H.normalize();
+	auto L = data->lightDirection();
+	auto H = L - data->cameraTowards();
+	if (H.Length() > 1e-10) H.Normalize();
 
 	const auto w = data->windowSize().width();
 	const auto h = data->windowSize().height();
 
-	QMatrix4x4 otho;
-	otho.setToIdentity();
-	otho.ortho(0, w, 0, h, -10, 100);
+	//QMatrix4x4 otho;
+	//otho.setToIdentity();
+	//otho.ortho(0, w, 0, h, -10, 100);
 
-	this->setUniformValue("othoMatrix", otho);
+	ysl::Transform othog;
+	othog.SetOrtho(0, w, 0, h, -10, 100);
+	this->setUniformValue("othoMatrix", othog.ColumnMajorMatrix().m);
 
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->volumeTexId());
     this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE, data->startPosTexIdx());
@@ -92,14 +94,27 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 
 	this->setUniformSampler("texGradient", GL_TEXTURE4, GL_TEXTURE_3D, data->gradientTexId());
 
-	this->setUniformValue("viewMatrix", data->viewMatrix());
+	
+	const auto mm = toQMatrix4x4((data->viewMatrix()));
+	const auto m = data->viewMatrix().ColumnMajorMatrix();
+	//qDebug() << "QMatrixData:";
+	//for (int i = 0; i < 16; i++)
+	//	qDebug() << mm.constData()[i];
+	//qDebug() << "ColumnMajorData:";
+	//for (int i = 0; i < 16; i++)
+	//	qDebug() << *(*m+i);
+
+	this->setUniformValue("viewMatrix",m.m);
+
+	//this->setUniformValue("viewMatrix", data->viewMatrix());
+
 	this->setUniformValue("step", data->rayStep());
 	this->setUniformValue("ka", data->ambient());
 	this->setUniformValue("ks", data->specular());
 	this->setUniformValue("kd", data->diffuse());
 	this->setUniformValue("shininess", data->shininess());
-	this->setUniformValue("lightdir", (float)L.x(), (float)L.y(), (float)L.z());
-	this->setUniformValue("halfway", (float)H.x(), (float)H.y(), (float)H.z());
+	this->setUniformValue("lightdir", (float)L.x, (float)L.y, (float)L.z);
+	this->setUniformValue("halfway", (float)H.x, (float)H.y, (float)H.z);
 }
 
 
@@ -114,30 +129,36 @@ void RayCastingModuloShader::load(const ShaderDataInterface* data)
 	this->bind();
 	auto L = data->lightDirection();
 	auto H = L - data->cameraTowards();
-	if (H.length() > 1e-10) H.normalize();
+	if (H.Length() > 1e-10) H.Normalize();
 
 	const auto w = data->windowSize().width();
 	const auto h = data->windowSize().height();
 
-	QMatrix4x4 otho;
-	otho.setToIdentity();
-	otho.ortho(0, w, 0, h, -10, 100);
+	//QMatrix4x4 otho;
+	//otho.setToIdentity();
+	//otho.ortho(0, w, 0, h, -10, 100);
 
-	this->setUniformValue("othoMatrix", otho);
+	ysl::Transform othog;
+	othog.SetOrtho(0, w, 0, h, -10, 100);
+	this->setUniformValue("othoMatrix", othog.ColumnMajorMatrix().m);
+
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->volumeTexId());
 	this->setUniformSampler("texStartPos", GL_TEXTURE0, GL_TEXTURE_RECTANGLE, data->startPosTexIdx());
 	this->setUniformSampler("texEndPos", GL_TEXTURE1, GL_TEXTURE_RECTANGLE, data->endPosTexIdx());
 	this->setUniformSampler("texTransfunc", GL_TEXTURE2, GL_TEXTURE_1D, data->transferFunctionsTexId());
 	this->setUniformSampler("texGradient", GL_TEXTURE4, GL_TEXTURE_3D, data->gradientTexId());
 
-	this->setUniformValue("viewMatrix", data->viewMatrix());
+	const auto m = (data->viewMatrix().ColumnMajorMatrix());
+	this->setUniformValue("viewMatrix", m.m);
+	//this->setUniformValue("viewMatrix", data->viewMatrix());
+
 	this->setUniformValue("step", data->rayStep());
 	this->setUniformValue("ka", data->ambient());
 	this->setUniformValue("ks", data->specular());
 	this->setUniformValue("kd", data->diffuse());
 	this->setUniformValue("shininess", data->shininess());
-	this->setUniformValue("lightdir", float(L.x()), float(L.y()), float(L.z()));
-	this->setUniformValue("halfway", float(H.x()), float(H.y()), float(H.z()));
+	this->setUniformValue("lightdir", float(L.x), float(L.y), float(L.z));
+	this->setUniformValue("halfway", float(H.x), float(H.y), float(H.z));
 }
 
 
@@ -151,20 +172,30 @@ PositionShader::PositionShader() :ShaderProgram()
 void PositionShader::load(const ShaderDataInterface* data)
 {
 	this->bind();
-	this->setUniformValue("projMatrix", data->perspMatrix());
-	this->setUniformValue("worldMatrix", data->worldMatrix());
-	this->setUniformValue("viewMatrix", data->viewMatrix());
+	this->setUniformValue("projMatrix", data->perspMatrix().ColumnMajorMatrix().m);
+	this->setUniformValue("worldMatrix", data->worldMatrix().ColumnMajorMatrix().m);
+
+	const auto m = (data->viewMatrix().ColumnMajorMatrix());
+	this->setUniformValue("viewMatrix", m.m);
+
+	//this->setUniformValue("viewMatrix", data->viewMatrix());
 }
 
-SliceShader::SliceShader() {
+SliceShader::SliceShader() 
+{
 	addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/resources/shaders/slice_shader_v.glsl");
 	addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/resources/shaders/slice_shader_f.glsl");
 	link();
 }
-void SliceShader::load(const ShaderDataInterface* data) {
+void SliceShader::load(const ShaderDataInterface* data)
+{
 	this->bind();
 	this->setUniformSampler("volume", GL_TEXTURE0, GL_TEXTURE_3D, data->volumeTexId());
-	this->setUniformValue("projMatrix", data->perspMatrix());
-	this->setUniformValue("viewMatrix", data->viewMatrix());
-	this->setUniformValue("worldMatrix", data->worldMatrix());
+	this->setUniformValue("projMatrix", data->perspMatrix().ColumnMajorMatrix().m);
+
+	const auto m = (data->viewMatrix().ColumnMajorMatrix());
+	this->setUniformValue("viewMatrix", m.m);
+
+	//this->setUniformValue("viewMatrix", data->viewMatrix());
+	this->setUniformValue("worldMatrix", data->worldMatrix().ColumnMajorMatrix().m);
 }

@@ -2,7 +2,8 @@
 #define TRIANGULATE_H
 
 #include <QPolygonF>
-#include <QVector3D>
+
+#include "base/geometry.h"
 
 
 class StrokeMarkItem;

@@ -91,59 +91,65 @@ unsigned SliceVolume::transferFunctionsTexId() const
 	return m_renderer->m_tfTexture->textureId();
 }
 
-QVector3D SliceVolume::cameraPos() const
+ysl::Point3f SliceVolume::cameraPos() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraPos", "null pointer");
-	const auto & cam = m_renderer->camera();
+	const auto & cam = m_renderer->cameraEx();
 	return cam.position();
 }
 
-QVector3D SliceVolume::cameraTowards() const
+ysl::Vector3f SliceVolume::cameraTowards() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::Towards", "null pointer");
-	const auto & cam = m_renderer->camera();
+	const auto & cam = m_renderer->cameraEx();
 	return cam.front();
 }
 
-QVector3D SliceVolume::cameraUp() const
+ysl::Vector3f SliceVolume::cameraUp() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraUp", "null pointer");
-	const auto & cam = m_renderer->camera();
+	const auto & cam = m_renderer->cameraEx();
 	return cam.up();
 }
 
-QVector3D SliceVolume::cameraRight() const
+ysl::Vector3f SliceVolume::cameraRight() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraRight", "null pointer");
-	const auto & cam = m_renderer->camera();
+	const auto & cam = m_renderer->cameraEx();
 	return cam.right();
 }
 
-QMatrix4x4 SliceVolume::viewMatrix() const
+ysl::Transform SliceVolume::viewMatrix() const
 {
-	const auto & cam = m_renderer->camera();
+	const auto & cam = m_renderer->cameraEx();
 	return cam.view();
 }
-QMatrix4x4 SliceVolume::worldMatrix() const
+
+ysl::Transform SliceVolume::worldMatrix() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::worldMatrix", "null pointer");
 	return m_normalizeTransform * transform();
 }
-QMatrix4x4 SliceVolume::othoMatrix() const
+
+ysl::Transform SliceVolume::othoMatrix() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::othoMatrix", "null pointer");
 	return m_renderer->m_otho;
 }
-QMatrix4x4 SliceVolume::perspMatrix() const
+
+ysl::Transform SliceVolume::perspMatrix() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::perspMatrix", "null pointer");
 	return m_renderer->m_proj;
 }
-QVector3D SliceVolume::lightDirection() const
+
+ysl::Vector3f SliceVolume::lightDirection() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::lightDirection", "null pointer");
-	return m_renderer->d_ptr->options->lightDirection;
+	const auto & d = m_renderer->d_ptr->options->lightDirection;
+	return ysl::Vector3f(d.x(),d.y(),d.z());
 }
+
 float SliceVolume::ambient() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::ambient", "null pointer");
@@ -175,7 +181,7 @@ QSize SliceVolume::windowSize() const
 	return m_renderer->size();
 }
 
-SliceVolume::SliceVolume(const void * data, int x, int y, int z, const QMatrix4x4 & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
+SliceVolume::SliceVolume(const void * data, int x, int y, int z, const ysl::Transform & trans, const VolumeFormat& fmt, RenderWidget * renderer) :
 	GPUVolume(data, x, y, z, trans, fmt)
 	, m_fbo(nullptr)
 	//, m_gradientTexture(nullptr)
@@ -195,15 +201,15 @@ SliceVolume::SliceVolume(const void * data, int x, int y, int z, const QMatrix4x
 	, m_sliceShader(nullptr)
 	, m_initialized(false)
 {
-	QVector3D scale = QVector3D(x, y, z);
-	scale.normalize();
-	m_normalizeTransform.setToIdentity();
-	m_normalizeTransform.scale(scale);
+	auto scale = ysl::Vector3f{ysl::Float(x), ysl::Float(y), ysl::Float(z)};
+	scale.Normalize();
+	m_normalizeTransform.SetScale(scale);
 	setRenderWidget(renderer);
 }
 
 void SliceVolume::setRenderWidget(RenderWidget* widget) {
-	if (m_renderer != nullptr) {
+	if (m_renderer != nullptr) 
+	{
 		disconnect(m_renderer, 0, this, 0);
 	}
 	m_renderer = widget;
@@ -386,9 +392,9 @@ bool SliceVolume::render()
 		const auto frontCoord = float(m_renderer->d_ptr->frontSliceIndex) / float(xLength());
 
 		m_sliceShader->load(this);
-		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj);
+		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj.ColumnMajorMatrix().m);
 		m_sliceShader->setUniformValue("viewMatrix", m_renderer->m_camera.view());
-		m_sliceShader->setUniformValue("worldMatrix", transform()*m_normalizeTransform);
+		m_sliceShader->setUniformValue("worldMatrix", (transform()*m_normalizeTransform).ColumnMajorMatrix().m);
 
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);
 		{
