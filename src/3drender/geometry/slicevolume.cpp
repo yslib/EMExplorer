@@ -94,34 +94,34 @@ unsigned SliceVolume::transferFunctionsTexId() const
 ysl::Point3f SliceVolume::cameraPos() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraPos", "null pointer");
-	const auto & cam = m_renderer->cameraEx();
+	const auto & cam = m_renderer->camera();
 	return cam.position();
 }
 
 ysl::Vector3f SliceVolume::cameraTowards() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::Towards", "null pointer");
-	const auto & cam = m_renderer->cameraEx();
+	const auto & cam = m_renderer->camera();
 	return cam.front();
 }
 
 ysl::Vector3f SliceVolume::cameraUp() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraUp", "null pointer");
-	const auto & cam = m_renderer->cameraEx();
+	const auto & cam = m_renderer->camera();
 	return cam.up();
 }
 
 ysl::Vector3f SliceVolume::cameraRight() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::cameraRight", "null pointer");
-	const auto & cam = m_renderer->cameraEx();
+	const auto & cam = m_renderer->camera();
 	return cam.right();
 }
 
 ysl::Transform SliceVolume::viewMatrix() const
 {
-	const auto & cam = m_renderer->cameraEx();
+	const auto & cam = m_renderer->camera();
 	return cam.view();
 }
 
@@ -147,7 +147,7 @@ ysl::Vector3f SliceVolume::lightDirection() const
 {
 	Q_ASSERT_X(m_renderer, "SliceVolume::lightDirection", "null pointer");
 	const auto & d = m_renderer->d_ptr->options->lightDirection;
-	return ysl::Vector3f(d.x(),d.y(),d.z());
+	return ysl::Vector3f(d.x,d.y,d.z);
 }
 
 float SliceVolume::ambient() const

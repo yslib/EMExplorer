@@ -177,7 +177,6 @@ void PositionShader::load(const ShaderDataInterface* data)
 
 	const auto m = (data->viewMatrix().ColumnMajorMatrix());
 	this->setUniformValue("viewMatrix", m.m);
-
 	//this->setUniformValue("viewMatrix", data->viewMatrix());
 }
 

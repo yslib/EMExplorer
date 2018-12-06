@@ -157,7 +157,7 @@ inline
 QDebug operator<<(QDebug db, const Camera & cam) {db << "[ Pos:" << cam.position() << ",Up:" << cam.up() << ",Yaw:" << cam.m_yaw << ",Pitch:" << cam.m_pitch<<" ]";return db;}
 
 /**
- * \class	FocusCamera
+ * \class	FocusCameraOld
  *
  * \brief	The focus camera.
  *
@@ -166,7 +166,7 @@ QDebug operator<<(QDebug db, const Camera & cam) {db << "[ Pos:" << cam.position
  */
 
 
-class FocusCamera
+class FocusCameraOld
 {
 public:
 	// Camera Attributes
@@ -182,7 +182,7 @@ public:
 	float m_mouseSensitivity;
 	float m_zoom;
 	// Constructor with vectors
-	FocusCamera(const QVector3D &position = QVector3D(0.0f, 0.0f, 0.0f), QVector3D up = QVector3D(0.0f, 1.0f, 0.0f),const QVector3D & center = QVector3D(0,0,0)) 
+	FocusCameraOld(const QVector3D &position = QVector3D(0.0f, 0.0f, 0.0f), QVector3D up = QVector3D(0.0f, 1.0f, 0.0f),const QVector3D & center = QVector3D(0,0,0)) 
 	:m_position(position),
 	m_front(center-position),
 	m_worldUp(up),
@@ -271,7 +271,7 @@ private:
 
 
 
-class FocusCameraEx
+class FocusCamera
 {
 public:
 	// Camera Attributes
@@ -287,7 +287,7 @@ public:
 	float m_mouseSensitivity;
 	float m_zoom;
 	// Constructor with vectors
-	FocusCameraEx(const ysl::Point3f & position = { 0.0f, 0.0f, 0.0f }, ysl::Vector3f up = { 0.0f, 1.0f, 0.0f }, const ysl::Point3f & center = {0,0,0})
+	FocusCamera(const ysl::Point3f & position = { 0.0f, 0.0f, 0.0f }, ysl::Vector3f up = { 0.0f, 1.0f, 0.0f }, const ysl::Point3f & center = {0,0,0})
 		:m_position(position),
 		m_front(center - position),
 		m_worldUp(up),

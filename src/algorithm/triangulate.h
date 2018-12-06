@@ -1,7 +1,7 @@
 #ifndef TRIANGULATE_H
 #define TRIANGULATE_H
 
-#include <QPolygonF>
+#include <vector>
 
 #include "base/geometry.h"
 
@@ -11,20 +11,19 @@ class QGraphicsItem;
 
 class Triangulate
 {
-	QVector<QVector3D>         m_allVertices;
-	QVector<QVector<int>>	   m_levelIndices;
-	QVector<int>               m_resultIndices;
-	QVector<QVector3D>		   m_normals;
+	std::vector<ysl::Point3f>      m_allVertices;
+	std::vector<std::vector<int>>	   m_levelIndices;
+	std::vector<int>               m_resultIndices;
+	std::vector<ysl::Vector3f>	   m_normals;
 	double					   m_spacing;
 	int						   m_vertexCount;
 	int						   m_triangleCount;
 	bool					   m_ready;
 	bool					   m_needNormals;
-
 	struct TriFace {
 		const int * v;
 		int faceIndex;
-		QVector3D normal;
+		ysl::Vector3f normal;
 		TriFace(const int * vertex):v(vertex){}
 		bool operator==(const TriFace & f) const {return v == f.v;}
 	};
@@ -32,9 +31,11 @@ class Triangulate
 public:
 	Triangulate();
 	Triangulate(const QList<StrokeMarkItem *> marks);
-	const QVector3D * vertices()const;
+
+	const ysl::Point3f* vertices() const;
 	const int * indices()const;
-	const QVector3D * normals()const;
+
+	const ysl::Vector3f* normals() const;
 	int vertexCount()const;
 	int triangleCount()const;
 	bool isReady()const;
@@ -45,18 +46,19 @@ private:
 	void initVertex(const QList<StrokeMarkItem*>& marks);
 	void subdivisionTriangle(int vi, const int * others, int size, bool positive);
 	void triangulateTetragonum(int vi1, int vi2, int vi3, int vi4,bool positive);
-	void translateVertex(int vi,QVector<int> & others);
+	void translateVertex(int vi, std::vector<int>& others);
 	void computeNormals();
 };
 
-inline const QVector3D * Triangulate::vertices()const { return (m_allVertices.constData()); }
-inline const QVector3D * Triangulate::normals() const { return m_normals.constData();}
+inline const ysl::Point3f* Triangulate::vertices() const { return (m_allVertices.data()); }
+inline const ysl::Vector3f* Triangulate::normals() const { return m_normals.data();}
 inline const int * Triangulate::indices()const 
 {
 	Q_ASSERT_X(m_resultIndices.size() % 3 == 0, "Triangulate::indices", "Not a triangle mesh.");
 	Q_ASSERT_X(m_resultIndices.size() == m_triangleCount * 3, "Triangulate::indices", "Triangle Number Error");
-	return m_resultIndices.constData();
+	return m_resultIndices.data();
 }
+
 inline int Triangulate::vertexCount() const {return  m_vertexCount;}
 inline int Triangulate::triangleCount() const {return m_triangleCount;}
 inline bool Triangulate::isReady() const {return m_ready;}
@@ -68,9 +70,11 @@ Q_DECLARE_METATYPE(QSharedPointer<Triangulate>);
 Q_DECLARE_METATYPE(QVector<QSharedPointer<Triangulate>>);
 
 
-inline auto  tanslateVector(const QVector<QPointF> & vec, int start, int index)->const QPointF& {
+inline auto  tanslateVector(const QVector<QPointF> & vec, int start, int index)->const QPointF& 
+{
 	int size = vec.size();
 	Q_ASSERT_X(size > start, "translateVector", "out of range");
+	QMessageLogger a;
 	return vec[(start + size+index)%size];
 }
 

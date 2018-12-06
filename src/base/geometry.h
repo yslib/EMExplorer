@@ -1,14 +1,12 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <iostream>
 #include <cassert>
 #include <cmath>
-#include <algorithm>
 
 
-#include "globals.h"
-//#include "arithmetic.h"
+//#include "globals.h"
+#include "arithmetic.h"
 
 #define YSL_TO_QT
 
@@ -20,21 +18,21 @@
 namespace ysl 
 {
 
-	template<typename T>
-	inline
-		bool
-		IsNaN(const T & t)
-	{
-		return std::isnan(t);
-	}
+	//template<typename T>
+	//inline
+	//	bool
+	//	IsNaN(const T & t)
+	//{
+	//	return std::isnan(t);
+	//}
 
-	template<>
-	inline
-		bool
-		IsNaN(const int & t)
-	{
-		return false;
-	}
+	//template<>
+	//inline
+	//	bool
+	//	IsNaN(const int & t)
+	//{
+	//	return false;
+	//}
 
 	template <class T> class Vector2;
 	template <class T> class Vector3;
@@ -712,19 +710,12 @@ namespace ysl
 	// Ray
 	class Ray
 	{
-
 		Point3f m_o;
 		Vector3f m_d;
 		Float m_tMax;
 		bool m_negDirection[3];
-
 	public:
-		Ray(const Vector3f & d, const Point3f & o, Float t = MAX_Float_VALUE)noexcept:m_o(o),m_d(d), m_tMax(t)
-		{
-			m_negDirection[0] = d.x < 0;
-			m_negDirection[1] = d.y < 0;
-			m_negDirection[2] = d.z < 0;
-		}
+		Ray(const Vector3f& d, const Point3f& o, Float t = MAX_Float_VALUE) noexcept;
 		Point3f operator()(float t)const noexcept { return m_o + t * m_d; }
 		const Point3f & original()const {return m_o;}
 		const Vector3f & direction()const {return m_d;}
@@ -736,7 +727,6 @@ namespace ysl
 		friend class BVHTreeAccelerator;
 	};
 
-
 	// Axis-Aligned Bounding Box
 
 	class AABB
@@ -744,17 +734,11 @@ namespace ysl
 		Point3f m_min;
 		Point3f m_max;
 	public:
-		AABB() :m_min(MAX_Float_VALUE, MAX_Float_VALUE, MAX_Float_VALUE), m_max(LOWEST_Float_VALUE, LOWEST_Float_VALUE, LOWEST_Float_VALUE)
-		{
-			//construct a empty bounding box
-		}
+		AABB();
 
-		AABB(const Point3f & p0, const Point3f & p1)noexcept :
-			m_min((std::min)(p0.x, p1.x), (std::min)(p0.y, p1.y), (std::min)(p0.z, p1.z)),
-			m_max((std::max)(p0.x, p1.x), (std::max)(p0.y, p1.y), (std::max)(p0.z, p1.z))		// For fucking min/max defined in windows.h
-		{}
+		AABB(const Point3f & p0, const Point3f & p1)noexcept;
 
-		AABB(const Point3f & p) :m_min(p), m_max(p) {}
+		AABB(const Point3f& p);
 
 		const Point3f & operator[](int i)const 
 		{
@@ -764,7 +748,7 @@ namespace ysl
 			return Point3f{};
 		}
 
-		Point3f & operator[](int i)noexcept 
+		Point3f & operator[](int i)
 		{
 			return const_cast<Point3f&>(static_cast<const AABB &>(*this)[i]);
 		}
@@ -773,6 +757,7 @@ namespace ysl
 		{
 			return Point3f{(*this)[i & 1].x, (*this)[i & 2].y, (*this)[i & 4].z};
 		}
+
 		/*
 		* Check whether it is intersected with a ray.
 		* hit0 stores the nearest ray
@@ -781,32 +766,26 @@ namespace ysl
 
 		/*inline function definitions for AABB*/
 
-		bool intersect(const Ray & ray, Float * hit0 = nullptr, Float * hit1 = nullptr) const noexcept;
+		bool Intersect(const Ray & ray, Float * hit0 = nullptr, Float * hit1 = nullptr) const noexcept;
 
-		Point3f center()const 
-		{
-			return (m_min + m_max) / 2.0;
-		}
+		Point3f Center() const;
 
-		Vector3f diagnal()const
-		{
-			return m_max - m_min;
-		}
+		Vector3f Diagonal() const;
 
-		Float surfaceArea() const;
+		Float SurfaceArea() const;
 
 		/*
 		*Check whether a point is in the bound
 		*/
 
-		bool inside(const Point3f & p) const
+		bool Inside(const Point3f & p) const
 		{
 			return (p.x >= m_min.x && p.y <= m_max.x &&
 				p.y >= m_min.y && p.y <= m_max.y &&
 				p.z >= m_min.z && p.z <= m_max.z);
 		}
 
-		bool insideEx(const Point3f & p) const
+		bool InsideEx(const Point3f & p) const
 		{
 			return (p.x >= m_min.x && p.y < m_max.x &&
 				p.y >= m_min.y && p.y < m_max.y &&
@@ -818,88 +797,28 @@ namespace ysl
 		* intersected with another bounding box
 		*/
 
-		bool isIntersectWith(const AABB & b)const;
+		bool IsIntersectWith(const AABB & b)const;
 
 		/*
 		* return the common part of two bounding box
 		*/
 
-		AABB intersectWith(const AABB & b) const;
+		AABB IntersectWidth(const AABB & b) const;
 
 		/*
 		* Return a minimum bounding box containing the two bounding boxes
 		*/
-		AABB unionWith(const AABB & b)const;
+		AABB UnionWith(const AABB & b)const;
 		/*
 		* Return a minimun bounding box containing the
 		* bounding box and the point
 		*/
-		AABB unionWith(const Point3f & p)const;
-
+		AABB UnionWith(const Point3f & p)const;
 
 		friend class BVHTreeAccelerator;
 	};
 
-	inline
-	Float AABB::surfaceArea() const
-	{
-		const auto d = diagnal();
-		if (d[0] < 0 || d[1] < 0 || d[2] < 0)return Float(0);
-		const auto area = (d[0] * d[1] + d[1] * d[2] + d[2] * d[0]) * 2;
-		return area;
-	}
 
-	inline
-	bool AABB::isIntersectWith(const AABB & b)const
-	{
-		return (m_max.x >= b.m_min.x && b.m_max.x >= m_min.x) &&
-			(m_max.y >= b.m_min.y && b.m_max.y >= m_min.y) &&
-			(m_max.z >= b.m_min.z && b.m_max.z >= m_min.z);
-	}
-
-	inline
-		AABB AABB::unionWith(const Point3f & p)const {
-		AABB a;
-		a.m_min = Point3f(
-			(std::min)(m_min.x, p.x),
-			(std::min)(m_min.y, p.y),
-			(std::min)(m_min.z, p.z)
-		);
-		a.m_max = Point3f(
-			(std::max)(m_max.x, p.x),
-			(std::max)(m_max.y, p.y),
-			(std::max)(m_max.z, p.z)
-		);
-		return a;
-	}
-
-	inline
-	AABB AABB::unionWith(const AABB & b) const
-	{
-		AABB a;
-		a.m_min = Point3f{
-			(std::min)(m_min.x, b.m_min.x),
-			(std::min)(m_min.y, b.m_min.y),
-			(std::min)(m_min.z, b.m_min.z)
-		};
-		a.m_max = Point3f{
-			(std::max)(m_max.x, b.m_max.x),
-			(std::max)(m_max.y, b.m_max.y),
-			(std::max)(m_max.z, b.m_max.z)
-		}; // For fucking min/max defined in windows.h
-		return a;
-	}
-	inline
-		AABB AABB::intersectWith(const AABB & b) const
-	{
-		return AABB{Point3f{(std::max)(m_min.x, b.m_min.x),
-			(std::max)(m_min.y, b.m_min.y),
-			(std::max)(m_min.z, b.m_min.z)},
-			Point3f{(std::min)(m_max.x, b.m_max.x),
-				(std::min)(m_max.y, b.m_max.y),
-				(std::min)(m_max.z, b.m_max.z)}
-			}; // For fucking min/max defined in windows.h
-	}
 
 }
 

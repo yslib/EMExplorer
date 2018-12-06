@@ -40,8 +40,9 @@ void triangulate(const QVector<QPoint>& upper, const QVector<QPoint>& lower,floa
 		}
 	}
 	int endIndex = (startIndex + lowerSize - 1) % lowerSize;
-
 }
+
+
 
 bool Triangulate::triangulate() {
 	const auto nSlice = m_levelIndices.size();
@@ -74,12 +75,12 @@ bool Triangulate::triangulate() {
 			const auto nextBeginIndex = static_cast<int>(std::ceil(j + p));
 			Q_ASSERT_X(beginIndex < nSecond, "Triangulate::triangulate", "beginIndex < nSecond");
 			Q_ASSERT_X(endIndex< nSecond, "Triangulate::triangulate", "endIndex < nSecond");
-			subdivisionTriangle((*firstVI)[i], secondVI->constData() + beginIndex, num,positive);
+			subdivisionTriangle((*firstVI)[i], secondVI->data() + beginIndex, num,positive);
 			if (i == nFirst - 1) {		// Do clothing
-				triangulateTetragonum((*firstVI)[i], *(secondVI->constData() + endIndex), *(secondVI->constData()), (*firstVI)[0],positive);
+				triangulateTetragonum((*firstVI)[i], *(secondVI->data() + endIndex), *(secondVI->data()), (*firstVI)[0],positive);
 			}
 			else {
-				triangulateTetragonum((*firstVI)[i], *(secondVI->constData() + endIndex), *(secondVI->constData() + nextBeginIndex), (*firstVI)[i + 1],positive);
+				triangulateTetragonum((*firstVI)[i], *(secondVI->data() + endIndex), *(secondVI->data() + nextBeginIndex), (*firstVI)[i + 1],positive);
 			}
 			j += p;		//Segment advance
 		}
@@ -175,14 +176,16 @@ void Triangulate::triangulateTetragonum(int vi1, int vi2, int vi3, int vi4,bool 
 
 }
 
-void Triangulate::translateVertex(int vi, QVector<int>& others)
+void Triangulate::translateVertex(int vi, std::vector<int>& others)
 {
 	int startIndex = -1;
 	auto mind = std::numeric_limits<double>::max();
 	int i = 0;
 	for (auto id : others) {
-		double d = distanceSquare(m_allVertices[vi], m_allVertices[id]);
-		if (mind > d) {
+		const auto d = (m_allVertices[vi] - m_allVertices[id]).LengthSquared();
+		//double d = distanceSquare(m_allVertices[vi], m_allVertices[id]);
+		if (mind > d) 
+		{
 			mind = d;
 			startIndex = i;
 		}
@@ -210,7 +213,8 @@ void Triangulate::computeNormals() {
 		const auto v0 = m_allVertices[face.v[0]];
 		const auto v1 = m_allVertices[face.v[1]];
 		const auto v2 = m_allVertices[face.v[2]];
-		face.normal = QVector3D::crossProduct(v1-v0,v2-v0).normalized();
+		//face.normal = QVector3D::crossProduct(v1-v0,v2-v0).normalized();
+		face.normal = ysl::Vector3f::Cross(v1 - v0, v2 - v0).Normalized();
 
 		adjacentFaces[face.v[0]].push_back(faceId);
 		adjacentFaces[face.v[1]].push_back(faceId);
@@ -220,9 +224,10 @@ void Triangulate::computeNormals() {
 	Q_ASSERT_X(m_normals.size() == m_allVertices.size(), "", "");
 
 	for(int i=0;i<m_normals.size();i++) {
-		QVector3D vec(0, 0, 0);
+		ysl::Vector3f vec(0, 0, 0);
 		const auto size = adjacentFaces[i].size();
-		for (int j = 0; j < size;j++) {
+		for (int j = 0; j < size;j++) 
+		{
 			vec += triFaces[adjacentFaces[i][j]].normal;
 		}
 		m_normals[i] = vec / size;

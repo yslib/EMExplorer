@@ -16,8 +16,6 @@
 //}
 
 
-
-
 template<typename T>
 inline
 void DELETEANDSETNULL(std::remove_reference<std::remove_pointer<T>> *& p)
@@ -47,39 +45,11 @@ enum ItemTypes
 
 namespace ysl
 {
-	using Float = float;
 
-	constexpr Float Pi = 3.14159265358979323846;
-
-	constexpr Float LOWEST_Float_VALUE = (std::numeric_limits<Float>::lowest)();
-
-	constexpr Float MAX_Float_VALUE = (std::numeric_limits<Float>::max)();		// For fucking min/max macro defined in windows.h
-
-	inline
-		void
-		ysl_assert_x(const char * where, const char * what, const char * file, int line)noexcept
-	{
-		std::cerr << where << " " << what << " " << file << " " << line << std::endl;
-		assert(false);
-	}
-
-#define YSL_ASSERT_X(cond,where,what) ((cond)?(static_cast<void>(0)):ysl_assert_x(where,what,__FILE__,__LINE__))
 
 	// For arithmetic.h
 
-	inline
-	Float
-	DegreesToRadians(Float degrees)
-	{
-		return degrees * Float(Pi / 180);
-	}
 
-	inline
-	Float
-	RadiansToDegrees(Float radians)
-	{
-		return radians * Float(180 / Pi);
-	}
 
 }
 

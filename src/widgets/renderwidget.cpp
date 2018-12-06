@@ -237,7 +237,6 @@ void RenderWidget::initializeGL()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QVector3D), reinterpret_cast<void*>(0));
 
-
 	doneCurrent();
 }
 
@@ -252,13 +251,10 @@ void RenderWidget::resizeGL(int w, int h)
 {
 	// Update projection matrices
 	const double aspect = GLfloat(w) / h;
-
 	//m_proj.setToIdentity();
 	//m_otho.setToIdentity();
-
 	m_otho.SetOrtho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
 	m_proj.SetPerspective(45.f, aspect, 0.01f, 100.f);
-
 	if (m_pickFBO != nullptr);
 	delete m_pickFBO;
 	m_pickFBO = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
@@ -278,21 +274,14 @@ void RenderWidget::paintGL()
 	glEnable(GL_DEPTH_TEST);
 
 	const auto renderMode = d->options->mode;
-	//
 	const auto world = worldMatrix();
-
 	const auto center = d->volumeNormalTransform*world*ysl::Point3f{ 0.5, 0.5, 0.5 };
-
 	/*ysl::Transform worldTransform = toTransform(world);
 	ysl::Transform normalizedTransform = toTransform(d->volumeNormalTransform);
 	ysl::Vector3f vec{ 0.5,0.5,0.5 };
-
 	const auto centerVector3f = (normalizedTransform * worldTransform) * vec;
 	qDebug() << "QVector3D:" << center << " ysl::Vector3f" << toQVector3D(centerVector3f);*/
-
-
 	//*Vector3f{ 0.5,0.5,0.5 };
-	
 	//update camera center
 	m_camera.setCenter(toQVector3D(center));
 	m_cameraEx.setCenter(center);
@@ -318,9 +307,9 @@ void RenderWidget::paintGL()
 			m_boundingBoxVAO.bind();
 			m_boundingBoxVBO.bind();
 			m_trivialShader->bind();
-			m_trivialShader->setUniformValue("modelViewMat", (cameraEx().view()*world*d->volumeNormalTransform).ColumnMajorMatrix().m);
+			m_trivialShader->setUniformValue("modelViewMat", (camera().view()*world*d->volumeNormalTransform).ColumnMajorMatrix().m);
 			m_trivialShader->setUniformValue("projMat", m_proj.ColumnMajorMatrix().m);
-			m_trivialShader->setUniformValue("color", QVector4D{ 1.0f,0.0f,0.0f,1.0f });
+			m_trivialShader->setUniformValue("color", QVector4D{1.0f,0.0f,0.0f,1.0f});
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glDrawArrays(GL_QUADS, 0, 24);
@@ -332,11 +321,12 @@ void RenderWidget::paintGL()
 	}
 	if (renderMode & RenderMode::SliceTexture) {
 
+		//const auto viewMatrix = cameraOld().view();
+		//const auto cameraPos = cameraOld().position();
+
+
 		const auto viewMatrix = camera().view();
 		const auto cameraPos = camera().position();
-
-		const auto viewMatrixEx = cameraEx().view();
-		//const auto cameraPosEx = cameraEx().position();
 
 		const auto xs = d_ptr->options->xSpacing;
 		const auto ys = d_ptr->options->ySpacing;
@@ -352,7 +342,7 @@ void RenderWidget::paintGL()
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			m_selectShader->bind();
-			m_selectShader->setUniformValue("viewMatrix", viewMatrix);
+			m_selectShader->setUniformValue("viewMatrix", viewMatrix.ColumnMajorMatrix().m);
 			m_selectShader->setUniformValue("projMatrix", m_proj.ColumnMajorMatrix().m);
 			m_selectShader->setUniformValue("modelMatrix", world.ColumnMajorMatrix().m);
 
@@ -368,12 +358,15 @@ void RenderWidget::paintGL()
 		}
 
 		m_meshShader->bind();
-		m_meshShader->setUniformValue("viewMatrix", viewMatrixEx.ColumnMajorMatrix().m);
+		m_meshShader->setUniformValue("viewMatrix", viewMatrix.ColumnMajorMatrix().m);
 		m_meshShader->setUniformValue("projMatrix", m_proj.ColumnMajorMatrix().m);
 		m_meshShader->setUniformValue("modelMatrix", world.ColumnMajorMatrix().m);
 		m_meshShader->setUniformValue("normalMatrix", world.Matrix().NormalMatrix().Transposed().m);
-		m_meshShader->setUniformValue("lightPos", cameraPos);
-		m_meshShader->setUniformValue("viewPos", cameraPos);
+
+		//m_meshShader->setUniformValue("lightPos", cameraPos.ConstData());
+		m_meshShader->setUniformValueArray("lightPos", cameraPos.ConstData(), 1, 3);
+		//m_meshShader->setUniformValue("viewPos", cameraPos);
+		m_meshShader->setUniformValueArray("viewPos", cameraPos.ConstData(), 1, 3);
 
 		for (int i = 0; i < m_integration.size(); i++) {
 
@@ -711,7 +704,7 @@ void RenderWidget::updateMark() {
 			const auto nV = mesh->vertexCount();
 			const auto nT = mesh->triangleCount();
 			const auto n = mesh->normals();
-			auto T = d->volumeNormalTransform*trans;
+			//auto T = d->volumeNormalTransform*trans;
 			
 			auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v,
 				n,
@@ -719,7 +712,7 @@ void RenderWidget::updateMark() {
 				nV,
 				idx,
 				nT,
-				toQMatrix4x4(T),		//Make mesh coordinate matching with normalized volume coordinates
+				d->volumeNormalTransform*trans,		//Make mesh coordinate matching with normalized volume coordinates
 				this));
 			ptr->initializeGLResources();
 			m_integration.push_back({ ptr,color,true });

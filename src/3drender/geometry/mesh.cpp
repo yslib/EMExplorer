@@ -19,7 +19,8 @@ static float positionVert[] = {
 
 
 
-void TriangleMesh::updateShader() {
+void TriangleMesh::updateShader() 
+{
 	//m_shader->bind();
 	//const auto option = m_renderer->m_parameterWidget->options();
 	//QMatrix4x4 world;
@@ -33,8 +34,8 @@ void TriangleMesh::updateShader() {
 	//m_shader->setUniformValue("objectColor", QVector3D(0.3,0.6,0.9));
 }
 
-TriangleMesh::TriangleMesh(const Point3f* vertices, const Vector3f* normals, const Point2f* textures, int nVertex,
-	const int* vertexIndices, int nTriangles, const Transform3& trans,RenderWidget * renderer) noexcept:
+TriangleMesh::TriangleMesh(const ysl::Point3f* vertices, const ysl::Vector3f* normals, const ysl::Point2f* textures, int nVertex,
+	const int* vertexIndices, int nTriangles, const ysl::Transform& trans,RenderWidget * renderer) noexcept:
 m_nVertex(nVertex),
 m_vertexIndices(vertexIndices, vertexIndices + 3 * nTriangles),
 m_nTriangles(nTriangles),
@@ -43,7 +44,7 @@ m_renderer(renderer),
 m_ebo(QOpenGLBuffer::IndexBuffer),
 m_centroid{0,0,0}
 {
-	m_vertices.reset(new Point3f[nVertex]);
+	m_vertices.reset(new ysl::Point3f[nVertex]);
 	for (int i = 0; i < nVertex; i++) {
 		m_vertices[i] = trans * vertices[i];
 		m_centroid += m_vertices[i];
@@ -53,19 +54,20 @@ m_centroid{0,0,0}
 	int  normalBytes = 0;
 	int textureBytes = 0;
 	if(normals != nullptr) {
-		const auto nm = trans.normalMatrix();
-		normalBytes = m_nVertex * sizeof(Vector3f);
-		m_normals.reset(new Vector3f[nVertex]);
+		//const auto nm = trans.normalMatrix();
+		const auto nm = trans.Matrix().NormalMatrix();
+		normalBytes = m_nVertex * sizeof(ysl::Vector3f);
+		m_normals.reset(new ysl::Vector3f[nVertex]);
 		for (int i = 0; i < nVertex; i++) {
 			//m_normals[i] = trans * normals[i];
-			const auto x = normals[i].x(), y = normals[i].y(), z = normals[i].z();
-			m_normals[i] = QVector3D(x*nm(0,0) + y*nm(0,1)+z*nm(0,2),x*nm(1,0)+y*nm(1,1)+z*nm(1,2),x*nm(2,0)+y*nm(2,1)+z*nm(2,2)).normalized();
+			const auto x = normals[i].x, y = normals[i].y, z = normals[i].z;
+			m_normals[i] = ysl::Vector3f{ x*nm.m[0][0] + y * nm.m[0][1] + z * nm.m[0][2],x*nm.m[1][0] + y * nm.m[1][1] + z * nm.m[1][2],x*nm.m[2][0] + y * nm.m[2][1] + z * nm.m[2][2] }.Normalized();
 		}
 	}
 	if(textures != nullptr) {
-		textureBytes = m_nVertex * sizeof(Point2f);
-		m_textures.reset(new Point2f[nVertex]);
-		std::memcpy(m_textures.get(), textures,nVertex * sizeof(Point2f));
+		textureBytes = m_nVertex * sizeof(ysl::Point2f);
+		m_textures.reset(new ysl::Point2f[nVertex]);
+		std::memcpy(m_textures.get(), textures,nVertex * sizeof(ysl::Point2f));
 	}
 }
 
@@ -81,24 +83,24 @@ bool TriangleMesh::initializeGLResources()
 	QOpenGLVertexArrayObject::Binder binder(&m_vao);
 	m_vbo.create();
 	m_vbo.bind();
-	const int  vertexBytes = m_nVertex * sizeof(Point3f);
+	const int  vertexBytes = m_nVertex * sizeof(ysl::Point3f);
 	const int  indexBytes = m_nTriangles * 3 * sizeof(int);
 
-	const int normalBytes = m_normals != nullptr? m_nVertex * sizeof(Vector3f):0;
-	const int textureBytes = m_textures != nullptr?m_nVertex * sizeof(Point2f):0;
+	const int normalBytes = m_normals != nullptr? m_nVertex * sizeof(ysl::Vector3f):0;
+	const int textureBytes = m_textures != nullptr?m_nVertex * sizeof(ysl::Point2f):0;
 
 	m_vbo.allocate(vertexBytes + normalBytes + textureBytes);
 	m_vbo.write(0, m_vertices.get(), vertexBytes);
 	m_vbo.write(vertexBytes, m_normals.get(), normalBytes);
 	m_vbo.write(vertexBytes + normalBytes, m_textures.get(), textureBytes);
 	glfuncs->glEnableVertexAttribArray(0);
-	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point3f), reinterpret_cast<void*>(0));
+	glfuncs->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ysl::Point3f), reinterpret_cast<void*>(0));
 	if(normalBytes != 0) {
 		glfuncs->glEnableVertexAttribArray(1);
-		glfuncs->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3f), reinterpret_cast<void*>(vertexBytes));
+		glfuncs->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(ysl::Vector3f), reinterpret_cast<void*>(vertexBytes));
 	}else if(textureBytes != 0){
 		glfuncs->glEnableVertexAttribArray(2);
-		glfuncs->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
+		glfuncs->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(ysl::Point2f), reinterpret_cast<void*>(vertexBytes + normalBytes));
 	}
 
 	m_ebo.create();

@@ -128,6 +128,7 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/algorithm/bimap.cpp \
     $${MY_PREFIX_DIR}/widgets/colorlisteditor.cpp \
     $${MY_PREFIX_DIR}/abstract/widgetplugininterface.cpp \
-    $${MY_PREFIX_DIR}/base/geometry.cpp
+    $${MY_PREFIX_DIR}/base/geometry.cpp \
+    $${MY_PREFIX_DIR}/base/transformation.cpp
 
 RESOURCES += resources.qrc

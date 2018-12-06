@@ -214,9 +214,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* par
 
 	mainVLayout->addStretch();
 	setLayout(mainVLayout);
-
 	setRenderWidget(widget);
-
 }
 
 
@@ -229,7 +227,7 @@ void RenderParameterWidget::updateDataModel() {
 void RenderParameterWidget::radialSliderChanged(int value) {
 	const auto rad = value * 0.01;
 	m_radValueLabel->setText(QString::number(rad, 'f', 2));
-	m_renderOptions->sliceNormal.setX(rad);
+	m_renderOptions->sliceNormal.x = rad;
 	emit optionsChanged();
 }
 
@@ -237,7 +235,7 @@ void RenderParameterWidget::thetaSliderChanged(int value)
 {
 	const auto theta = static_cast<double>(value);
 	m_thetaValueLabel->setText(QString::number(theta, 'f', 0));
-	m_renderOptions->sliceNormal.setY(theta);
+	m_renderOptions->sliceNormal.y = theta;
 	emit optionsChanged();
 }
 
@@ -246,7 +244,7 @@ void RenderParameterWidget::phiSliderChanged(int value)
 {
 	const auto phi = static_cast<double>(value);
 	m_phiValueLabel->setText(QString::number(phi, 'f', 0));
-	m_renderOptions->sliceNormal.setZ(phi);
+	m_renderOptions->sliceNormal.z = phi;
 	emit optionsChanged();
 }
 

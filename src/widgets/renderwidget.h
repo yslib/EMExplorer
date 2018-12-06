@@ -10,13 +10,8 @@
 #include "3drender/geometry/mesh.h"
 #include "algorithm/bimap.h"
 
-
 #include <QOpenGLTexture>
 #include <QTreeView>
-
-
-
-
 
 
 class MarkModel;
@@ -29,7 +24,8 @@ class GPUVolume;
 class QOpenGLFramebufferObject;
 
 
-enum RenderMode {
+enum RenderMode 
+{
 	SliceTexture = 1,
 	LineMesh = 2,
 	FillMesh = 4,
@@ -45,10 +41,10 @@ struct RenderOptions {
 	float xSpacing;
 	float ySpacing;
 	float zSpacing;
-	QVector3D lightDirection;
+	ysl::Vector3f lightDirection;
 	RenderMode mode;
-	QVector3D sliceNormal;
-	RenderOptions() :
+	ysl::Vector3f sliceNormal;
+	RenderOptions():
 		ambient(1.0)
 		, specular(0.75)
 		, diffuse(0.5)
@@ -63,7 +59,6 @@ struct RenderOptions {
 	}
 };
 
-
 struct MeshIntegration 
 {
 	QSharedPointer<TriangleMesh> mesh;
@@ -71,8 +66,6 @@ struct MeshIntegration
 	bool visible;
 	MeshIntegration(const QSharedPointer<TriangleMesh> & amesh,const QColor & acolor,bool avisible):mesh(amesh),color(acolor),visible(avisible){}
 };
-
-
 
 class RenderWidgetPrivate {
 	Q_DECLARE_PUBLIC(RenderWidget);
@@ -87,6 +80,7 @@ public:
 		, enableStartPicking(false)
 		, options(new RenderOptions){
 	}
+
 	int topSliceIndex;
 	int rightSliceIndex;
 	int frontSliceIndex;
@@ -96,10 +90,7 @@ public:
 	QSharedPointer<RenderOptions> options;
 	QPoint lastMousePos;
 	ysl::Transform volumeNormalTransform;
-
 };
-
-
 
 class RenderWidget :public QOpenGLWidget,
 	protected QOpenGLFunctions_3_3_Core
@@ -110,8 +101,8 @@ public:
 	void			setDataModel(AbstractSliceDataModel * model);
 	void			setMarkModel(MarkModel * model);
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
-	FocusCamera     camera()const { return m_camera; }
-	FocusCameraEx	cameraEx()const { return m_cameraEx; }
+	//FocusCameraOld  cameraOld()const { return m_camera; }
+	FocusCamera	camera()const { return m_cameraEx; }
 	QSharedPointer<RenderOptions> options()const;
 	GPUVolume*	    volume()const;
 	QSize			minimumSizeHint() const Q_DECL_OVERRIDE;
@@ -167,8 +158,9 @@ private:
 
 	ysl::Transform							m_proj;
 	ysl::Transform							m_otho;
-	FocusCamera								m_camera;		//view matrix in this
-	FocusCameraEx							m_cameraEx;
+
+	FocusCameraOld							m_camera;		//view matrix in this
+	FocusCamera							m_cameraEx;
 
 	QVector3D								m_voxelSize;
 	QVector3D								m_volumeBound;

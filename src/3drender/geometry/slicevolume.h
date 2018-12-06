@@ -41,7 +41,7 @@ private:
 		PolyResource():nVertex(0),
 		vao(nullptr),
 		vbo(nullptr){}
-		~PolyResource() = default;	// These OpenGL resources related pointer members can not be managed by RAII, their life must be controlled by us manually.
+		~PolyResource() = default;	// These OpenGL resources-related pointer members can not be managed by RAII, their life must be controlled by us manually.
 	};
 	QVector<PolyResource> m_polys;
 	bool m_polygonUpdate;
@@ -64,6 +64,7 @@ private:
 	QOpenGLBuffer							m_arbitrarySliceVBO;
 	QOpenGLVertexArrayObject				m_arbitrarySliceVAO;
 	QVector<QVector3D>						m_arbitrarySliceVertex;
+
 	QOpenGLVertexArrayObject				m_rayCastingTextureVAO;
 	QOpenGLBuffer							m_rayCastingTextureVBO;
 
@@ -142,7 +143,7 @@ public:
 	RenderType renderType()const { return m_renderType; }
 
 
-	void setSliceSphereCoord(const QVector3D & coord);
+	void setSliceSphereCoord(const ysl::Vector3f& coord);
 
 	void setFrontSliceVisible(bool check) { m_frontSliceVisible = check; }
 	void setRightSliceVisible(bool check) { m_rightSliceVisible = check; }
@@ -166,11 +167,11 @@ private:
 
 //inline void SliceVolume::sliceMode(bool enable) { m_sliceMode = enable; }
 
-inline void SliceVolume::setSliceSphereCoord(const QVector3D & coord)
+inline void SliceVolume::setSliceSphereCoord(const ysl::Vector3f& coord)
 {
-	const auto r = coord.x();
-	const auto theta = coord.y();
-	const auto phi = coord.z();
+	const auto r = coord.x;
+	const auto theta = coord.y;
+	const auto phi = coord.z;
 	const auto sinPhi = std::sin(qDegreesToRadians(phi));
 	const auto x = r * sinPhi * std::sin(qDegreesToRadians(theta)) + 0.5;
 	const auto y = r* sinPhi * std::cos(qDegreesToRadians(theta))+0.5;
