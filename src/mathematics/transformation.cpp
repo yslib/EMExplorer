@@ -1,4 +1,4 @@
-#include "../base/transformation.h"
+#include "transformation.h"
 
 
 namespace ysl
@@ -29,7 +29,6 @@ namespace ysl
 		m[2][1] = t21;
 		m[2][2] = t22;
 	}
-
 
 	Matrix3x3::Matrix3x3(const Matrix4x4& mat)
 	{
@@ -329,14 +328,14 @@ namespace ysl
 
 
 	Transform
-	Transform::Transposed() const
+		Transform::Transposed() const
 	{
 		return { m_inv.Transposed(), m_m.Transposed() };
 	}
 
 
 	void
-	Transform::Transpose()
+		Transform::Transpose()
 	{
 		m_inv.Transpose();
 		m_m.Transposed();
@@ -344,40 +343,40 @@ namespace ysl
 
 
 	bool
-	Transform::operator==(const Transform& t) const
+		Transform::operator==(const Transform& t) const
 	{
 		return t.m_m == m_m;
 	}
 
 
 	bool
-	Transform::operator!=(const Transform& t) const
+		Transform::operator!=(const Transform& t) const
 	{
 		return !(*this == t);
 	}
 
-	Ray 
-	Transform::operator*(const Ray& ray) const
+	Ray
+		Transform::operator*(const Ray& ray) const
 	{
-		return {(*this)*ray.direction() ,(*this)*ray.original()};
+		return { (*this)*ray.direction() ,(*this)*ray.original() };
 	}
 
-	AABB 
-	Transform::operator*(const AABB & aabb) const
+	AABB
+		Transform::operator*(const AABB & aabb) const
 	{
 		assert(false);
 		return AABB{};
 	}
 
 	Transform
-	Transform::operator*(const Transform & trans)const
+		Transform::operator*(const Transform & trans)const
 	{
 		return { this->m_m*trans.m_m,trans.m_inv*this->m_inv };
 	}
 
 
 	bool
-	Transform::IsIdentity() const
+		Transform::IsIdentity() const
 	{
 		return (m_m.m[0][0] == 1.f && m_m.m[0][1] == 0.f && m_m.m[0][2] == 0.f &&
 			m_m.m[0][3] == 0.f && m_m.m[1][0] == 0.f && m_m.m[1][1] == 1.f &&
@@ -388,19 +387,19 @@ namespace ysl
 	}
 
 	const Matrix4x4&
-	Transform::Matrix() const
+		Transform::Matrix() const
 	{
 		return m_m;
 	}
 
 	const Matrix4x4&
-	Transform::InverseMatrix() const
+		Transform::InverseMatrix() const
 	{
 		return m_inv;
 	}
 
 	void
-	Transform::SetLookAt(const Point3f& eye, const Point3f& center, const Vector3f& up)
+		Transform::SetLookAt(const Point3f& eye, const Point3f& center, const Vector3f& up)
 	{
 		const auto direction = (center - eye).Normalized();
 		const auto right = Vector3f::Cross(direction, up).Normalized();
@@ -418,8 +417,8 @@ namespace ysl
 		m_m = m_inv.Inversed();
 	}
 
-	void 
-	Transform::SetOrtho(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
+	void
+		Transform::SetOrtho(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
 	{
 		const auto width = right - left;
 		const auto height = top - bottom;
@@ -439,7 +438,7 @@ namespace ysl
 	}
 
 	void
-	Transform::SetPerspective(Float vertcialAngle, Float aspectRation, Float nearPlane, Float farPlane)
+		Transform::SetPerspective(Float vertcialAngle, Float aspectRation, Float nearPlane, Float farPlane)
 	{
 		const auto top = std::tan(DegreesToRadians(vertcialAngle / 2))*nearPlane;
 		const auto right = top * aspectRation;
@@ -447,7 +446,7 @@ namespace ysl
 	}
 
 	void
-	Transform::SetFrustum(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
+		Transform::SetFrustum(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
 	{
 		const auto width = right - left;
 		const auto height = top - bottom;
@@ -470,13 +469,13 @@ namespace ysl
 
 
 	void
-	Transform::SetTranslate(const Vector3f& t)
+		Transform::SetTranslate(const Vector3f& t)
 	{
 		SetTranslate(t[0], t[1], t[2]);
 	}
 
 	void
-	Transform::SetTranslate(Float x, Float y, Float z)
+		Transform::SetTranslate(Float x, Float y, Float z)
 	{
 		m_m = Matrix4x4{ 1.f,0.f,0.f,x,
 				   0.f,1.f,0.f,y,
@@ -489,19 +488,19 @@ namespace ysl
 	}
 
 	void
-	Transform::SetTranslate(Float* t)
+		Transform::SetTranslate(Float* t)
 	{
 		SetTranslate(t[0], t[1], t[2]);
 	}
 
 	void
-	Transform::SetScale(const Vector3f& s)
+		Transform::SetScale(const Vector3f& s)
 	{
 		SetScale(s[0], s[1], s[2]);
 	}
 
 	void
-	Transform::SetScale(Float x, Float y, Float z)
+		Transform::SetScale(Float x, Float y, Float z)
 	{
 		m_m = Matrix4x4
 		{
@@ -520,19 +519,19 @@ namespace ysl
 	}
 
 	void
-	Transform::SetScale(Float* s)
+		Transform::SetScale(Float* s)
 	{
 		SetScale(s[0], s[1], s[2]);
 	}
 
 	void
-	Transform::SetRotate(const Vector3f & axis, Float degrees)
+		Transform::SetRotate(const Vector3f & axis, Float degrees)
 	{
 		SetRotate(axis[0], axis[1], axis[2], degrees);
 	}
 
 	void
-	Transform::SetRotate(Float x, Float y, Float z, Float degrees)
+		Transform::SetRotate(Float x, Float y, Float z, Float degrees)
 	{
 		//YSL_ASSERT_X(false, "Transform::SetRotate", "Not implemented yet.");
 		Vector3f axis = { x,y,z };
@@ -562,13 +561,13 @@ namespace ysl
 	}
 
 	void
-	Transform::SetRotate(Float* a, Float degrees)
+		Transform::SetRotate(Float* a, Float degrees)
 	{
 		SetRotate(a[0], a[1], a[2], degrees);
 	}
 
 	void
-	Transform::SetRotateX(Float degrees)
+		Transform::SetRotateX(Float degrees)
 	{
 		const auto radians = DegreesToRadians(degrees);
 		const auto sinTheta = std::sin(radians);
@@ -586,7 +585,7 @@ namespace ysl
 	}
 
 	void
-	Transform::SetRotateY(Float degrees)
+		Transform::SetRotateY(Float degrees)
 	{
 		const auto radians = DegreesToRadians(degrees);
 		const auto sinTheta = std::sin(radians);
@@ -601,10 +600,9 @@ namespace ysl
 		};
 		m_inv = m_m.Inversed();
 	}
-	 
 
 	void
-	Transform::SetRotateZ(Float degrees)
+		Transform::SetRotateZ(Float degrees)
 	{
 		const auto radians = DegreesToRadians(degrees);
 		const auto sinTheta = std::sin(radians);
@@ -621,8 +619,8 @@ namespace ysl
 		m_inv = m_m.Inversed();
 	}
 
-	Matrix4x4 
-	Transform::ColumnMajorMatrix() const
+	Matrix4x4
+		Transform::ColumnMajorMatrix() const
 	{
 		return m_m.Transposed();
 	}

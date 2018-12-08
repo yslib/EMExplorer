@@ -393,7 +393,7 @@ bool SliceVolume::render()
 
 		m_sliceShader->load(this);
 		m_sliceShader->setUniformValue("projMatrix", m_renderer->m_proj.ColumnMajorMatrix().m);
-		m_sliceShader->setUniformValue("viewMatrix", m_renderer->m_camera.view());
+		m_sliceShader->setUniformValue("viewMatrix", m_renderer->m_cameraEx.view().ColumnMajorMatrix().m);
 		m_sliceShader->setUniformValue("worldMatrix", (transform()*m_normalizeTransform).ColumnMajorMatrix().m);
 
 		glfuncs->glClear(GL_DEPTH_BUFFER_BIT);

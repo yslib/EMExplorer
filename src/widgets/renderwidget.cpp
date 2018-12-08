@@ -12,9 +12,8 @@
 #include "globals.h"
 #include "model/markitem.h"
 
-#include "base/geometry.h"
-
-#include "base/transformation.h"
+#include "mathematics/geometry.h"
+#include "mathematics/transformation.h"
 
 static QVector<QVector3D> cubeVertex =
 {
@@ -76,7 +75,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_markModel(markModel),
 	m_dataModel(dataModel),
 	//m_parameterWidget(widget),
-	m_camera(QVector3D(0.f, 0.f, 10.f)),
+//	m_camera(QVector3D(0.f, 0.f, 10.f)),
 	m_cameraEx(ysl::Point3f{0.f,0.f,10.f}),
 	m_rayStep(0.02),
 	m_tfTexture(nullptr),
@@ -283,7 +282,7 @@ void RenderWidget::paintGL()
 	qDebug() << "QVector3D:" << center << " ysl::Vector3f" << toQVector3D(centerVector3f);*/
 	//*Vector3f{ 0.5,0.5,0.5 };
 	//update camera center
-	m_camera.setCenter(toQVector3D(center));
+	//m_camera.setCenter(toQVector3D(center));
 	m_cameraEx.setCenter(center);
 
 	if (m_volume != nullptr) {
@@ -410,8 +409,8 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	float dy = d->lastMousePos.y() - p.y();
 	if ((event->buttons() & Qt::LeftButton) && (event->buttons() & Qt::RightButton))
 	{
-		const auto direction = m_camera.up()*dy + m_camera.right()*dx;
-		m_camera.movement(direction, 0.002);
+		//const auto direction = m_camera.up()*dy + m_camera.right()*dx;
+		//m_camera.movement(direction, 0.002);
 		//qDebug() << "In RenderWidget::mouseMoveEvent: m_camera.up():" << m_camera.up() << " m_camera.right()" << m_camera.right() << " direction:" << direction;
 
 		const auto directionEx = m_cameraEx.up()*dy+ dx * m_cameraEx.right();
@@ -421,13 +420,13 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 	else if (event->buttons() & Qt::LeftButton)
 	{
-		m_camera.rotation(dx, dy);
+		//m_camera.rotation(dx, dy);
 		m_cameraEx.rotation(dx, dy);
 	}
 	else if (event->buttons() == Qt::RightButton)
 	{
-		const auto direction = m_camera.front()*dy;
-		m_camera.movement(direction, 0.01);
+		//const auto direction = m_camera.front()*dy;
+	//	m_camera.movement(direction, 0.01);
 
 		const auto directionEx = m_cameraEx.front()*dy;
 		m_cameraEx.movement(directionEx, 0.01);
@@ -628,13 +627,13 @@ void RenderWidget::drawThreeAxis()
 	const auto wh = size();
 	glViewport(0, 0, wh.width()*0.1, wh.height()*0.1);
 	//const auto view = QMatrix4x4(m_camera.view().toGenericMatrix<3, 3>());
-	auto view = m_camera.view();
-	const auto pos = view.column(3).toVector3D().normalized();
-	auto newPos = (pos - m_camera.center()).normalized() + m_camera.center();
-	view.setColumn(3, QVector4D(pos, 1.0));
+	const auto view = m_cameraEx.view();
+	//const auto pos = ysl::Point3f{view.Matrix().m[0][3],view.Matrix().m[1][3],view.Matrix().m[2][3]};
+	//auto newPos = (pos - m_cameraEx.center()).Normalized() + m_cameraEx.center();
+	//
 
 	m_trivialShader->bind();
-	m_trivialShader->setUniformValue("modelViewMat", view);
+	m_trivialShader->setUniformValue("modelViewMat", view.ColumnMajorMatrix().m);
 	m_trivialShader->setUniformValue("projMat", m_proj.ColumnMajorMatrix().m);
 	glLineWidth(2.0f);
 	{

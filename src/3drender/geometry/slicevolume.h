@@ -1,7 +1,7 @@
 #ifndef SLICEVOLUME_H
 #define SLICEVOLUME_H
 
-#include "volume.h"
+#include "Volume.h"
 #include "3drender/shader/shaderdatainterface.h"
 #include "3drender/shader/raycastingshader.h"
 #include "algorithm/gradientcalculator.h"
@@ -24,11 +24,8 @@ public:
 		Slice,
 		Modulo
 	};
-
 private:
-
 	Q_OBJECT
-	
 	QOpenGLBuffer							m_positionVBO;
 	QOpenGLBuffer							m_positionEBO;
 	QOpenGLVertexArrayObject				m_positionVAO;

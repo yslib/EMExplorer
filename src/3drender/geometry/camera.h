@@ -6,8 +6,8 @@
 #include <QQuaternion>
 
 
-#include "base/geometry.h"
-#include "base/transformation.h"
+#include "mathematics/geometry.h"
+#include "mathematics/transformation.h"
 
 
 

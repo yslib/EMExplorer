@@ -1,6 +1,8 @@
-#include "volume.h"
+#include "Volume.h"
+
 
 #include <cstring>              // included for std::memcpy
+#include <qglobal.h>
 #define GLERROR(str)									\
 	{													\
 		GLenum err;										\
@@ -22,9 +24,9 @@ Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, cons
 	auto voxelChannel = 0;
 	switch (m_fmt.fmt)
 	{
-	case VoxelFormat::Grayscale:voxelChannel = 1; break;
-	case VoxelFormat::RGB:voxelChannel = 3; break;
-	case VoxelFormat::RGBA:voxelChannel = 4; break;
+		case VoxelFormat::Grayscale:voxelChannel = 1; break;
+		case VoxelFormat::RGB:voxelChannel = 3; break;
+		case VoxelFormat::RGBA:voxelChannel = 4; break;
 	}
 	size_t bytes = 0;
 

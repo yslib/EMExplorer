@@ -76,9 +76,13 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/algorithm/bimap.h \
     $${MY_PREFIX_DIR}/widgets/colorlisteditor.h \
     $${MY_PREFIX_DIR}/abstract/widgetplugininterface.h \
-    $${MY_PREFIX_DIR}/base/arithmetic.h \
-    $${MY_PREFIX_DIR}/base/geometry.h \
-    $${MY_PREFIX_DIR}/base/transformation.h
+    $${MY_PREFIX_DIR}/mathematics/basetype.h \
+    $${MY_PREFIX_DIR}/mathematics/numeric.h \
+    $${MY_PREFIX_DIR}/mathematics/arithmetic.h \
+    $${MY_PREFIX_DIR}/mathematics/geometry.h \
+    $${MY_PREFIX_DIR}/mathematics/transformation.h
+    
+
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/widgets/tf1deditor.cpp \
     $${MY_PREFIX_DIR}/widgets/tf1dmappingcanvas.cpp \
@@ -128,7 +132,7 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/algorithm/bimap.cpp \
     $${MY_PREFIX_DIR}/widgets/colorlisteditor.cpp \
     $${MY_PREFIX_DIR}/abstract/widgetplugininterface.cpp \
-    $${MY_PREFIX_DIR}/base/geometry.cpp \
-    $${MY_PREFIX_DIR}/base/transformation.cpp
-
+    $${MY_PREFIX_DIR}/mathematics/transformation.cpp \
+    $${MY_PREFIX_DIR}/mathematics/arithmetic.cpp \
+    $${MY_PREFIX_DIR}/mathematics/geometry.cpp 
 RESOURCES += resources.qrc

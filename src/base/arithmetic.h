@@ -4,11 +4,7 @@
 #include <cmath>
 #include <algorithm>
 
-//#include "geometry.h"
-//#include "spectrum.h"
-/*
-*
-*/
+
 namespace ysl {
 
 	using Float = float;

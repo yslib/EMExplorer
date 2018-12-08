@@ -159,7 +159,7 @@ private:
 	ysl::Transform							m_proj;
 	ysl::Transform							m_otho;
 
-	FocusCameraOld							m_camera;		//view matrix in this
+	//FocusCameraOld							m_camera;		//view matrix in this
 	FocusCamera							m_cameraEx;
 
 	QVector3D								m_voxelSize;

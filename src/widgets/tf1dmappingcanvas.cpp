@@ -11,7 +11,7 @@
 #include <cmath>
 
 #include "tf1dmappingcanvas.h"
-#include "../3drender/geometry/volume.h"
+#include "../3drender/geometry/Volume.h"
 
 bool sortFunction(TF1DMappingKey* a, TF1DMappingKey* b) 
 {

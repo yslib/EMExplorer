@@ -2,7 +2,11 @@
 #define VOLUME_H
 
 #include <memory>
-#include "base/transformation.h"
+#include <fstream>
+//#include "base/transformation.h"
+#include "mathematics/geometry.h"
+#include "mathematics/transformation.h"
+#include <vector>
 
 
 struct VolumeFormat;
@@ -20,7 +24,8 @@ public:
 	virtual ~RenderableObject() = 0;
 };
 
-class GPURenderObject:public RenderableObject {
+class GPURenderObject:public RenderableObject 
+{
 public:
 	virtual bool initializeGLResources() = 0;
 	virtual void destoryGLResources() = 0;
@@ -30,13 +35,42 @@ public:
 // Enum Type
 enum VoxelType { UInt8, Float32 };
 enum VoxelFormat { Grayscale, RGB, RGBA };
-
-
 struct VolumeFormat 
 {
 	VoxelFormat fmt;
 	VoxelType type;
 	VolumeFormat() :fmt(Grayscale), type(UInt8) {}
+};
+class VolumeDataReader
+{
+	std::ifstream m_fileHandle;
+	std::unique_ptr<char[]> m_buffer;
+	std::vector<void> m_pool;
+public:
+	VolumeDataReader(const std::string & fileName,const VolumeFormat & fmt);
+
+	VolumeDataReader(const VolumeDataReader & reader) = delete;
+
+	VolumeDataReader & operator=(const VolumeDataReader & reader) = delete;
+
+	VolumeDataReader(VolumeDataReader && reader)noexcept
+	{
+		m_fileHandle = std::move(reader.m_fileHandle);
+		m_buffer = std::move(reader.m_buffer);
+	}
+	VolumeDataReader & operator=( VolumeDataReader && reader)noexcept
+	{
+		m_fileHandle = std::move(reader.m_fileHandle);
+		m_buffer = std::move(reader.m_buffer);
+		return *this;
+	}
+
+	void * wholeData();
+	ysl::Vector3i getDimension()const;
+	VolumeFormat dataFormat()const;
+	void * subData(const ysl::Point3i & min, const ysl::Point3i & max);
+
+	double sampleAt(const ysl::Point3f & pos) const;
 };
 
 
@@ -54,13 +88,11 @@ class Volume
 	std::unique_ptr<double[]> m_isoStat;
 	int m_xSize, m_ySize, m_zSize;
 	double m_maxIsoValue;
-
 public:
 	Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, const VolumeFormat & fmt = VolumeFormat());
 	int xLength()const;
 	int yLength()const;
 	int zLength()const;
-
 	/**
 	 * \brief  Returns a histogram of this volume data. The histogram is made of 256 bins.
 	 */
@@ -68,9 +100,7 @@ public:
 	double maxIsoValue()const { return m_maxIsoValue; }
 	const void * data()const;
 	const VolumeFormat & format()const;
-
 	void blend(int xpos, int ypos, int zpos,void * data, size_t xlen, size_t ylen, size_t zlen,VolumeFormat sourceVolumeFormat);
-
 	virtual ~Volume();
 private:
 	void calcIsoStat();
