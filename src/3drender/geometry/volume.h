@@ -45,7 +45,7 @@ class VolumeDataReader
 {
 	std::ifstream m_fileHandle;
 	std::unique_ptr<char[]> m_buffer;
-	std::vector<void> m_pool;
+	//std::vector<void> m_pool;
 public:
 	VolumeDataReader(const std::string & fileName,const VolumeFormat & fmt);
 
