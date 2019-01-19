@@ -127,7 +127,8 @@ public:
         return query(t1);
     }
 
-	void clear() {
+	void clear() 
+	{
 		m_id2Index.clear();
 		m_index2Id.clear();
 	}
