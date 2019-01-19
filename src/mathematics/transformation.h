@@ -115,8 +115,6 @@ namespace  ysl
 		Matrix4x4 m_inv;
 	};
 
-
-
 	template<typename T> inline
 		Point3<T>
 		Transform::operator*(const Point3<T> & p) const
@@ -142,7 +140,4 @@ namespace  ysl
 		return Vector3<T>{rx, ry, rz};
 	}
 }
-
-
-
 #endif

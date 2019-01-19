@@ -16,6 +16,8 @@
 //}
 
 
+
+
 template<typename T>
 inline
 void DELETEANDSETNULL(std::remove_reference<std::remove_pointer<T>> *& p)
