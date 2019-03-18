@@ -34,26 +34,26 @@ namespace ysl
 	class Vector2 {
 	public:
 		T x, y;
-		constexpr Vector2() :x(0), y(0) {}
-		constexpr Vector2(const T & _x, const T & _y) : x(_x), y(_y) {}
+		Vector2() :x(0), y(0) {}
+		Vector2(const T & _x, const T & _y) : x(_x), y(_y) {}
 		bool HasNaN()const
 		{
 			return IsNaN(x) || IsNaN(y);
 		}
 
-		constexpr Vector2<T> operator+(const Vector2<T> & p)const
+		Vector2<T> operator+(const Vector2<T> & p)const
 		{
 			assert(!p.HasNaN());
 			return Vector2<T>(x + p.x, y + p.y);
 		}
 
-		constexpr Point2<T> operator+(const Point2<T> & v)const
+		Point2<T> operator+(const Point2<T> & v)const
 		{
 			assert(!v.HasNaN());
 			return Point2<T>(x + v.x, y + v.y);
 		}
 
-		constexpr Vector2<T> & operator+=(const Vector2<T> & v) {
+		Vector2<T> & operator+=(const Vector2<T> & v) {
 			assert(!v.HasNaN());
 			x += v.x;
 			y += v.y;
@@ -184,8 +184,8 @@ namespace ysl
 	class Point2 {
 	public:
 		T x, y;
-		constexpr Point2() :x(0), y(0) {}
-		constexpr Point2(const T & x, const T & y) : x(x), y(y)
+		Point2() :x(0), y(0) {}
+		Point2(const T & x, const T & y) : x(x), y(y)
 		{
 			assert(!HasNaN());
 		}
@@ -205,17 +205,17 @@ namespace ysl
 		//	return Vector2<U>(x, y);
 		//}
 
-		constexpr Point2<T> operator+(const Vector2<T> & v)const
+		Point2<T> operator+(const Vector2<T> & v)const
 		{
 			return Point2<T>(x + v.x, y + v.y);
 		}
 
-		constexpr Point2<T> operator+(const Point2<T> & p)const
+		Point2<T> operator+(const Point2<T> & p)const
 		{
 			return Point2<T>(x + p.x, y + p.y);
 		}
 
-		constexpr Point2<T> operator+=(const Point2<T> & p)const
+		Point2<T> operator+=(const Point2<T> & p)const
 		{
 			return Point2<T>(x + p.x, y + p.y);
 		}
@@ -325,8 +325,8 @@ namespace ysl
 	class Vector3 {
 	public:
 		T x, y, z;
-		constexpr Vector3() :x(0), y(0), z(0) {}
-		constexpr Vector3(const T &x, const T &y, const T& z) : x(x), y(y), z(z)
+		Vector3() :x(0), y(0), z(0) {}
+		Vector3(const T &x, const T &y, const T& z) : x(x), y(y), z(z)
 		{
 			//assert(!HasNaN());
 		}
@@ -336,32 +336,32 @@ namespace ysl
 			return IsNaN(x) || IsNaN(y) || IsNaN(z);
 		}
 
-		constexpr Vector3<T> operator+(const Vector3<T> & v)const
+		Vector3<T> operator+(const Vector3<T> & v)const
 		{
 			//assert(!v.HasNaN());
 			return Vector3<T>(x + v.x, y + v.y, z + v.z);
 		}
 
-		constexpr Point3<T> operator+(const Point3<T> & p)const
+		Point3<T> operator+(const Point3<T> & p)const
 		{
 			//assert(!p.HasNaN());
 			return Point3<T>{x + p.x, y + p.y, z + p.z};
 		}
 
-		constexpr Vector3<T> & operator+=(const Vector3<T> & v) {
+		Vector3<T> & operator+=(const Vector3<T> & v) {
 			//assert(!v.HasNaN());
 			x += v.x;
 			y += v.y;
 			z += v.z;
 			return *this;
 		}
-		constexpr Vector3<T> operator-(const Vector3<T> & v)const
+		Vector3<T> operator-(const Vector3<T> & v)const
 		{
 			//assert(!v.HasNaN());
 			return Vector3<T>(x - v.x, y - v.y, z - v.z);
 		}
 
-		constexpr Vector3<T> & operator-=(const Vector3<T> & v)
+		Vector3<T> & operator-=(const Vector3<T> & v)
 		{
 			//assert(!v.HasNaN());
 			x -= v.x;
@@ -372,17 +372,17 @@ namespace ysl
 
 
 		//unary operator
-		constexpr Vector3<T> operator-()const
+		Vector3<T> operator-()const
 		{
 			return Vector3<T>(-x, -y, -z);
 		}
 
-		constexpr Vector3<T> operator*(const Vector3<T> & v)const
+		Vector3<T> operator*(const Vector3<T> & v)const
 		{
 			return { x*v.x,y*v.y,z*v.z };
 		}
 
-		constexpr Vector3<T> operator*=(const Vector3<T> & v)
+		Vector3<T> operator*=(const Vector3<T> & v)
 		{
 			x *= v.x;
 			y *= v.y;
@@ -391,13 +391,13 @@ namespace ysl
 		}
 
 		template<typename U>
-		constexpr Vector3<T> operator*(const U & s)const
+		Vector3<T> operator*(const U & s)const
 		{
 			//assert(!IsNaN(s));
 			return Vector3<T>(s*x, s*y, s*z);
 		}
 		template<typename U>
-		constexpr Vector3<T> & operator*=(const U& s)
+		Vector3<T> & operator*=(const U& s)
 		{
 			//assert(!IsNaN(s));
 			x *= s;
@@ -407,14 +407,14 @@ namespace ysl
 		}
 
 
-		constexpr Vector3<T> operator/(Float s)const
+		Vector3<T> operator/(Float s)const
 		{
 			//assert(!IsNaN(s));
 			const auto inv = static_cast<Float>(1) / s;
 			return Vector3<T>(x*inv, y*inv, z*inv);
 		}
 
-		constexpr Vector3<T> &operator/=(Float s)
+		Vector3<T> &operator/=(Float s)
 		{
 			//	assert(!IsNaN(s));
 			const auto inv = static_cast<Float>(1) / s;
@@ -447,25 +447,25 @@ namespace ysl
 					v1.x * v2.y - v1.y * v2.x};
 		}
 
-		constexpr Float LengthSquared()const { return x * x + y * y + z * z; }
+		Float LengthSquared()const { return x * x + y * y + z * z; }
 
-		constexpr Float Length()const { return std::sqrt(LengthSquared()); }
+		Float Length()const { return std::sqrt(LengthSquared()); }
 
-		constexpr Vector3<T> Normalized()const
+		Vector3<T> Normalized()const
 		{
 			//if len is too small?
 			const auto len = Length();
 			return (*this) / len;
 		}
 
-		constexpr void Normalize()
+		void Normalize()
 		{
 			//if len is too small?
 			const auto len = Length();
 			(*this) /= len;
 		}
 
-		constexpr bool IsNull()const
+		bool IsNull()const
 		{
 			return x == 0 && y == 0 && z == 0;
 		}
@@ -492,13 +492,13 @@ namespace ysl
 
 
 	template<typename T>
-	constexpr Vector3<T> operator*(Float s, const Vector3<T> & v)
+	Vector3<T> operator*(Float s, const Vector3<T> & v)
 	{
 		return v * s;
 	}
 
 	template<typename T>
-	constexpr Vector3<T> Abs(const Vector3<T> & v) {
+	Vector3<T> Abs(const Vector3<T> & v) {
 		return Vector3<T>(std::abs(v.x()), std::abs(v.y()), std::abs(v.z()));
 	}
 
@@ -511,8 +511,8 @@ namespace ysl
 	class Point3 {
 	public:
 		T x, y, z;
-		constexpr Point3() :x(0), y(0), z(0) {}
-		constexpr Point3(const T &x, const T &y, const T& z) : x(x), y(y), z(z)
+		Point3() :x(0), y(0), z(0) {}
+		Point3(const T &x, const T &y, const T& z) : x(x), y(y), z(z)
 		{
 			assert(!HasNaN());
 		}
@@ -530,19 +530,19 @@ namespace ysl
 		}
 
 
-		constexpr Point3<T> operator+(const Point3<T> & p)const
+		Point3<T> operator+(const Point3<T> & p)const
 		{
 			assert(!p.HasNaN());
 			return Point3<T>(x + p.x, y + p.y, z + p.z);
 		}
 
-		constexpr Point3<T> operator+(const Vector3<T> & v)const
+		Point3<T> operator+(const Vector3<T> & v)const
 		{
 			assert(!v.HasNaN());
 			return Point3<T>(x + v.x, y + v.y, z + v.z);
 		}
 
-		constexpr Point3<T> & operator+=(const Vector3<T> & v)
+		Point3<T> & operator+=(const Vector3<T> & v)
 		{
 			assert(!v.HasNaN());
 			x += v.x;
@@ -551,7 +551,7 @@ namespace ysl
 			return *this;
 		}
 
-		constexpr Point3<T> & operator+=(const Point3<T> & p)
+		Point3<T> & operator+=(const Point3<T> & p)
 		{
 			assert(!p.HasNaN());
 			x += p.x;
@@ -567,7 +567,7 @@ namespace ysl
 		//	return Point3<T>(s*x, s*y, s*z);
 		//}
 
-		constexpr Point3<T> operator*(Float s)const
+		Point3<T> operator*(Float s)const
 		{
 			assert(!IsNaN(s));
 			return Point3<T>(s*x, s*y, s*z);
@@ -581,7 +581,7 @@ namespace ysl
 
 
 		template<typename U>
-		constexpr Point3<T> & operator*=(const U & s)
+		Point3<T> & operator*=(const U & s)
 		{
 			assert(!IsNaN(s));
 			x *= s;
@@ -591,7 +591,7 @@ namespace ysl
 		}
 
 		template<typename U>
-		constexpr Point3<T> operator/(const U & s)const
+		Point3<T> operator/(const U & s)const
 		{
 			assert(!IsNaN(s));
 			const Float inv = static_cast<Float>(1) / s;
@@ -599,7 +599,7 @@ namespace ysl
 		}
 
 		template<typename U>
-		constexpr Point3<T> & operator/=(const U & s)
+		Point3<T> & operator/=(const U & s)
 		{
 			assert(!IsNaN(s));
 			const Float inv = static_cast<Float>(1) / s;
@@ -609,24 +609,24 @@ namespace ysl
 			return *this;
 		}
 
-		constexpr Vector3<T> operator-(const Point3<T> & p)const
+		Vector3<T> operator-(const Point3<T> & p)const
 		{
 			assert(!p.HasNaN());
 			return Vector3<T>(x - p.x, y - p.y, z - p.z);
 		}
 
-		constexpr Point3<T> operator-(const Vector3<T> & v) const
+		 Point3<T> operator-(const Vector3<T> & v) const
 		{
 			assert(!v.HasNaN());
 			return Point3<T>(x - v.x, y - v.y, z - v.z);
 		}
 
-		constexpr Point3<T> operator-()const
+		Point3<T> operator-()const
 		{
 			return Point3<T>(-x, -y, -z);
 		}
 
-		constexpr Point3<T> & operator-=(const Vector3<T> & v)
+		Point3<T> & operator-=(const Vector3<T> & v)
 		{
 			assert(!v.HasNaN());
 			x -= v.x;
