@@ -45,7 +45,8 @@ m_ebo(QOpenGLBuffer::IndexBuffer),
 m_centroid{0,0,0}
 {
 	m_vertices.reset(new ysl::Point3f[nVertex]);
-	for (int i = 0; i < nVertex; i++) {
+	for (int i = 0; i < nVertex; i++) 
+	{
 		m_vertices[i] = trans * vertices[i];
 		m_centroid += m_vertices[i];
 	}

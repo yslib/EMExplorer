@@ -667,7 +667,6 @@ namespace ysl
 		{
 			return &x;
 		}
-
 	};
 
 	template<typename T>

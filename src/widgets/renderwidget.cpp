@@ -300,7 +300,6 @@ void RenderWidget::paintGL()
 		m_volume->setSliceSphereCoord(d->options->sliceNormal);
 		m_volume->setTransform(world);
 		m_volume->render();
-
 		if (renderMode & RenderMode::SliceTexture) {
 
 			m_boundingBoxVAO.bind();
