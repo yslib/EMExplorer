@@ -76,15 +76,15 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	m_dataModel(dataModel),
 	//m_parameterWidget(widget),
 //	m_camera(QVector3D(0.f, 0.f, 10.f)),
-	m_cameraEx(ysl::Point3f{0.f,0.f,10.f}),
-	m_rayStep(0.02),
-	m_tfTexture(nullptr),
-	m_volume(nullptr),
-	m_meshShader(nullptr),
-	m_selectShader(nullptr),
-	m_trivialShader(nullptr),
-	m_pickFBO(nullptr),
-	d_ptr(new RenderWidgetPrivate(this))
+m_cameraEx(ysl::Point3f{ 0.f,0.f,10.f }),
+m_rayStep(0.02),
+m_tfTexture(nullptr),
+m_volume(nullptr),
+m_meshShader(nullptr),
+m_selectShader(nullptr),
+m_trivialShader(nullptr),
+m_pickFBO(nullptr),
+d_ptr(new RenderWidgetPrivate(this))
 {
 	//m_contextMenu = new QMenu(QStringLiteral("Context Menu"), this);
 
@@ -307,7 +307,7 @@ void RenderWidget::paintGL()
 			m_trivialShader->bind();
 			m_trivialShader->setUniformValue("modelViewMat", (camera().view()*world*d->volumeNormalTransform).ColumnMajorMatrix().m);
 			m_trivialShader->setUniformValue("projMat", m_proj.ColumnMajorMatrix().m);
-			m_trivialShader->setUniformValue("color", QVector4D{1.0f,0.0f,0.0f,1.0f});
+			m_trivialShader->setUniformValue("color", QVector4D{ 1.0f,0.0f,0.0f,1.0f });
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glDrawArrays(GL_QUADS, 0, 24);
@@ -412,7 +412,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 		//m_camera.movement(direction, 0.002);
 		//qDebug() << "In RenderWidget::mouseMoveEvent: m_camera.up():" << m_camera.up() << " m_camera.right()" << m_camera.right() << " direction:" << direction;
 
-		const auto directionEx = m_cameraEx.up()*dy+ dx * m_cameraEx.right();
+		const auto directionEx = m_cameraEx.up()*dy + dx * m_cameraEx.right();
 		m_cameraEx.movement(directionEx, 0.002);
 		//std::cout << "In RenderWidget::mouseMoveEvent: m_cameraEx.up():" << m_cameraEx.up() << " m_camera.right()" << m_cameraEx.right() << " direction:" << directionEx << std::endl;
 
@@ -641,13 +641,13 @@ void RenderWidget::drawThreeAxis()
 		QVector<QVector3D> lineX = { {0.f,0.f,0.f},{1.0f,0.0f,0.0f} };
 		QVector<QVector3D> lineY = { {0.f,0.f,0.f},{0.0f,1.0f,0.0f} };
 		QVector<QVector3D> lineZ = { {0.f,0.f,0.f},{0.0f,0.0f,1.0f} };
-		m_axisVBO.write(0, lineX.constData(),sizeof(QVector3D) * lineX.size());
+		m_axisVBO.write(0, lineX.constData(), sizeof(QVector3D) * lineX.size());
 		m_trivialShader->setUniformValue("color", QVector4D{ 1.0f,0.0f,0.0f,1.0f });
 		glDrawArrays(GL_LINES, 0, 2);
-		m_axisVBO.write(0, lineY.constData(),sizeof(QVector3D) * lineY.size());
+		m_axisVBO.write(0, lineY.constData(), sizeof(QVector3D) * lineY.size());
 		m_trivialShader->setUniformValue("color", QVector4D{ 0.0f,1.0f,0.0f,1.0f });
 		glDrawArrays(GL_LINES, 0, 2);
-		m_axisVBO.write(0, lineZ.constData(),sizeof(QVector3D) * lineZ.size());
+		m_axisVBO.write(0, lineZ.constData(), sizeof(QVector3D) * lineZ.size());
 		m_trivialShader->setUniformValue("color", QVector4D{ 0.0f,0.0f,1.0f,1.0f });
 		glDrawArrays(GL_LINES, 0, 2);
 
@@ -703,7 +703,7 @@ void RenderWidget::updateMark() {
 			const auto nT = mesh->triangleCount();
 			const auto n = mesh->normals();
 			//auto T = d->volumeNormalTransform*trans;
-			
+
 			auto ptr = QSharedPointer<TriangleMesh>(new TriangleMesh(v,
 				n,
 				nullptr,
@@ -721,7 +721,7 @@ void RenderWidget::updateMark() {
 	}
 
 	// update volume data (time-consuming)
-	if(m_volume != nullptr) {
+	if (m_volume != nullptr) {
 		const auto p = m_markModel->rawMarks();
 		VolumeFormat fmt;
 		fmt.fmt = VoxelFormat::Grayscale;
@@ -759,18 +759,44 @@ void RenderWidget::updateVolumeData()
 	I.SetTranslate(-0.5, -0.5, -0.5);
 
 	// Decide data format
-
 	VolumeFormat fmt;
 	fmt.fmt = VoxelFormat::Grayscale;			// AbstractSliceDataModel only support 1-channel data
 	if (m_dataModel->dataType() == 0)		// uint8
 	{
 		fmt.type = VoxelType::UInt8;
+		m_volume.reset(new SliceVolume(m_dataModel->constRawData(), x, y, z, I, fmt, this));
+
 	}
 	else if (m_dataModel->dataType() == 1) {
 		fmt.type = VoxelType::Float32;
+
+		std::unique_ptr<unsigned char[]> normalizedData(new unsigned char[std::size_t(x) * y * z]);
+		// normalize data into char
+
+		auto d = reinterpret_cast<const float*>(m_dataModel->constRawData());
+		const auto minValue = m_dataModel->minValue();
+		const auto maxValue = m_dataModel->maxValue();
+#pragma omp parallel for
+		for (int zz = 0; zz < z; zz++)
+		{
+			for (int yy = 0; yy < y; yy++)
+			{
+				for (int xx = 0; xx < x; xx++)
+				{
+					std::size_t index = zz * x*y + yy * x + xx;
+					normalizedData[index] = (d[index]-minValue/(maxValue-minValue) * 255);
+				}
+			}
+		}
+		qDebug() << "Convert finished";
+		fmt.type = VoxelType::UInt8;
+		m_volume.reset(new SliceVolume(normalizedData.get(), x, y, z, I, fmt, this));
+
+	}else
+	{
+		Q_ASSERT_X(false, "RenderWidget::updateVolumeData", "Invalid format type");
 	}
 
-	m_volume.reset(new SliceVolume(m_dataModel->constRawData(), x, y, z, I, fmt, this));
 	makeCurrent();
 	m_volume->initializeGLResources();
 	doneCurrent();

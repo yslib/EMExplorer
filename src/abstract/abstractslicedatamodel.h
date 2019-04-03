@@ -25,6 +25,9 @@ public:
 	virtual QImage rightSlice(int index)const;
 	virtual QImage frontSlice(int index)const;
 
+	virtual float minValue()const = 0;
+	virtual float maxValue()const = 0;
+
 	//virtual unsigned char * data()=0;
 	//virtual const unsigned char * constData()const = 0;
 

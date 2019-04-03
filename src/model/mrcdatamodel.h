@@ -24,6 +24,10 @@ public:
     inline int topSliceCount() const override;
     inline int rightSliceCount() const override;
     inline int frontSliceCount() const override;
+
+	float minValue() const;
+	float maxValue() const;
+
 	~MRCDataModel();
 private:
     QSharedPointer<MRC> m_d;

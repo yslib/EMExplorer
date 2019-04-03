@@ -71,6 +71,7 @@ QImage MRCDataModel::originalTopSlice(int index) const
 			{
 				const auto dmin = m_d->minValue();
 				const auto dmax = m_d->maxValue();
+				//qDebug() << dmin << " " << dmax;
 				const auto d = m_d->data<MRC::MRCFloat>();
 				Q_ASSERT_X(d != nullptr, "MRCDataModel::originalTopSlice", "type convertion error");
 				const auto data = d + width * height * index;
@@ -218,6 +219,16 @@ inline int MRCDataModel::rightSliceCount() const
 inline int MRCDataModel::frontSliceCount() const
 {
 	return m_d->height();
+}
+
+float MRCDataModel::minValue() const
+{
+	return m_d->minValue();
+}
+
+float MRCDataModel::maxValue() const
+{
+	return m_d->maxValue();
 }
 
 MRCDataModel::~MRCDataModel() 

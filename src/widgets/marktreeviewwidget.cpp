@@ -234,9 +234,7 @@ TreeNodeInfoView::TreeNodeInfoView(QWidget * parent) :QTableView(parent)
 	auto dele = new QItemDelegate;
 	dele->setItemEditorFactory(factory);
 	setItemDelegate(dele);
-
 }
-
 
 
 

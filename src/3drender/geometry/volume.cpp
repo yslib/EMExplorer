@@ -20,40 +20,90 @@ Volume::Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, cons
 	, m_fmt(fmt)
 	, m_data(nullptr)
 	, m_isoStat(nullptr)
+	, m_bytes(0)
 {
 	auto voxelChannel = 0;
 	switch (m_fmt.fmt)
 	{
-		case VoxelFormat::Grayscale:voxelChannel = 1; break;
-		case VoxelFormat::RGB:voxelChannel = 3; break;
-		case VoxelFormat::RGBA:voxelChannel = 4; break;
+	case VoxelFormat::Grayscale:voxelChannel = 1; break;
+	case VoxelFormat::RGB:voxelChannel = 3; break;
+	case VoxelFormat::RGBA:voxelChannel = 4; break;
 	}
-	size_t bytes = 0;
+	//size_t bytes = 0;
 
 	switch (m_fmt.type)
 	{
 	case VoxelType::UInt8:
-		m_data.reset(reinterpret_cast<unsigned char*>(new unsigned char[xSize*ySize*zSize*voxelChannel]));
+	{
+		const auto d = new unsigned char[xSize*ySize*zSize*voxelChannel];
+
+
+		m_data.reset(reinterpret_cast<unsigned char*>(d));
 		m_isoStat.reset(new double[256]);
-		bytes = xSize * ySize*zSize * sizeof(unsigned char)*voxelChannel;
-		break;
+		m_bytes = xSize * ySize*zSize * sizeof(unsigned char)*voxelChannel;
+	}
+
+	break;
 	case VoxelType::Float32:
-		m_data.reset(reinterpret_cast<unsigned char*>(new float[xSize*ySize*zSize*voxelChannel]));
+	{
+		const auto d = new float[xSize*ySize*zSize*voxelChannel];
+		m_data.reset(reinterpret_cast<unsigned char*>(d));
 		m_isoStat.reset(new double[256]);
-		bytes = xSize * ySize * zSize * sizeof(float)*voxelChannel;
-		break;
+		m_bytes = xSize * ySize * zSize * sizeof(float)*voxelChannel;
+	}
+
+	break;
 	}
 
 	if (m_data != nullptr)
 	{
-		std::memcpy(m_data.get(), data, bytes);
+		std::memcpy(m_data.get(), data, m_bytes);
 	}
 
 	if (m_isoStat != nullptr)
 		calcIsoStat();
-
 }
 
+Volume::Volume(const Volume& vol)
+{
+	*this = vol;
+}
+
+Volume& Volume::operator=(const Volume& vol)
+{
+	m_fmt = vol.m_fmt;
+	m_xSize = vol.m_xSize;
+	m_ySize = vol.m_ySize;
+	m_zSize = vol.m_zSize;
+	m_maxIsoValue = vol.m_maxIsoValue;
+	m_bytes = vol.m_bytes;
+
+	m_data.reset(new unsigned char[m_bytes]);
+	m_isoStat.reset(new double[256]);
+	memcpy(m_data.get(), vol.m_data.get(), m_bytes);
+	memcpy(m_isoStat.get(), vol.m_isoStat.get(), 256 * sizeof(double));
+	return *this;
+}
+
+Volume::Volume(Volume&& vol)noexcept
+{
+	*this = std::move(vol);
+}
+
+Volume& Volume::operator=(Volume&& vol)noexcept
+{
+	m_fmt = vol.m_fmt;
+	m_xSize = vol.m_xSize;
+	m_ySize = vol.m_ySize;
+	m_zSize = vol.m_zSize;
+	m_maxIsoValue = vol.m_maxIsoValue;
+	m_bytes = vol.m_bytes;
+
+	m_data = std::move(vol.m_data);
+	m_isoStat = std::move(vol.m_isoStat);
+
+	return *this;
+}
 /**
  * \brief  Blends the \a data with current data of the value
  *
@@ -77,7 +127,7 @@ void Volume::blend(
 	Q_ASSERT_X(ylen <= height, "Volume::blend", "out of range");
 	Q_ASSERT_X(zlen <= slice, "Volume::blend", "out of range");
 
-	if (sourceVolumeFormat .fmt!= VoxelFormat::Grayscale || sourceVolumeFormat.type != VoxelType::UInt8)
+	if (sourceVolumeFormat.fmt != VoxelFormat::Grayscale || sourceVolumeFormat.type != VoxelType::UInt8)
 		return;
 
 	const auto p = static_cast<unsigned char*>(data);
@@ -91,7 +141,7 @@ void Volume::blend(
 				const auto index = (x + xpos) + (y + ypos)*width + (z + zpos)*width * height;
 				const auto sourceIndex = x + y * xlen + z * xlen * ylen;
 				const auto d = p[sourceIndex];
-				if(d) 
+				if (d)
 				{
 					m_data[index] = d;
 				}

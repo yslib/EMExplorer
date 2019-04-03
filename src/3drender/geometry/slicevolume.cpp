@@ -42,10 +42,12 @@ void SliceVolume::loadDataAndGradientToTexture() {
 	const auto y = yLength();
 	const auto x = xLength();
 	//m_gradientTexture.destroy();
-	if (m_initialized == true) {
+	if (m_initialized == true) 
+	{
 		return;
 	}
-	if (m_volumeTexture == nullptr) {
+	if (m_volumeTexture == nullptr) 
+	{
 		m_volumeTexture = new QOpenGLTexture(QOpenGLTexture::Target3D);
 		m_volumeTexture->setMagnificationFilter(QOpenGLTexture::Linear);
 		m_volumeTexture->setMinificationFilter(QOpenGLTexture::Linear);
@@ -649,32 +651,28 @@ void SliceVolume::reloadVolumeData()
 {
 	if (!m_volumeTexture)
 		return;
-
-
 	const auto fmt = format();
 	QOpenGLTexture::PixelFormat pfmt;
 	QOpenGLTexture::PixelType ptype;
-
 	switch (fmt.fmt)
 	{
 		case VoxelFormat::Grayscale:pfmt = QOpenGLTexture::Red; break;
 		case VoxelFormat::RGB:pfmt = QOpenGLTexture::RGB; break;
-		case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;;
+		case VoxelFormat::RGBA:pfmt = QOpenGLTexture::RGBA; break;
 		default: Q_ASSERT(false);
 	}
-
 	switch (fmt.type)
 	{
 		case VoxelType::Float32:ptype = QOpenGLTexture::Float32; break;
 		case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
 		default: Q_ASSERT(false);
 	}
-
+	qDebug() << pfmt << " " << ptype;
 	m_volumeTexture->setData(pfmt, ptype, data());		//External format
-
 }
 
-QVector3D SliceVolume::sliceNormal(const QVector<QVector3D>& slice) {
+QVector3D SliceVolume::sliceNormal(const QVector<QVector3D>& slice) 
+{
 	Q_ASSERT_X(slice.size() >= 3, "", "");
 	return QVector3D::crossProduct(slice[1] - slice[0], slice[2] - slice[1]).normalized();
 }

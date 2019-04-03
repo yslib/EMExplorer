@@ -86,13 +86,25 @@ class Volume
 	VolumeFormat m_fmt;
 	std::unique_ptr<unsigned char[]> m_data;
 	std::unique_ptr<double[]> m_isoStat;
+	std::size_t m_bytes;
 	int m_xSize, m_ySize, m_zSize;
 	double m_maxIsoValue;
 public:
-	Volume(const void * data, size_t xSize, size_t ySize, size_t zSize, const VolumeFormat & fmt = VolumeFormat());
+	Volume(const void * data,
+		size_t xSize, 
+		size_t ySize,
+		size_t zSize, 
+		const VolumeFormat & fmt = VolumeFormat()
+		);
+	Volume(const Volume & vol);
+	Volume & operator=(const Volume & vol);
+
+	Volume(Volume && vol)noexcept;
+	Volume & operator=(Volume && vol)noexcept;
 	int xLength()const;
 	int yLength()const;
 	int zLength()const;
+
 	/**
 	 * \brief  Returns a histogram of this volume data. The histogram is made of 256 bins.
 	 */
@@ -104,7 +116,25 @@ public:
 	virtual ~Volume();
 private:
 	void calcIsoStat();
+	template<typename T>
+	void normalized(T * d, int channel);
 };
+
+template <typename T>
+void Volume::normalized(T* d, int channel)
+{
+	T minValue, maxValue;
+	for(int z = 0 ; z < m_zSize;z++)
+	{
+		for(int y = 0;y<m_ySize;y++)
+		{
+			for(int x = 0 ;x<m_zSize;x++)
+			{
+				
+			}
+		}
+	}
+}
 
 inline int Volume::xLength() const { return m_xSize; }
 inline int Volume::yLength() const { return m_ySize; }
