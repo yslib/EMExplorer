@@ -8,6 +8,7 @@ MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):
 {
 	Q_ASSERT_X(m_d->isOpened(), 
 		"MRCDataModel::MRCDataModel", "Invalid MRC Data.");
+
 	preCalc();
 
 }

@@ -42,4 +42,7 @@ private:
 	void preCalc();
 };
 
+
+
+
 #endif // MRCDATAMODEL_H

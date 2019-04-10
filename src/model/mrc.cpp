@@ -171,7 +171,6 @@ bool MRC::save(const std::string & fileName, MRC::Format format)
 	}
 	else if (format == Format::RAW) {
 		//rewind(fp);
-
 		//const auto count = fwrite(m_d->data, elemSize, dataCount, fp);
 		//out.seekp(MRC_HEADER_SIZE, out.beg);
 		out.write(static_cast<char*>(m_d->data), elemSize*dataCount);
