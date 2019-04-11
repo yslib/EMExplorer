@@ -140,11 +140,11 @@ void SliceEditorWidget::_slot_topViewSliceSelection(const QPoint& pos)
 		return;
 	const auto rightSliceCount = m_sliceModel->rightSliceCount();
 	const auto frontSliceCount = m_sliceModel->frontSliceCount();
-	if(pos.x() >=0 && pos.x() <= rightSliceCount) 
+	if (pos.x() >= 0 && pos.x() <= rightSliceCount)
 	{
 		setSliceIndex(SliceType::Right, pos.x());
 	}
-	if (pos.y() >= 0 && pos.y() <= frontSliceCount) 
+	if (pos.y() >= 0 && pos.y() <= frontSliceCount)
 	{
 		setSliceIndex(SliceType::Front, pos.y());
 
@@ -159,7 +159,7 @@ void SliceEditorWidget::_slot_rightViewSliceSelection(const QPoint & pos)
 {
 	if (m_sliceModel == nullptr)
 		return;
-	const auto topSliceCount= m_sliceModel->topSliceCount();
+	const auto topSliceCount = m_sliceModel->topSliceCount();
 	const auto frontSliceCount = m_sliceModel->frontSliceCount();
 	if (pos.x() >= 0 && pos.x() <= topSliceCount)
 	{
@@ -172,7 +172,7 @@ void SliceEditorWidget::_slot_rightViewSliceSelection(const QPoint & pos)
 	}
 }
 
-void SliceEditorWidget::_slot_frontViewSliceSelection(const QPoint& pos) 
+void SliceEditorWidget::_slot_frontViewSliceSelection(const QPoint& pos)
 {
 	if (m_sliceModel == nullptr)
 		return;
@@ -272,6 +272,7 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
  * \param frontSliceVisible The visibility of the front slice widget
  * \param model Slice data model that is used to display
  */
+
 SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	bool topSliceVisible,
 	bool rightSliceVisible,
@@ -340,7 +341,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	m_layout->addWidget(m_topView, 0, 0, 1, 1);
 	m_layout->addWidget(m_rightView, 0, 1, 1, 1, Qt::AlignLeft);
 	m_layout->addWidget(m_frontView, 1, 0, 1, 1, Qt::AlignTop);
-	m_layout->addWidget(m_toolButton, 1, 1, 1, 1,Qt::AlignCenter);
+	m_layout->addWidget(m_toolButton, 1, 1, 1, 1, Qt::AlignCenter);
 	setLayout(m_layout);
 }
 /**
@@ -474,7 +475,6 @@ QModelIndex SliceEditorWidget::_hlp_categoryIndex(const QString & category) cons
 	}
 	return QModelIndex();
 }
-
 
 
 QModelIndex SliceEditorWidget::_hlp_categoryAdd(const CategoryInfo & info) const {
@@ -807,7 +807,11 @@ AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel
 	const auto t = m_sliceModel;
 
 	m_sliceModel = model;
-	delete m_markModel;
+	if (!m_markModel)
+	{
+		delete m_markModel;
+		m_markModel = nullptr;
+	}
 	installMarkModel(createMarkModel(this, m_sliceModel));
 	setSliceIndex(SliceType::Front, 0);
 	setSliceIndex(SliceType::Right, 0);

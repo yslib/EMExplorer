@@ -252,8 +252,8 @@ void RenderWidget::resizeGL(int w, int h)
 	const double aspect = GLfloat(w) / h;
 	//m_proj.setToIdentity();
 	//m_otho.setToIdentity();
-	m_otho.SetOrtho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
-	m_proj.SetPerspective(45.f, aspect, 0.01f, 100.f);
+	m_otho.SetGLOrtho(-aspect * 2, aspect * 2, -2, 2, -100.0, 100.0);
+	m_proj.SetGLPerspective(45.f, aspect, 0.01f, 100.f);
 	if (m_pickFBO != nullptr);
 	delete m_pickFBO;
 	m_pickFBO = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
@@ -792,8 +792,11 @@ void RenderWidget::updateVolumeData()
 		fmt.type = VoxelType::UInt8;
 		m_volume.reset(new SliceVolume(normalizedData.get(), x, y, z, I, fmt, this));
 
-	}else
+	}else if(m_dataModel->dataType() == 2)
 	{
+		
+	}
+	else {
 		Q_ASSERT_X(false, "RenderWidget::updateVolumeData", "Invalid format type");
 	}
 

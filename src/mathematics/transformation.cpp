@@ -1,9 +1,11 @@
 #include "transformation.h"
+#include "numeric.h"
+#include <cstring>
+#include <cassert>
 
 
 namespace ysl
 {
-
 
 	Matrix3x3::Matrix3x3()
 	{
@@ -13,7 +15,7 @@ namespace ysl
 
 	Matrix3x3::Matrix3x3(Float mat[3][3])
 	{
-		::memcpy(m, mat, sizeof(Float) * 9);
+		std::memcpy(m, mat, sizeof(Float) * 9);
 	}
 
 	Matrix3x3::Matrix3x3(Float t00, Float t01, Float t02, Float t10, Float t11, Float t12, Float t20, Float t21,
@@ -148,9 +150,33 @@ namespace ysl
 			m[2][1] = m[2][3] = m[3][0] = m[3][1] = m[3][2] = 0.f;
 	}
 
+	Matrix4x4::Matrix4x4(const Matrix3x3& mat33)
+	{
+		// Row 1
+		m[0][0] = mat33.m[0][0];
+		m[0][1] = mat33.m[0][1];
+		m[0][2] = mat33.m[0][2];
+		m[0][3] = 0;
+		// Row 2
+		m[1][0] = mat33.m[1][0];
+		m[1][1] = mat33.m[1][1];
+		m[1][2] = mat33.m[1][2];
+		m[1][3] = 0;
+		// Row 3
+		m[2][0] = mat33.m[2][0];
+		m[2][1] = mat33.m[2][1];
+		m[2][2] = mat33.m[2][2];
+		m[2][3] = 0;
+		// Row 4 
+		m[3][0] = 0;
+		m[3][1] = 0;
+		m[3][2] = 0;
+		m[3][3] = 1;
+	}
+
 	Matrix4x4::Matrix4x4(Float mat[4][4])
 	{
-		::memcpy(m, mat, sizeof(Float) * 16);
+		std::memcpy(m, mat, sizeof(Float) * 16);
 	}
 
 	Matrix4x4::Matrix4x4(Float t00, Float t01, Float t02, Float t03, Float t10, Float t11, Float t12, Float t13,
@@ -224,7 +250,7 @@ namespace ysl
 		int indxc[4], indxr[4];
 		int ipiv[4] = { 0, 0, 0, 0 };
 		Float minv[4][4];
-		::memcpy(minv, this->m, 4 * 4 * sizeof(Float));
+		std::memcpy(minv, this->m, 4 * 4 * sizeof(Float));
 		for (int i = 0; i < 4; i++)
 		{
 			int irow = 0, icol = 0;
@@ -355,18 +381,18 @@ namespace ysl
 		return !(*this == t);
 	}
 
-	Ray
-		Transform::operator*(const Ray& ray) const
-	{
-		return { (*this)*ray.direction() ,(*this)*ray.original() };
-	}
+	//Ray
+	//	Transform::operator*(const Ray& ray) const
+	//{
+	//	return { (*this)*ray.Direction() ,(*this)*ray.Original() };
+	//}
 
-	AABB
-		Transform::operator*(const AABB & aabb) const
-	{
-		assert(false);
-		return AABB{};
-	}
+	//Bound3f
+	//	Transform::operator*(const Bound3f & aabb) const
+	//{
+	//	assert(false);
+	//	return Bound3f{};
+	//}
 
 	Transform
 		Transform::operator*(const Transform & trans)const
@@ -418,7 +444,7 @@ namespace ysl
 	}
 
 	void
-		Transform::SetOrtho(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
+		Transform::SetGLOrtho(Float left, Float right, Float bottom, Float top, Float nearPlane, Float farPlane)
 	{
 		const auto width = right - left;
 		const auto height = top - bottom;
@@ -438,7 +464,7 @@ namespace ysl
 	}
 
 	void
-		Transform::SetPerspective(Float vertcialAngle, Float aspectRation, Float nearPlane, Float farPlane)
+		Transform::SetGLPerspective(Float vertcialAngle, Float aspectRation, Float nearPlane, Float farPlane)
 	{
 		const auto top = std::tan(DegreesToRadians(vertcialAngle / 2))*nearPlane;
 		const auto right = top * aspectRation;

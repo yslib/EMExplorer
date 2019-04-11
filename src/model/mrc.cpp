@@ -241,9 +241,9 @@ MRC::DataType MRC::propertyType(int index)const
 		DataType::Integer32,		//mx
 		DataType::Integer32,		//my
 		DataType::Integer32,		//mz
-		DataType::Integer32,		//xlen
-		DataType::Integer32,		//ylen
-		DataType::Integer32,		//zlen
+		DataType::Real32,		//xlen
+		DataType::Real32,		//ylen
+		DataType::Real32,		//zlen
 		DataType::Real32,			//alpha
 		DataType::Real32,			//beta
 		DataType::Real32,			//gamma
@@ -364,7 +364,7 @@ bool MRC::headerReadHelper(std::ifstream & in, MRCHeader *hd)
 		return false;
 	in.seekg(0, in.beg);
 	//rewind(fp);
-	unsigned char hdBuffer[MRC_HEADER_SIZE];
+	//unsigned char hdBuffer[MRC_HEADER_SIZE];
 	//int elemSize = 0;
 	//elemSize = fread(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE, fp);
 	in.read((char*)hdBuffer, MRC_HEADER_SIZE);
@@ -526,7 +526,7 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, elemSize);
 			if (this->m_d == nullptr)
 			{
-				std::cerr << "Create data pointer failed\n";
+				std::cerr << "Create data pointer failed\n" << __LINE__ << std::endl;
 				return false;
 			}
 			//std::unique_ptr<MRCFloat[]> buffer(new float[dataCount]);
@@ -536,38 +536,44 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 
 			if (readCount != dataCount*elemSize)
 			{
-				std::cerr << "Runtime Error: Reading size error. Read Count:" << readCount << ". DataCount: " << dataCount << ". >>>" << __LINE__ << std::endl;
+				std::cerr << "Runtime Error: Reading size error. Read Count:" << readCount << ". DataCount: " << dataCount << ".>>> " << __LINE__ << std::endl;
 				noError = false;
 			}
 			m_header.mode = MRC_MODE_FLOAT;
 
 		}
 		else if (MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode) {
-			std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
-			in.read(reinterpret_cast<char*>(buffer.get()), dataCount*elemSize);
-
+			//std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
+			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer16));
+			if(!this->m_d)
+			{
+				std::cerr << "Create data pointer failed. " << __LINE__ << std::endl;
+				noError = true;
+				return false;
+			}
+			in.read(reinterpret_cast<char*>(m_d->data), dataCount*elemSize);
 			const auto readCount = in.gcount();
 			//const size_t readCount = fread(buffer.get(), elemSize, dataCount, fp);
 			if (readCount != dataCount * elemSize) {
-				std::cerr << "Runtime Error: Reading size error.>>>" << __LINE__ << std::endl;
+				std::cerr << "Runtime Error: Reading size error.>>> " << __LINE__ << std::endl;
 				noError = false;
 			}
-			this->m_d = MRCDataPrivate::create(m_header.nx, m_header.ny, m_header.nz, typeSize(DataType::Integer8));
-			if (true == noError) {
-				const auto dmin = static_cast<MRCInt16>(m_header.dmin);
-				const auto dmax = static_cast<MRCInt16>(m_header.dmax);
-				const auto k = 256.0 / (dmax - dmin);
-				for (size_t i = 0; i < dataCount; i++)
-					static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt16>(k*buffer[i]);
-			}
-			m_header.mode = MRC_MODE_BYTE;
+			//if (true == noError) {
+			//	const auto dmin = static_cast<MRCInt16>(m_header.dmin);
+			//	const auto dmax = static_cast<MRCInt16>(m_header.dmax);
+			//	const auto k = 256.0 / (dmax - dmin);
+			//	for (size_t i = 0; i < dataCount; i++)
+			//		static_cast<MRCInt8*>(m_d->data)[i] = static_cast<MRCInt16>(k*buffer[i]);
+			//}
+			//m_header.mode = MRC_MODE_BYTE;
 		}
 		else 
 		{
-			std::cerr << "Unsupported Format now.\n";
+			std::cerr << "Unsupported Format now.>>> " << __LINE__ << std::endl;
 			return false;
 		}
 	}
 
 	return (noError);
 }
+

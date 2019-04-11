@@ -80,7 +80,8 @@ HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\
     $${MY_PREFIX_DIR}/mathematics/numeric.h \
     $${MY_PREFIX_DIR}/mathematics/arithmetic.h \
     $${MY_PREFIX_DIR}/mathematics/geometry.h \
-    $${MY_PREFIX_DIR}/mathematics/transformation.h
+    $${MY_PREFIX_DIR}/mathematics/transformation.h \
+    src/model/autommrcdatamodel.h
     
 
 SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
@@ -134,5 +135,6 @@ SOURCES +=$${MY_PREFIX_DIR}/widgets/doubleslider.cpp \
     $${MY_PREFIX_DIR}/abstract/widgetplugininterface.cpp \
     $${MY_PREFIX_DIR}/mathematics/transformation.cpp \
     $${MY_PREFIX_DIR}/mathematics/arithmetic.cpp \
-    $${MY_PREFIX_DIR}/mathematics/geometry.cpp 
+    $${MY_PREFIX_DIR}/mathematics/geometry.cpp \ 
+    src/model/autommrcdatamodel.cpp
 RESOURCES += resources.qrc

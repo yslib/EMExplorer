@@ -3,8 +3,10 @@
 
 #include <vector>
 
-#include "base/geometry.h"
-
+#include "mathematics/geometry.h"
+#include <QtCore/QList>
+#include <QVector>
+#include <QPointF>
 
 class StrokeMarkItem;
 class QGraphicsItem;
@@ -70,7 +72,10 @@ Q_DECLARE_METATYPE(QSharedPointer<Triangulate>);
 Q_DECLARE_METATYPE(QVector<QSharedPointer<Triangulate>>);
 
 
-inline auto  tanslateVector(const QVector<QPointF> & vec, int start, int index)->const QPointF& 
+
+
+inline 
+const QPointF&  tanslateVector(const QVector<QPointF> & vec, int start, int index)
 {
 	int size = vec.size();
 	Q_ASSERT_X(size > start, "translateVector", "out of range");

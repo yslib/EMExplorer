@@ -14,8 +14,8 @@ namespace ysl
 {
 
 	inline
-	Vector3f
-	uniformSampleSphere(const Point2f & p)
+		Vector3f
+		uniformSampleSphere(const Point2f & p)
 	{
 		const auto y = 1 - 2 * p[0];
 		const auto r = std::sqrt(std::max(Float(0), Float(1 - y * y)));
@@ -24,8 +24,8 @@ namespace ysl
 	}
 
 	inline
-	Vector3f
-	uniformSampleHemiSphere(const Point2f &p)
+		Vector3f
+		uniformSampleHemiSphere(const Point2f &p)
 	{
 		Float y = p[0];
 		Float sinTheta = std::sqrt(std::max((Float)0, 1 - y * y));
@@ -34,15 +34,15 @@ namespace ysl
 	}
 
 	inline constexpr
-	Float
-	uniformHemiSpherePdf()
+		Float
+		uniformHemiSpherePdf()
 	{
 		return 1 / (2 * Pi);
 	}
 
 	inline
-	Point2f
-	uniformSampleDisk(const Point2f &p)
+		Point2f
+		uniformSampleDisk(const Point2f &p)
 	{
 		Float r = std::sqrt(p[0]);
 		Float theta = 2 * Pi*p[1];
@@ -50,14 +50,14 @@ namespace ysl
 	}
 
 	inline
-	Float uniformDiskPdf(Float radius)
+		Float uniformDiskPdf(Float radius)
 	{
 		return 1 / (Pi*radius*radius);
 	}
 
 	inline
-	Vector3f
-	cosineSampleHemiSphereWithShiness(const Point2f &p, Float shiness)
+		Vector3f
+		cosineSampleHemiSphereWithShiness(const Point2f &p, Float shiness)
 	{
 		Float phi, theta;
 		phi = p[0] * 2 * Pi;
@@ -66,8 +66,8 @@ namespace ysl
 	}
 
 	inline
-	Vector3f
-	cosineSampleHemiSphere(const Point2f &p)
+		Vector3f
+		cosineSampleHemiSphere(const Point2f &p)
 	{
 		Point2f sampleFromDisk = uniformSampleDisk(p);
 		Float y = std::sqrt(std::max(Float(0), 1 - sampleFromDisk[0] * sampleFromDisk[0] - sampleFromDisk[1] * sampleFromDisk[1]));
@@ -75,15 +75,15 @@ namespace ysl
 	}
 
 	inline
-	Float cosineSampleHemiSpherePdf(Float cosTheta)
+		Float cosineSampleHemiSpherePdf(Float cosTheta)
 	{
 		return cosTheta / Pi;
 	}
 
 
 	inline
-	Vector3f 
-	uniformSampleCone(const Point2f &p, Float angle)
+		Vector3f
+		uniformSampleCone(const Point2f &p, Float angle)
 	{
 		Float cosTheta = (Float(1) - p[0]) + p[0] * angle;
 		Float sinTheta = std::sqrt(Float(1) - cosTheta * cosTheta);
@@ -92,16 +92,16 @@ namespace ysl
 	}
 
 	inline
-	bool
-	russianRoulette(Float p, Float s) {
+		bool
+		russianRoulette(Float p, Float s) {
 		if (s <= p)
 			return true;
 		return false;
 	}
 
 	inline
-	Vector3f
-	reflection(const Vector3f & normal, const Vector3f & incidence)
+		Vector3f
+		reflection(const Vector3f & normal, const Vector3f & incidence)
 	{
 		Vector3f norm = normal.Normalized();
 		Vector3f inci = incidence.Normalized();
@@ -110,37 +110,33 @@ namespace ysl
 		return (inci - 2 * norm*(s));
 	}
 
-	inline
 	Vector3f refraction(const Vector3f& normal, const Vector3f& incidence, Float ratioIOR);
 
-	inline 
-	Float 
-	clamp(Float v, Float low, Float high) {
+	inline
+		Float
+		clamp(Float v, Float low, Float high) {
 		if (v > high)return high;
 		if (v < low)return low;
 		return v;
 	}
 
-
-
-
 	inline
-	Float uniformSampleConePdf(Float angle)
+		Float uniformSampleConePdf(Float angle)
 	{
 		return 1 / (2 * Pi*(1 - angle));
 	}
 
 	inline
-	Point2f uniformSampleTriangle(const Point2f &p)
+		Point2f uniformSampleTriangle(const Point2f &p)
 	{
 		Float su0 = std::sqrt(p[0]);
 		return Point2f(1 - su0, p[1] * su0);
 	}
 
 
-	inline 
-	int 
-	findMaxVector3fComponent(const Vector3f & v)
+	inline
+		int
+		findMaxVector3fComponent(const Vector3f & v)
 	{
 		int idx = 0;
 		Float cMax = v[0];
@@ -155,9 +151,9 @@ namespace ysl
 		return idx;
 	}
 
-	inline 
-	int 
-	findMaxPoint3fComponent(const Point3f & p)
+	inline
+		int
+		findMaxPoint3fComponent(const Point3f & p)
 	{
 		int idx = 0;
 		Float cMax = p[0];
@@ -171,23 +167,23 @@ namespace ysl
 		}
 		return idx;
 	}
-	inline 
-	Vector3f 
-	absOfVector3f(const Vector3f & v)
+	inline
+		Vector3f
+		absOfVector3f(const Vector3f & v)
 	{
 		return Vector3f(std::abs(v[0]), std::abs(v[1]), std::abs(v[2]));
 	}
 
-	inline 
-	Point3f 
-	absOfPoint3f(const Point3f & p)
+	inline
+		Point3f
+		absOfPoint3f(const Point3f & p)
 	{
 		return Point3f(std::abs(p[0]), std::abs(p[1]), std::abs(p[2]));
 	}
 
 	inline
-	Vector3f
-	permuteVector3f(const Vector3f & v, int kx, int ky, int kz)
+		Vector3f
+		permuteVector3f(const Vector3f & v, int kx, int ky, int kz)
 	{
 		assert(kx >= 0 && kx < 3);
 		assert(ky >= 0 && ky < 3);
@@ -197,8 +193,8 @@ namespace ysl
 	}
 
 	inline
-	Point3f
-	permutePoint3f(const Point3f & p, int kx, int ky, int kz)
+		Point3f
+		permutePoint3f(const Point3f & p, int kx, int ky, int kz)
 	{
 		assert(kx >= 0 && kx < 3);
 		assert(ky >= 0 && ky < 3);
@@ -207,19 +203,19 @@ namespace ysl
 		return Point3f(p[kx], p[ky], p[kz]);
 	}
 
-	
-	void
-	rungeKutta4(Point3f* x, Vector3f* v, Vector3f acc, Float dt);
 
-	
-	void 
-	integrateEuler(Point3f * x, Vector3f * v, Vector3f acc, float dt) {
+	void
+		rungeKutta4(Point3f* x, Vector3f* v, Vector3f acc, Float dt);
+
+	inline
+		void
+		integrateEuler(Point3f * x, Vector3f * v, Vector3f acc, float dt) {
 		*x = *x + *v * dt;
 		*v = 0.9f* (*v + acc * dt);
 	}
 
-	
+
 	bool
-	quadraticEquation(Float a, Float b, Float c, Float& t1, Float& t2);
+		quadraticEquation(Float a, Float b, Float c, Float& t1, Float& t2);
 }
 #endif

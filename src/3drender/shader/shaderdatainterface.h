@@ -3,8 +3,8 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
-#include "base/geometry.h"
-#include "base/transformation.h"
+#include "mathematics/geometry.h"
+#include "mathematics/transformation.h"
 
 class ShaderDataInterface
 {

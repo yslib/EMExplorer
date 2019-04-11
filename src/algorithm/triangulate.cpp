@@ -214,7 +214,9 @@ void Triangulate::computeNormals() {
 		const auto v1 = m_allVertices[face.v[1]];
 		const auto v2 = m_allVertices[face.v[2]];
 		//face.normal = QVector3D::crossProduct(v1-v0,v2-v0).normalized();
-		face.normal = ysl::Vector3f::Cross(v1 - v0, v2 - v0).Normalized();
+		face.normal = ysl::Vector3f::Cross(v1 - v0, v2 - v0);
+		if (!face.normal.IsNull())
+			face.normal.Normalize();
 
 		adjacentFaces[face.v[0]].push_back(faceId);
 		adjacentFaces[face.v[1]].push_back(faceId);
@@ -228,6 +230,7 @@ void Triangulate::computeNormals() {
 		const auto size = adjacentFaces[i].size();
 		for (int j = 0; j < size;j++) 
 		{
+
 			vec += triFaces[adjacentFaces[i][j]].normal;
 		}
 		m_normals[i] = vec / size;

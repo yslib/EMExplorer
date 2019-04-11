@@ -2,6 +2,8 @@
 #include "3drender/shader/shaderdatainterface.h"
 #include "abstract/abstractslicedatamodel.h"
 
+#include "mathematics/transformation.h"
+
 
 static const char *vertexShaderSource =
 "#version 150\n"
@@ -83,7 +85,7 @@ void RayCastingShader::load(const ShaderDataInterface* data)
 	//otho.ortho(0, w, 0, h, -10, 100);
 
 	ysl::Transform othog;
-	othog.SetOrtho(0, w, 0, h, -10, 100);
+	othog.SetGLOrtho(0, w, 0, h, -10, 100);
 	this->setUniformValue("othoMatrix", othog.ColumnMajorMatrix().m);
 
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->volumeTexId());
@@ -139,7 +141,7 @@ void RayCastingModuloShader::load(const ShaderDataInterface* data)
 	//otho.ortho(0, w, 0, h, -10, 100);
 
 	ysl::Transform othog;
-	othog.SetOrtho(0, w, 0, h, -10, 100);
+	othog.SetGLOrtho(0, w, 0, h, -10, 100);
 	this->setUniformValue("othoMatrix", othog.ColumnMajorMatrix().m);
 
 	this->setUniformSampler("texVolume", GL_TEXTURE3, GL_TEXTURE_3D, data->volumeTexId());

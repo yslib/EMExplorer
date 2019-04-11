@@ -99,9 +99,9 @@ void MainWindow::open(const QString& fileName)
 	Q_UNUSED(name);
 	const auto markModel = m_imageView->markModel();
 
-	if (markModel != nullptr && markModel->dirty() == true)
+	if (markModel != nullptr && markModel->dirty())
 	{
-		auto button = QMessageBox::warning(this,
+		const auto button = QMessageBox::warning(this,
 			QStringLiteral("Warning"),
 			QStringLiteral("Marks have not been saved.Do you want to save them before open a new slice data?"),
 			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
@@ -714,7 +714,7 @@ void MainWindow::createActions()
 		open(QFileDialog::getOpenFileName(this,
 		QStringLiteral("OpenFile"),
 		QStringLiteral("/Users/Ysl/Downloads/ETdataSegmentation"),
-		QStringLiteral("mrc Files(*.mrc *mrcs)")));	
+		QStringLiteral("mrc Files(*.mrc *mrcs);;st Files(*.st)")));	
 	});
 
 	//save mark action
@@ -803,6 +803,7 @@ QAbstractTableModel * MainWindow::setupProfileModel(const MRC & mrc)
 		{
 			value.setValue(mrc.property<MRC::MRCInt8>(i));
 		}
+		//qDebug() <<" "<< value;
 		model->setData(model->index(i, 1), value, Qt::DisplayRole);
 	}
 	return model;

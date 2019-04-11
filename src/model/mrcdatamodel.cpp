@@ -16,6 +16,7 @@ MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data):
  * \brief  Returns the data type of the internal data
  * 
  * 0 represents the byte or unsigned byte type. 1 represents the float type
+ * 2 represents the short integer or unsigned short integer
  * -1 represents the unsupported data type
  */
 int MRCDataModel::dataType()
@@ -24,6 +25,7 @@ int MRCDataModel::dataType()
 	{
 		case MRC::DataType::Integer8:return 0;
 		case MRC::DataType::Real32:return 1;
+		case MRC::DataType::Integer16:return 2;
 		default:return -1;
 	}
 }
