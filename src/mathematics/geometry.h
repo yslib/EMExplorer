@@ -630,12 +630,6 @@ namespace ysl
 			return Point3<T>(s*x, s*y, s*z);
 		}
 
-		//Point3<T> operator*(const Point3<T> & p)const
-		//{
-		//	assert(!IsNaN(s));
-		//	return Point3<T>{x*p.x,y*p.y,z*p.z};
-		//}
-
 
 		template<typename U>
 		constexpr Point3<T> & operator*=(const U & s)
@@ -743,8 +737,8 @@ namespace ysl
 
 	};
 
-	template<typename T, typename U>
-	Point3<T> operator*(const U & s, const Point3<T> & p)
+    template<typename T>
+    Point3<T> operator*(const Float & s, const Point3<T> & p)
 	{
 		return p * s;
 	}

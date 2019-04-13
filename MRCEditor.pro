@@ -13,14 +13,14 @@ MY_PREFIX_DIR = src
 
 unix
 {
-QMAKE_CXXFLAGS+= -fopenmp
-QMAKE_LFLAGS+= -fopenmp
+    QMAKE_CXXFLAGS+= -fopenmp
+    QMAKE_LFLAGS+= -fopenmp
 }
-win32
-{
-QMAKE_CXXFLAGS+= -openmp
-#QMAKE_LFLAGS+= -openmp
-}
+#win32
+#{
+#QMAKE_CXXFLAGS+= -openmp
+##QMAKE_LFLAGS+= -openmp
+#}
 
 
 HEADERS +=$${MY_PREFIX_DIR}/widgets/doubleslider.h\

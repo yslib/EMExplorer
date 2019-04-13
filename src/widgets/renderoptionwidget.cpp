@@ -3,7 +3,7 @@
 #include "tf1deditor.h"
 #include "widgets/tf1dtexturecanvas.h"
 #include "widgets/tf1dmappingcanvas.h"
-#include "3drender/geometry/Volume.h"
+#include "3drender/geometry/volume.h"
 
 #include <QGroupBox>
 #include <QBoxLayout>

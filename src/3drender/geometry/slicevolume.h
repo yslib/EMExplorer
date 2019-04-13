@@ -1,7 +1,7 @@
 #ifndef SLICEVOLUME_H
 #define SLICEVOLUME_H
 
-#include "Volume.h"
+#include "volume.h"
 #include "3drender/shader/shaderdatainterface.h"
 #include "3drender/shader/raycastingshader.h"
 #include "algorithm/gradientcalculator.h"
