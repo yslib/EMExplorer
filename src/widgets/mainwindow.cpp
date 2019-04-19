@@ -435,7 +435,7 @@ void MainWindow::histogramViewActionTriggered() {
 	}
 	histogramView = new HistogramWidget(type, m_imageView, this);
 	histogramView->setWindowTitle(windowTitle);
-	histogramView->setWindowFlag(Qt::Window);
+    histogramView->setWindowFlags(Qt::Window);
 	histogramView->show();
 	histogramView->setAttribute(Qt::WA_DeleteOnClose);
 }
