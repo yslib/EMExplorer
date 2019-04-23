@@ -809,7 +809,7 @@ void RenderWidget::updateVolumeData()
                 for (int xx = 0; xx < x; xx++)
                 {
                     std::size_t index = zz * x*y + yy * x + xx;
-                    normalizedData[index] = (d[index]-minValue/(maxValue-minValue) * 255);
+                    normalizedData[index] = (d[index]-1.0*minValue/(1.0*maxValue-1.0*minValue) * 255);
                 }
             }
         }
