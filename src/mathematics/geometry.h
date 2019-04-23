@@ -68,7 +68,7 @@ namespace ysl
 	public:
 		T x, y;
 		constexpr Vector2() :x(0), y(0) {}
-		constexpr Vector2(const T & _x, const T & _y) : x(_x), y(_y) {}
+        constexpr Vector2(const T & _x, const T & _y) : x(_x), y(_y) {}         // c++14 is required
 		bool HasNaN()const
 		{
 			return IsNaN(x) || IsNaN(y);
