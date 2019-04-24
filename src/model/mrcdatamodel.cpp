@@ -92,6 +92,27 @@ QImage MRCDataModel::originalTopSlice(int index) const
 				}
 			}
 			break;
+        case MRC::DataType::Integer16:
+            {
+                const auto dmin = m_d->minValue();
+                const auto dmax = m_d->maxValue();
+                //qDebug() << dmin << " " << dmax;
+                const auto d = m_d->data<MRC::MRCInt16>();
+                Q_ASSERT_X(d != nullptr, "MRCDataModel::originalTopSlice", "type convertion error");
+                const auto data = d + width * height * index;
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+                for (auto i = 0; i < height; i++) {
+                    const auto scanLine = newImage.scanLine(i);
+                    for (auto j = 0; j < width; j++) {
+                        const auto idx = i * width + j;
+                        scanLine[j] = (data[idx] - dmin) / (dmax - dmin) * 255;
+                    }
+                }
+
+            }
+                break;
 	}
 	adjustImage(newImage);
 	return newImage;
@@ -115,10 +136,10 @@ QImage MRCDataModel::originalRightSlice(int index) const
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-				for (auto i = 0; i < height; i++)
+                for (std::size_t i = 0; i < height; i++)
 				{
 					const auto scanLine = newImage.scanLine(i);
-					for (auto j = 0; j < slice; j++)
+                    for (std::size_t j = 0; j < slice; j++)
 					{
 						const auto idx = index + i * width + j * width*height;
 						Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
@@ -137,10 +158,10 @@ QImage MRCDataModel::originalRightSlice(int index) const
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-				for (auto i = 0; i < height; i++)
+                for (std::size_t i = 0; i < height; i++)
 				{
 					const auto scanLine = newImage.scanLine(i);
-					for (auto j = 0; j < slice; j++)
+                    for (std::size_t j = 0; j < slice; j++)
 					{
 						const auto idx = index + i * width + j * width*height;
 						Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
@@ -149,6 +170,29 @@ QImage MRCDataModel::originalRightSlice(int index) const
 				}
 			}
 			break;
+
+    case MRC::DataType::Integer16:
+    {
+                const auto dmin = m_d->minValue();
+            const auto dmax = m_d->maxValue();
+                const auto data = m_d->data<MRC::MRCInt16>();
+                Q_ASSERT_X(data != nullptr, "MRCDataModel::originalRightSlice", "type error");
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+                for (std::size_t i = 0; i < height; i++)
+                {
+                    const auto scanLine = newImage.scanLine(i);
+                    for (std::size_t j = 0; j < slice; j++)
+                    {
+                        const auto idx = index + i * width + j * width*height;
+                        Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
+                        scanLine[j] = (data[idx] - dmin) / (dmax - dmin) * 255;
+                    }
+                }
+
+    }
+        break;
 	}
 	adjustImage(newImage);
 	return newImage;
@@ -207,6 +251,29 @@ QImage MRCDataModel::originalFrontSlice(int index) const
 				}
 			}
 			break;
+            case MRC::DataType::Integer16:
+            {
+                const auto dmin = m_d->minValue();
+                const auto dmax = m_d->maxValue();
+                const auto data = m_d->data<MRC::MRCInt16>();
+                Q_ASSERT_X(data != nullptr, "MRCDataModel::originalFrontSlice", "type error");
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+                for (std::size_t i = 0; i < slice; i++)
+                {
+                    const auto scanLine = newImage.scanLine(i);
+                    for (std::size_t j = 0; j < width; j++)
+                    {
+                        const auto idx = j + index * width + i * width*height;
+                        Q_ASSERT_X(idx < size, "MRCDataModel::originalFrontSlice", "size error");
+                        //imageBuffer[j + i * width] = data[idx];
+                        scanLine[j] = (data[idx] - dmin) / (dmax - dmin) * 255;
+                    }
+                }
+            }
+            break;
+
 	}
 	adjustImage(newImage);
 	return newImage;

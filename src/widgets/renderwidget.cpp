@@ -798,9 +798,10 @@ void RenderWidget::updateVolumeData()
         std::unique_ptr<unsigned char[]> normalizedData(new unsigned char[std::size_t(x) * y * z]);
         // normalize data into char
 
-        auto d = reinterpret_cast<const short int*>(m_dataModel->constRawData());
+        auto d = reinterpret_cast<const unsigned short*>(m_dataModel->constRawData());
         const auto minValue = m_dataModel->minValue();
         const auto maxValue = m_dataModel->maxValue();
+
 #pragma omp parallel for
         for (int zz = 0; zz < z; zz++)
         {
@@ -809,13 +810,13 @@ void RenderWidget::updateVolumeData()
                 for (int xx = 0; xx < x; xx++)
                 {
                     std::size_t index = zz * x*y + yy * x + xx;
-                    normalizedData[index] = (d[index]-1.0*minValue/(1.0*maxValue-1.0*minValue) * 255);
+                    normalizedData[index] = (d[index]-minValue/(maxValue-minValue) * 255);
                 }
             }
         }
 
-        fmt.type = VoxelType::UInt8;
-        m_volume.reset(new SliceVolume(normalizedData.get(), x, y, z, I, fmt, this));
+            fmt.type = VoxelType::UInt8;
+            m_volume.reset(new SliceVolume(normalizedData.get(), x, y, z, I, fmt, this));
 	}
 	else {
 		Q_ASSERT_X(false, "RenderWidget::updateVolumeData", "Invalid format type");
@@ -825,7 +826,6 @@ void RenderWidget::updateVolumeData()
 	m_volume->initializeGLResources();
 	doneCurrent();
 }
-
 
 int RenderWidget::selectMesh(int x, int y)
 {
