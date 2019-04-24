@@ -499,7 +499,8 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 	}
 	if (true == noError) {
 
-		in.seekg(MRC_HEADER_SIZE, in.beg);
+		std::size_t offset = MRC_HEADER_SIZE + m_header.nsymbt;		/*Extented header size*/
+		in.seekg(offset, in.beg);
 		const size_t dataCount = static_cast<size_t>(m_header.nx)*static_cast<size_t>(m_header.ny)*static_cast<size_t>(m_header.nz);		// size_t is important
 		const auto elemSize = typeSize(dataType());
 		std::cout << "data count :" << dataCount << " element size:" << elemSize << std::endl;
@@ -554,7 +555,8 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 			in.read(reinterpret_cast<char*>(m_d->data), dataCount*elemSize);
 			const auto readCount = in.gcount();
 			//const size_t readCount = fread(buffer.get(), elemSize, dataCount, fp);
-			if (readCount != dataCount * elemSize) {
+			if (readCount != dataCount * elemSize) 
+			{
 				std::cerr << "Runtime Error: Reading size error.>>> " << __LINE__ << std::endl;
 				noError = false;
 			}

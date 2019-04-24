@@ -3,6 +3,7 @@ TARGET = MRCEditor
 QT += core opengl gui widgets
 
 #CONFIG += console
+CONFIG += c++14
 
 INCLUDEPATH += src
  # source file name prefix
