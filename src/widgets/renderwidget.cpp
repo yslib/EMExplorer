@@ -768,6 +768,7 @@ void RenderWidget::updateVolumeData()
 
 	}
 	else if (m_dataModel->dataType() == 1) {        // float
+
 		fmt.type = VoxelType::Float32;
 
 		std::unique_ptr<unsigned char[]> normalizedData(new unsigned char[std::size_t(x) * y * z]);
@@ -816,6 +817,7 @@ void RenderWidget::updateVolumeData()
 		
 		fmt.type = VoxelType::UInt8;
 		m_volume.reset(new SliceVolume(normalizedData.get(), x, y, z, I, fmt, this));
+
 	}
 	else {
 		Q_ASSERT_X(false, "RenderWidget::updateVolumeData", "Invalid format type");

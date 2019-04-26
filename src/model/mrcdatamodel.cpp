@@ -268,7 +268,7 @@ QImage MRCDataModel::originalFrontSlice(int index) const
 			}
 		}
 	}
-	break;
+
 
 	}
 	adjustImage(newImage);
@@ -390,7 +390,7 @@ void MRCDataModel::preCalc()
 
 
 	case MRC::DataType::Integer16:
-		{
+	{
 		const auto dmin = m_d->minValue();
 		const auto dmax = m_d->maxValue();
 		const auto data = m_d->data<MRC::MRCInt16>();
@@ -410,14 +410,14 @@ void MRCDataModel::preCalc()
 #pragma omp parallel for reduction(+:var)
 #endif
 
-		for (auto i = 0; i < count; i++) 
+		for (auto i = 0; i < count; i++)
 		{
 			const auto value = (data[i] - dmin) / (dmax - dmin) * 255;
 			var += (value - mean)*(value - mean);
 		}
 		var = std::sqrt(var / count);
-		}
-		break;
+	}
+	break;
 
 	}
 
