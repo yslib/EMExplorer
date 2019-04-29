@@ -163,7 +163,7 @@ bool InstanceTreeItem::removeColumns(int position, int columns)
  *
  * \return Returns nullptr
  */
-void* InstanceTreeItem::metaData() { return nullptr; }
+void* InstanceTreeItem::metaData() { return m_metaData; }
 
 
 QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {

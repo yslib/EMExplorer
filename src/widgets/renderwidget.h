@@ -100,6 +100,7 @@ public:
 	RenderWidget(AbstractSliceDataModel * dataModel, MarkModel * markModel, QWidget * parent = nullptr);
 	void			setDataModel(AbstractSliceDataModel * model);
 	void			setMarkModel(MarkModel * model);
+	void			saveMesh(const QString& dir);
 	AbstractSliceDataModel*			dataModel()const { return m_dataModel; }
 	//FocusCameraOld  cameraOld()const { return m_camera; }
 	FocusCamera	camera()const { return m_cameraEx; }

@@ -10,6 +10,7 @@ class InstanceMetaData
 {
 	QString m_name;
 	QRectF  m_region;
+	QColor m_color;
 	bool m_visibleState;
 public:
 	InstanceMetaData():m_visibleState(true){}
@@ -17,14 +18,12 @@ public:
 	void setName(const QString & name) { m_name = name; }
 	bool visibleState()const { return m_visibleState; }
 	void setVisibleState(bool visible) { m_visibleState = visible;}
+	void setColor(const QColor & color) { m_color = color; }
+	QColor color()const { return m_color; }
 	QRectF region()const { return m_region; }
 	void setRegion(const QRectF & rect) { m_region = rect; }
-
 	friend QDataStream & operator<<(QDataStream & stream, const InstanceMetaData * metaData);
-
 	friend QDataStream & operator>>(QDataStream & stream, InstanceMetaData *& metaData);
-
-
 };
 
 

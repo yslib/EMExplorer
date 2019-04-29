@@ -46,7 +46,7 @@ void triangulate(const QVector<QPoint>& upper, const QVector<QPoint>& lower,floa
 
 bool Triangulate::triangulate() {
 	const auto nSlice = m_levelIndices.size();
-	Q_ASSERT_X(nSlice >= 2, "Triangulate::triangulate", "nSlice >= 2");
+	//Q_ASSERT_X(nSlice >= 2, "Triangulate::triangulate", "nSlice >= 2");
 	if(nSlice < 2) return false;
 	for(int s = 0 ;s<nSlice-1;s++) {
 		bool positive = true;

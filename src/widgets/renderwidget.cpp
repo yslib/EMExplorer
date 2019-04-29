@@ -14,6 +14,7 @@
 
 #include "mathematics/geometry.h"
 #include "mathematics/transformation.h"
+#include <qdir.h>
 
 static QVector<QVector3D> cubeVertex =
 {
@@ -77,7 +78,7 @@ RenderWidget::RenderWidget(AbstractSliceDataModel * dataModel,
 	//m_parameterWidget(widget),
 //	m_camera(QVector3D(0.f, 0.f, 10.f)),
 m_cameraEx(ysl::Point3f{ 0.f,0.f,10.f }),
-m_rayStep(0.02),
+m_rayStep(0.001),
 m_tfTexture(nullptr),
 m_volume(nullptr),
 m_meshShader(nullptr),
@@ -130,6 +131,18 @@ void RenderWidget::setMarkModel(MarkModel* model)
 	emit markModelChanged();
 
 	update();		// Repaint immediately
+}
+
+void RenderWidget::saveMesh(const QString& dir)
+{
+	std::size_t offset = 0;
+	std::ofstream os(dir.toStdString());
+	if (os.is_open() == false)
+		return;
+	for(const auto &item:m_integration)
+	{
+		m_integration[0].mesh->saveAsObj(os, offset);
+	}
 }
 
 //ShaderDataInterface
@@ -693,10 +706,19 @@ void RenderWidget::updateMark() {
 
 	{
 		const auto instances = m_markModel->treeItems(QModelIndex(), TreeItemType::Instance);
-		const QColor color = Qt::red;
+		
 		for (const auto & inst : instances) {
-			const auto mesh = static_cast<InstanceTreeItem*>(inst)->mesh();
-			Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
+			const auto item = static_cast<InstanceTreeItem*>(inst);
+			const auto mesh = item->mesh();
+			const auto metaData = reinterpret_cast<InstanceMetaData*>(item->metaData());
+			QColor color = Qt::red;
+			if(metaData)
+			{
+				color = metaData->color();
+			}
+			//Q_ASSERT_X(mesh->isReady(), "RenderWidget::updateMark", "Mesh not ready");
+			if (!mesh->isReady())
+				continue;
 			const auto v = mesh->vertices();
 			const auto idx = mesh->indices();
 			const auto nV = mesh->vertexCount();

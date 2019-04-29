@@ -588,7 +588,8 @@ void HistogramWidget::filterImage()
 	//Q_ASSERT_X(item, "HistogramViewer::filterImage", "null pointer");
 
 	//item->setPixmap(QPixmap::fromImage(slice));
-	//setCurrentImage(sliceType(), slice);
+	//qDebug() << "Current Index:" << currentIndex(SliceType::Top);
+	setCurrentImage(sliceType(),m_result);
 
 	m_preview->setImage(m_result);
 }

@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
 
 
 	//qDebug() << (~c);
-//#ifndef  WIN32
+
+//#ifdef  WIN32
 //    QSurfaceFormat fmt;
 //    fmt.setVersion(3,3);
 //    fmt.setDepthBufferSize(24);

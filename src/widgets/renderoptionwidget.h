@@ -88,6 +88,7 @@ private:
 
 	QGroupBox *m_meshGroup;
 	QPushButton * m_meshUpdateButton;
+	QPushButton * m_saveMeshButton;
 
 	QGroupBox * m_sliceGroup;
 	QLabel * m_radLabel;

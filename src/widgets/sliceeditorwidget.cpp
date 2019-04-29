@@ -541,10 +541,13 @@ QModelIndex SliceEditorWidget::_hlp_instanceAdd(const QString & category, const 
 
 	// Fetch the new inserted index
 	const auto newIndex = m_markModel->MarkModel::index(c, 0, cIndex);
-
 	// Create a tree item pointer
-	InstanceMetaData * metaData = new InstanceMetaData;			// Bull Shit designe 
+	InstanceMetaData * metaData = new InstanceMetaData;			// Bull Shit designed
+	
 	metaData->setName(QStringLiteral("Instance"));
+
+	metaData->setColor(mark->pen().color());
+
 	const auto p = new InstanceTreeItem(metaData, newIndex, nullptr);
 	p->setBoundingBox(mark->boundingRect().toRect());
 

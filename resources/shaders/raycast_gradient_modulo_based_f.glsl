@@ -26,9 +26,9 @@ uniform vec3 halfway;
 in vec2 textureRectCoord;
 out vec4 fragColor;
 
-float gradient;
 
-vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
+
+vec3 PhongShading(vec3 samplePos, vec3 diffuseColor,out float gradient)
 {
 	vec3 shadedValue = vec3(0, 0, 0);
 
@@ -37,7 +37,7 @@ vec3 PhongShading(vec3 samplePos, vec3 diffuseColor)
 	N.y = (texture(texVolume, samplePos+vec3(0,step,0) ).w - texture(texVolume, samplePos+vec3(0,-step,0) ).w) - 1.0;
 	N.z = (texture(texVolume, samplePos+vec3(0,0,step) ).w - texture(texVolume, samplePos+vec3(0,0,-step) ).w) - 1.0;
 
-	gradient = length(normalize(N));
+	gradient = length(N);
 	//vec3 N = texture(texVolume, samplePos).xyz;
 	N = N * 2.0 - 1.0;
 	N = -normalize(N);
@@ -76,13 +76,15 @@ void main()
 	vec3 direction = normalize(start2end);
 	float distance = dot(direction, start2end);
 
+	float gradient;
+
 	int steps = int(distance / step);
 	for (int i = 0; i < steps; ++i) {
 		vec3 samplePoint = rayStart + direction * step * (float(i) + 0.5);
 		vec4 scalar = texture(texVolume, samplePoint);
 		vec4 sampledColor = texture(texTransfunc, scalar.r);
-		sampledColor.rgb = PhongShading(samplePoint, sampledColor.rgb);
-		sampledColor.a = gradient;
+		sampledColor.rgb = PhongShading(samplePoint, sampledColor.rgb,gradient);
+		sampledColor.a = sampledColor.a*gradient/10;
 		color = color + sampledColor * vec4(sampledColor.aaa, 1.0) * (1.0 - color.a);
 		if (color.a > 0.99)
 			break;

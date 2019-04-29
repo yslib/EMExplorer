@@ -14,6 +14,7 @@
 #include <QSlider>
 #include <QLineEdit>
 #include <QToolButton>
+#include <QFileDialog>
 
 /**
  * \brief Constructs a widget by a given \a widget of \a RenderWidget
@@ -163,8 +164,19 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* par
 	m_meshGroup = new QGroupBox(QStringLiteral("Mesh"));
 	m_meshUpdateButton = new QPushButton(QStringLiteral("Update Mesh"));
 	connect(m_meshUpdateButton, &QPushButton::clicked, this, &RenderParameterWidget::markUpdated);
+	m_saveMeshButton = new QPushButton(QStringLiteral("Save Mesh"));
+	connect(m_saveMeshButton, &QPushButton::clicked, [this]()
+	{
+		auto fileName = QFileDialog::getSaveFileName(this);
+
+		m_widget->saveMesh(fileName);
+
+	});
+
+
 	auto meshVLayout = new QVBoxLayout;
 	meshVLayout->addWidget(m_meshUpdateButton);
+	meshVLayout->addWidget(m_saveMeshButton);
 	m_meshGroup->setLayout(meshVLayout);
 
 	m_sliceGroup = new QGroupBox(QStringLiteral("Abitrary Slice"));

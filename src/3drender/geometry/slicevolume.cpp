@@ -446,8 +446,6 @@ bool SliceVolume::render()
 	}
 	else {		// Volume rendering
 
-
-
 		m_fbo->bind();
 		m_positionShader->load(this);
 		// Draw Front to fbo 
@@ -494,7 +492,21 @@ void SliceVolume::setFramebufferSize(int w, int h) {
 	if (m_fbo != nullptr)
 		delete m_fbo;
 	m_fbo = new QOpenGLFramebufferObject(w, h, QOpenGLFramebufferObject::Depth, GL_TEXTURE_RECTANGLE, GL_RGBA32F_ARB);
-	m_fbo->addColorAttachment(w, h);
+	m_fbo->addColorAttachment(w, h,GL_RGBA32F);
+	auto glfuncs = m_renderer->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+
+	auto texIds = m_fbo->textures();
+	glfuncs->glBindTexture(GL_TEXTURE_RECTANGLE, texIds[0]);	// Dangerous
+			
+	glfuncs->glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glfuncs->glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+
+	glfuncs->glBindTexture(GL_TEXTURE_RECTANGLE, texIds[1]);
+	glfuncs->glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glfuncs->glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glfuncs->glBindTexture(GL_TEXTURE_RECTANGLE,0);
+
 	QVector<QVector2D> rayCastingVB =
 	{
 		{ 0.0f,0.0f },

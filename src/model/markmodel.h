@@ -116,7 +116,8 @@ public:
 	{
 		Binary,		///< Save mark as internal binary format
 		Raw,		///< Save mark as raw format which is easily accessed by any other raw format reader
-		Mask
+		Mask,
+		Obj			///< Save mark as .obj file
 	};
 
 	/**

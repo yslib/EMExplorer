@@ -63,6 +63,8 @@ public:
 
 	bool render();
 
+	void saveAsObj(std::ofstream & os,std::size_t vertexIndexOffset = 0);
+
 	void updateShader();
 };
 

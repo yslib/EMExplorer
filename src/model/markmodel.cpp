@@ -592,7 +592,6 @@ bool MarkModel::save(const QString& fileName, MarkModel::MarkFormat format)
 		resetDirty();
 		return true;
 	}
-
 	return false;
 }
 
