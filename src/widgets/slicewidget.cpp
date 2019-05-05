@@ -58,6 +58,10 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 {
 	QGraphicsView::paintEvent(event);
 
+
+
+
+
 	if (!m_paintNavigationView)
 		return;
 
@@ -66,11 +70,18 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 	if (viewRectInScene.contains(sliceRectInScene))
 		return;
 	//const auto & scRect = sceneRect();
-	const auto & scRect = m_slice->mapRectToScene(m_slice->boundingRect());
-	QImage thumbnail(QSize(ThumbnailLength, ThumbnailLength), QImage::Format_RGB32);
+	const auto scRect = m_slice->mapRectToScene(m_slice->boundingRect());
+	QImage thumbnail(QSize(ThumbnailLength, ThumbnailLength), QImage::Format_RGBA8888_Premultiplied);
 	QPainter p0(&thumbnail);
-	render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
+	//render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
+	p0.drawPixmap(thumbnail.rect(), m_slice->pixmap());
 	p0.end();
+
+	qDebug() << "Rect:" << m_slice->boundingRect();
+	qDebug() << "Rect in scene:" << scRect;
+	qDebug() << "Rect in view:" << mapFromScene(scRect).boundingRect();
+
+
 	const auto & navigationRect = thumbnail.rect();
 	const auto f1 = navigationRect.width() / scRect.width(), f2 = navigationRect.height() / scRect.height();
 	QPainter p(&thumbnail);
@@ -87,6 +98,7 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 	p.end();
 	QPainter p2(this->viewport());//draw the zoom image
 	const auto s = size();
+
 	p2.drawPixmap(thumbnailRect(sliceRectInScene, viewRectInScene), QPixmap::fromImage(thumbnail));
 	p2.end();
 }
@@ -99,20 +111,7 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 	const auto viewPos = event->pos();
 	const auto scenePos = mapToScene(viewPos);
 
-	if (m_paintNavigationView) {
-		const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
-		const auto & viewRectInScene = mapToScene(rect()).boundingRect();
-		const auto tRect = thumbnailRect(sliceRectInScene, viewRectInScene);
-		if (tRect.contains(viewPos)) {
-			// Mouse click in thumbnail, mapping the click position to real slice position
 
-			const auto imageSize = m_slice->pixmap().size();
-			const int x = static_cast<double>(viewPos.x() - tRect.left()) / (0.2*width())*imageSize.width();
-			const int y = static_cast<double>(viewPos.y() - tRect.top()) / (0.2*height())*imageSize.height();
-			centerOn(m_slice->mapToScene(x, y));
-			return;
-		}
-	}
 
 	m_prevViewPoint = viewPos;
 	auto items = scene()->items(scenePos);
@@ -171,6 +170,20 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 	// Note that the returned value for event->button() is always Qt::NoButton for mouse move events.
 	const auto viewPos = event->pos();
 	//const auto scenePos = mapToScene(viewPos);
+	if (m_paintNavigationView) {			// move the navigation rect with mouse
+		const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
+		const auto & viewRectInScene = mapToScene(rect()).boundingRect();
+		const auto tRect = thumbnailRect(sliceRectInScene, viewRectInScene);
+		if (tRect.contains(viewPos)) {
+			// Mouse click in thumbnail, mapping the click position to real slice position
+
+			const auto imageSize = m_slice->pixmap().size();
+			const int x = static_cast<double>(viewPos.x() - tRect.left()) / (0.2*width())*imageSize.width();
+			const int y = static_cast<double>(viewPos.y() - tRect.top()) / (0.2*height())*imageSize.height();
+			centerOn(m_slice->mapToScene(x, y));
+			return;
+		}
+	}
 
 	if (event->buttons() == Qt::RightButton) {		// Move
 		const auto delta = viewPos - m_prevViewPoint;
@@ -382,9 +395,7 @@ void SliceWidget::setImage(const QImage& image)
 	if (m_slice == nullptr)
 	{
 		m_slice = new SliceItem(QPixmap::fromImage(image));
-
 		(m_slice)->setFlag(QGraphicsItem::ItemClipsChildrenToShape);
-
 		m_slice->setPos(pos);
 		m_anchorItem->setParentItem(m_slice);
 		scene()->addItem(m_slice);
@@ -394,37 +405,24 @@ void SliceWidget::setImage(const QImage& image)
 		 */
 		auto rect = image.rect();
 		translate(rect.width() / 2, rect.height() / 2);
-
 		rect.adjust(-rect.width(), -rect.height(), 0, 0);
-
 		scene()->setSceneRect(QRectF(-10000, -10000, 20000, 20000));
-
 		// We need to translate the view so as to let the slice is centered in it.
-
 		//scene()->setSceneRect(rect);
 	}
 	else
 	{
 		m_slice->setPixmap(QPixmap::fromImage(image));
 	}
-	setDefaultZoom();
+	//setDefaultZoom();
 
 }
 
 void SliceWidget::setDefaultZoom()
 {
-	resetMatrix();
-	Q_ASSERT(m_slice);
+	fitInView(m_slice->boundingRect(),Qt::KeepAspectRatio);
 	const auto size = m_slice->pixmap().size();
-	centerOn(m_slice->mapToScene(size.width() / 2, size.height() / 2));		// Move the center of the image to view center
-
-	const auto widgetSize = this->size();
-	const double sx = widgetSize.width() / static_cast<double>(size.width());
-	const double sy = widgetSize.height() / static_cast<double>(size.height());
-	scale(sx, sy);			// scales the image filling the view
-
-	update();
-	updateGeometry();
+	centerOn(m_slice->mapToScene(size.width() / 2, size.height() / 2));
 }
 
 void SliceWidget::clearSliceMarks()
