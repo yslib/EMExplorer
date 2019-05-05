@@ -58,10 +58,6 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 {
 	QGraphicsView::paintEvent(event);
 
-
-
-
-
 	if (!m_paintNavigationView)
 		return;
 
@@ -76,12 +72,6 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 	//render(&p0, thumbnail.rect(), mapFromScene(scRect).boundingRect());		//rendering the scene image
 	p0.drawPixmap(thumbnail.rect(), m_slice->pixmap());
 	p0.end();
-
-	qDebug() << "Rect:" << m_slice->boundingRect();
-	qDebug() << "Rect in scene:" << scRect;
-	qDebug() << "Rect in view:" << mapFromScene(scRect).boundingRect();
-
-
 	const auto & navigationRect = thumbnail.rect();
 	const auto f1 = navigationRect.width() / scRect.width(), f2 = navigationRect.height() / scRect.height();
 	QPainter p(&thumbnail);
