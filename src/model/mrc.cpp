@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "mrc.h"
+#include <QMetaType>
 
 MRC::MRC() :MRC("", false)
 {
@@ -224,7 +225,11 @@ std::string MRC::propertyName(int index)const
 		"nVersion:",
 		"xorg:",
 		"yorg:",
-		"zorg:"
+		"zorg:",
+		"map:",
+		"stamp:",
+		"rms:",
+		"labels:"
 	};
 	return std::string(name[index]);
 }
@@ -344,6 +349,60 @@ MRC::~MRC()
 }
 
 
+void MRC::reverseHeaderByteByField(MRC::MRCHeader* header)
+{
+	assert(header);
+
+	header->nx = reverseByte((uint32_t)header->nx);
+	header->ny = reverseByte((uint32_t)header->ny);
+	header->nz = reverseByte((uint32_t)header->nz);
+	header->mode = reverseByte((uint32_t)header->mode);
+	header->nxstart = reverseByte((uint32_t)header->nxstart);
+	header->nystart = reverseByte((uint32_t)header->nystart);
+	header->nzstart = reverseByte((uint32_t)header->nzstart);
+	header->mx = reverseByte((uint32_t)header->mx);
+	header->my = reverseByte((uint32_t)header->my);
+	header->mz = reverseByte((uint32_t)header->mz);
+	header->xlen = reverseEndian(header->xlen);
+	header->ylen = reverseEndian(header->ylen);
+	header->zlen = reverseEndian(header->zlen);
+
+	header->alpha = reverseEndian((uint32_t)header->alpha);
+	header->beta = reverseEndian(header->beta);
+	header->gamma = reverseEndian(header->gamma);
+	header->mapc = reverseByte((uint32_t)header->mapc);
+	header->mapr = reverseByte((uint32_t)header->mapr);
+	header->maps = reverseByte((uint32_t)header->maps);
+	header->dmin = reverseEndian(header->dmin);
+	header->dmax = reverseEndian(header->dmax);
+	header->dmean = reverseEndian(header->dmean);
+
+	header->ispg = reverseByte((uint32_t)header->ispg);
+	header->nsymbt = reverseByte((uint32_t)header->nsymbt);
+	header->creatid = reverseByte((uint16_t)header->creatid);
+	header->nversion = reverseByte((uint32_t)header->nversion);
+
+	//header->nint = reverseByte((uint16_t)header->nint);
+	//header->nreal = reverseByte((uint16_t)header->nreal);
+
+	//header->sub = reverseByte((uint16_t)header->sub);
+	//header->zfac = reverseByte((uint16_t)header->zfac);
+	//header->min2 = reverseByte((uint32_t)header->min2);
+	//header->max2 = reverseByte((uint32_t)header->max2);
+	//header->min3 = reverseByte((uint32_t)header->min3);
+	//header->max3 = reverseByte((uint32_t)header->max3);
+
+	header->xorg = reverseEndian(header->xorg);
+	header->yorg = reverseEndian(header->yorg);
+	header->zorg = reverseEndian(header->zorg);
+	header->rms = reverseEndian(header->rms);
+
+	header->nlabl = reverseByte((uint32_t)header->nlabl);
+
+	// for labels 
+
+}
+
 void MRC::UpdateDminDmaxDmeanRMSHelper()
 {
 	/*For efficency
@@ -371,10 +430,14 @@ bool MRC::headerReadHelper(std::ifstream & in, MRCHeader *hd)
 
 	const auto elemSize = in.gcount();
 
-	if (elemSize != MRC_HEADER_SIZE) {
+	if (elemSize != MRC_HEADER_SIZE) 
+	{
 		std::cerr << "ERROR:Read " << elemSize << " of " << MRC_HEADER_SIZE << std::endl;
 		return false;
 	}
+
+
+
 	memcpy(&hd->nx, hdBuffer + NX_OFFSET, sizeof(MRCInt32));
 	memcpy(&hd->ny, hdBuffer + NY_OFFSET, sizeof(MRCInt32));
 	memcpy(&hd->nz, hdBuffer + NZ_OFFSET, sizeof(MRCInt32));
@@ -403,10 +466,20 @@ bool MRC::headerReadHelper(std::ifstream & in, MRCHeader *hd)
 	//memcpy(hd,hdBuffer,sizeof(24*4));
 	memcpy(hd->extType, hdBuffer + EXTTYP_OFFSET, sizeof(char) * 4);
 	memcpy(&hd->nversion, hdBuffer + NVERSION_OFFSET, sizeof(MRCInt32));
-
 	memcpy(&hd->xorg, hdBuffer + XORIGIN_OFFSET, sizeof(MRCFloat));
 	memcpy(&hd->yorg, hdBuffer + YORIGIN_OFFSET, sizeof(MRCFloat));
 	memcpy(&hd->zorg, hdBuffer + ZORIGIN_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->stamp, hdBuffer + STAMP_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->rms, hdBuffer + RMS_OFFSET, sizeof(MRCFloat));
+	memcpy(&hd->nlabl, hdBuffer + NLABL_OFFSET, sizeof(MRCInt32));
+	memcpy(&hd->labels, hdBuffer + LABEL_OFFSET, sizeof(MRCInt8));
+
+
+	if (hd->stamp[0] == 0x11 && hd->stamp[1] == 0x11) // big endian
+	{
+		std::cout << "Big endian\n";
+		reverseHeaderByteByField(hd);
+	}
 
 	return true;
 }
@@ -439,13 +512,16 @@ bool MRC::headerWriteHelper(std::ofstream & out, MRCHeader * hd)
 	memcpy(hdBuffer + DMEAN_OFFSET, &hd->dmean, sizeof(MRCFloat));
 	memcpy(hdBuffer + ISPG_OFFSET, &hd->ispg, sizeof(MRCInt32));
 	memcpy(hdBuffer + NSYMBT_OFFSET, &hd->nsymbt, sizeof(MRCInt32));
-
 	//memcpy(hd,hdBuffer,sizeof(24*4));
 	memcpy(hdBuffer + EXTTYP_OFFSET, &hd->extType, sizeof(char) * 4);
 	memcpy(hdBuffer + NVERSION_OFFSET, &hd->nversion, sizeof(MRCInt32));
 	memcpy(hdBuffer + XORIGIN_OFFSET, &hd->xorg, sizeof(MRCFloat));
 	memcpy(hdBuffer + YORIGIN_OFFSET, &hd->yorg, sizeof(MRCFloat));
 	memcpy(hdBuffer + ZORIGIN_OFFSET, &hd->zorg, sizeof(MRCFloat));
+	memcpy(hdBuffer + STAMP_OFFSET, &hd->stamp, sizeof(MRCInt32));
+	memcpy(hdBuffer + RMS_OFFSET, &hd->rms, sizeof(MRCFloat));
+	memcpy(hdBuffer + NLABL_OFFSET, &hd->nlabl, sizeof(MRCInt32));
+	memcpy(hdBuffer + LABEL_OFFSET, &hd->labels, sizeof(MRCInt8));
 
 	out.seekp(0, out.beg);
 	//fwrite(hdBuffer, sizeof(unsigned char), MRC_HEADER_SIZE);
@@ -534,14 +610,22 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 			in.read((char*)m_d->data, dataCount*elemSize);
 			const auto readCount = in.gcount();
 			//const size_t readCount = fread(this->m_d->data, elemSize, dataCount, fp);
-
 			if (readCount != dataCount*elemSize)
 			{
 				std::cerr << "Runtime Error: Reading size error. Read Count:" << readCount << ". DataCount: " << dataCount << ".>>> " << __LINE__ << std::endl;
 				noError = false;
 			}
-			m_header.mode = MRC_MODE_FLOAT;
+			if (m_header.stamp[0] == 0x11 && m_header.stamp[1] == 0x11) // big endian
+			{
+				std::cout << "Big endian\n";
+				auto d = reinterpret_cast<MRCFloat*>(m_d->data);
+				for(int i = 0;i<dataCount;i++)
+				{
+					d[i] = reverseEndian(d[i]);
+				}
 
+			}
+			m_header.mode = MRC_MODE_FLOAT;
 		}
 		else if (MRC_MODE_SHORT == m_header.mode || MRC_MODE_USHORT == m_header.mode) {
 			//std::unique_ptr<MRCInt16[]> buffer(new MRCInt16[dataCount * sizeof(MRCInt16)]);
@@ -560,6 +644,17 @@ bool MRC::readDataFromFileHelper(std::ifstream& in)
 				std::cerr << "Runtime Error: Reading size error.>>> " << __LINE__ << std::endl;
 				noError = false;
 			}
+
+			if (m_header.stamp[0] == 0x11 && m_header.stamp[1] == 0x11) // big endian
+			{
+				std::cout << "Big endian\n";
+				auto d = reinterpret_cast<uint16_t*>(m_d->data);
+				for (int i = 0; i < dataCount; i++)
+				{
+					d[i] = reverseByte((uint16_t)d[i]);
+				}
+			}
+
 			//if (true == noError) {
 			//	const auto dmin = static_cast<MRCInt16>(m_header.dmin);
 			//	const auto dmax = static_cast<MRCInt16>(m_header.dmax);

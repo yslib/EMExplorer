@@ -134,7 +134,12 @@ bool TreeItem::removeChildren(int position, int count) noexcept {
 
 
 /**
- * \brief 
+ * \brief This is serialization function for any derived type of TreeItem. 
+ * 
+ * Serialization is implemented by hard code so far. Any modification of objects to be serialized 
+ * would cause version issue, which is disgusting. Because type information is not used. 
+ * Whether a more flexible serialization system will be applied depends on requirement and 
+ * scalability of this system. 
  */
 
 QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
@@ -164,9 +169,9 @@ QDataStream & operator<<(QDataStream & stream, const TreeItem * item)
 }
 
 /**
-* \brief Note:The stream operator would modified the item pointer whenever possible.
+* \brief Note:The stream operator will modify the item pointer whenever possible.
 * 
-*  If the pointer is nullptr, the function will apply constrcution to the
+*  If the pointer is nullptr, the function will apply construction to the
 *  pointer-reference and if the pointer is not empty,the function will
 *  reconstruct it to satisfied with the binary file underlying the stream
 
@@ -222,7 +227,7 @@ QDataStream & operator>>(QDataStream & stream, TreeItem *& item)
 	}
 	stream >> item->m_children;
 
-	qDebug() << item->m_children.size();
+	//qDebug() << item->m_children.size();
 
 	for(auto it:item->m_children)
 		it->setParentItem(item);		//set parent for the children

@@ -610,7 +610,7 @@ void SliceVolume::updatePolygons()
 		const auto v = QVector3D{
 			positionVert[3 * i],positionVert[3 * i + 1],positionVert[3 * i + 2]
 		};
-		if ((v.x() * m_A + v.y()*m_B + v.z() * m_C + m_D) > 0) {
+		if ((v.x() * m_A + v.y()*m_B + v.z() * m_C + m_D) < 0) {
 			oneside.push_back(v);
 		}
 	}

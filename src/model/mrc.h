@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <string>
 #include <memory>
+#include <iostream>
 #include <functional>
 #include <atomic>
 #include <qlist.h>
@@ -156,12 +157,40 @@
 
 #define MRC_VERSION_FIELD(year,verion) ((year*10)+version)
 
-
-
 /**
 * @brief \n
 *
 */
+
+
+inline
+uint16_t reverseByte(uint16_t value)
+{
+	const auto v = ((value & 0xff) << 8) | ((value & 0xff00) >> 8);
+	return v;
+}
+inline
+uint32_t reverseByte(uint32_t value)
+{
+	const auto v = ((value & 0xffU) << 24) | ((value & 0xff00U) << 8) | ((value & 0xff0000U) >> 8) | ((value & 0xff000000U) >> 24);
+	return v;
+}
+
+union FloatConv
+{
+	float f;
+	char byte[4];
+};
+inline float reverseEndian(float value)
+{
+	FloatConv c1,c2;
+	c1.f = value;
+	c2.byte[0] = c1.byte[3];
+	c2.byte[1] = c1.byte[2];
+	c2.byte[2] = c1.byte[1];
+	c2.byte[3] = c1.byte[0];
+	return c2.f;
+}
 
 class MRC
 {
@@ -442,7 +471,10 @@ private:
 	MRCDataPrivate* m_d;
 	bool m_opened;
 private:
+
 	MRC(const std::string & fileName, bool opened) : m_d{ nullptr }, m_opened{ opened } { (void)fileName; }
+
+	void reverseHeaderByteByField(MRCHeader* header);
 	void udpateNVersionFiled(int year, int version = 0);
 	void UpdateDminDmaxDmeanRMSHelper();
 	bool headerReadHelper(std::ifstream & in, MRCHeader * header);
@@ -491,7 +523,11 @@ inline T MRC::property(int index)const
 		NVERSION_OFFSET,
 		XORIGIN_OFFSET,
 		YORIGIN_OFFSET,
-		ZORIGIN_OFFSET
+		ZORIGIN_OFFSET,
+		MAP_OFFSET,
+		STAMP_OFFSET ,
+		RMS_OFFSET ,
+		NLABL_OFFSET ,
 	};
 	T * d = ((T*)(hdBuffer + offset[index]));
 	return *d;
@@ -540,5 +576,5 @@ inline bool MRC::isOpened() const { return m_opened; }
 inline int MRC::width() const { return m_header.nx; }
 inline int MRC::height() const { return m_header.ny; }
 inline int MRC::slice() const { return m_header.nz; }
-inline int MRC::propertyCount() const { return 32; }
+inline int MRC::propertyCount() const { return 36; }
 #endif // MRC_H
