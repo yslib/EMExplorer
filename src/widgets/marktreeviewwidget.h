@@ -27,7 +27,6 @@ private:
 	QMenu * m_menu;
 	QAction * m_markDeleteAction;
 	QAction * m_markRenameAction;
-	//QAction * m_markUnionAction;
 	QModelIndex m_renameItem;
 	QSet<QModelIndex> m_deleteItems;
 
@@ -36,6 +35,8 @@ private:
 	void updateAction();
 	void onDeleteAction();
 	void onRenameAction();
+
+	void deleteSelectedItem(QItemSelectionModel * selectionModel);
 
 signals:
 	void currentIndexChanged(const QModelIndex & current,const QModelIndex & previous);

@@ -8,12 +8,13 @@
 #include "model/instanceitem.h"
 
 #include "abstract/abstractslicedatamodel.h"
+#include <QItemSelection>
 
 
 //#include "treeitem.h"
 
 //#include <QDataStream>
-
+class MarkModel;
 class TreeItem;
 class QGraphicsItem;
 class SliceEditorWidget;
@@ -23,6 +24,18 @@ class RootTreeItem;
 class StrokeMarkItem;
 class QItemSelectionModel;
 enum TreeItemType;
+
+
+/**
+ * \brief This selection model is specified for the deletion operation of mark
+ */
+//
+//class MarkItemSelectionModel:public QItemSelectionModel
+//{
+//public:
+//	MarkItemSelectionModel(MarkModel * markModel);
+//	void removeSelectedItem(const QModelIndex & parent);
+//};
 
 
 /**
@@ -148,6 +161,8 @@ public:
 	bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex()) Q_DECL_OVERRIDE;
+
+
 	TreeItem * treeItem(const QModelIndex& index) const;
 	TreeItem * rootItem() const;
 

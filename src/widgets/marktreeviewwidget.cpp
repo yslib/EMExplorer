@@ -19,7 +19,6 @@ MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	createAction();
-	//setShowGrid(true);
 	setAlternatingRowColors(true);
 	createMenu();
 }
@@ -79,6 +78,7 @@ void MarkTreeView::createAction()
 void MarkTreeView::updateAction()
 {
 	m_renameItem = QModelIndex();
+
 	m_deleteItems.clear();
 
 	auto indexes = selectedIndexes();
@@ -98,9 +98,6 @@ void MarkTreeView::updateAction()
 		{
 			parents.insert(d);
 			m_deleteItems.insert(item);
-
-
-
 		}
 	}
 	foreach(const auto & item,indexes)
@@ -126,19 +123,28 @@ void MarkTreeView::onDeleteAction()
 {
 
 	// Pre-Processing: remove items whose parent has already been the list
-	foreach(const auto & index,m_deleteItems) {
-		auto it = m_deleteItems.find(index.parent());
-		if(it != m_deleteItems.end()) {
-			m_deleteItems.erase(it);
-		}
+
+	//for(const auto & index:m_deleteItems) 
+	//{
+	//	auto it = m_deleteItems.find(index.parent());
+	//	if(it != m_deleteItems.end()) {
+	//		m_deleteItems.erase(it);
+	//	}
+	//}
+
+	//for(const auto & index:m_deleteItems)
+	//{
+	//	const auto m = model();
+	//	const QModelIndex parent = index.parent();
+	//	m->removeRows(index.row(),1, parent);
+	//}
+
+	while(selectionModel()->selection().indexes().isEmpty() == false)
+	{
+		const auto index = selectionModel()->selection().indexes().first();
+		model()->removeRow(index.row(),index.parent());
 	}
 
-	foreach(const auto & index,m_deleteItems)
-	{
-		const auto m = model();
-		const QModelIndex parent = index.parent();
-		m->removeRows(index.row(),1, parent);
-	}
 }
 
 void MarkTreeView::onRenameAction()
@@ -148,9 +154,10 @@ void MarkTreeView::onRenameAction()
 	//TODO::
 }
 
+void MarkTreeView::deleteSelectedItem(QItemSelectionModel * selectionModel)
+{
 
-
-
+}
 
 //In c++, functions in an anonymous namespace are equivalent to be qualified by static, which have a local scope
 //namespace

@@ -41,6 +41,8 @@ TreeItem* MarkModel::rootItem() const
 	return (m_rootItem);
 }
 
+
+
 /**
  * \brief
  * \param mark
@@ -756,8 +758,18 @@ bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
 {
 	const auto item = treeItem(parent);
 	beginRemoveRows(parent, row, row + count - 1);
+	for(int i=0;i<item->childCount();i++)
+	{
+		const auto treeItem = item->child(i);
+		if(treeItem->type() == TreeItemType::Mark)
+		{
+			// remove from the slice mark cache
+			removeMarkInSliceHelper(static_cast<StrokeMarkItem*>(treeItem->metaData()));
+		}
+	}
 	const auto success = item->removeChildren(row, count);
 	endRemoveRows();
+	setDirty();
 	return success;
 }
 

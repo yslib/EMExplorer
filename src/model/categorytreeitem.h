@@ -11,7 +11,8 @@
 /**
  * \brief A info struct needed by constructing a CategoryItem
  */
-class CategoryInfo {
+class CategoryInfo 
+{
 	public:
 	QString name;
 	QColor color;

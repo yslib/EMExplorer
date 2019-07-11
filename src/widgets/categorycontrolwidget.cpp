@@ -13,6 +13,7 @@
 #include "slicewidget.h"			//enum SliceType
 #include "markcategorydialog.h"
 #include "model/categorytreeitem.h"
+#include "model/markmodel.h"
 
 #include <QColorDialog>
 #include <QTimer>
@@ -21,8 +22,8 @@
 /**
  * \brief Constructs a widget by a given \a canvas of \SliceEditorWidget
  */
-CategoryControlWidget::CategoryControlWidget(SliceEditorWidget * sliceView, QWidget* parent):
-m_canvas(nullptr)
+CategoryControlWidget::CategoryControlWidget(SliceEditorWidget * sliceView, QWidget* parent) :
+	m_canvas(nullptr)
 
 {
 	createWidgets();
@@ -39,13 +40,15 @@ void CategoryControlWidget::setImageCanvas(SliceEditorWidget* sliceView)
 	if (sliceView == m_canvas)
 		return;
 	// disconnect signals
-	if(m_canvas != nullptr) 
+	if (m_canvas != nullptr)
 	{
 		disconnect(m_canvas, 0, this, 0);
 	}
 	m_canvas = sliceView;
-	connect(m_canvas, &SliceEditorWidget::dataModelChanged, this, &CategoryControlWidget::updateDataModel);
-	updateDataModel();
+
+	connect(m_canvas, &SliceEditorWidget::markModelChanged, this, &CategoryControlWidget::onMarkModelChanged);
+
+	//onMarkModelChanged();
 }
 
 /**
@@ -75,9 +78,6 @@ int CategoryControlWidget::categoryCount() const
 void CategoryControlWidget::createWidgets()
 {
 	QVBoxLayout *mainLayout = new QVBoxLayout;
-
-	
-
 
 	//Mark Group
 	auto group = new QGroupBox(QStringLiteral("Mark"), this);
@@ -121,29 +121,44 @@ void CategoryControlWidget::createWidgets()
 }
 
 
-void CategoryControlWidget::updateDataModel()
+void CategoryControlWidget::onMarkModelChanged()
 {
-	if (m_canvas == nullptr)
+	if (m_canvas == nullptr || m_markModel == m_canvas->markModel())
 		return;
-	const auto m = m_canvas->sliceModel();
-	if (m == nullptr) {
+	if (m_markModel != m_canvas->markModel())
+	{
+		disconnect(m_markModel, 0, this, 0);
+	}
+	m_markModel = m_canvas->markModel();
+	if (m_markModel == nullptr)
+	{
 		setEnabled(false);
 		return;
 	}
 	setEnabled(true);
+	connect(m_markModel, &MarkModel::rowsRemoved,
+		[this](const QModelIndex &parent, int first, int last)
+		{
+			//	Add category
+			const auto categories = m_canvas->categories();
+			m_categoryCBBox->clear();
+			for (const auto & c : categories)
+			{
+				m_categoryCBBox->addItem(c);
+			}
 
-	//	Add category
-	const auto cates = m_canvas->categories();
-	m_categoryCBBox->clear();
-	foreach(const auto & c,cates) {
-		m_categoryCBBox->addItem(c);
-	}
-	if(m_categoryCBBox->count() == 0) {
-		addCategoryInfoPrivate(QStringLiteral("Default"), Qt::red);
-		QPen pen = m_canvas->topView()->pen();
-		pen.setColor(Qt::red);
-		m_canvas->setPen(pen);
-	}
+			if (m_categoryCBBox->count() == 0)
+			{
+				addCategoryInfoPrivate(QStringLiteral("Default"), Qt::red);
+				QPen pen = m_canvas->topView()->pen();
+				pen.setColor(Qt::red);
+				m_canvas->setPen(pen);
+			}
+		}
+	);
+
+	std::cout << "MarkModel:" << m_markModel << std::endl;
+
 }
 
 
@@ -157,7 +172,7 @@ void CategoryControlWidget::connections()
 		pen.setColor(m_categoryCBBox->currentData().value<QColor>());
 		m_canvas->setPen(pen);
 		m_canvas->setCurrentCategory(text);
-	});
+		});
 }
 
 void CategoryControlWidget::setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates)
@@ -174,7 +189,7 @@ void CategoryControlWidget::addCategoryInfoPrivate(const QString & name, const Q
 	m_categoryCBBox->addItem(name, color);
 	m_categoryCBBox->setCurrentText(name);
 	//auto ci = CategoryInfo(name, color);
-	m_canvas->addCategory(CategoryInfo(name,color));
+	m_canvas->addCategory(CategoryInfo(name, color));
 	m_canvas->setCurrentCategory(name);
 }
 
@@ -199,14 +214,14 @@ void CategoryControlWidget::onCategoryAdded()
 {
 	MarkCategoryDialog dlg(this);
 	connect(&dlg, &MarkCategoryDialog::resultReceived, [this](const QString & name, const QColor & color)
-	{
-		addCategoryInfoPrivate(name, color);
-		QPen pen = m_canvas->topView()->pen();
-		pen.setColor(color);
-		m_canvas->setPen(pen);
-		///TODO:: This color need to be add categoryItem
+		{
+			addCategoryInfoPrivate(name, color);
+			QPen pen = m_canvas->topView()->pen();
+			pen.setColor(color);
+			m_canvas->setPen(pen);
+			///TODO:: This color need to be add categoryItem
 
-	});
+		});
 	dlg.exec();
 }
 

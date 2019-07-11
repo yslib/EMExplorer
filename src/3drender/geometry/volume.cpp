@@ -151,50 +151,58 @@ void Volume::blend(
 
 }
 
-void Volume::calcIsoStat() {
+void Volume::calcIsoStat() 
+{
 	memset(m_isoStat.get(), 0, sizeof(double) * 256);
 
-	//for(int i = 0; i < m_zSize; ++i) {
-	//	for(int j = 0; j < m_ySize; ++j) {
-	//		for(int k = 0; k < m_xSize; ++k) {
-	//			int index = i * m_xSize * m_ySize + j * m_xSize + k;
-	//			int value = m_data.get()[index];
-	//			isoStat[value] += 1.0;
-	//		}
-	//	}
-	//}
-	// We don't support histogram for float type volume data
-	if (m_fmt.type == VoxelType::Float32)
-		return;
-
-#pragma omp parallel for
-	for (int i = 0; i < m_zSize; ++i) {
-		const auto zNext = (i < m_zSize - 1) ? m_xSize * m_ySize : 0;
-		for (int j = 0; j < m_ySize; ++j) {
-			const auto yNext = (j < m_ySize - 1) ? m_xSize : 0;
-			for (int k = 0; k < m_xSize; ++k) {
-				const auto index = i * m_xSize * m_ySize + j * m_xSize + k;
-				const int xNext = (k < m_xSize - 1) ? 1 : 0;
-				const int f000 = m_data.get()[index];
-				const int f100 = m_data.get()[index + xNext];
-				const int f010 = m_data.get()[index + yNext];
-				const int f001 = m_data.get()[index + zNext];
-				const int f101 = m_data.get()[index + xNext + zNext];
-				const int f011 = m_data.get()[index + yNext + zNext];
-				const int f110 = m_data.get()[index + xNext + yNext];
-				const int f111 = m_data.get()[index + xNext + yNext + zNext];
-				const int minValue = trippleMin(f000, f100, trippleMin(f010, f001, trippleMin(f101, f011, trippleMin(f110, f111, 255))));
-				const int maxValue = trippleMax(f000, f100, trippleMax(f010, f001, trippleMax(f101, f011, trippleMax(f110, f111, 0))));
-				for (auto m = minValue; m <= maxValue; ++m) {
-					m_isoStat[m] += 1.0;
-				}
+	for(int i = 0; i < m_zSize; ++i) {
+		for(int j = 0; j < m_ySize; ++j) {
+			for(int k = 0; k < m_xSize; ++k) {
+				const int index = i * m_xSize * m_ySize + j * m_xSize + k;
+				const int value = m_data.get()[index];
+				m_isoStat[value] += 1.0;
 			}
 		}
 	}
-	//qDebug() << "??";
-	m_maxIsoValue = m_isoStat[1];
-	for (int i = 2; i < 256; ++i)
+
+	m_maxIsoValue = m_isoStat[0];
+	for (int i = 1; i < 256; ++i)
 		m_maxIsoValue = std::max(m_maxIsoValue, m_isoStat[i]);
+
+	// We don't support histogram for float type volume data
+	//if (m_fmt.type == VoxelType::Float32)
+	//	return;
+
+	// The following algorithm is too slow
+
+//#pragma omp parallel for
+//	for (int i = 0; i < m_zSize; ++i) {
+//		const auto zNext = (i < m_zSize - 1) ? m_xSize * m_ySize : 0;
+//		for (int j = 0; j < m_ySize; ++j) {
+//			const auto yNext = (j < m_ySize - 1) ? m_xSize : 0;
+//			for (int k = 0; k < m_xSize; ++k) {
+//				const auto index = i * m_xSize * m_ySize + j * m_xSize + k;
+//				const int xNext = (k < m_xSize - 1) ? 1 : 0;
+//				const int f000 = m_data.get()[index];
+//				const int f100 = m_data.get()[index + xNext];
+//				const int f010 = m_data.get()[index + yNext];
+//				const int f001 = m_data.get()[index + zNext];
+//				const int f101 = m_data.get()[index + xNext + zNext];
+//				const int f011 = m_data.get()[index + yNext + zNext];
+//				const int f110 = m_data.get()[index + xNext + yNext];
+//				const int f111 = m_data.get()[index + xNext + yNext + zNext];
+//				const int minValue = trippleMin(f000, f100, trippleMin(f010, f001, trippleMin(f101, f011, trippleMin(f110, f111, 255))));
+//				const int maxValue = trippleMax(f000, f100, trippleMax(f010, f001, trippleMax(f101, f011, trippleMax(f110, f111, 0))));
+//				for (auto m = minValue; m <= maxValue; ++m) {
+//					m_isoStat[m] += 1.0;
+//				}
+//			}
+//		}
+//	}
+//	m_maxIsoValue = m_isoStat[0];
+//	for (int i = 1; i < 256; ++i)
+//		m_maxIsoValue = std::max(m_maxIsoValue, m_isoStat[i]);
+
 }
 
 GPUVolume::GPUVolume(const void * data, int xSize, int ySize, int zSize, const ysl::Transform & trans, const VolumeFormat& fmt)

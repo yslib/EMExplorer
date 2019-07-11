@@ -18,6 +18,8 @@ class QTimer;
 QT_END_NAMESPACE
 class TitledSliderWithSpinBox;
 class SliceEditorWidget;
+class MarkModel;
+class AbstractSliceDataModel;
 
 /**
  * \brief This class is used for adding new mark category for SliceEditorWidget.
@@ -37,7 +39,7 @@ private:
 
 	void connections();
 
-	void updateDataModel();
+	void onMarkModelChanged();
 
 	void setCategoryInfoPrivate(const QVector<QPair<QString, QColor>>& cates);
 
@@ -49,20 +51,23 @@ private:
 
 	void colorChanged();
 
+
+
 	enum class PlayDirection 
 	{
 		Forward,
 		Backward
 	};
-	SliceEditorWidget * m_canvas;
+	SliceEditorWidget * m_canvas = nullptr;
+	MarkModel * m_markModel = nullptr;
 	
 	//Widgets on edit toolbar
-	QLabel * m_categoryLabel;
-	QComboBox * m_categoryCBBox;
-	QLabel * m_penSizeLabel;
-	QComboBox* m_penSizeCBBox;
-	QToolButton *m_colorAction;
-	QToolButton *m_addCategoryAction;
+	QLabel * m_categoryLabel = nullptr;
+	QComboBox * m_categoryCBBox = nullptr;
+	QLabel * m_penSizeLabel= nullptr;
+	QComboBox* m_penSizeCBBox= nullptr;
+	QToolButton *m_colorAction=nullptr;
+	QToolButton *m_addCategoryAction=nullptr;
 
 	//friend class SliceEditorWidget;
 };

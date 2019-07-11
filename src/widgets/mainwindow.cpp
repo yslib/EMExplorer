@@ -446,12 +446,13 @@ void MainWindow::updateActionsAndControlPanelByWidgetFocus(FocusState state) {
 	//static FocusState s_state = static_cast<FocusState>(0);
 	m_currentFocus = state;
 
+	bool hasCategories = !m_imageView->categories().isEmpty();
+
 	m_zoomInAction->setEnabled(state & (FocusInSliceView));
 	m_zoomOutAction->setEnabled(state & (FocusInSliceView));
 	m_resetAction->setEnabled(state & (FocusInSliceView | FocusInSliceWidget));
-	m_markAction->setEnabled(state & (FocusInTopSliceView));
-	m_markAction->setEnabled(state & (FocusInTopSliceView));
-	m_markSelectionAction->setEnabled(state & (FocusInTopSliceView));		// FocusInRightSliceView FocusInFrontSliceView would be added in the future
+	m_markAction->setEnabled(state & (FocusInTopSliceView) && hasCategories);
+	m_markSelectionAction->setEnabled(state & (FocusInTopSliceView) && hasCategories);// FocusInRightSliceView FocusInFrontSliceView would be added in the future
 	m_anchorAction->setEnabled(state &(FocusInSliceView));
 
 	m_pixelViewAction->setEnabled(state & (FocusInSliceView));

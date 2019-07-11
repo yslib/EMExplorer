@@ -149,10 +149,7 @@ void SliceEditorWidget::_slot_topViewSliceSelection(const QPoint& pos)
 		setSliceIndex(SliceType::Front, pos.y());
 
 	}
-
 	//display selected coordinates
-
-
 }
 
 void SliceEditorWidget::_slot_rightViewSliceSelection(const QPoint & pos)
@@ -243,13 +240,18 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 {
 	Q_ASSERT_X(m_sliceModel,
 		"ImageView::updateMarkModel", "null pointer");
+	if (m_markModel == model)
+		return;
 
-	if (m_markModel != nullptr) {
+	if (m_markModel != nullptr) 
+	{
 		// disconnect old signals
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
 		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
 	}
+	m_markModel->deleteLater();
 	m_markModel = model;
+
 
 	if (m_markModel != nullptr) {
 		// connect new signals 
@@ -261,6 +263,8 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	updateMarks(SliceType::Right);
 	updateMarks(SliceType::Front);
 	updateActions();
+
+	emit markModelChanged();
 }
 
 /**
@@ -312,11 +316,14 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	connect(hideAction, &QAction::triggered, [this](bool checked) {m_topView->setNavigationViewEnabled(checked); });
 	menu->addAction(hideAction);
 
-	// Connections 
+	// Connections
+
+	// slice selection signals
 	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
 	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::rightSliceSelected);
 	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::frontSliceSelected);
 
+	// Mark added signals
 	connect(m_topView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Top, mark); });
 	connect(m_rightView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Right, mark); });
 	connect(m_frontView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Front, mark); });
@@ -563,7 +570,8 @@ QStringList SliceEditorWidget::categoryText() const
 	QVector<QVariant> data;
 	QStringList list;
 	m_markModel->retrieveData(m_markModel->rootItem(), TreeItemType::Category, 0, data, Qt::DisplayRole);
-	foreach(const auto & var, data) {
+	foreach(const auto & var, data) 
+	{
 		Q_ASSERT_X(var.canConvert<QString>(), "MarkModel::categoryText", "convert falied");
 		list << var.toString();
 	}
@@ -608,7 +616,8 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 	//m_markModel->addMark(cate, mark);
 
 	auto i = _hlp_instanceFind(cate, mark);
-	if (i.isValid() == false) {
+	if (!i.isValid()) 
+	{
 		i = _hlp_instanceAdd(cate, mark);
 	}
 
@@ -799,7 +808,7 @@ void SliceEditorWidget::setPen(const QPen &pen)
  *
  * The mark model corresponding to the slice model will be deleted once the old slice model is replaced, and a new mark model will be created.
  * So it's caller's responsibility to save the corresponding mark model before the replacement takes place, and
- * the old slice mark model and its ownership will be returned to the caller. Sets \a model as \a nullptr is equivalent to empty the slice data.
+ * the old slice model and its ownership will be returned to the caller. Sets \a model as \a nullptr is equivalent to empty the slice data.
  *
  * \note This function also emits dataModelChanged() signal
  *
@@ -808,20 +817,15 @@ void SliceEditorWidget::setPen(const QPen &pen)
 AbstractSliceDataModel* SliceEditorWidget::takeSliceModel(AbstractSliceDataModel* model)
 {
 	const auto t = m_sliceModel;
-
 	m_sliceModel = model;
-	if (!m_markModel)
-	{
-		delete m_markModel;
-		m_markModel = nullptr;
-	}
-	installMarkModel(createMarkModel(this, m_sliceModel));
+
 	setSliceIndex(SliceType::Front, 0);
 	setSliceIndex(SliceType::Right, 0);
 	setSliceIndex(SliceType::Top, 0);
 
 	updateActions();
 	emit dataModelChanged();
+	installMarkModel(createMarkModel(this, m_sliceModel));
 	resetZoom(true);
 	return t;
 }
@@ -1051,7 +1055,8 @@ QString SliceEditorWidget::currentCategory() const
  * \brief This property holds the current category that the mark will be painted on.
  *
  */
-void SliceEditorWidget::setCurrentCategory(const QString& name) {
+void SliceEditorWidget::setCurrentCategory(const QString& name) 
+{
 	Q_D(SliceEditorWidget);
 	d->state->currentCategory = name;
 }
@@ -1063,7 +1068,7 @@ void SliceEditorWidget::setCurrentCategory(const QString& name) {
  *
  * \sa CategoryInfo
  */
-bool SliceEditorWidget::addCategory(const CategoryInfo& info) const {
+bool SliceEditorWidget::addCategory(const CategoryInfo & info) const {
 	if (m_markModel == nullptr)
 		return false;
 
