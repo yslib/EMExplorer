@@ -3,12 +3,14 @@
 
 #include "treeitem.h"
 
+class QAbstractItemView;
+
 class MarkItemInfoModel :public QAbstractItemModel
 {
 	StrokeMarkItem *& m_markItem;
 	QVector<QString> propertyNames;
 public:
-	explicit MarkItemInfoModel(StrokeMarkItem *& mark,QObject * parent);
+	explicit MarkItemInfoModel(StrokeMarkItem * & mark,QObject * parent);
 	QVariant data(const QModelIndex& index, int role) const override;
 	int columnCount(const QModelIndex& parent) const override;
 	QModelIndex index(int row, int column, const QModelIndex& parent) const override;
@@ -21,8 +23,9 @@ public:
 
 class StrokeMarkTreeItem :public TreeItem {
 
-	StrokeMarkItem * m_markItem;
-	QAbstractItemModel * m_infoModel;
+	StrokeMarkItem * m_markItem = nullptr;
+	QAbstractItemModel * m_infoModel = nullptr;
+	QAbstractItemView * m_infoView = nullptr;
 protected:
 	void modelIndexChanged(const QPersistentModelIndex& index) override 
 	{
@@ -48,7 +51,7 @@ public:
 
 	void * metaData() override;
 
-	QAbstractItemModel * infoModel() const override { return m_infoModel; }
+	void setInfoView(QAbstractItemView*view)override;
 
 	~StrokeMarkTreeItem();
 

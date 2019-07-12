@@ -5,7 +5,7 @@
 //#include "categorytreeitem.h"
 #include "markitem.h"
 #include <QAbstractItemModel>
-//#include "categorytreeitem.h"
+#include <QAbstractItemView>
 
 enum  TreeItemType
 {
@@ -55,7 +55,8 @@ QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 #endif
 
 
-class AbstractTreeItemMetaData {
+class AbstractTreeItemMetaData 
+{
 	void * m_internalPointer;
 public:
 	AbstractTreeItemMetaData();
@@ -65,16 +66,13 @@ public:
 
 class TreeItem
 {
-	PTR_TYPE(TreeItem) m_parent;
-	QVector<PTR_TYPE(TreeItem)> m_children;
+	TreeItem* m_parent;
+	QVector<TreeItem*> m_children;
+
 	QPersistentModelIndex m_persistentModelIndex;
 
 	void updateChildQPersistentModelIndex(TreeItem * item, int row);
-	void updateModelIndex(const QPersistentModelIndex & index)
-	{
-		m_persistentModelIndex = index;
-		modelIndexChanged(index);
-	}
+	void updateModelIndex(const QPersistentModelIndex & index){m_persistentModelIndex = index;	modelIndexChanged(index);}
 protected:
 
 	//void setModelIndex(const QPersistentModelIndex & index) { m_persistentModelIndex = index; }
@@ -91,7 +89,7 @@ public:
 	}
 	virtual ~TreeItem();
 
-	const QAbstractItemModel* itemModel() const;
+	
 	/**
 	 * \brief Returns the model index refers to the item in the model
 	 * 
@@ -101,7 +99,7 @@ public:
 	 * 
 	 * \sa QPersistentModelIndex
 	 */
-	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
+
 	void appendChild(TreeItem* child);
 	void setParentItem(TreeItem * parent) { m_parent = parent; }
 	TreeItem* parentItem()const { return m_parent; };
@@ -113,7 +111,7 @@ public:
 	int row() const;
 
 	virtual void setCurrentSelected(bool selected);
-	virtual QAbstractItemModel* infoModel()const = 0;
+
 	virtual int columnCount()const = 0;
 	virtual QVariant data(int column = 0, int role = Qt::DisplayRole)const = 0;
 	virtual bool insertColumns(int position, int columns) = 0;
@@ -122,29 +120,10 @@ public:
 	virtual int type()const = 0;
 	virtual void * metaData() = 0;
 
-	//void setCommonData(const QVariant & value) { m_commonData = value; }
-	/**
-	*	All above methods are necessary for a read-only TreeView.
-	*	Following methods are required for a editable TreeView.
-	*/
-	//bool insertChildren(int position, int count)
-	//{
-	//	///TODO:: Is this check necessary? 
-	//	if (position < 0 || position > m_children.size())
-	//		return false;
-	//	for (auto row = 0; row < count; row++)
-	//	{
-	//		//QVector<QHash<int,QVariant>> data(columns);
-	//		auto * item = new TreeItem(type, this);
-	//		
 
-	//		item->m_data.resize(columns);			//Same as parent's
-
-
-	//		m_children.insert(position, item);
-	//	}
-	//	return true;
-	//}
+	virtual void setInfoView(QAbstractItemView*view) = 0;
+	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
+	const QAbstractItemModel* itemModel() const;
 
 	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);
 	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
@@ -162,21 +141,11 @@ public:
 	QVariant data(int column, int role) const override { return QVariant{}; }
 	bool setData(int column, const QVariant& value, int role) override { return false; }
 	int columnCount() const override { return 1; }
-	int type() const override { return TreeItemType::Empty; };
-	bool insertColumns(int position, int columns) override {
-		Q_UNUSED(position);
-		Q_UNUSED(columns);
-		return false;
-	}
-	bool removeColumns(int position, int columns) override {
-		Q_UNUSED(position);
-		Q_UNUSED(columns);
-		return false;
-	}
-
+	int type() const override { return TreeItemType::Empty; }
+	bool insertColumns(int position, int columns) override {Q_UNUSED(position);Q_UNUSED(columns);	return false;}
+	bool removeColumns(int position, int columns) override {Q_UNUSED(position);Q_UNUSED(columns);return false;}
 	void * metaData() override { return nullptr; }
-
-	QAbstractItemModel * infoModel() const override { return nullptr; }
+	void setInfoView(QAbstractItemView *view) override{}
 };
 
 

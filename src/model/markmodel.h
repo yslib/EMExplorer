@@ -26,17 +26,6 @@ class QItemSelectionModel;
 enum TreeItemType;
 
 
-/**
- * \brief This selection model is specified for the deletion operation of mark
- */
-//
-//class MarkItemSelectionModel:public QItemSelectionModel
-//{
-//public:
-//	MarkItemSelectionModel(MarkModel * markModel);
-//	void removeSelectedItem(const QModelIndex & parent);
-//};
-
 
 /**
  * \class MarkModel markmodel.h "model/markmodel.h"
@@ -175,7 +164,9 @@ public:
 	bool insertTreeItems(const QList<TreeItem*> & items, const QModelIndex & parent);
 	bool removeTreeItem(TreeItem* item);
 	bool removeTreeItems(const QList<TreeItem*> & items);
-	QItemSelectionModel * selectionModelOfThisModel()const {return m_selectionModel;};
+	QItemSelectionModel * selectionModel()const {return m_selectionModel;}
+
+	void removeSelectedItems();
 
 	MarkSliceList topVisibleMarks()const { return m_topSliceVisibleMarks; }
 	MarkSliceList rightVisibleMarks()const { return m_rightSliceVisibleMarks; }
@@ -184,7 +175,6 @@ public:
 
 	QSharedPointer<char> rawMarks()const;
 	QSharedPointer<int> markMask()const;
-	
 
 	static void retrieveData(TreeItem * root, TreeItemType type, int column, QVector<QVariant> & data, int role);
 	static void retrieveTreeItem(TreeItem * parent, TreeItemType type, QList<TreeItem*>* items);

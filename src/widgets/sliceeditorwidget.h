@@ -114,8 +114,6 @@ public:
 	void setFrontSliceVisibility(bool check);
 	void setRightSliceVisibility(bool check);
 
-	void deleteSelectedMarks();
-
 	AbstractSliceDataModel* takeSliceModel(AbstractSliceDataModel* model);
 	inline AbstractSliceDataModel * sliceModel()const;
 
@@ -184,17 +182,19 @@ signals:
 	 * 
 	 * The first selected mark will be the given as \a item
 	 */
-	void markSelected(StrokeMarkItem * item);
+	void currentMarkChanged(StrokeMarkItem * item);
 
 	/**
 	 * \brief This signals is emitted when marks in one of three slice widget are selected.
 	 * All selected marks will be given as \a items
 	 */
-	void marksSelected(QList<StrokeMarkItem*> items);
+	void selectedMarksChanged(const QList<StrokeMarkItem*>& items);
 
 private slots:
 
-	void _slot_markSelected(StrokeMarkItem * mark);
+	void onCurrentMarkChanged(StrokeMarkItem * current);
+
+	void onSelectedMarksChanged(const QList<StrokeMarkItem*> & selected);
 
 	void _slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous);
 
@@ -221,7 +221,8 @@ private:
 	void updateActions();
 	void installMarkModel(MarkModel* model);
 	void markAddedHelper(SliceType type, StrokeMarkItem* mark);
-	void _slots_singleMarkSelectionChanged();
+
+	void markSelectionChangedHandler();
 
 	//void changeSliceHelper(int value, SliceType type);
 	SliceWidget * focusOn();
@@ -240,14 +241,17 @@ private:
 	// Data Members
 	SliceEditorWidgetPrivate * const d_ptr;
 	Q_DECLARE_PRIVATE(SliceEditorWidget);
+
 	AbstractSliceDataModel * m_sliceModel;
 	MarkModel * m_markModel;
+
 	//main layout
 	QGridLayout *m_layout;
 	SliceWidget * m_topView;
 	SliceWidget * m_rightView;
 	SliceWidget * m_frontView;
 	QToolButton * m_toolButton;
+
 };
 
 /**

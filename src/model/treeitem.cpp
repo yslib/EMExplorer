@@ -38,7 +38,8 @@ TreeItem::~TreeItem()
 	qDeleteAll(m_children);
 }
 
-const QAbstractItemModel* TreeItem::itemModel() const {
+const QAbstractItemModel* TreeItem::itemModel() const 
+{
 	if(m_persistentModelIndex.isValid() == false) 
 	{
 		return nullptr;

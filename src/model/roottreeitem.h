@@ -36,7 +36,7 @@ public:
 	bool setData(int column, const QVariant& value, int role) override{return false;}
 	int type() const override { return TreeItemType::Root; }
 	void * metaData()override { return nullptr; }
-	QAbstractItemModel * infoModel() const override { return nullptr; }
+	void setInfoView(QAbstractItemView* view) override{}
 
 	friend class MarkModel;
 

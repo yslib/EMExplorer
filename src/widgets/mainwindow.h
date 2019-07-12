@@ -82,6 +82,7 @@ private:
 	QAbstractTableModel * replaceProfileModel(QAbstractTableModel * model);
 	QAbstractTableModel * setupProfileModel(const MRC & mrc);
 
+
 	//Widgets
 	QDockWidget * m_volumeViewDockWidget;
 	RenderWidget * m_volumeView;
@@ -140,8 +141,6 @@ private:
 
 	// State
 	FocusState m_currentFocus;
-
-	//QScopedPointer<QCommandLineParser> m_parser;
 
 };
 

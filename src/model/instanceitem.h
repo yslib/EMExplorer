@@ -52,9 +52,9 @@ class InstanceTreeItem:public TreeItem
 	//QString m_text;
 	//QRect m_range;
 	//quint8 m_checkState;
-	InstanceTreeItemInfoModel * m_infoModel;
+	InstanceTreeItemInfoModel * m_infoModel = nullptr;
+	QAbstractItemView *m_infoView = nullptr;
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
-
 	InstanceMetaData* m_metaData;
 public:
 
@@ -67,7 +67,9 @@ public:
 	bool insertColumns(int position, int columns) override;
 	bool removeColumns(int position, int columns) override;
 	void * metaData() override;
-	QAbstractItemModel * infoModel() const override { return m_infoModel; }
+	void setCurrentSelected(bool selected) override;
+
+	void setInfoView(QAbstractItemView* view) override;
 
 	QRectF boundingBox() const { return m_metaData->region(); }
 	void setBoundingBox(const QRectF& rect) { m_metaData->setRegion(rect); }

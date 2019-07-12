@@ -162,6 +162,23 @@ int CategoryTreeItem::type() const { return TreeItemType::Category; }
  */
 void* CategoryTreeItem::metaData() { return static_cast<void*>(&m_categoryItem); }
 
+void CategoryTreeItem::setInfoView(QAbstractItemView* view)
+{
+	if (m_infoView != view)
+	{
+		if (m_infoView)
+			m_infoView->setModel(nullptr);
+		m_infoView = view;
+		if (m_infoView)
+			m_infoView->setModel(nullptr);
+	}
+}
+
+CategoryTreeItem::~CategoryTreeItem()
+{
+	if (m_infoView)
+		m_infoView->setModel(nullptr);
+}
 
 QDataStream & operator<<(QDataStream & stream, const CategoryItem & item)
 {

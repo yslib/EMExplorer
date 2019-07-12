@@ -99,7 +99,6 @@ public:
 	QModelIndex parent(const QModelIndex& child) const override;
 	Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-
 	// Custom API for setting information
 	auto table()->QVector<QVector<QString>>& { return m_table; }
 };
@@ -108,6 +107,8 @@ public:
 class CategoryTreeItem :public TreeItem 
 {
 	CategoryItem m_categoryItem;
+	QAbstractItemView* m_infoView = nullptr;
+
 public:
 	CategoryTreeItem(const CategoryItem & categoryItem,const QPersistentModelIndex & pIndex, TreeItem* parent);
 
@@ -125,7 +126,10 @@ public:
 
 	void* metaData() override;
 
-	QAbstractItemModel * infoModel() const override { return nullptr; }
+	void setInfoView(QAbstractItemView* view) override;
+
+	~CategoryTreeItem();
+
 
 	friend QDataStream& operator<<(QDataStream& stream, const CategoryTreeItem* item);
 

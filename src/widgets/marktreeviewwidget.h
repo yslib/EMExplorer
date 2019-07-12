@@ -3,6 +3,7 @@
 
 #include <QTreeView>
 #include <QTableView>
+#include "model/markmodel.h"
 
 class MarkModel;
 class QAction;
@@ -33,12 +34,10 @@ private:
 	void createMenu();
 	void createAction();
 	void updateAction();
-	void onDeleteAction();
 	void onRenameAction();
 
-	void deleteSelectedItem(QItemSelectionModel * selectionModel);
-
 signals:
+	void deleteMarksActionTriggered();
 	void currentIndexChanged(const QModelIndex & current,const QModelIndex & previous);
 	void selectionIndexChanged(const QItemSelection & selected, const QItemSelection & deselected);
 };
@@ -59,10 +58,12 @@ public slots:
  * \brief This is a class used to view marks in a tree view, mark and mesh information.
  * 
  */
-class MarkManager:public QWidget {
+class MarkManager:public QWidget 
+{
 	Q_OBJECT
-	MarkTreeView * m_treeView;
-	TreeNodeInfoView * m_infoView;
+	MarkTreeView * m_treeView = nullptr;
+	TreeNodeInfoView * m_infoView = nullptr;
+	MarkModel * m_markModel = nullptr;
 public:
 	MarkManager(QWidget * parent = nullptr);
 	void setMarkModel(MarkModel * model);
@@ -70,6 +71,8 @@ private slots:
 	void treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous);
 	void treeViewSelectionIndexChanged(const QItemSelection & selected, const QModelIndex & deselected);
 	void treeViewClicked(const QModelIndex & index);
+signals:
+	void deleteMarksActionTriggered();
 };
 
 

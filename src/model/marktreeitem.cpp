@@ -127,6 +127,18 @@ void* StrokeMarkTreeItem::metaData()
 	return static_cast<void*>(m_markItem);
 }
 
+void StrokeMarkTreeItem::setInfoView(QAbstractItemView* view)
+{
+	if(m_infoView != view)
+	{
+		if (m_infoView)
+			m_infoView->setModel(nullptr);
+		m_infoView = view;
+		if(m_infoView) 
+			m_infoView->setModel(m_infoModel);
+	}
+}
+
 /**
  * \brief Destroys the stroke mark tree item.
  */
@@ -135,6 +147,7 @@ StrokeMarkTreeItem::~StrokeMarkTreeItem()
 	delete m_markItem;
 	m_markItem = nullptr;		//Without this, the program will crash.
 	m_infoModel->deleteLater();
+	m_infoModel = nullptr;
 }
 
 QDataStream& operator<<(QDataStream& stream, const StrokeMarkTreeItem * item) 
@@ -161,7 +174,7 @@ QDataStream & operator>>(QDataStream & stream, StrokeMarkTreeItem *& item)
  * \param mark
  * \param parent
  */
-MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem *& mark, QObject * parent) :m_markItem(mark), QAbstractItemModel(parent)
+MarkItemInfoModel::MarkItemInfoModel(StrokeMarkItem *& mark, QObject * parent) : QAbstractItemModel(parent), m_markItem(mark)
 {
 	m_markItem = mark;
 

@@ -117,14 +117,14 @@ void RenderWidget::setMarkModel(MarkModel* model)
 {
 	if (m_markModel != nullptr && m_markModel != model) {
 		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
-		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
-		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
 	}
 
 	m_markModel = model;
 	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
-	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
-	connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
+	connect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
+	connect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
 
 	updateMark();
 	//emit markModelChanged();
@@ -556,7 +556,7 @@ void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 		return;
 	const auto index = m_query.query(current);
 	//m_markModel->selectionModelOfThisModel()->clear();
-	m_markModel->selectionModelOfThisModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+	m_markModel->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
 
 }
 

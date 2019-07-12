@@ -28,16 +28,43 @@
  *
  * \sa QItemSelectionModel
  */
-void SliceEditorWidget::_slot_markSelected(StrokeMarkItem* mark) {
 
-	//qDebug() << "SliceEditorWidget::_slot_markSelected " << " SliceEdtiroWidget should be clicked";
-
-	const auto selectionModel = m_markModel->selectionModelOfThisModel();
+void SliceEditorWidget::onCurrentMarkChanged(StrokeMarkItem* current)
+{
+	const auto selectionModel = m_markModel->selectionModel();
 	Q_ASSERT(selectionModel);
-	const auto index = mark->modelIndex();
-	if (index.isValid() == true) {
-		selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+	const auto currentIndex = current->modelIndex();
+	if (currentIndex.isValid())
+	{
+		const auto b = this->signalsBlocked();
+		this->blockSignals(false);
+		selectionModel->setCurrentIndex(currentIndex, QItemSelectionModel::SelectCurrent);
+		this->blockSignals(b);
 	}
+}
+
+/**
+ * \brief  This slot is called when seleteced marks have been changed in one of the tree slice widget.
+ */
+void SliceEditorWidget::onSelectedMarksChanged(const QList<StrokeMarkItem*> & selected)
+{
+	const auto selectionModel = m_markModel->selectionModel();
+	Q_ASSERT(selectionModel);
+	QItemSelection sel;
+	for(auto item:selected)
+	{
+		const auto index = item->modelIndex();
+		if(index.isValid())
+		{
+			sel.push_back(QItemSelectionRange(index));
+		}
+	}
+	const auto b = this->signalsBlocked();
+	// Blocking the slot invoked by the select operation 
+	this->blockSignals(false);
+	selectionModel->reset();
+	selectionModel->select(sel,QItemSelectionModel::Select);
+	this->blockSignals(b);
 }
 
 /**
@@ -112,10 +139,9 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 				if (item->type() == TreeItemType::Mark) {
 					const auto mark = static_cast<StrokeMarkItem*>(item->metaData());
 					mark->setSelected(false);
-					//qDebug() << "Mark Deselected";
 					/* This will emit selectionChange signal from SliceWidget and will invoke
 					 * SliceEditorWidget::_slot_markSelected again so as to call this function recursively,
-					 * so at the begining, signal is blocked first
+					 * so at the beginning, signal is blocked first
 					 */
 				}
 			}
@@ -131,7 +157,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
  */
 void SliceEditorWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
 {
-
+	// We don't do any reactions if multi marks are selected in other widgets
 }
 
 void SliceEditorWidget::_slot_topViewSliceSelection(const QPoint& pos)
@@ -243,11 +269,11 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	if (m_markModel == model)
 		return;
 
-	if (m_markModel != nullptr) 
+	if (m_markModel != nullptr)
 	{
 		// disconnect old signals
-		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
-		disconnect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
 	}
 	m_markModel->deleteLater();
 	m_markModel = model;
@@ -255,8 +281,8 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 
 	if (m_markModel != nullptr) {
 		// connect new signals 
-		connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
-		connect(m_markModel->selectionModelOfThisModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
+		connect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
+		connect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
 	}
 
 	updateMarks(SliceType::Top);
@@ -330,9 +356,11 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 
 	connect(m_topView, &SliceWidget::viewMoved, [this](const QPointF & delta) {m_rightView->translate(0.0f, delta.y()); m_frontView->translate(delta.x(), 0.0f); });
 
-	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::_slots_singleMarkSelectionChanged);
-	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::_slots_singleMarkSelectionChanged);
-	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::_slots_singleMarkSelectionChanged);
+	connect(m_topView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSelectionChangedHandler);
+	connect(m_rightView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSelectionChangedHandler);
+	connect(m_frontView, &SliceWidget::selectionChanged, this, &SliceEditorWidget::markSelectionChangedHandler);
+
+
 
 	connect(m_topView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Top); });
 	connect(m_rightView, QOverload<>::of(&SliceWidget::sliceSelected), [this]() { emit viewFocus(SliceType::Right); });
@@ -342,7 +370,9 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::_slot_rightViewSliceSelection);
 	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::_slot_frontViewSliceSelection);
 
-	connect(this, &SliceEditorWidget::markSelected, this, &SliceEditorWidget::_slot_markSelected);
+	//connect(this, &SliceEditorWidget::currentMarkChanged, this, &SliceEditorWidget::onCurrentMarkChanged);
+	
+
 	updateActions();
 	setWindowTitle(QStringLiteral("Slice Editor"));
 	m_layout->addWidget(m_topView, 0, 0, 1, 1);
@@ -550,7 +580,7 @@ QModelIndex SliceEditorWidget::_hlp_instanceAdd(const QString & category, const 
 	const auto newIndex = m_markModel->MarkModel::index(c, 0, cIndex);
 	// Create a tree item pointer
 	InstanceMetaData * metaData = new InstanceMetaData;			// Bull Shit designed
-	
+
 	metaData->setName(QStringLiteral("Instance"));
 
 	metaData->setColor(mark->pen().color());
@@ -570,7 +600,7 @@ QStringList SliceEditorWidget::categoryText() const
 	QVector<QVariant> data;
 	QStringList list;
 	m_markModel->retrieveData(m_markModel->rootItem(), TreeItemType::Category, 0, data, Qt::DisplayRole);
-	foreach(const auto & var, data) 
+	foreach(const auto & var, data)
 	{
 		Q_ASSERT_X(var.canConvert<QString>(), "MarkModel::categoryText", "convert falied");
 		list << var.toString();
@@ -616,7 +646,7 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 	//m_markModel->addMark(cate, mark);
 
 	auto i = _hlp_instanceFind(cate, mark);
-	if (!i.isValid()) 
+	if (!i.isValid())
 	{
 		i = _hlp_instanceAdd(cate, mark);
 	}
@@ -634,29 +664,6 @@ void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
 	m_markModel->setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
 }
 
-/**
- * \brief Deletes the selected marks in three slice widget
- */
-void SliceEditorWidget::deleteSelectedMarks()
-{
-	Q_ASSERT_X(m_markModel, "ImageView::markDeleteHelper", "null pointer");
-	QList<StrokeMarkItem*> items;
-
-	if (m_topView != nullptr)
-		foreach(auto item, m_topView->selectedItems())
-		items << item;
-	if (m_rightView != nullptr)
-		foreach(auto item, m_rightView->selectedItems())
-		items << item;
-	if (m_frontView != nullptr)
-		foreach(auto item, m_frontView->selectedItems())
-		items << item;
-
-	//m_markModel->removeMarks(items);
-	//TODO::
-	removeMarks(items);
-
-}
 
 /**
  * \brief This is a slot
@@ -666,19 +673,29 @@ void SliceEditorWidget::deleteSelectedMarks()
  *
  *  \sa markSelected(StrokeMarkItem * mark)
  */
-void SliceEditorWidget::_slots_singleMarkSelectionChanged()
+void SliceEditorWidget::markSelectionChangedHandler()
 {
 	const auto count = m_topView->selectedItemCount() + m_rightView->selectedItemCount() + m_frontView->selectedItemCount();
-	if (count != 1)
-		return;
-	StrokeMarkItem * item = nullptr;
-	if (m_topView->selectedItemCount() == 1)
-		item = m_topView->selectedItems()[0];
-	else if (m_rightView->selectedItemCount() == 1)
-		item = m_rightView->selectedItems()[0];
-	else if (m_frontView->selectedItemCount() == 1)
-		item = m_frontView->selectedItems()[0];
-	emit markSelected(item);
+	if (count == 1)
+	{
+		StrokeMarkItem * item = nullptr;
+		if (m_topView->selectedItemCount() == 1)
+			item = m_topView->selectedItems()[0];
+		else if (m_rightView->selectedItemCount() == 1)
+			item = m_rightView->selectedItems()[0];
+		else if (m_frontView->selectedItemCount() == 1)
+			item = m_frontView->selectedItems()[0];
+		emit currentMarkChanged(item);
+		onCurrentMarkChanged(item);
+	}else
+	{
+		QList<StrokeMarkItem*> sel;
+		sel.append(m_topView->selectedItems());
+		sel.append(m_frontView->selectedItems());
+		sel.append(m_rightView->selectedItems());
+		emit selectedMarksChanged(sel);
+		onSelectedMarksChanged(sel);
+	}
 }
 
 /**
@@ -1055,7 +1072,7 @@ QString SliceEditorWidget::currentCategory() const
  * \brief This property holds the current category that the mark will be painted on.
  *
  */
-void SliceEditorWidget::setCurrentCategory(const QString& name) 
+void SliceEditorWidget::setCurrentCategory(const QString& name)
 {
 	Q_D(SliceEditorWidget);
 	d->state->currentCategory = name;

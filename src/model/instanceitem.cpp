@@ -165,8 +165,26 @@ bool InstanceTreeItem::removeColumns(int position, int columns)
  */
 void* InstanceTreeItem::metaData() { return m_metaData; }
 
+void InstanceTreeItem::setCurrentSelected(bool selected)
+{
 
-QSharedPointer<Triangulate> InstanceTreeItem::mesh() const {
+}
+
+void InstanceTreeItem::setInfoView(QAbstractItemView* view)
+{
+	if (m_infoView != view)
+	{
+		if (m_infoView)
+			m_infoView->setModel(nullptr);
+		m_infoView = view;
+		if (m_infoView)
+			m_infoView->setModel(m_infoModel);
+	}
+}
+
+
+QSharedPointer<Triangulate> InstanceTreeItem::mesh() const 
+{
 	QList<StrokeMarkItem*> marks;
 	const auto nChild = childCount();
 	for (auto i = 0; i < nChild; i++) {
@@ -184,6 +202,7 @@ InstanceTreeItem::~InstanceTreeItem()
 {
 	delete m_metaData;
 	m_metaData = nullptr;
+	if(m_infoView) m_infoView->setModel(nullptr);
 	m_infoModel->deleteLater();
 	m_infoModel = nullptr;
 }

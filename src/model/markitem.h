@@ -9,7 +9,8 @@
 
 
 
-class StrokeMarkItem :public QGraphicsPolygonItem {
+class StrokeMarkItem :public QGraphicsPolygonItem 
+{
 	std::function<QVariant(StrokeMarkItem* mark,QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
 	QPersistentModelIndex m_modelIndex;
 

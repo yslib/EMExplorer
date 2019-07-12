@@ -502,6 +502,15 @@ bool MarkModel::removeTreeItems(const QList<TreeItem*>& items)
 	return true;
 }
 
+void MarkModel::removeSelectedItems()
+{
+	while (!selectionModel()->selection().indexes().isEmpty())
+	{
+		const auto index = selectionModel()->selection().indexes().first();
+		removeRow(index.row(), index.parent());
+	}
+}
+
 /**
  * \brief Save current marks contained in the mark model
  * \param fileName
@@ -807,7 +816,7 @@ QModelIndex MarkModel::parent(const QModelIndex & index) const
 	const auto item = treeItem(index);
 
 	if (index.isValid() == false || item == m_rootItem)
-		return QModelIndex();
+		return QModelIndex{};
 
 	const auto parentItem = item->parentItem();
 

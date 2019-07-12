@@ -670,7 +670,7 @@ void MainWindow::createWidget()
 	m_markDeletionAction->setToolTip(QStringLiteral("Delete Mark"));
 	m_markDeletionAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
 	m_markDeletionAction->setIcon(QIcon(":icons/resources/icons/delete.png"));
-	connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); m_imageView->deleteSelectedMarks(); });
+	connect(m_markDeletionAction, &QToolButton::clicked, [this](bool enable) {Q_UNUSED(enable); if(m_imageView->markModel())m_imageView->markModel()->removeSelectedItems(); });
 	m_toolBar->addWidget(m_markDeletionAction);
 	m_toolBar->addSeparator();
 
@@ -774,7 +774,6 @@ AbstractSliceDataModel * MainWindow::replaceSliceModel(AbstractSliceDataModel * 
 MarkModel * MainWindow::replaceMarkModel(MarkModel * model)
 {
 	return m_imageView->takeMarkModel(model, nullptr);
-
 }
 
 QAbstractTableModel * MainWindow::replaceProfileModel(QAbstractTableModel * model)
