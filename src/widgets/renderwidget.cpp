@@ -419,6 +419,7 @@ void RenderWidget::mouseMoveEvent(QMouseEvent* event)
 	// Update Camera
 	float dx = p.x() - d->lastMousePos.x();
 	float dy = d->lastMousePos.y() - p.y();
+    if(dx * dy <1e-8)return;
 	if ((event->buttons() & Qt::LeftButton) && (event->buttons() & Qt::RightButton))
 	{
 		//const auto direction = m_camera.up()*dy + m_camera.right()*dx;
