@@ -51,10 +51,10 @@ void SliceEditorWidget::onSelectedMarksChanged(const QList<StrokeMarkItem*> & se
 	const auto selectionModel = m_markModel->selectionModel();
 	Q_ASSERT(selectionModel);
 	QItemSelection sel;
-	for(auto item:selected)
+	for (auto item : selected)
 	{
 		const auto index = item->modelIndex();
-		if(index.isValid())
+		if (index.isValid())
 		{
 			sel.push_back(QItemSelectionRange(index));
 		}
@@ -63,7 +63,7 @@ void SliceEditorWidget::onSelectedMarksChanged(const QList<StrokeMarkItem*> & se
 	// Blocking the slot invoked by the select operation 
 	this->blockSignals(false);
 	selectionModel->reset();
-	selectionModel->select(sel,QItemSelectionModel::Select);
+	selectionModel->select(sel, QItemSelectionModel::Select);
 	this->blockSignals(b);
 }
 
@@ -76,7 +76,7 @@ void SliceEditorWidget::onSelectedMarksChanged(const QList<StrokeMarkItem*> & se
  * This is only for class internal use
  *
  */
-void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous)
+void SliceEditorWidget::onExternalCurrentMarkChanged(const QModelIndex & current, const QModelIndex & previous)
 {
 
 	const auto item1 = static_cast<TreeItem*>(current.internalPointer());
@@ -155,7 +155,7 @@ void SliceEditorWidget::_slot_currentChanged_selectionModel(const QModelIndex & 
 /**
  * \brief This slot is not be used so far.
  */
-void SliceEditorWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
+void SliceEditorWidget::onExternalSelectedMarksChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
 	// We don't do any reactions if multi marks are selected in other widgets
 }
@@ -272,8 +272,8 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 	if (m_markModel != nullptr)
 	{
 		// disconnect old signals
-		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
-		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::onExternalCurrentMarkChanged);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::onExternalSelectedMarksChanged);
 	}
 	m_markModel->deleteLater();
 	m_markModel = model;
@@ -281,8 +281,8 @@ void SliceEditorWidget::installMarkModel(MarkModel* model)
 
 	if (m_markModel != nullptr) {
 		// connect new signals 
-		connect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::_slot_currentChanged_selectionModel);
-		connect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::_slot_selectionChanged_selectionModel);
+		connect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &SliceEditorWidget::onExternalCurrentMarkChanged);
+		connect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &SliceEditorWidget::onExternalSelectedMarksChanged);
 	}
 
 	updateMarks(SliceType::Top);
@@ -371,7 +371,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::_slot_frontViewSliceSelection);
 
 	//connect(this, &SliceEditorWidget::currentMarkChanged, this, &SliceEditorWidget::onCurrentMarkChanged);
-	
+
 
 	updateActions();
 	setWindowTitle(QStringLiteral("Slice Editor"));
@@ -687,15 +687,14 @@ void SliceEditorWidget::markSelectionChangedHandler()
 			item = m_frontView->selectedItems()[0];
 		emit currentMarkChanged(item);
 		onCurrentMarkChanged(item);
-	}else
-	{
-		QList<StrokeMarkItem*> sel;
-		sel.append(m_topView->selectedItems());
-		sel.append(m_frontView->selectedItems());
-		sel.append(m_rightView->selectedItems());
-		emit selectedMarksChanged(sel);
-		onSelectedMarksChanged(sel);
 	}
+
+	QList<StrokeMarkItem*> sel;
+	sel.append(m_topView->selectedItems());
+	sel.append(m_frontView->selectedItems());
+	sel.append(m_rightView->selectedItems());
+	emit selectedMarksChanged(sel);
+	onSelectedMarksChanged(sel);
 }
 
 /**

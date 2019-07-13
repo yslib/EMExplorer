@@ -133,9 +133,9 @@ public slots:
 private slots:
 	void			updateMark();
 	void			_slot_markModelDataChanged(const QModelIndex & begin, const QModelIndex & end, const QVector<int>& role);
-	void			_slot_currentMeshChanged(int current, int previous);
-	void			_slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous);
-	void			_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
+	void			onCurrentMeshChanged(int current, int previous);
+	void			oExternalCurrentMarkChanged(const QModelIndex & current, const QModelIndex & previous);
+	void			onExternalSelectedMarksChanged(const QItemSelection & selected, const QItemSelection & deselected);
 
 private:
 	//void			drawCoordinate(QPainter* painter);

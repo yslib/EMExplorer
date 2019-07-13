@@ -196,9 +196,9 @@ private slots:
 
 	void onSelectedMarksChanged(const QList<StrokeMarkItem*> & selected);
 
-	void _slot_currentChanged_selectionModel(const QModelIndex & current, const QModelIndex & previous);
+	void onExternalCurrentMarkChanged(const QModelIndex & current, const QModelIndex & previous);
 
-	void _slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected);
+	void onExternalSelectedMarksChanged(const QItemSelection & selected, const QItemSelection & deselected);
 
 	void _slot_topViewSliceSelection(const QPoint & pos);
 

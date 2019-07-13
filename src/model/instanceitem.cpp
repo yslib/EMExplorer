@@ -203,7 +203,7 @@ InstanceTreeItem::~InstanceTreeItem()
 	delete m_metaData;
 	m_metaData = nullptr;
 	if(m_infoView) m_infoView->setModel(nullptr);
-	m_infoModel->deleteLater();
+	if(m_infoModel)m_infoModel->deleteLater();
 	m_infoModel = nullptr;
 }
 

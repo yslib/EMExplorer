@@ -680,7 +680,7 @@ void SliceVolume::reloadVolumeData()
 		case VoxelType::UInt8:ptype = QOpenGLTexture::UInt8; break;
 		default: Q_ASSERT(false);
 	}
-	qDebug() << pfmt << " " << ptype;
+	//qDebug() << pfmt << " " << ptype;
 	m_volumeTexture->setData(pfmt, ptype, data());		//External format
 }
 

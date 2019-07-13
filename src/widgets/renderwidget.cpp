@@ -117,14 +117,14 @@ void RenderWidget::setMarkModel(MarkModel* model)
 {
 	if (m_markModel != nullptr && m_markModel != model) {
 		disconnect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
-		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
-		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::oExternalCurrentMarkChanged);
+		disconnect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::onExternalSelectedMarksChanged);
 	}
 
 	m_markModel = model;
 	connect(m_markModel, &MarkModel::dataChanged, this, &RenderWidget::_slot_markModelDataChanged);
-	connect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::_slot_currentChanged_selectionModel);
-	connect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::_slot_selectionChanged_selectionModel);
+	connect(m_markModel->selectionModel(), &QItemSelectionModel::currentChanged, this, &RenderWidget::oExternalCurrentMarkChanged);
+	connect(m_markModel->selectionModel(), &QItemSelectionModel::selectionChanged, this, &RenderWidget::onExternalSelectedMarksChanged);
 
 	updateMark();
 	//emit markModelChanged();
@@ -464,7 +464,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 		d->selectedObjectId = selectMesh(p.x(), p.y());
 
 
-		_slot_currentMeshChanged(d->selectedObjectId, previous);
+		onCurrentMeshChanged(d->selectedObjectId, previous);
 		d->enableStartPicking = false;
 		repaint();			// Show the result immediately
 	}
@@ -549,7 +549,7 @@ void RenderWidget::_slot_markModelDataChanged(const QModelIndex & begin, const Q
 /**
  * \brief This is a private slot function
  */
-void RenderWidget::_slot_currentMeshChanged(int current, int previous)
+void RenderWidget::onCurrentMeshChanged(int current, int previous)
 {
 	//qDebug() << "RenderWidget::_slot_currentMeshChanged " << " RenderWidget should be clicked";
 	if (m_markModel == nullptr)
@@ -563,7 +563,7 @@ void RenderWidget::_slot_currentMeshChanged(int current, int previous)
 /**
  * \brief This is a private slot function
  */
-void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& current,
+void RenderWidget::oExternalCurrentMarkChanged(const QModelIndex& current,
 	const QModelIndex& previous) {
 
 	const auto treeItem = static_cast<TreeItem*>(current.internalPointer());
@@ -600,7 +600,7 @@ void RenderWidget::_slot_currentChanged_selectionModel(const QModelIndex& curren
 /**
  * \brief This is a private slot function
  */
-void RenderWidget::_slot_selectionChanged_selectionModel(const QItemSelection & selected, const QItemSelection & deselected)
+void RenderWidget::onExternalSelectedMarksChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
 
 }

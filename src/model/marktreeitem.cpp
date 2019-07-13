@@ -146,6 +146,8 @@ StrokeMarkTreeItem::~StrokeMarkTreeItem()
 {
 	delete m_markItem;
 	m_markItem = nullptr;		//Without this, the program will crash.
+	if (m_infoView)
+		m_infoView->setModel(nullptr);
 	m_infoModel->deleteLater();
 	m_infoModel = nullptr;
 }

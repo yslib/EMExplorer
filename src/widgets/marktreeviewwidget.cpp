@@ -273,7 +273,6 @@ void MarkManager::treeViewClicked(const QModelIndex& index) {
 void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous)
 {
 	Q_UNUSED(previous);
-	qDebug() << "treeViewCurrentIndexChanged";
 	const auto item = static_cast<TreeItem *>(current.internalPointer());
 	if (item != nullptr) {
 		item->setInfoView(m_infoView);

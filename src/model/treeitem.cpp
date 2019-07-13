@@ -25,11 +25,11 @@ void TreeItem::updateChildQPersistentModelIndex(TreeItem*item,int row) {
 	const auto m = m_persistentModelIndex.model();
 	if(m == nullptr) {
 		item->m_persistentModelIndex = QModelIndex();
-		qDebug() << "QPersistentModelIndex created invalid";
+		//qDebug() << "QPersistentModelIndex created invalid";
 	}else {
 		
 		item->m_persistentModelIndex = m->index(row,0,m_persistentModelIndex);
-		qDebug() << item->persistentModelIndex().isValid();
+		//qDebug() << item->persistentModelIndex().isValid();
 	}
 }
 
@@ -53,7 +53,6 @@ const QAbstractItemModel* TreeItem::itemModel() const
  */
 void TreeItem::appendChild(TreeItem* child) {
 	Q_ASSERT_X(child, "TreeItem::appendChild", "null pointer");
-
 	child->setParentItem(this);
 	m_children.append(child);
 	updateChildQPersistentModelIndex(child, m_children.size() - 1);

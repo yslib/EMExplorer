@@ -232,7 +232,7 @@ RenderParameterWidget::RenderParameterWidget(RenderWidget * widget, QWidget* par
 
 void RenderParameterWidget::updateDataModel() {
 	// Volume update
-	qDebug() << "RenderParameterWidget::updateDataModel has been called";
+	//qDebug() << "RenderParameterWidget::updateDataModel has been called";
 	m_tfEditor->setVolumeInformation(m_widget->volume());
 }
 
