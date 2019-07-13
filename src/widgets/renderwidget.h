@@ -11,7 +11,7 @@
 #include "algorithm/bimap.h"
 
 #include <QOpenGLTexture>
-#include <QTreeView>
+#include "model/treeitem.h"
 
 
 class MarkModel;
@@ -172,7 +172,7 @@ private:
 	//Mark Mesh
 
 	QList<MeshIntegration>					m_integration;
-	BiMap<QPersistentModelIndex,int>		m_query;
+	BiMap<QPersistentModelIndex,int>						m_query;
 	QScopedPointer<SliceVolume>				m_volume;
 
 

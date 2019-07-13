@@ -126,7 +126,7 @@ public:
 
 	void* metaData() override;
 
-	void setInfoView(QAbstractItemView* view) override;
+	void setModelView(QAbstractItemView* view) override;
 
 	~CategoryTreeItem();
 

@@ -69,7 +69,7 @@ public:
 	void * metaData() override;
 	void setCurrentSelected(bool selected) override;
 
-	void setInfoView(QAbstractItemView* view) override;
+	void setModelView(QAbstractItemView* view) override;
 
 	QRectF boundingBox() const { return m_metaData->region(); }
 	void setBoundingBox(const QRectF& rect) { m_metaData->setRegion(rect); }

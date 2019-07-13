@@ -502,7 +502,6 @@ void RenderWidget::setTopSliceVisible(bool check)
 {
 	if (m_volume != nullptr) {
 		m_volume->setTopSliceVisible(check);
-		update();
 	}
 }
 
@@ -556,8 +555,10 @@ void RenderWidget::onCurrentMeshChanged(int current, int previous)
 		return;
 	const auto index = m_query.query(current);
 	//m_markModel->selectionModelOfThisModel()->clear();
+	const auto b = this->signalsBlocked();
+	this->blockSignals(true);
 	m_markModel->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
-
+	this->blockSignals(false);
 }
 
 /**
@@ -567,16 +568,20 @@ void RenderWidget::oExternalCurrentMarkChanged(const QModelIndex& current,
 	const QModelIndex& previous) {
 
 	const auto treeItem = static_cast<TreeItem*>(current.internalPointer());
-	if (treeItem != nullptr) {
-		if (treeItem->type() == TreeItemType::Mark) {
+	if (treeItem != nullptr) 
+	{
+		if (treeItem->type() == TreeItemType::Mark) 
+		{
 
 			// The parent item of a mark item, which should be a mesh item should also be selected
 
 			//qDebug() << "RenderWidget::_slot_currentChanged_selectionModel " << " Mark should be clicked from SliceEditorWidget";
 			const auto parent = m_markModel->parent(current);
-			if (static_cast<TreeItem*>(parent.internalPointer())->type() == TreeItemType::Instance) {
+			if (static_cast<TreeItem*>(parent.internalPointer())->type() == TreeItemType::Instance) 
+			{
 				const auto id = m_query.query(parent);
-				if (id != -1) {
+				if (id != -1) 
+				{
 					Q_D(RenderWidget);
 					d->selectedObjectId = id;
 					update();
@@ -584,10 +589,12 @@ void RenderWidget::oExternalCurrentMarkChanged(const QModelIndex& current,
 			}
 
 		}
-		else {		// Mesh item is selected
+		else if(treeItem->type() == TreeItemType::Instance)
+		{		// Mesh item is selected
 			//qDebug() << "RenderWidget::_slot_currentChanged_selectionModel " << " Instance should be clicked from QTreeView";
 			const auto id = m_query.query(current);
-			if (id != -1) {
+			if (id != -1) 
+			{
 				Q_D(RenderWidget);
 				d->selectedObjectId = id;
 				update();
@@ -684,7 +691,8 @@ ysl::Transform RenderWidget::worldMatrix() const
 /**
  * \brief This is a private
  */
-void RenderWidget::updateMark() {
+void RenderWidget::updateMark() 
+{
 
 	Q_D(RenderWidget);
 	if (m_markModel == nullptr || m_dataModel == nullptr)
@@ -693,6 +701,7 @@ void RenderWidget::updateMark() {
 	}
 
 	m_integration.clear();
+
 	m_query.clear();
 	//const auto cates = m_markModel->categoryText();
 	makeCurrent();
@@ -707,7 +716,8 @@ void RenderWidget::updateMark() {
 	{
 		const auto instances = m_markModel->treeItems(QModelIndex(), TreeItemType::Instance);
 		
-		for (const auto & inst : instances) {
+		for (const auto & inst : instances) 
+		{
 			const auto item = static_cast<InstanceTreeItem*>(inst);
 			const auto mesh = item->mesh();
 			const auto metaData = reinterpret_cast<InstanceMetaData*>(item->metaData());

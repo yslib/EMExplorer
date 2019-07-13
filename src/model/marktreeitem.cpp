@@ -40,11 +40,8 @@ m_infoModel(nullptr) {
 	//QVariant::Color;
 
 	m_markItem->m_modelIndex = persistentModelIndex();
-
 	m_infoModel = new MarkItemInfoModel(m_markItem, nullptr);
-
 	//Q_ASSERT(parentItem());
-
 	m_markItem->setName(QStringLiteral("Mark"));
 }
 
@@ -127,7 +124,7 @@ void* StrokeMarkTreeItem::metaData()
 	return static_cast<void*>(m_markItem);
 }
 
-void StrokeMarkTreeItem::setInfoView(QAbstractItemView* view)
+void StrokeMarkTreeItem::setModelView(QAbstractItemView* view)
 {
 	if(m_infoView != view)
 	{

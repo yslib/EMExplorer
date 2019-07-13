@@ -170,7 +170,7 @@ void InstanceTreeItem::setCurrentSelected(bool selected)
 
 }
 
-void InstanceTreeItem::setInfoView(QAbstractItemView* view)
+void InstanceTreeItem::setModelView(QAbstractItemView* view)
 {
 	if (m_infoView != view)
 	{

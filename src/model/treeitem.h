@@ -19,41 +19,6 @@ enum  TreeItemType
 QDataStream & operator<<(QDataStream & stream, const TreeItemType &type);
 QDataStream & operator>>(QDataStream & stream, TreeItemType &type);
 
-#define RAW_POINTER_TYPE
-
-#define PTR_TYPE(TYPE) __PTR_TYPE_(TYPE)
-#define INTERNAL_PTR(x) __INTERNAL_PTR_(x)
-
-#ifdef RAW_POINTER_TYPE
-#define __TREE_NODE_POINTER_TYPE_RAW_PTR_
-#elif defined(STD_UNIQUE_POINTER_TYPE)
-#define __TREE_NODE_POINTER_TYPE_STD_UNIQUE_PTR_
-#elif defined(STD_SHARED_POINTER_TYPE)
-#define __TREE_NODE_POINTER_TYPE_STD_SHARED_PTR_
-#elif defined(QT_SCOPED_POINTER_TYPE)
-#define __TREE_NODE_POINTER_TYPE_QT_SCOPED_PTR_
-#elif defined(QT_SHARED_POINTER_TYPE)
-#define __TREE_NODE_POINTER_TYPE_QT_SHARED_PTR_
-#endif
-
-
-#ifdef __TREE_NODE_POINTER_TYPE_RAW_PTR_
-	#define __PTR_TYPE_(TYPE) TYPE*
-	#define __INTERNAL_PTR_(x) (x)
-#elif defined(__TREE_NODE_POINTER_TYPE_STD_UNIQUE_PTR_)
-	#define __PTR_TYPE_(TYPE) std::unique_ptr<TYPE>
-	#define __INTERNAL_PTR_(x) (x.get())
-#elif defined (__TREE_NODE_POINTER_TYPE_QT_SCOPED_PTR_)
-	#define __PTR_TYPE_(TYPE) std::shared_ptr<TYPE>
-	#define __INTERNAL_PTR_(x) (x.get())
-#elif defined(__TREE_NODE_POINTER_TYPE_STD_SHARED_PTR_)
-	#define __PTR_TYPE_(TYPE) QSharedPointer<TYPE>
-	#define __INTERNAL_PTR_(x) (x.get())
-#elif defined(__TREE_NODE_POINTER_TYPE_QT_SHARED_PTR_)
-	#define __PTR_TYPE_(TYPE) QScopedPointer<TYPE>
-	#define __INTERNAL_PTR_(x) (x.get())
-#endif
-
 
 class AbstractTreeItemMetaData 
 {
@@ -63,33 +28,22 @@ public:
 	void * internalPointer()const;
 };
 
-
+/**
+ * \brief It is used to represent a generic item in QAbstractItemModel
+ */
 class TreeItem
 {
 	TreeItem* m_parent;
 	QVector<TreeItem*> m_children;
-
 	QPersistentModelIndex m_persistentModelIndex;
-
 	void updateChildQPersistentModelIndex(TreeItem * item, int row);
-	void updateModelIndex(const QPersistentModelIndex & index){m_persistentModelIndex = index;	modelIndexChanged(index);}
+	void setModelIndex(const QPersistentModelIndex & index){m_persistentModelIndex = index;	modelIndexChanged(index);}
 protected:
-
-	//void setModelIndex(const QPersistentModelIndex & index) { m_persistentModelIndex = index; }
-	virtual void modelIndexChanged(const QPersistentModelIndex & index) 
-	{
-		Q_UNUSED(index);
-	}
+	virtual void modelIndexChanged(const QPersistentModelIndex & index) {Q_UNUSED(index);}
 public:
-	explicit TreeItem(const QPersistentModelIndex & pIndex,PTR_TYPE(TreeItem)parent = nullptr) :
-	m_parent(nullptr)
-	{
-		m_parent = parent;
-		m_persistentModelIndex = pIndex;
-	}
+	explicit TreeItem(const QPersistentModelIndex& pIndex, TreeItem* parent = nullptr);
 	virtual ~TreeItem();
 
-	
 	/**
 	 * \brief Returns the model index refers to the item in the model
 	 * 
@@ -121,9 +75,9 @@ public:
 	virtual void * metaData() = 0;
 
 
-	virtual void setInfoView(QAbstractItemView*view) = 0;
+	virtual void setModelView(QAbstractItemView * view) = 0;
 	const QPersistentModelIndex & persistentModelIndex()const { return m_persistentModelIndex; }
-	const QAbstractItemModel* itemModel() const;
+	const QAbstractItemModel * itemModel() const;
 
 	friend QDataStream & operator<<(QDataStream & stream, const TreeItem * item);
 	friend QDataStream & operator>>(QDataStream & stream, TreeItem *& item);
@@ -135,7 +89,8 @@ public:
 /**
  * \brief This instance of the class represents a empty node in mark tree view
  */
-class EmptyTreeItem:public TreeItem {
+class EmptyTreeItem:public TreeItem 
+{
 public:
 	EmptyTreeItem(const QPersistentModelIndex & pModelIndex, TreeItem * parent):TreeItem(pModelIndex,parent){}
 	QVariant data(int column, int role) const override { return QVariant{}; }
@@ -145,7 +100,7 @@ public:
 	bool insertColumns(int position, int columns) override {Q_UNUSED(position);Q_UNUSED(columns);	return false;}
 	bool removeColumns(int position, int columns) override {Q_UNUSED(position);Q_UNUSED(columns);return false;}
 	void * metaData() override { return nullptr; }
-	void setInfoView(QAbstractItemView *view) override{}
+	void setModelView(QAbstractItemView *view) override{}
 };
 
 

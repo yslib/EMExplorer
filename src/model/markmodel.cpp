@@ -317,11 +317,9 @@ MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
 	m_identity(dataModel)
 {
 	m_rootItem = new RootTreeItem(QModelIndex(), nullptr);
-	m_rootItem->updateModelIndex(createIndex(0, 0, m_rootItem));
+	m_rootItem->setModelIndex(createIndex(0, 0, m_rootItem));
 	initSliceMarkContainerHelper();
 }
-
-
 
 /**
  * \brief Creates a mark model from a file.
@@ -681,7 +679,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 		delete item->takeChild(index.row(), newItem, nullptr);
 		// Update the internal pointer refer to underlying data
 		const auto newIndex = createIndex(index.row(), index.column(), newItem);
-		newItem->updateModelIndex(newIndex);
+		newItem->setModelIndex(newIndex);
 		emit dataChanged(newIndex, newIndex, QVector<int>{role});
 		return true;
 	}

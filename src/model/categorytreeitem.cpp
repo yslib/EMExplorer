@@ -162,7 +162,7 @@ int CategoryTreeItem::type() const { return TreeItemType::Category; }
  */
 void* CategoryTreeItem::metaData() { return static_cast<void*>(&m_categoryItem); }
 
-void CategoryTreeItem::setInfoView(QAbstractItemView* view)
+void CategoryTreeItem::setModelView(QAbstractItemView* view)
 {
 	if (m_infoView != view)
 	{

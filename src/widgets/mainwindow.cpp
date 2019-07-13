@@ -618,19 +618,19 @@ void MainWindow::createWidget()
 	m_toolBar->addWidget(m_markAction);
 	m_markButtonGroup->addButton(m_markAction);
 
-	m_markEraseAction = new QToolButton(this);
-	m_markEraseAction->setToolTip(QStringLiteral("Erase Mark"));
-	m_markEraseAction->setCheckable(true);
-	m_markEraseAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
-	m_markEraseAction->setIcon(QIcon(":icons/resources/icons/eraser.png"));
-	connect(m_markEraseAction,&QToolButton::toggled,[this](bool enable) 
-	{
-		m_imageView->topView()->setOperation(SliceWidget::Operation::Erase);
-		m_imageView->rightView()->setOperation(SliceWidget::Operation::Erase);
-		m_imageView->frontView()->setOperation(SliceWidget::Operation::Erase);
-	});
-	m_toolBar->addWidget(m_markEraseAction);
-	m_markButtonGroup->addButton(m_markEraseAction);
+	//m_markEraseAction = new QToolButton(this);
+	//m_markEraseAction->setToolTip(QStringLiteral("Erase Mark"));
+	//m_markEraseAction->setCheckable(true);
+	//m_markEraseAction->setStyleSheet("QToolButton::menu-indicator{image: none;}");
+	//m_markEraseAction->setIcon(QIcon(":icons/resources/icons/eraser.png"));
+	//connect(m_markEraseAction,&QToolButton::toggled,[this](bool enable) 
+	//{
+	//	m_imageView->topView()->setOperation(SliceWidget::Operation::Erase);
+	//	m_imageView->rightView()->setOperation(SliceWidget::Operation::Erase);
+	//	m_imageView->frontView()->setOperation(SliceWidget::Operation::Erase);
+	//});
+	//m_toolBar->addWidget(m_markEraseAction);
+	//m_markButtonGroup->addButton(m_markEraseAction);
 	
 
 	// Selection Tool Button

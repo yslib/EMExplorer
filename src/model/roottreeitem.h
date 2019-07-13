@@ -22,7 +22,7 @@ class RootTreeItem : public TreeItem {
 		for (auto i = 0; i < nChild; i++) {
 			auto ch = item->child(i);
 			const auto index = parent.model()->index(i, 0, parent);
-			ch->updateModelIndex(index);
+			ch->setModelIndex(index);
 			_internal_setModelIndexRecursively(ch, index);
 		}
 	}
@@ -36,7 +36,7 @@ public:
 	bool setData(int column, const QVariant& value, int role) override{return false;}
 	int type() const override { return TreeItemType::Root; }
 	void * metaData()override { return nullptr; }
-	void setInfoView(QAbstractItemView* view) override{}
+	void setModelView(QAbstractItemView* view) override{}
 
 	friend class MarkModel;
 

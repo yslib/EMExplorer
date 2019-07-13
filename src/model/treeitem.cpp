@@ -33,6 +33,13 @@ void TreeItem::updateChildQPersistentModelIndex(TreeItem*item,int row) {
 	}
 }
 
+TreeItem::TreeItem(const QPersistentModelIndex& pIndex, TreeItem* parent):
+	m_parent(nullptr)
+{
+	m_parent = parent;
+	m_persistentModelIndex = pIndex;
+}
+
 TreeItem::~TreeItem()
 {
 	qDeleteAll(m_children);

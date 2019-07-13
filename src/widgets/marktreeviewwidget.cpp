@@ -258,7 +258,7 @@ void MarkManager::treeViewClicked(const QModelIndex& index) {
 	const auto item = static_cast<TreeItem *>(index.internalPointer());
 	if (item != nullptr) {
 		//m_infoView->setModel(item->infoModel());
-		item->setInfoView(m_infoView);
+		item->setModelView(m_infoView);
 		if (item->type() == TreeItemType::Mark) 
 		{
 			const auto m = static_cast<StrokeMarkItem*>(item->metaData());
@@ -275,7 +275,7 @@ void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & current, const
 	Q_UNUSED(previous);
 	const auto item = static_cast<TreeItem *>(current.internalPointer());
 	if (item != nullptr) {
-		item->setInfoView(m_infoView);
+		item->setModelView(m_infoView);
 		if(item->type() == TreeItemType::Mark) {
 			const auto m = static_cast<StrokeMarkItem*>(item->metaData());
 			m->setSelected(true);
