@@ -1,0 +1,8 @@
+<map id="SliceEditorWidget::topView" name="SliceEditorWidget::topView">
+<area shape="rect" id="node2" href="$class_abstract_slice_editor_plugin.html#acf6f78dc8de45837e93ea40e954229c3" title="AbstractSliceEditorPlugin\l::sliceItem" alt="" coords="188,37,359,79"/>
+<area shape="rect" id="node5" href="$class_abstract_slice_editor_plugin.html#a29873bf3e1eab96e9fbf6637b3148a1f" title="AbstractSliceEditorPlugin\l::view" alt="" coords="188,103,359,144"/>
+<area shape="rect" id="node6" href="$class_category_control_widget.html#aad862c247bffd2f918f6c3fd8933a6b6" title="Returns the number of category. " alt="" coords="195,168,351,209"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="192,234,355,261"/>
+<area shape="rect" id="node3" href="$class_histogram_widget.html#af51939268974d652f61ee3f98461d4e6" title="Constructs a widgets used for image processing for certain type type of slice in sliceEditor. " alt="" coords="410,5,599,47"/>
+<area shape="rect" id="node4" href="$class_histogram_widget.html#ad3afdcd1e87ed52d02def3c66b272e6f" title="HistogramWidget::updateData\lModel" alt="" coords="407,71,603,112"/>
+</map>

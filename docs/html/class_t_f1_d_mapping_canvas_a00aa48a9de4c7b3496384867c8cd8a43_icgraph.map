@@ -1,0 +1,7 @@
+<map id="TF1DMappingCanvas::load" name="TF1DMappingCanvas::load">
+<area shape="rect" id="node2" href="$class_t_f1_d_editor.html#a26f799505f51abb6da4bfcbd79442287" title="TF1DEditor::loadTransfer\lFunction" alt="" coords="229,23,395,65"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#a4362a9c099ca0a2f1e84bd4a0ce81603" title="TF1DMappingCanvas::\lisThresholdClipped" alt="" coords="236,89,388,130"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17" title="TF1DEditor::createConnections" alt="" coords="443,5,645,32"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="453,56,635,83"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#a09bea74dece8749643ad6e55cb8cb8a4" title="TF1DEditor::TF1DEditor" alt="" coords="693,5,853,32"/>
+</map>

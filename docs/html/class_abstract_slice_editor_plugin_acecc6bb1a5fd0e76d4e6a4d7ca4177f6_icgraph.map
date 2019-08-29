@@ -1,0 +1,9 @@
+<map id="AbstractSliceEditorPlugin::currentIndex" name="AbstractSliceEditorPlugin::currentIndex">
+<area shape="rect" id="node2" href="$class_abstract_slice_editor_plugin.html#a766c82709b5b768483d350e486d793b9" title="AbstractSliceEditorPlugin\l::setCurrentImage" alt="" coords="224,27,395,69"/>
+<area shape="rect" id="node3" href="$class_histogram_widget.html#af51939268974d652f61ee3f98461d4e6" title="Constructs a widgets used for image processing for certain type type of slice in sliceEditor. " alt="" coords="446,21,635,62"/>
+<area shape="rect" id="node4" href="$class_histogram_widget.html#ad3afdcd1e87ed52d02def3c66b272e6f" title="HistogramWidget::updateData\lModel" alt="" coords="443,86,639,127"/>
+<area shape="rect" id="node5" href="$class_abstract_slice_editor_plugin.html#a9cfc9e11d08a69343cb80ddee93de890" title="AbstractSliceEditorPlugin\l::currentImage" alt="" coords="224,145,395,186"/>
+<area shape="rect" id="node6" href="$class_pixel_widget.html#a3b274a09b7c4d878078f5c771c706214" title="PixelWidget::setPosition" alt="" coords="458,152,623,179"/>
+<area shape="rect" id="node8" href="$class_pixel_widget.html#a56d5bd3464befa2267a84edc93863377" title="PixelWidget::resizeEvent" alt="" coords="457,203,624,229"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="687,152,849,179"/>
+</map>

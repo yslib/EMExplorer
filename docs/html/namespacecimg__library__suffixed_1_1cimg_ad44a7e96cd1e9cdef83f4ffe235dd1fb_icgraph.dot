@@ -1,0 +1,35 @@
+digraph "cimg_library_suffixed::cimg::fwrite"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1846 [label="cimg_library_suffixed\l::cimg::fwrite",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1846 -> Node1847 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1847 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_bmp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae9faefb948746c5d646fe5c80f28c4fc"];
+  Node1846 -> Node1848 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1848 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pnm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3b62455c9523881fa64a47d8362c3d80"];
+  Node1846 -> Node1849 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1849 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pnk",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4bcf33abcee45165d20d9530f6c85242"];
+  Node1846 -> Node1850 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1850 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_pfm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a65be74d7d22bb71e708b3beb8e9cae49"];
+  Node1846 -> Node1851 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1851 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_rgb",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a06c5e27c1dde885a96cfdad05835644e"];
+  Node1846 -> Node1852 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1852 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_rgba",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a974a21a1c7242ff9b08e4590701d920d"];
+  Node1846 -> Node1853 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1853 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_analyze",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a09711118d3b31870942e99adbefffed1",tooltip="Save image as an ANALYZE7.5 or NIFTI file. "];
+  Node1846 -> Node1854 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1854 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_inr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa29c8a2179f282535660800f9b9192e0"];
+  Node1846 -> Node1855 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1855 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_raw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a069feb3e722bb4a1f52ea72c1c86ca97"];
+  Node1846 -> Node1856 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1856 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_save_yuv",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#afa25415a30608d507bc22bd6b85b5c1e"];
+  Node1846 -> Node1857 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1857 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_save_cimg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af99c31c0d24c46734145e1910ca44323"];
+  Node1846 -> Node1858 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1858 [label="MRC::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_m_r_c.html#a4ae191acd7cc9f1755ccc5eef50fbf60"];
+  Node1846 -> Node1859 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1859 [label="MRC::~MRC",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_m_r_c.html#a66caa183358483da3132577265d1766c"];
+  Node1859 -> Node1860 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1860 [label="MRC::fileName",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_m_r_c.html#a9f8886cbc2b54c73ca37468eba585624"];
+}

@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::cimg::type::string"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node69 [label="cimg_library_suffixed\l::cimg::type::string",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node69 -> Node70 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node70 [label="cimg_library_suffixed\l::CImg\< charT \>::pixel_type",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab5cb3e6f07f2cd894641aa6a26807c1e",tooltip="Return the type of image pixel values as a C string. "];
+  Node69 -> Node71 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node71 [label="cimg_library_suffixed\l::CImg\< charT \>::load_minc2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#afef1911ae374b6dc61cc2276407da523",tooltip="Load image from a MINC2 file. "];
+  Node69 -> Node72 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node72 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lpixel_type",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a55a11e1b7827dac9e38f29e1c4cfb3ec",tooltip="Return the type of image pixel values as a C string. "];
+}

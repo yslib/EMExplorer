@@ -1,0 +1,7 @@
+<map id="ZoomWidget::minZoomFactor" name="ZoomWidget::minZoomFactor">
+<area shape="rect" id="node2" href="$class_zoom_widget.html#a15cc026ae956081d262f8f5d2b8cb8a7" title="ZoomWidget::~ZoomWidget" alt="" coords="259,5,443,32"/>
+<area shape="rect" id="node3" href="$class_zoom_widget.html#a9103b1a6bb4ecb43b81d6fdad2aceb17" title="ZoomWidget::paintEvent" alt="" coords="269,56,432,83"/>
+<area shape="rect" id="node4" href="$class_zoom_widget.html#a17ac4cb299904cc18921cd8508b064dc" title="ZoomWidget::mousePressEvent" alt="" coords="247,107,455,133"/>
+<area shape="rect" id="node6" href="$class_zoom_widget.html#a4af66e273926feab0387f2a1fdc802e9" title="ZoomWidget::wheelEvent" alt="" coords="267,157,435,184"/>
+<area shape="rect" id="node5" href="$class_zoom_widget.html#ab340e2ece6ced871f750027e546d7722" title="ZoomWidget::zoomRegion" alt="" coords="503,132,677,159"/>
+</map>

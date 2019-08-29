@@ -1,0 +1,8 @@
+<map id="StrokeMarkItem::visibleState" name="StrokeMarkItem::visibleState">
+<area shape="rect" id="node2" href="$class_mark_model.html#aa7e4d6a9ebf4ac59119acd01fa62eeed" title="This is a convenience function to returns the root tree item pointer. " alt="" coords="264,13,405,39"/>
+<area shape="rect" id="node4" href="$class_stroke_mark_tree_item.html#ac1f21b0b743cafbeb63938e33af688f7" title="StrokeMarkTreeItem\l::data" alt="" coords="265,64,404,105"/>
+<area shape="rect" id="node5" href="$class_mark_item_info_model.html#a24b51b0bb77f90e7d206fbcbe9518608" title="Returns the data located in index. " alt="" coords="253,130,417,157"/>
+<area shape="rect" id="node7" href="$class_slice_widget.html#aeee965538f34ea8389c0fcdc6209106f" title="SliceWidget::mouseRelease\lEvent" alt="" coords="241,181,428,223"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="482,5,617,47"/>
+<area shape="rect" id="node6" href="$class_stroke_mark_tree_item.html#a9b99f4fbcd73531b7f70b12ce930fff0" title="StrokeMarkTreeItem\l::modelIndexChanged" alt="" coords="476,123,623,164"/>
+</map>

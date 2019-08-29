@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::get_vector_at"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2122 [label="cimg_library_suffixed\l::CImg::get_vector_at",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2122 -> Node2123 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2123 [label="cimg_library_suffixed\l::CImg\< charT \>::texturize\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a42395174c544ec66191539bf76fcb360",tooltip="Texturize primitives of a 3d object. "];
+  Node2122 -> Node2124 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2124 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_spline",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad92c0b62d21067c53e031c147d71a3f1",tooltip="Draw a textured 2d spline. "];
+  Node2122 -> Node2125 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2125 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_quiver",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6df87e6392200f8a295c2539f7c6cef0",tooltip="Draw a 2d vector field, using a field of colors. "];
+}

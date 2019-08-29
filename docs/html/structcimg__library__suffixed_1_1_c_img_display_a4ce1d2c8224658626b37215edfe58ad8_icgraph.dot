@@ -1,0 +1,33 @@
+digraph "cimg_library_suffixed::CImgDisplay::set_wheel"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node497 [label="cimg_library_suffixed\l::CImgDisplay::set_wheel",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node497 -> Node498 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node498 [label="cimg_library_suffixed\l::CImgDisplay::flush",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a260b55ecbe9f4648a045357f8906f3c7",tooltip="Flush all display events. "];
+  Node498 -> Node499 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node499 [label="cimg_library_suffixed\l::CImgDisplay::snapshot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a914ee0515249db301dc66275861a6b3e",tooltip="Take a snapshot of the associated window content. "];
+  Node499 -> Node500 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node500 [label="cimg_library_suffixed\l::CImg\< charT \>::CImg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a015159d8cee61c2f2316c3e128470a71",tooltip="Construct image from a display window. "];
+  Node499 -> Node501 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node501 [label="cimg_library_suffixed\l::CImg\< charT \>::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a668fe887682e7cbb469409842bb98cd2",tooltip="Construct image from a display window . "];
+  Node499 -> Node502 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node502 [label="cimg_library_suffixed\l::CImg\< charT \>::operator=",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a75e18966d8e02a9cee85642038e30a08",tooltip="Copy the content of a display window to the current image instance. "];
+  Node498 -> Node503 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node503 [label="cimg_library_suffixed\l::CImg\< charT \>::_display",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adf9d80c60e82b079056c31cb0fe61faf"];
+  Node498 -> Node504 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node504 [label="cimg_library_suffixed\l::CImg\< charT \>::_display\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8b40db5a9818c3f961a90840b271de6c"];
+  Node498 -> Node505 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node505 [label="cimg_library_suffixed\l::CImg\< charT \>::_display_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a39224c81542abc157318e64a6df11fdf"];
+  Node498 -> Node506 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node506 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_display",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af514efa37d021bd02a95186531139a38"];
+  Node497 -> Node499 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node497 -> Node507 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node507 [label="cimg_library_suffixed\l::CImg\< charT \>::_select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad9b7141242d0b6e861a8014112ddb5b5"];
+  Node497 -> Node508 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node508 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_select_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a689f47424dc7c548ebfe53e431409199",tooltip="Select sub-graph in a graph. "];
+  Node497 -> Node503 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node497 -> Node504 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node497 -> Node506 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

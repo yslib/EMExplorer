@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_polygon"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node911 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_polygon",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node911 -> Node912 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node912 [label="cimg_library_suffixed\l::cimg::mod",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#afcc02428c9b7d9100e1674369d25cc40",tooltip="Return the modulo of a value. "];
+  Node911 -> Node913 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node913 [label="cimg_library_suffixed\l::cimg::round",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a7bed9b422eb303150d7abb503e7201fc"];
+  Node911 -> Node914 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node914 [label="cimg_library_suffixed\l::CImg::resize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adf42a4d63a14a4199e4703743b217075",tooltip="Resize image to new dimensions. "];
+  Node911 -> Node915 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node915 [label="cimg_library_suffixed\l::CImg::draw_polygon",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aba5835eafcb8746755d164f3f9d20b81",tooltip="Draw a filled 2d polygon. "];
+  Node911 -> Node916 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node916 [label="cimg_library_suffixed\l::CImg::value_string",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad8ca8eae0dbb8b4a6a8131ca1fef4bff",tooltip="Return a C-string containing a list of all values of the image instance. "];
+}

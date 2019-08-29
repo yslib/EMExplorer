@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::get_norm"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1730 [label="cimg_library_suffixed\l::CImg::get_norm",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1730 -> Node1731 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1731 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_quiver",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6df87e6392200f8a295c2539f7c6cef0",tooltip="Draw a 2d vector field, using a field of colors. "];
+}

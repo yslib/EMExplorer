@@ -1,0 +1,11 @@
+<map id="RenderWidget::dataModelChanged" name="RenderWidget::dataModelChanged">
+<area shape="rect" id="node2" href="$class_render_parameter_widget.html#adfa9b8a5bb93404668b0c0fcc517d927" title="Sets widget of RenderWidget to present. " alt="" coords="290,12,454,53"/>
+<area shape="rect" id="node4" href="$class_render_widget.html#a948628b625a3fee233c5a647f1ff0093" title="Sets the data model as the given model. " alt="" coords="276,85,468,111"/>
+<area shape="rect" id="node9" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="299,148,445,189"/>
+<area shape="rect" id="node3" href="$class_render_parameter_widget.html#a81885dd80bee8ba1d2be4cbb0451a6ce" title="Constructs a widget by a given widget of RenderWidget. " alt="" coords="518,5,690,47"/>
+<area shape="rect" id="node5" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="538,71,670,98"/>
+<area shape="rect" id="node7" href="$class_volume_main_window.html#a504e28fb48a15957b9eb5d78e49ae514" title="VolumeMainWindow::open" alt="" coords="516,122,692,149"/>
+<area shape="rect" id="node6" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="740,71,903,98"/>
+<area shape="rect" id="node8" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="796,122,847,149"/>
+<area shape="rect" id="node10" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="533,173,675,215"/>
+</map>

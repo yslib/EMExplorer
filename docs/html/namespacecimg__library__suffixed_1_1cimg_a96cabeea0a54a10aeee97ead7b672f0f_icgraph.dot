@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::cimg::imagemagick_path"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2008 [label="cimg_library_suffixed\l::cimg::imagemagick_path",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2008 -> Node2009 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2009 [label="cimg_library_suffixed\l::cimg::date",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aac739bf544269324a04504ebe92b93e9",tooltip="Get current local time (single-attribute version). "];
+  Node2008 -> Node2010 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2010 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_imagemagick_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8278afa0b313d0f3465ef91dabdac549",tooltip="Load image using ImageMagick&#39;s external tool &#39;convert&#39;. "];
+  Node2008 -> Node2011 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2011 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_imagemagick_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#afbf8db949f62c8bd3f2f73ba3d9c1420",tooltip="Save image using ImageMagick&#39;s external binary. "];
+  Node2008 -> Node2012 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2012 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_load_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a666592ad2e1ecef3317d060696ebbfaa"];
+  Node2008 -> Node2013 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2013 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gif_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a759ef20b53f1e507973dc53fcc2c7bb2",tooltip="Save image sequence as a GIF animated file. "];
+}

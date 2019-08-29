@@ -1,0 +1,7 @@
+<map id="InstanceTreeItem::mesh" name="InstanceTreeItem::mesh">
+<area shape="rect" id="node2" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="215,31,356,57"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#ad0987aea78062e52fb382e0f7d0e07e4" title="TreeItem::child" alt="" coords="232,81,339,108"/>
+<area shape="rect" id="node3" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="404,5,489,32"/>
+<area shape="rect" id="node4" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="404,56,489,83"/>
+<area shape="rect" id="node5" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="537,49,709,90"/>
+</map>

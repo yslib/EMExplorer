@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::get_sqr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2015 [label="cimg_library_suffixed\l::CImg::get_sqr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2015 -> Node2016 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2016 [label="cimg_library_suffixed::sqr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a9f2d45d4518cf844a541d397dc333842"];
+  Node2015 -> Node2017 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2017 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_blur_guided",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7d164f8fc5dd02c93927b74d14809401",tooltip="Blur image, with the image guided filter . "];
+}

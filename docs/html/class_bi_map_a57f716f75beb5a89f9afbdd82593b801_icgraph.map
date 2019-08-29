@@ -1,0 +1,5 @@
+<map id="BiMap::addQueryPair" name="BiMap::addQueryPair">
+<area shape="rect" id="node2" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="200,5,389,47"/>
+<area shape="rect" id="node3" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="437,5,584,47"/>
+<area shape="rect" id="node4" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="632,5,773,47"/>
+</map>

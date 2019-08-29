@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::blur"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node579 [label="cimg_library_suffixed\l::CImg::blur",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node579 -> Node580 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node580 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_bilateral",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab19d123867d5a2ed56fe1b016267bfe7",tooltip="Blur image, with the joint bilateral filter. "];
+  Node579 -> Node581 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node581 [label="cimg_library_suffixed\l::CImg\< charT \>::sharpen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae884ac4a2168d7411b004a4e8c6869e5",tooltip="Sharpen image. "];
+}

@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::check_matrix_square"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node45 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::check_matrix_square",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node45 -> Node46 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node46 [label="cimg_library_suffixed\l::cimg::round",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a7bed9b422eb303150d7abb503e7201fc"];
+  Node45 -> Node47 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node47 [label="cimg_library_suffixed\l::sqrt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a00d0fd9a21d8d5e8a9fa4033593e6acf"];
+  Node47 -> Node48 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node48 [label="cimg_library_suffixed\l::CImg::get_sqrt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a550cfc014f80c68359d3b55a0d3803b9",tooltip="Compute the square root of each pixel value . "];
+  Node45 -> Node49 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node49 [label="cimg_library_suffixed\l::cimg::strellipsize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a69a3a1bbdf0f62474211ea5a398f9e72",tooltip="Ellipsize a string. "];
+  Node45 -> Node50 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node50 [label="cimg_library_suffixed\l::CImg::back",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a17a3c105772f6401fd631d0d82a59d65",tooltip="Return a reference to the last pixel value. "];
+}

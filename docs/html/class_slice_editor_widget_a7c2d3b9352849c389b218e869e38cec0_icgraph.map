@@ -1,0 +1,12 @@
+<map id="SliceEditorWidget::dataModelChanged" name="SliceEditorWidget::dataModelChanged">
+<area shape="rect" id="node2" href="$class_abstract_slice_editor_plugin.html#a4432f87f85c89811d973246b3d8243cd" title="AbstractSliceEditorPlugin\l::updateDataModel" alt="" coords="188,5,359,47"/>
+<area shape="rect" id="node3" href="$class_category_control_widget.html#a8e8a48b24704c0b1fea0c3ac67d6a7bd" title="Sets the given sliceView for the widget to present. " alt="" coords="195,71,351,112"/>
+<area shape="rect" id="node5" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="200,136,347,177"/>
+<area shape="rect" id="node7" href="$class_slice_editor_widget.html#a34785ca09d9555c78deb605d6e93efa0" title="Replaces the old slice model with the given model and returns the old one. " alt="" coords="206,224,341,265"/>
+<area shape="rect" id="node4" href="$class_category_control_widget.html#aa8df6dfa61deea265d1e6ece8b59053e" title="Constructs a widget by a given canvas of . " alt="" coords="407,71,571,112"/>
+<area shape="rect" id="node6" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="418,136,559,177"/>
+<area shape="rect" id="node8" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="423,202,555,229"/>
+<area shape="rect" id="node9" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="619,227,781,254"/>
+<area shape="rect" id="node10" href="$class_slice_main_window.html#a481a5370cf722229b40a452882015eec" title="SliceMainWindow::open" alt="" coords="408,303,569,330"/>
+<area shape="rect" id="node11" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="675,303,725,330"/>
+</map>

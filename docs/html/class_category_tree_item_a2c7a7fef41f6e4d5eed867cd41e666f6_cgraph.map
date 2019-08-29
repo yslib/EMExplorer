@@ -1,0 +1,7 @@
+<map id="CategoryTreeItem::setData" name="CategoryTreeItem::setData">
+<area shape="rect" id="node2" href="$class_category_tree_item.html#ac4225ff27cff060bca07838a15312333" title="Reimplemented from TreeItem::columnCount() " alt="" coords="231,5,405,47"/>
+<area shape="rect" id="node3" href="$class_category_item.html#a777642f67dfe95a64b302a3e375c06ab" title="CategoryItem::setName" alt="" coords="239,71,397,98"/>
+<area shape="rect" id="node4" href="$class_category_item.html#ab2b97dac4ce193308cf0e6a4f3d8c51a" title="CategoryItem::setColor" alt="" coords="241,122,395,149"/>
+<area shape="rect" id="node5" href="$class_category_item.html#aea3cab950f55fc72f2985475a411402e" title="CategoryItem::setVisible" alt="" coords="236,173,400,199"/>
+<area shape="rect" id="node6" href="$class_category_item.html#a989a644fa3002af96e254290de52ea8b" title="Return the category visibility. " alt="" coords="453,173,596,199"/>
+</map>

@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_log10"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node825 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_log10",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node825 -> Node826 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node826 [label="cimg_library_suffixed\l::log10",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a0f2193937084db25a38b70eab00da3dd"];
+  Node826 -> Node827 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node827 [label="cimg_library_suffixed\l::CImg::get_log10",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#abd8ffc73da90fa7a26fb65ab30d05d20",tooltip="Compute the base-10 logarithm of each pixel value . "];
+}

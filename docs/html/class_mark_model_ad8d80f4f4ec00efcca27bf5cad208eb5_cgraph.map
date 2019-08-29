@@ -1,0 +1,10 @@
+<map id="MarkModel::markMesh" name="MarkModel::markMesh">
+<area shape="rect" id="node2" href="$class_tree_item.html#a3e76d45fd27cc6f9001efc9f1b8effed" title="TreeItem::data" alt="" coords="581,84,687,111"/>
+<area shape="rect" id="node3" href="$class_slice_data_identity_tester.html#a45b6a7f2aba24c64deadcaf0a20b4780" title="SliceDataIdentityTester\l::isValid" alt="" coords="209,45,365,86"/>
+<area shape="rect" id="node4" href="$class_slice_data_identity_tester.html#ab02cf2ec2b37d360ee84da41fa8b2da7" title="SliceDataIdentityTester\l::topSliceCount" alt="" coords="209,110,365,151"/>
+<area shape="rect" id="node5" href="$class_slice_data_identity_tester.html#a8b0d7ad96af0dc63659d290f1328057c" title="SliceDataIdentityTester\l::rightSliceCount" alt="" coords="209,175,365,217"/>
+<area shape="rect" id="node6" href="$class_slice_data_identity_tester.html#acbf4e40991fb2dd508145979a76badf5" title="SliceDataIdentityTester\l::frontSliceCount" alt="" coords="209,241,365,282"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#a306d5ab20a62cc6dd078272a1d94e54f" title="MarkModel::marks" alt="" coords="222,307,353,333"/>
+<area shape="rect" id="node9" href="$class_mark_model.html#ad887e7829162eaa74f1aa37995698cbf" title="This is a deleted constructor. " alt="" coords="208,357,367,384"/>
+<area shape="rect" id="node8" href="$class_mark_model.html#a3d37fa60a721b230d59e286e4e58b940" title="Reimplemented from QAbstractItemModel::data(const QModelIndex &amp; index,int role) " alt="" coords="415,175,533,201"/>
+</map>

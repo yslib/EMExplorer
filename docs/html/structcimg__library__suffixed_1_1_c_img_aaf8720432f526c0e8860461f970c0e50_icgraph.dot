@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::autocrop"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node554 [label="cimg_library_suffixed\l::CImg::autocrop",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node554 -> Node555 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node555 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_autocrop",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a0daeb7a97d163f018e9128feacc6631f",tooltip="Autocrop image region, regarding the specified background value . "];
+}

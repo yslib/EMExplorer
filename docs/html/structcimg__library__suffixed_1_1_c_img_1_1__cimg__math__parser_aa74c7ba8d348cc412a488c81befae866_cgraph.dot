@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::get_level"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node165 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::get_level",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node165 -> Node166 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node166 [label="cimg_library_suffixed\l::cimg::strellipsize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a69a3a1bbdf0f62474211ea5a398f9e72",tooltip="Ellipsize a string. "];
+}

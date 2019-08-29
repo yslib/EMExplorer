@@ -1,0 +1,20 @@
+<map id="AbstractSliceDataModel::originalRightSlice" name="AbstractSliceDataModel::originalRightSlice">
+<area shape="rect" id="node2" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="217,308,379,349"/>
+<area shape="rect" id="node19" href="$class_slice_data_identity_tester.html#a8a5d1e2422becda868c2365db1b31e76" title="SliceDataIdentityTester\l::SliceDataIdentityTester" alt="" coords="216,373,380,415"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#abe6abbd59c1ea3c302b8cd6951d4c28f" title="Save current marks contained in the mark model. " alt="" coords="428,289,548,315"/>
+<area shape="rect" id="node15" href="$class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3" title="Sets the current slice index given in index for the slice type type. " alt="" coords="619,340,754,381"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="596,180,777,221"/>
+<area shape="rect" id="node6" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="1105,289,1237,315"/>
+<area shape="rect" id="node5" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="827,238,1018,265"/>
+<area shape="rect" id="node9" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="825,187,1020,214"/>
+<area shape="rect" id="node11" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="828,71,1017,112"/>
+<area shape="rect" id="node14" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="849,5,997,47"/>
+<area shape="rect" id="node8" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="1090,238,1251,265"/>
+<area shape="rect" id="node7" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1321,289,1484,315"/>
+<area shape="rect" id="node10" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="1068,187,1273,214"/>
+<area shape="rect" id="node12" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="1097,71,1244,112"/>
+<area shape="rect" id="node13" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1332,71,1473,112"/>
+<area shape="rect" id="node16" href="$class_slice_editor_widget.html#a34785ca09d9555c78deb605d6e93efa0" title="Replaces the old slice model with the given model and returns the old one. " alt="" coords="855,340,990,381"/>
+<area shape="rect" id="node17" href="$class_slice_main_window.html#a481a5370cf722229b40a452882015eec" title="SliceMainWindow::open" alt="" coords="1090,390,1251,417"/>
+<area shape="rect" id="node18" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="1377,390,1428,417"/>
+</map>

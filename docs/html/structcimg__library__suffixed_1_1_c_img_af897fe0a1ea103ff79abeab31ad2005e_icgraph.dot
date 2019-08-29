@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::round"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2993 [label="cimg_library_suffixed\l::CImg::round",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2993 -> Node2994 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2994 [label="cimg_library_suffixed\l::CImg\< charT \>::get_round",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1f809bbf762cda9f59e7dd4445ca6724",tooltip="Round pixel values . "];
+}

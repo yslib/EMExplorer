@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_tanh"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1144 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_tanh",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1144 -> Node1145 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1145 [label="cimg_library_suffixed\l::tanh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a225d9830c3a7df2c78c3bce4f3258f8d"];
+  Node1145 -> Node1146 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1146 [label="cimg_library_suffixed\l::CImg::get_tanh",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad93f1b62ef80e9f79f45e08cfc408de1",tooltip="Compute the hyperbolic tangent of each pixel value . "];
+}

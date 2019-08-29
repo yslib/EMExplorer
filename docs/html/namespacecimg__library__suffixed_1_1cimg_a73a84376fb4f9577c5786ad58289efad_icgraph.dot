@@ -1,0 +1,19 @@
+digraph "cimg_library_suffixed::cimg::strbuffersize"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3878 [label="cimg_library_suffixed\l::cimg::strbuffersize",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3878 -> Node3879 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3879 [label="cimg_library_suffixed\l::cimg::strunescape",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a1ffad008d2b45ffa0ff4d0f32b6c98ec",tooltip="Replace escape sequences in C-strings by their binary ascii values. "];
+  Node3879 -> Node3880 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3880 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3878 -> Node3881 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3881 [label="cimg_library_suffixed\l::CImg\< charT \>::CImg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a48f4ff6bf27dcd351b04f3150e06d74e",tooltip="Construct image with specified size. "];
+  Node3878 -> Node3882 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3882 [label="cimg_library_suffixed\l::CImg\< charT \>::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a95898e33c8270ae81d3addd9302d18bc",tooltip="Construct image with specified size . "];
+  Node3878 -> Node3883 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3883 [label="cimg_library_suffixed\l::CImg\< charT \>::FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#abf1763dd0cf132f59147662022feb791",tooltip="Compute 1d Fast Fourier Transform, along a specified axis. "];
+  Node3878 -> Node3884 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3884 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_load_tiff",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad78471f15a09cd64a1d8ca61c8262506",tooltip="Load image from a TIFF file . "];
+}

@@ -1,0 +1,24 @@
+digraph "cimg_library_suffixed::CImg::get_log10"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1690 [label="cimg_library_suffixed\l::CImg::get_log10",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1690 -> Node1691 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1691 [label="cimg_library_suffixed\l::log10",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a0f2193937084db25a38b70eab00da3dd"];
+  Node1691 -> Node1692 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1692 [label="cimg_library_suffixed\l::cimg::xln",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a33280187782b500494b92832fc13e339",tooltip="Return 1 + log_10(x) of a value x. "];
+  Node1691 -> Node1693 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1693 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node1691 -> Node1694 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1694 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_log10",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a27e20505b12ae33c80577c60cc45ee80"];
+  Node1691 -> Node1695 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1695 [label="cimg_library_suffixed\l::CImg\< charT \>::log10",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae92f0599f2bcfaae3d6796fbf903e561",tooltip="Compute the base-10 logarithm of each pixel value. "];
+  Node1691 -> Node1690 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1691 -> Node1696 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1696 [label="cimg_library_suffixed\l::CImg\< charT \>::PSNR",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1c5936e2a0499030ddf5a2e5e07eb128",tooltip="Compute the PSNR (Peak Signal-to-Noise Ratio) between two images. "];
+  Node1691 -> Node1697 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1697 [label="cimg_library_suffixed\l::CImg\< charT \>::draw_axes",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a23c9260194d915f3826c3bd2ad8eb0da",tooltip="Draw labeled horizontal and vertical axes . "];
+  Node1691 -> Node1698 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1698 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_select_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a689f47424dc7c548ebfe53e431409199",tooltip="Select sub-graph in a graph. "];
+}

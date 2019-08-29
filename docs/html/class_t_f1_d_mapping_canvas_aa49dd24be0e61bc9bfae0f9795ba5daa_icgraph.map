@@ -1,0 +1,7 @@
+<map id="TF1DMappingCanvas::loadTransferFunction" name="TF1DMappingCanvas::loadTransferFunction">
+<area shape="rect" id="node2" href="$class_render_parameter_widget.html#a81885dd80bee8ba1d2be4cbb0451a6ce" title="Constructs a widget by a given widget of RenderWidget. " alt="" coords="679,5,851,47"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#af176a94ed28c651467e91a7c904efd47" title="TF1DMappingCanvas::\lTF1DMappingCanvas" alt="" coords="205,32,357,73"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html#a650ebe4ed51e7fa1702c8bbbc8ba37da" title="TF1DMappingCanvas::\lsetVolumeInfomation" alt="" coords="205,97,357,139"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a5767e2dc624ab06a1e354500e0e888db" title="TF1DEditor::setVolumeInformation" alt="" coords="405,87,625,114"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="673,87,856,114"/>
+</map>

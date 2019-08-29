@@ -1,0 +1,9 @@
+<map id="DoubleSlider::getMinValue" name="DoubleSlider::getMinValue">
+<area shape="rect" id="node2" href="$class_t_f1_d_editor.html#a26ceb7789e40bbcded24f12e72ff6e2d" title="TF1DEditor::applyThreshold" alt="" coords="228,97,411,124"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_editor.html#ab522f2be69a556e3f045c19bf7d4a8ae" title="TF1DEditor::thresholdChanged" alt="" coords="459,5,657,32"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="715,121,898,148"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_editor.html#a9626cae496e972cd7a2919ead422c58f" title="TF1DEditor::lowerThreshold\lSpinChanged" alt="" coords="467,57,649,98"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_editor.html#a09901e4bfb8cb297e729a0ef9840e591" title="TF1DEditor::upperThreshold\lSpinChanged" alt="" coords="467,122,649,163"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17" title="TF1DEditor::createConnections" alt="" coords="705,64,908,91"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a09bea74dece8749643ad6e55cb8cb8a4" title="TF1DEditor::TF1DEditor" alt="" coords="956,64,1116,91"/>
+</map>

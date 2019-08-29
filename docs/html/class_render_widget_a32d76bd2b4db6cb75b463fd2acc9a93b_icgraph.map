@@ -1,0 +1,5 @@
+<map id="RenderWidget::windowResized" name="RenderWidget::windowResized">
+<area shape="rect" id="node2" href="$class_slice_volume.html#a55ed60590c5842f84d582369a2c25c17" title="SliceVolume::setRenderWidget" alt="" coords="255,5,457,32"/>
+<area shape="rect" id="node4" href="$class_render_widget.html#a5f77e2f0dbe2d1e3df96029b36a70de7" title="Reimplemented from QOpenGLWidget::resizeGL() " alt="" coords="274,56,438,83"/>
+<area shape="rect" id="node3" href="$class_slice_volume.html#a44413f8f636aac46a5453acb42b6f662" title="SliceVolume::SliceVolume" alt="" coords="505,5,681,32"/>
+</map>

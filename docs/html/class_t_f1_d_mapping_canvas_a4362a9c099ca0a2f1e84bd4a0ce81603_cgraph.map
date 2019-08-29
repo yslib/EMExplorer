@@ -1,0 +1,10 @@
+<map id="TF1DMappingCanvas::isThresholdClipped" name="TF1DMappingCanvas::isThresholdClipped">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a074ca4f2fed604ef0386868b5b25dbc7" title="TF1DMappingCanvas::\lgetTransferFunction" alt="" coords="219,49,371,90"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#ad3da8bffdbf000b9ee9467ab56d9f422" title="TF1DMappingCanvas::save" alt="" coords="205,115,384,141"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_canvas.html#a00aa48a9de4c7b3496384867c8cd8a43" title="TF1DMappingCanvas::load" alt="" coords="207,165,383,192"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="432,5,632,32"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="437,56,627,83"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="438,107,626,133"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_key.html#a074f0af6fe5c4b79d8230e1d900d2b42" title="TF1DMappingKey::setSplit" alt="" coords="443,161,621,188"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_mapping_key.html#a80c4070d576891f744798f5a81e16227" title="TF1DMappingKey::setColorR" alt="" coords="437,212,627,239"/>
+</map>

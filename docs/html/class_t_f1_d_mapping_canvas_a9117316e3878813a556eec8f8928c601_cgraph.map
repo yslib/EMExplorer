@@ -1,0 +1,16 @@
+<map id="TF1DMappingCanvas::mouseMoveEvent" name="TF1DMappingCanvas::mouseMoveEvent">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a06f9499ccc11f3f135d2966441335366" title="TF1DMappingCanvas::stow" alt="" coords="216,5,395,32"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#a970c5f906847bb48f06878d0f3a646ea" title="TF1DMappingCanvas::\lhitLine" alt="" coords="229,158,381,199"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html#a1e6883c271c8181ae9439d8ea8be6923" title="TF1DMappingCanvas::wtos" alt="" coords="464,56,643,83"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="453,107,653,133"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_key.html#a9f3a66b2b43f544cf4b776e8b9fb52ea" title="TF1DMappingKey::isSplit" alt="" coords="469,259,638,285"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_mapping_key.html#a0aefad466be5a395865788322e96b9a7" title="TF1DMappingKey::getAlphaR" alt="" coords="209,275,402,301"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_mapping_key.html#a61cf3bf96cd4e63affcb85a42d44d154" title="TF1DMappingKey::getAlphaL" alt="" coords="210,325,401,352"/>
+<area shape="rect" id="node11" href="$class_t_f1_d_mapping_key.html#ae3150def3aba40af06b840e981271602" title="TF1DMappingKey::setAlphaR" alt="" coords="209,376,402,403"/>
+<area shape="rect" id="node12" href="$class_t_f1_d_mapping_key.html#ab3d028d8ef1d779505caac0d6ddac7ac" title="TF1DMappingKey::setAlphaL" alt="" coords="210,427,401,453"/>
+<area shape="rect" id="node13" href="$_t_f1_d_mapping_canvas_8h.html#ad71c1fff1d5975fad19c7c14a4625e3b" title="Clamp" alt="" coords="276,477,335,504"/>
+<area shape="rect" id="node14" href="$class_t_f1_d_mapping_canvas.html#aa887696adc8f0f92cad26d8c51617ab8" title="TF1DMappingCanvas::\lupdateCoordinates" alt="" coords="229,529,381,570"/>
+<area shape="rect" id="node15" href="$class_t_f1_d_mapping_key.html#a29f855ac75ae6004b87c0532ed8e98d7" title="TF1DMappingKey::setIntensity" alt="" coords="205,595,405,621"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="459,208,647,235"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="458,157,649,184"/>
+</map>

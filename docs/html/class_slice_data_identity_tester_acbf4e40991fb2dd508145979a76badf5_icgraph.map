@@ -1,0 +1,15 @@
+<map id="SliceDataIdentityTester::frontSliceCount" name="SliceDataIdentityTester::frontSliceCount">
+<area shape="rect" id="node2" href="$class_mark_model.html#ac21d495d673ed2238d7c1df17fa844fb" title="This is a helper function for get specified type to items in the parent of . " alt="" coords="209,47,395,74"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#abd67a8a42ced49d205fc618bcefbc6ab" title="Returns all tree items according to a given parent index parent and a type. " alt="" coords="459,17,607,43"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="443,71,624,112"/>
+<area shape="rect" id="node4" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="675,5,864,47"/>
+<area shape="rect" id="node5" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="944,13,1091,55"/>
+<area shape="rect" id="node6" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1179,13,1320,55"/>
+<area shape="rect" id="node8" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="674,187,865,214"/>
+<area shape="rect" id="node12" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="672,137,867,163"/>
+<area shape="rect" id="node14" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="695,71,843,112"/>
+<area shape="rect" id="node9" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="951,137,1083,163"/>
+<area shape="rect" id="node11" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="937,187,1098,214"/>
+<area shape="rect" id="node10" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1168,162,1331,189"/>
+<area shape="rect" id="node13" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="915,86,1120,113"/>
+</map>

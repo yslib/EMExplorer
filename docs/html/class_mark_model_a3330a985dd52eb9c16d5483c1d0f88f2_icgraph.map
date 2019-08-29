@@ -1,0 +1,14 @@
+<map id="MarkModel::removeMarks" name="MarkModel::removeMarks">
+<area shape="rect" id="node2" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="224,88,405,129"/>
+<area shape="rect" id="node13" href="$class_slice_editor_widget.html#a700e6e3a04e9eacb2d5653c19bf6843d" title="Deletes the selected marks in three slice widget. " alt="" coords="243,5,387,47"/>
+<area shape="rect" id="node3" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="455,45,646,71"/>
+<area shape="rect" id="node7" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="453,95,648,122"/>
+<area shape="rect" id="node9" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="456,212,645,253"/>
+<area shape="rect" id="node12" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="477,147,625,188"/>
+<area shape="rect" id="node4" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="733,95,865,122"/>
+<area shape="rect" id="node6" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="718,45,879,71"/>
+<area shape="rect" id="node5" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="949,45,1112,71"/>
+<area shape="rect" id="node8" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="696,146,901,173"/>
+<area shape="rect" id="node10" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="725,204,872,245"/>
+<area shape="rect" id="node11" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="960,204,1101,245"/>
+</map>

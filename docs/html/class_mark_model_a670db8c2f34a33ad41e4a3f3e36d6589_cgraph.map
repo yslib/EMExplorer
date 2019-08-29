@@ -1,0 +1,7 @@
+<map id="MarkModel::markCount" name="MarkModel::markCount">
+<area shape="rect" id="node2" href="$class_mark_model.html#ace2df215d81964450bd7eaadd90c96cb" title="MarkModel::rowCount" alt="" coords="211,31,359,57"/>
+<area shape="rect" id="node3" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="407,31,548,57"/>
+<area shape="rect" id="node4" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="596,5,681,32"/>
+<area shape="rect" id="node5" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="596,56,681,83"/>
+<area shape="rect" id="node6" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="729,49,901,90"/>
+</map>

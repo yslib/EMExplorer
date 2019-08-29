@@ -1,0 +1,9 @@
+<map id="TF1DMappingCanvas::insertNewKey" name="TF1DMappingCanvas::insertNewKey">
+<area shape="rect" id="node2" href="$_t_f1_d_mapping_canvas_8h.html#ad71c1fff1d5975fad19c7c14a4625e3b" title="Clamp" alt="" coords="276,5,335,32"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="205,56,405,83"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html#aafab30102c7949d6c0815dae499bd480" title="TF1DMappingCanvas::\lgetOtherKey" alt="" coords="229,107,381,149"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="211,173,399,200"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="210,224,401,251"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_key.html#a6a38e949788a1790769dd47708ac5988" title="TF1DMappingKey::setColorL" alt="" coords="211,275,399,301"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_key.html#ab3d028d8ef1d779505caac0d6ddac7ac" title="TF1DMappingKey::setAlphaL" alt="" coords="210,325,401,352"/>
+</map>

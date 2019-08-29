@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$class_gradient_calculator.html" title="GradientCalculator" alt="" coords="307,5,436,32"/>
+<area shape="rect" id="node3" href="$class_slice_volume.html" title="SliceVolume" alt="" coords="324,56,419,83"/>
+<area shape="rect" id="node4" href="$class_shader_data_interface.html" title="ShaderDataInterface" alt="" coords="120,56,259,83"/>
+<area shape="rect" id="node5" href="$class_volume.html" title="Volume" alt="" coords="5,107,72,133"/>
+<area shape="rect" id="node6" href="$class_g_p_u_volume.html" title="GPUVolume" alt="" coords="142,107,237,133"/>
+</map>

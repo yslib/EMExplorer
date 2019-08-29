@@ -1,0 +1,9 @@
+<map id="Vector2::LengthSquared" name="Vector2::LengthSquared">
+<area shape="rect" id="node2" href="$class_vector2.html#a1456574eef2b9747e42c9a84f72145e1" title="Vector2::Length" alt="" coords="228,31,343,57"/>
+<area shape="rect" id="node5" href="$class_vector2.html#ab9fef611a6d21bafe2881fed81e2345b" title="Vector2::normalized" alt="" coords="216,81,355,108"/>
+<area shape="rect" id="node6" href="$class_vector2.html#ace2a626eaa79412e2946216e9c3e63c6" title="Vector2::normalize" alt="" coords="220,132,351,159"/>
+<area shape="rect" id="node7" href="$class_vector3.html#a8bb6e472c495241786a3b430ef7d49ea" title="Vector3::Length" alt="" coords="228,183,343,209"/>
+<area shape="rect" id="node8" href="$class_vector3.html#a880e24001b763630ecf552b0fde16488" title="Vector3::length" alt="" coords="230,233,341,260"/>
+<area shape="rect" id="node3" href="$class_vector3.html#ac41bad1b2f43442abc3b7d4c6909f2a9" title="Vector3::normalized" alt="" coords="403,5,541,32"/>
+<area shape="rect" id="node4" href="$class_vector3.html#a09492cd405b7d56cd836ff1fa261eaef" title="Vector3::normalize" alt="" coords="407,56,537,83"/>
+</map>

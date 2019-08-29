@@ -1,0 +1,17 @@
+<map id="SliceMainWindow::open" name="SliceMainWindow::open">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a58900b8bf23e2d03d988144c4fe6fd79" title="Returns the mark model held in the widget. " alt="" coords="215,201,349,243"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a34785ca09d9555c78deb605d6e93efa0" title="Replaces the old slice model with the given model and returns the old one. " alt="" coords="215,267,349,308"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3" title="Sets the current slice index given in index for the slice type type. " alt="" coords="397,267,532,308"/>
+<area shape="rect" id="node5" href="$class_abstract_slice_data_model.html#a6ee771893956663b608ffdfa63a71124" title="AbstractSliceDataModel\l::topSliceCount" alt="" coords="595,5,758,47"/>
+<area shape="rect" id="node6" href="$class_abstract_slice_data_model.html#aa2a7101c7cd8329ec1f3e58fd310f1b5" title="AbstractSliceDataModel\l::topSlice" alt="" coords="595,71,758,112"/>
+<area shape="rect" id="node8" href="$class_abstract_slice_data_model.html#a19f5168d24a72bd01fa3f38991112770" title="AbstractSliceDataModel\l::rightSliceCount" alt="" coords="595,136,758,177"/>
+<area shape="rect" id="node9" href="$class_abstract_slice_data_model.html#a724dbf0b38f651f87bfdc3e7309086b9" title="AbstractSliceDataModel\l::rightSlice" alt="" coords="595,201,758,243"/>
+<area shape="rect" id="node11" href="$class_abstract_slice_data_model.html#a7d9de8d5b699740f3a0367afb8502503" title="AbstractSliceDataModel\l::frontSliceCount" alt="" coords="595,267,758,308"/>
+<area shape="rect" id="node12" href="$class_abstract_slice_data_model.html#a0412a083fb02f79248e7a5c801a2c2d6" title="AbstractSliceDataModel\l::frontSlice" alt="" coords="595,332,758,373"/>
+<area shape="rect" id="node14" href="$class_slice_widget.html#a61ae58d37ad2df7e58082d952da2199d" title="SliceWidget::setImage" alt="" coords="600,398,753,425"/>
+<area shape="rect" id="node15" href="$class_slice_widget.html#ae2ae97073b6a05625cb7dc3a89a3f0df" title="SliceWidget::clearSliceMarks" alt="" coords="580,449,773,475"/>
+<area shape="rect" id="node16" href="$class_slice_widget.html#ad9a08cbf4e0038e5669ac00964bbe86a" title="SliceWidget::setMarks" alt="" coords="599,499,754,526"/>
+<area shape="rect" id="node7" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="821,71,984,112"/>
+<area shape="rect" id="node10" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="821,201,984,243"/>
+<area shape="rect" id="node13" href="$class_abstract_slice_data_model.html#a831d31809663159fedace360001c89c3" title="AbstractSliceDataModel\l::originalFrontSlice" alt="" coords="821,332,984,373"/>
+</map>

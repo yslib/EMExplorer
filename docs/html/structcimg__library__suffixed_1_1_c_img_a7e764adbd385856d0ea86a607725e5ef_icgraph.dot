@@ -1,0 +1,21 @@
+digraph "cimg_library_suffixed::CImg::max_min"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2503 [label="cimg_library_suffixed\l::CImg::max_min",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2503 -> Node2504 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2504 [label="cimg_library_suffixed\l::CImg\< charT \>::blur\l_bilateral",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab19d123867d5a2ed56fe1b016267bfe7",tooltip="Blur image, with the joint bilateral filter. "];
+  Node2503 -> Node2505 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2505 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_blur_guided",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7d164f8fc5dd02c93927b74d14809401",tooltip="Blur image, with the image guided filter . "];
+  Node2503 -> Node2506 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2506 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_displacement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a91ec1cd09114c4018a78e4ea0b2df386",tooltip="Estimate displacement field between two images . "];
+  Node2503 -> Node2507 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2507 [label="cimg_library_suffixed\l::CImg\< charT \>::shift\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad3a36ae0c4e16ade94e09dd3c55d400c",tooltip="Shift 3d object&#39;s vertices, so that it becomes centered. "];
+  Node2503 -> Node2508 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2508 [label="cimg_library_suffixed\l::CImg\< charT \>::resize\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a595e9d40b1279ade2cf00bbf67d46639",tooltip="Resize 3d object. "];
+  Node2503 -> Node2509 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2509 [label="cimg_library_suffixed\l::CImg\< charT \>::texturize\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a42395174c544ec66191539bf76fcb360",tooltip="Texturize primitives of a 3d object. "];
+  Node2503 -> Node2510 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2510 [label="cimg_library_suffixed\l::CImg\< charT \>::draw_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ac1f792d60d2ced2cfa529ba0f7efb0e7",tooltip="Draw 1d graph. "];
+}

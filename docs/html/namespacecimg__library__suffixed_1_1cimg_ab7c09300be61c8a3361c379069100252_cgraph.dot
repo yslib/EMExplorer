@@ -1,0 +1,10 @@
+digraph "cimg_library_suffixed::cimg::rand"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3443 [label="cimg_library_suffixed\l::cimg::rand",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3443 -> Node3444 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3444 [label="cimg_library_suffixed\l::cimg::rand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#af5cd3397f819c13ccb17e05a7db736b1",tooltip="Return a random variable uniformely distributed between [0,val_max]. "];
+  Node3444 -> Node3443 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

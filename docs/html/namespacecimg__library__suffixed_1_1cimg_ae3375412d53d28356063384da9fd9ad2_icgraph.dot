@@ -1,0 +1,15 @@
+digraph "cimg_library_suffixed::cimg::sinc"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3650 [label="cimg_library_suffixed\l::cimg::sinc",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3650 -> Node3651 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3651 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3650 -> Node3652 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3652 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_sinc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#adfae1af309967062e47eb66abd2d2f41"];
+  Node3650 -> Node3653 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3653 [label="cimg_library_suffixed\l::CImg\< charT \>::sinc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8e636ccdee823c4c9c28861baea5e28b",tooltip="Compute the sinc of each pixel value. "];
+  Node3650 -> Node3654 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3654 [label="cimg_library_suffixed\l::CImg\< charT \>::get_sinc",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7e4b91912494fd5db7c82360809513a4",tooltip="Compute the sinc of each pixel value . "];
+}

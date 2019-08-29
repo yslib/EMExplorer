@@ -1,0 +1,39 @@
+digraph "cimg_library_suffixed::cimg::sqr"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3721 [label="cimg_library_suffixed\l::cimg::sqr",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3721 -> Node3722 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3722 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3721 -> Node3723 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3723 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_norm2",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#aa468e9f75b463a6b71521143b36b0e6c"];
+  Node3721 -> Node3724 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3724 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_sqr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#ac3d7052ea16cc399a83323852d5d0e68"];
+  Node3721 -> Node3725 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3725 [label="cimg_library_suffixed\l::CImg\< charT \>::get_sqr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a9625038ea51982e074fc74391b6c88e4",tooltip="Compute the square value of each pixel value . "];
+  Node3721 -> Node3726 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3726 [label="cimg_library_suffixed\l::CImg\< charT \>::pow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a56a46a3c08972775c5c2451f178be1a6",tooltip="Raise each pixel value to a specified power. "];
+  Node3721 -> Node3727 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3727 [label="cimg_library_suffixed\l::CImg\< charT \>::magnitude",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab5aa5a3191d2e8e631edf629a8fde719",tooltip="Compute norm of the image, viewed as a matrix. "];
+  Node3721 -> Node3728 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3728 [label="cimg_library_suffixed\l::CImg\< charT \>::eigen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adbf6146771336af8f5477c89d9124941",tooltip="Compute eigenvalues and eigenvectors of the instance image, viewed as a matrix. "];
+  Node3721 -> Node3729 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3729 [label="cimg_library_suffixed\l::CImg\< charT \>::normalize",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#acf91acd5fba09e7ecc3bb708b0a0b8dd",tooltip="Normalize multi-valued pixels of the image instance, with respect to their L2-norm. "];
+  Node3721 -> Node3730 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3730 [label="cimg_library_suffixed\l::CImg\< charT \>::get_norm",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4c8c93e2b41e9b3f973cb1130af80cc9",tooltip="Compute L2-norm of each multi-valued pixel of the image instance . "];
+  Node3721 -> Node3731 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3731 [label="cimg_library_suffixed\l::CImg\< charT \>::get_index",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3787f8eb2c642164a3fb1f2b93c9dcc5",tooltip="Index multi-valued pixels regarding to a specified colormap . "];
+  Node3721 -> Node3732 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3732 [label="cimg_library_suffixed\l::CImg\< charT \>::RGBtoHSI",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae0859700c8aaa58104b7985338246441",tooltip="Convert pixel values from RGB to HSI color spaces. "];
+  Node3721 -> Node3733 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3733 [label="cimg_library_suffixed\l::CImg\< charT \>::_patchmatch",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ad09b55d6120f06fe5433916ecc6c0335"];
+  Node3721 -> Node3734 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3734 [label="cimg_library_suffixed\l::CImg\< charT \>::sphere3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8025573f639ba766ca2270bf10c2d00f",tooltip="Generate a 3d sphere. "];
+  Node3721 -> Node3735 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3735 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw_fill",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a0d9e7ba99c06fd5425098300c5dcfde0"];
+  Node3721 -> Node3736 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3736 [label="cimg_library_suffixed\l::CImg\< charT \>::draw_fill",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1dfebf569b61d5345ab349ca1418a78a",tooltip="Draw filled 3d region with the flood fill algorithm. "];
+  Node3721 -> Node3737 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3737 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6dba86c8049ae141ffc9936b2eaf5c5c"];
+}

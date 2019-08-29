@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::save_pnm"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3086 [label="cimg_library_suffixed\l::CImg::save_pnm",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3086 -> Node3087 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3087 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af09a45345581747984f4df0607418f2c",tooltip="Save image sequence, using the external tool &#39;ffmpeg&#39;. "];
+}

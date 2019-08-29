@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::cimg::eval"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1065 [label="cimg_library_suffixed\l::cimg::eval",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1065 -> Node1066 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1066 [label="cimg_library_suffixed\l::CImg::eval",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a5d59f7127a481b884a3132bc6c767c5e",tooltip="Evaluate math formula. "];
+}

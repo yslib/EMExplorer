@@ -1,0 +1,5 @@
+<map id="SliceWidget::sliceSelected" name="SliceWidget::sliceSelected">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a9b5981a1f41f5e8a51cbf1026415fc23" title="Constructs an instance of SliceEditorWidget. " alt="" coords="267,5,402,47"/>
+<area shape="rect" id="node3" href="$class_slice_widget.html#adbb265c02e57679e8c3e428294308699" title="SliceWidget::focusInEvent" alt="" coords="248,71,421,98"/>
+<area shape="rect" id="node4" href="$class_slice_widget.html#a4df79bcd68e81c88301de802a517dd88" title="SliceWidget::mousePressEvent" alt="" coords="232,122,437,149"/>
+</map>

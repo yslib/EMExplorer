@@ -1,0 +1,6 @@
+<map id="SliceEditorWidget::setSliceVisible" name="SliceEditorWidget::setSliceVisible">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a37775322f48419068d579b21bf4fab9e" title="This a convienience function to change the visibility of the top slice widget. " alt="" coords="190,5,325,47"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#aab9d24caf666092861776d1d94266146" title="This a convienience function to change the visibility of the front slice widget. " alt="" coords="188,71,327,112"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#a4ee534f8dedd9db2c3f8b8e969e1fefa" title="This a convienience function to change the visibility of the right slice widget. " alt="" coords="188,136,327,177"/>
+<area shape="rect" id="node3" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="375,78,537,105"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="RenderWidget::camera" name="RenderWidget::camera">
+<area shape="rect" id="node2" href="$class_slice_volume.html#ac910c9db73459358acfde36c5c7da3a1" title="SliceVolume::cameraPos" alt="" coords="221,5,390,32"/>
+<area shape="rect" id="node3" href="$class_slice_volume.html#a7bdef39c90289bc7abab1df4dd229b73" title="SliceVolume::cameraTowards" alt="" coords="208,56,403,83"/>
+<area shape="rect" id="node4" href="$class_slice_volume.html#ad976e001dedb4266d64cb2302de177b2" title="SliceVolume::cameraUp" alt="" coords="224,107,387,133"/>
+<area shape="rect" id="node5" href="$class_slice_volume.html#ac2af399fe321445fbe80217b173312f5" title="SliceVolume::cameraRight" alt="" coords="217,157,393,184"/>
+<area shape="rect" id="node6" href="$class_slice_volume.html#a8a5b065fa06681989459a08c1ad92e03" title="SliceVolume::viewMatrix" alt="" coords="224,208,387,235"/>
+<area shape="rect" id="node7" href="$class_render_widget.html#ab573fc0c7c8667da0dcd17baf96ce235" title="Reimplemented from QOpenGLWidget::paintGL() " alt="" coords="227,259,384,285"/>
+</map>

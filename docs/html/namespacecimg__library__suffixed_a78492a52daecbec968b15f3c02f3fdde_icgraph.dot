@@ -1,0 +1,17 @@
+digraph "cimg_library_suffixed::invert"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node82 [label="cimg_library_suffixed\l::invert",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node82 -> Node83 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node83 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_invert",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a074775a585de98f05bfc45f7c4f8cfa0",tooltip="Invert the instance image, viewed as a matrix . "];
+  Node82 -> Node84 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node84 [label="cimg_library_suffixed\l::CImg\< charT \>::haar",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae5d38bed2e12d78631a84feb13fd715b",tooltip="Compute Haar multiscale wavelet transform. "];
+  Node82 -> Node85 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node85 [label="cimg_library_suffixed\l::CImg\< charT \>::get_haar",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a35d89112cc5ff251f8b134209cd222f0",tooltip="Compute Haar multiscale wavelet transform . "];
+  Node82 -> Node86 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node86 [label="cimg_library_suffixed\l::CImgList\< charT \>::FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ac07f7527b6223ed7b6c4e02f6feab7b3",tooltip="Compute a 1d Fast Fourier Transform, along specified axis. "];
+  Node82 -> Node87 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node87 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lget_FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aa026daaaa283e6bcc688a9bb42f16001",tooltip="Compute a 1-D Fast Fourier Transform, along specified axis . "];
+}

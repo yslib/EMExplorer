@@ -1,0 +1,5 @@
+<map id="CategoryItem::visible" name="CategoryItem::visible">
+<area shape="rect" id="node2" href="$class_category_tree_item.html#af6b10f3cd9e5b67d44fa378c0f99f012" title="Reimplemented from TreeItem::data(int column,int role) " alt="" coords="199,5,357,32"/>
+<area shape="rect" id="node3" href="$class_category_item.html#aea3cab950f55fc72f2985475a411402e" title="CategoryItem::setVisible" alt="" coords="196,56,360,83"/>
+<area shape="rect" id="node4" href="$class_category_tree_item.html#a2c7a7fef41f6e4d5eed867cd41e666f6" title="Reimplemented from TreeItem::setData(int column,const QVariant&amp; value,int role) " alt="" coords="408,56,585,83"/>
+</map>

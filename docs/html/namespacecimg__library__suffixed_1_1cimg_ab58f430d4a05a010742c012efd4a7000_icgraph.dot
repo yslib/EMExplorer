@@ -1,0 +1,15 @@
+digraph "cimg_library_suffixed::cimg::number_filename"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3128 [label="cimg_library_suffixed\l::cimg::number_filename",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3128 -> Node3129 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3129 [label="cimg_library_suffixed\l::CImg\< charT \>::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adb165b37ac226a1c73a96cb1b5827d2e",tooltip="Save image as a file. "];
+  Node3128 -> Node3130 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3130 [label="cimg_library_suffixed\l::CImgList\< charT \>::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a7186fe44f8d6ce58583e3177ff802445",tooltip="Save list into a file. "];
+  Node3128 -> Node3131 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3131 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_tiff",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a62700a17bb0af63522c732b9d1a15325",tooltip="Save list as a TIFF file. "];
+  Node3128 -> Node3132 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3132 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aad5afe8b913e276dd281255dd787b4ba",tooltip="Save list as a gzipped file, using external tool &#39;gzip&#39;. "];
+}

@@ -1,0 +1,27 @@
+<map id="HistogramWidget::updateDataModel" name="HistogramWidget::updateDataModel">
+<area shape="rect" id="node2" href="$class_titled_slider_with_spin_box.html#a857311a6bf9407c79305ac810bb5af3b" title="TitledSliderWithSpinBox\l::setValue" alt="" coords="261,5,424,47"/>
+<area shape="rect" id="node3" href="$class_titled_slider_width_double_spin_box.html#aa281f22ccf09009cfd7741d23d924950" title="TitledSliderWidthDoubleSpin\lBox::setValue" alt="" coords="249,71,436,112"/>
+<area shape="rect" id="node4" href="$class_abstract_slice_editor_plugin.html#acf6f78dc8de45837e93ea40e954229c3" title="AbstractSliceEditorPlugin\l::sliceItem" alt="" coords="257,136,428,177"/>
+<area shape="rect" id="node8" href="$class_abstract_slice_view_plugin.html#aa481339a25aacca41872400910e6f6ba" title="AbstractSliceViewPlugin\l::sliceType" alt="" coords="261,201,425,243"/>
+<area shape="rect" id="node9" href="$class_abstract_slice_editor_plugin.html#a9cfc9e11d08a69343cb80ddee93de890" title="AbstractSliceEditorPlugin\l::currentImage" alt="" coords="257,369,428,411"/>
+<area shape="rect" id="node10" href="$class_abstract_slice_editor_plugin.html#a66247bc02a617d0be7d96d2432583001" title="AbstractSliceEditorPlugin\l::image" alt="" coords="484,329,655,371"/>
+<area shape="rect" id="node12" href="$class_abstract_slice_editor_plugin.html#acecc6bb1a5fd0e76d4e6a4d7ca4177f6" title="AbstractSliceEditorPlugin\l::currentIndex" alt="" coords="484,460,655,501"/>
+<area shape="rect" id="node14" href="$class_histogram.html#aca9d3ed8024fdd7b0709643caefd9c6e" title="Histogram::setImage" alt="" coords="271,551,414,578"/>
+<area shape="rect" id="node15" href="$class_titled_slider_with_spin_box.html#aa3fa2be4f1e8c94f839e5b6e1cdfe063" title="TitledSliderWithSpinBox\l::value" alt="" coords="261,603,424,644"/>
+<area shape="rect" id="node16" href="$class_abstract_slice_editor_plugin.html#ad5f378eeb839a203633f5a45e480e0ea" title="AbstractSliceEditorPlugin\l::originalImage" alt="" coords="484,264,655,305"/>
+<area shape="rect" id="node17" href="$class_abstract_slice_editor_plugin.html#a766c82709b5b768483d350e486d793b9" title="AbstractSliceEditorPlugin\l::setCurrentImage" alt="" coords="257,435,428,476"/>
+<area shape="rect" id="node19" href="$class_titled_slider_width_double_spin_box.html#a926c8cb48bfe06f022b29465e68ddbee" title="TitledSliderWidthDoubleSpin\lBox::value" alt="" coords="249,668,436,709"/>
+<area shape="rect" id="node20" href="$class_histogram.html#a8c94e50dda64b206699c94fb22384994" title="Histogram::setDragEnable" alt="" coords="255,734,430,761"/>
+<area shape="rect" id="node21" href="$class_titled_slider_width_double_spin_box.html#ab7e9e50e5779f927df46e8ada62e7dfa" title="TitledSliderWidthDoubleSpin\lBox::setRange" alt="" coords="249,785,436,827"/>
+<area shape="rect" id="node22" href="$class_titled_slider_width_double_spin_box.html#a40f742c009087f69abd1902af36f5616" title="TitledSliderWidthDoubleSpin\lBox::setSingleStep" alt="" coords="249,851,436,892"/>
+<area shape="rect" id="node23" href="$class_histogram.html#a7ff899c365c71a25abcd4cd534464124" title="Histogram::getBinCount" alt="" coords="263,917,423,943"/>
+<area shape="rect" id="node24" href="$class_titled_slider_with_spin_box.html#a7d1b4d2cf29f202af89d400ac7fb8a00" title="TitledSliderWithSpinBox\l::setMaximum" alt="" coords="261,968,424,1009"/>
+<area shape="rect" id="node25" href="$class_histogram.html#a7b1276bd8a5d7ca86d997d2f5e35304a" title="Histogram::setLeftCursor\lValue" alt="" coords="259,1033,426,1075"/>
+<area shape="rect" id="node26" href="$class_histogram.html#afeb3237d66fccb4c1546dc3feb7a7cc6" title="Histogram::setRightCursor\lValue" alt="" coords="255,1099,430,1140"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#a37ddc32b97cc4e8771745046cb88ff35" title="Returns the top slice widget. " alt="" coords="502,68,637,109"/>
+<area shape="rect" id="node6" href="$class_slice_editor_widget.html#aca98a3731da7f8fcf6db8de5fdb09dc7" title="Returns the right slice widget. " alt="" coords="502,133,637,175"/>
+<area shape="rect" id="node7" href="$class_slice_editor_widget.html#a5e4c4a47ad244e38f7106aecb902b820" title="Returns the front slice widget. " alt="" coords="502,199,637,240"/>
+<area shape="rect" id="node11" href="$class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a" title="Returns the top slice model. " alt="" coords="703,329,837,371"/>
+<area shape="rect" id="node13" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="703,460,837,501"/>
+<area shape="rect" id="node18" href="$class_abstract_slice_editor_plugin.html#a8fa0c350f39f12dd36db2fc37200f591" title="AbstractSliceEditorPlugin\l::setImage" alt="" coords="484,395,655,436"/>
+</map>

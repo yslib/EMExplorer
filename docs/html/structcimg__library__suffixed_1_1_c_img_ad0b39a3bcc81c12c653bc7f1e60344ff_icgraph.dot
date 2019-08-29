@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::is_shared"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node2314 [label="cimg_library_suffixed\l::CImg::is_shared",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2314 -> Node2315 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2315 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_object3dtoCImg3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a10b28cfe85047fcd3637bf2083586da6",tooltip="Convert 3d object into a CImg3d representation . "];
+  Node2314 -> Node2316 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2316 [label="cimg_library_suffixed\l::CImg\< charT \>::_object3dto\lCImg3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aee99eff518486becc806668b25b5f6ba"];
+}

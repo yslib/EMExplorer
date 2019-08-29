@@ -1,0 +1,4 @@
+<map id="MarkModel::addCategory" name="MarkModel::addCategory">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#af2b80216e3b56f0b791510c007289b60" title="Adds a new category into the mark model in the SliceEditorWidget. " alt="" coords="220,5,355,47"/>
+<area shape="rect" id="node3" href="$class_category_control_widget.html#aad862c247bffd2f918f6c3fd8933a6b6" title="Returns the number of category. " alt="" coords="403,5,559,47"/>
+</map>

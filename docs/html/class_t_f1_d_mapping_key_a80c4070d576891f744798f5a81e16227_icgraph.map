@@ -1,0 +1,9 @@
+<map id="TF1DMappingKey::setColorR" name="TF1DMappingKey::setColorR">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#ab4bbe42d2258dfc37fd7d50a4d862870" title="TF1DMappingCanvas::\lchangeCurrentColor" alt="" coords="256,5,408,47"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#a00aa48a9de4c7b3496384867c8cd8a43" title="TF1DMappingCanvas::load" alt="" coords="244,71,420,98"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#a26f799505f51abb6da4bfcbd79442287" title="TF1DEditor::loadTransfer\lFunction" alt="" coords="468,31,633,72"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_canvas.html#a4362a9c099ca0a2f1e84bd4a0ce81603" title="TF1DMappingCanvas::\lisThresholdClipped" alt="" coords="475,96,627,137"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17" title="TF1DEditor::createConnections" alt="" coords="681,13,884,39"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="691,63,874,90"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_editor.html#a09bea74dece8749643ad6e55cb8cb8a4" title="TF1DEditor::TF1DEditor" alt="" coords="932,13,1092,39"/>
+</map>

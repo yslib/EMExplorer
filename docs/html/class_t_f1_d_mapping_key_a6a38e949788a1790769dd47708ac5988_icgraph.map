@@ -1,0 +1,5 @@
+<map id="TF1DMappingKey::setColorL" name="TF1DMappingKey::setColorL">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#ab4bbe42d2258dfc37fd7d50a4d862870" title="TF1DMappingCanvas::\lchangeCurrentColor" alt="" coords="241,5,393,47"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#a4fae8b70589e690c7f0d2a0cb4366e05" title="TF1DMappingCanvas::\linsertNewKey" alt="" coords="241,71,393,112"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html#ab13275aa81a6ad759cf2c2093f71c9ab" title="TF1DMappingCanvas::\lmousePressEvent" alt="" coords="441,71,593,112"/>
+</map>

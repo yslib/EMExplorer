@@ -1,0 +1,12 @@
+<map id="TF1DEditor::loadTransferFunction" name="TF1DEditor::loadTransferFunction">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a00aa48a9de4c7b3496384867c8cd8a43" title="TF1DMappingCanvas::load" alt="" coords="230,56,406,83"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a556aea7084841f0ffeeafc88b2bfe20a" title="TF1DEditor::restoreThresholds" alt="" coords="219,144,417,171"/>
+<area shape="rect" id="node11" href="$class_t_f1_d_editor.html#a3ccf0ae529d26b0a89f058df03907ed0" title="TF1DEditor::repaintAll" alt="" coords="243,195,393,221"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a074f0af6fe5c4b79d8230e1d900d2b42" title="TF1DMappingKey::setSplit" alt="" coords="472,5,649,32"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a80c4070d576891f744798f5a81e16227" title="TF1DMappingKey::setColorR" alt="" coords="465,56,656,83"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#acea81df307f8d90f1bb49fafd595267b" title="TF1DMappingCanvas::\lgetThresholds" alt="" coords="485,107,637,149"/>
+<area shape="rect" id="node7" href="$class_double_slider.html#ae5aac2b29c8739e907f9f6e6674fd745" title="DoubleSlider::setValues" alt="" coords="480,173,641,200"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_mapping_canvas.html#aa1d4689481bdce0e45048a898b2a0084" title="TF1DMappingCanvas::\lsetThreshold" alt="" coords="485,225,637,266"/>
+<area shape="rect" id="node8" href="$class_double_slider.html#aefabfbe5a145bea286a93ab2af36cd59" title="DoubleSlider::setMinValue" alt="" coords="706,148,881,175"/>
+<area shape="rect" id="node9" href="$class_double_slider.html#a2210cef12c129a50391c5eb1aa520494" title="DoubleSlider::setMaxValue" alt="" coords="704,199,883,225"/>
+</map>

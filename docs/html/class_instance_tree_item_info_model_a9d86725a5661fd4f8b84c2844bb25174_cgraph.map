@@ -1,0 +1,9 @@
+<map id="InstanceTreeItemInfoModel::data" name="InstanceTreeItemInfoModel::data">
+<area shape="rect" id="node2" href="$class_instance_meta_data.html#aac6fe7f2491b54ed4c434f3deb4ff40c" title="InstanceMetaData::name" alt="" coords="231,5,398,32"/>
+<area shape="rect" id="node3" href="$class_instance_meta_data.html#a6f52821e282853110877f4815e762660" title="InstanceMetaData::region" alt="" coords="229,56,400,83"/>
+<area shape="rect" id="node4" href="$class_instance_meta_data.html#a1e701b2297fb55dd5b249997f54a54a7" title="InstanceMetaData::visible\lState" alt="" coords="229,107,400,149"/>
+<area shape="rect" id="node5" href="$class_tree_item.html#a14551ec37f50067974fc93aa78b4b6e1" title="TreeItem::childCount" alt="" coords="244,173,385,200"/>
+<area shape="rect" id="node6" href="$treeitem_8h.html#af3867168b442d1c788191d4ff5e10736" title="operator\&lt;\&lt;" alt="" coords="448,148,533,175"/>
+<area shape="rect" id="node7" href="$treeitem_8h.html#a437228530f02a7bebd73f29f411e82b0" title="operator\&gt;\&gt;" alt="" coords="448,199,533,225"/>
+<area shape="rect" id="node8" href="$class_tree_item.html#a6ea43f97c7dfa519633ddb10882ddc6a" title="Returns the model index refers to the item in the model. " alt="" coords="581,191,753,233"/>
+</map>

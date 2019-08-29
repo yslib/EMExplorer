@@ -1,0 +1,8 @@
+<map id="SliceDataIdentityTester::SliceDataIdentityTester" name="SliceDataIdentityTester::SliceDataIdentityTester">
+<area shape="rect" id="node2" href="$class_abstract_slice_data_model.html#a6ee771893956663b608ffdfa63a71124" title="AbstractSliceDataModel\l::topSliceCount" alt="" coords="217,5,380,47"/>
+<area shape="rect" id="node3" href="$class_abstract_slice_data_model.html#a19f5168d24a72bd01fa3f38991112770" title="AbstractSliceDataModel\l::rightSliceCount" alt="" coords="217,71,380,112"/>
+<area shape="rect" id="node4" href="$class_abstract_slice_data_model.html#a7d9de8d5b699740f3a0367afb8502503" title="AbstractSliceDataModel\l::frontSliceCount" alt="" coords="217,136,380,177"/>
+<area shape="rect" id="node5" href="$class_abstract_slice_data_model.html#a9382ae1b265f17b237eecd803b6fbc46" title="AbstractSliceDataModel\l::originalTopSlice" alt="" coords="217,201,380,243"/>
+<area shape="rect" id="node6" href="$class_abstract_slice_data_model.html#a202041a129858ec7164c98767609a25f" title="AbstractSliceDataModel\l::originalRightSlice" alt="" coords="217,267,380,308"/>
+<area shape="rect" id="node7" href="$class_abstract_slice_data_model.html#a831d31809663159fedace360001c89c3" title="AbstractSliceDataModel\l::originalFrontSlice" alt="" coords="217,332,380,373"/>
+</map>

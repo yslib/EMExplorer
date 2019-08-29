@@ -1,0 +1,36 @@
+digraph "cimg_library_suffixed::cimg::files"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1554 [label="cimg_library_suffixed\l::cimg::files",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1554 -> Node1555 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1555 [label="cimg_library_suffixed\l::cimg::is_directory",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aca0e45a04eb1607f2e25101aae4b8572",tooltip="Check if a path is a directory. "];
+  Node1554 -> Node1556 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1556 [label="cimg_library_suffixed\l::cimg::unused",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a79aef0cbcf66ceb71c2b74cb66b4deb2",tooltip="Avoid warning messages due to unused parameters. Do nothing actually. "];
+  Node1556 -> Node1557 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1557 [label="cimg_library_suffixed\l::cimg::mutex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a9e739e4b4ac058abfba069466617b914"];
+  Node1557 -> Node1558 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1558 [label="cimg_library_suffixed\l::cimg::Mutex_attr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa0e1bc96ae6e235dc5b67b8b0a466166"];
+  Node1557 -> Node1559 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1559 [label="cimg_library_suffixed\l::cimg::Mutex_info::unlock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#afac3fa5f107ad4795fb867050f616555"];
+  Node1557 -> Node1560 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1560 [label="cimg_library_suffixed\l::cimg::Mutex_info::lock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a6cc8e26847a1aa649febed03d70182e7"];
+  Node1557 -> Node1561 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1561 [label="cimg_library_suffixed\l::cimg::Mutex_info::trylock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a9bf4ed1e1dfe6f28fa6250cd04f3c900"];
+  Node1561 -> Node1558 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1554 -> Node1562 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1562 [label="cimg_library_suffixed\l::CImg::string",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1a6afc9cde7f9cdfa0d2711dd39f83b8",tooltip="Return an image containing the ascii codes of the specified string. "];
+  Node1554 -> Node1563 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1563 [label="cimg_library_suffixed\l::cimg::basename",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a40fb5fe2a0d260120909c617dfd3b07b",tooltip="Return the basename of a filename. "];
+  Node1554 -> Node1564 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1564 [label="cimg_library_suffixed\l::CImg::data",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a5a062592b78f33dd2813cc59985e61a2",tooltip="Return a pointer to the first pixel value. "];
+  Node1554 -> Node1565 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1565 [label="cimg_library_suffixed\l::CImg::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a82cf529dfcb37cbd01ad7f9bd76795d7",tooltip="Construct empty image . "];
+  Node1554 -> Node1566 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1566 [label="cimg_library_suffixed\l::CImgList::const_empty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ae37157824423ea01f970917ce45311a8",tooltip="Return a reference to an empty list . "];
+  Node1554 -> Node1567 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1567 [label="cimg_library_suffixed\l::CImg::move_to",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a679b1e1a7717fbb6be2352355e69f077",tooltip="Transfer content of an image instance into another one. "];
+  Node1554 -> Node1568 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1568 [label="cimg_library_suffixed\l::cimg::_sort_files",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#add25d3bf42363c07ad95d4a9a689f729"];
+}

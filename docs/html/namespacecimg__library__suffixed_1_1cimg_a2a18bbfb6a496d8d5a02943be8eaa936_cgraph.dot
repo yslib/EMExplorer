@@ -1,0 +1,28 @@
+digraph "cimg_library_suffixed::cimg::prand"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3431 [label="cimg_library_suffixed\l::cimg::prand",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3431 -> Node3432 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3432 [label="cimg_library_suffixed\l::sqrt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a00d0fd9a21d8d5e8a9fa4033593e6acf"];
+  Node3432 -> Node3433 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3433 [label="cimg_library_suffixed\l::CImg::get_sqrt",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a550cfc014f80c68359d3b55a0d3803b9",tooltip="Compute the square root of each pixel value . "];
+  Node3431 -> Node3434 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3434 [label="cimg_library_suffixed\l::cimg::grand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa12c572ad67f655e27f7b8e3e76dafa5",tooltip="Return a random variable following a gaussian distribution and a standard deviation of 1..."];
+  Node3434 -> Node3435 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3435 [label="cimg_library_suffixed\l::cimg::rand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#ab7c09300be61c8a3361c379069100252",tooltip="Return a random variable uniformely distributed between [val_min,val_max]. "];
+  Node3435 -> Node3436 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3436 [label="cimg_library_suffixed\l::cimg::rand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#af5cd3397f819c13ccb17e05a7db736b1",tooltip="Return a random variable uniformely distributed between [0,val_max]. "];
+  Node3436 -> Node3435 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3434 -> Node3432 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3434 -> Node3437 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3437 [label="cimg_library_suffixed::log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a65baff382319a3677fd777a976a4f50b"];
+  Node3437 -> Node3438 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3438 [label="cimg_library_suffixed\l::CImg::get_log",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a560dd5fe13a0b40fcf95e2ea7020381e",tooltip="Compute the logarithm of each pixel value . "];
+  Node3431 -> Node3439 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3439 [label="cimg_library_suffixed::exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#adc3a62a5832fe41a2a16023ba04c8e64"];
+  Node3439 -> Node3440 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3440 [label="cimg_library_suffixed\l::CImg::get_exp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a9025e6121a8da36b6213422347de4c12",tooltip="Compute the exponential of each pixel value . "];
+  Node3431 -> Node3435 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

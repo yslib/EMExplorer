@@ -1,0 +1,7 @@
+<map id="TF1DEditor" name="TF1DEditor">
+<area shape="rect" id="node3" href="$class_double_slider.html" title="DoubleSlider" alt="" coords="45,109,140,136"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_canvas.html" title="TF1DMappingCanvas" alt="" coords="165,109,309,136"/>
+<area shape="rect" id="node5" href="$class_volume.html" title="Volume" alt="" coords="103,13,170,39"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_key.html" title="TF1DMappingKey" alt="" coords="194,13,319,39"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_texture_canvas.html" title="TF1DTextureCanvas" alt="" coords="335,109,474,136"/>
+</map>

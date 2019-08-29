@@ -1,0 +1,7 @@
+<map id="TF1DEditor::getTF1DTextureCanvas" name="TF1DEditor::getTF1DTextureCanvas">
+<area shape="rect" id="node2" href="$class_t_f1_d_editor.html#af173d5cf19f4e7d5443b9053035c30a3" title="TF1DEditor::getTransferFunction" alt="" coords="240,56,449,83"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#a074ca4f2fed604ef0386868b5b25dbc7" title="TF1DMappingCanvas::\lgetTransferFunction" alt="" coords="497,49,649,90"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="697,5,897,32"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="702,56,893,83"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="703,107,891,133"/>
+</map>

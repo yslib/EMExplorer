@@ -1,0 +1,7 @@
+<map id="TF1DEditor::restoreThresholds" name="TF1DEditor::restoreThresholds">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#acea81df307f8d90f1bb49fafd595267b" title="TF1DMappingCanvas::\lgetThresholds" alt="" coords="257,5,409,47"/>
+<area shape="rect" id="node3" href="$class_double_slider.html#ae5aac2b29c8739e907f9f6e6674fd745" title="DoubleSlider::setValues" alt="" coords="252,71,413,98"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#aa1d4689481bdce0e45048a898b2a0084" title="TF1DMappingCanvas::\lsetThreshold" alt="" coords="257,123,409,164"/>
+<area shape="rect" id="node4" href="$class_double_slider.html#aefabfbe5a145bea286a93ab2af36cd59" title="DoubleSlider::setMinValue" alt="" coords="463,46,638,73"/>
+<area shape="rect" id="node5" href="$class_double_slider.html#a2210cef12c129a50391c5eb1aa520494" title="DoubleSlider::setMaxValue" alt="" coords="461,97,640,123"/>
+</map>

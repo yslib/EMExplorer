@@ -1,0 +1,5 @@
+<map id="MarkModel::insertRows" name="MarkModel::insertRows">
+<area shape="rect" id="node2" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="215,5,391,32"/>
+<area shape="rect" id="node3" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="212,56,395,83"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="236,107,371,149"/>
+</map>

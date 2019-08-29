@@ -1,0 +1,8 @@
+<map id="TF1DMappingCanvas::paintKeys" name="TF1DMappingCanvas::paintKeys">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a1e6883c271c8181ae9439d8ea8be6923" title="TF1DMappingCanvas::wtos" alt="" coords="216,5,395,32"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="205,56,405,83"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="211,107,399,133"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_key.html#a9f3a66b2b43f544cf4b776e8b9fb52ea" title="TF1DMappingKey::isSplit" alt="" coords="221,157,390,184"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_canvas.html#ad44c263c35d742ce189350c99820439c" title="TF1DMappingCanvas::\ldrawMarker" alt="" coords="229,209,381,250"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="210,275,401,301"/>
+</map>

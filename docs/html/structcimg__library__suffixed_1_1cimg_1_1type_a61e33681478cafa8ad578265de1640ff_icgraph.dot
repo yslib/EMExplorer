@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::cimg::type::is_float"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node32 [label="cimg_library_suffixed\l::cimg::type::is_float",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node32 -> Node33 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node33 [label="cimg_library_suffixed\l::CImg\< charT \>::rand",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a73eb697c067589691393d1232178ae9c",tooltip="Fill image with random values in specified range. "];
+  Node32 -> Node34 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node34 [label="cimg_library_suffixed\l::CImg\< charT \>::noise",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6049c651eefc3a13b8f7d1fc3ff225d7",tooltip="Add random noise to pixel values. "];
+}

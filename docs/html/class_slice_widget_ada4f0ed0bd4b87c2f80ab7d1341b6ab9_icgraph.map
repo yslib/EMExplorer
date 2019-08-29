@@ -1,0 +1,4 @@
+<map id="SliceWidget::setOperation" name="SliceWidget::setOperation">
+<area shape="rect" id="node2" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="228,5,391,32"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#abb1bcb2761d9d57802c5c171fc4a265b" title="Sets the given opt operation for the type type slice. " alt="" coords="242,57,377,98"/>
+</map>

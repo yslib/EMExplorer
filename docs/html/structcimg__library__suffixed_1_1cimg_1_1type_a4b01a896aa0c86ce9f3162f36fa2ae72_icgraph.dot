@@ -1,0 +1,33 @@
+digraph "cimg_library_suffixed::cimg::type::max"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node43 [label="cimg_library_suffixed\l::cimg::type::max",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node43 -> Node44 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node44 [label="cimg_library_suffixed\l::cimg::type\< double\l \>::is_inf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1type_3_01double_01_4.html#a92b3b5611e041d2d92073bc78cd1ca2b"];
+  Node43 -> Node45 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node45 [label="cimg_library_suffixed\l::cimg::type\< float \>\l::is_inf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1type_3_01float_01_4.html#aa2f6aa9ed1a9bf37f1bd44378324fe41"];
+  Node43 -> Node46 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node46 [label="cimg_library_suffixed\l::cimg::type\< long double\l \>::is_inf",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1type_3_01long_01double_01_4.html#a9681404bc847cae1a4742a74b4e307a3"];
+  Node43 -> Node47 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node47 [label="cimg_library_suffixed\l::cimg::type\< long double\l \>::format",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1type_3_01long_01double_01_4.html#a89d8c31aa610f90c6cb16409d32954c1"];
+  Node43 -> Node48 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node48 [label="cimg_library_suffixed\l::CImg\< charT \>::PSNR",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1c5936e2a0499030ddf5a2e5e07eb128",tooltip="Compute the PSNR (Peak Signal-to-Noise Ratio) between two images. "];
+  Node43 -> Node49 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node49 [label="cimg_library_suffixed\l::CImg\< charT \>::dijkstra",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a376d6a45a4f3122f23a9b352fd56adf0",tooltip="Compute minimal path in a graph, using the Dijkstra algorithm. "];
+  Node43 -> Node50 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node50 [label="cimg_library_suffixed\l::CImg\< charT \>::noise",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6049c651eefc3a13b8f7d1fc3ff225d7",tooltip="Add random noise to pixel values. "];
+  Node43 -> Node51 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node51 [label="cimg_library_suffixed\l::CImg\< charT \>::get_index",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a3787f8eb2c642164a3fb1f2b93c9dcc5",tooltip="Index multi-valued pixels regarding to a specified colormap . "];
+  Node43 -> Node52 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node52 [label="cimg_library_suffixed\l::CImg\< charT \>::get_erode",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aad353fc91b0c6ef3c0251f4f46a96150",tooltip="Erode image by a structuring element . "];
+  Node43 -> Node53 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node53 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_displacement",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a91ec1cd09114c4018a78e4ea0b2df386",tooltip="Estimate displacement field between two images . "];
+  Node43 -> Node54 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node54 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_triangle",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a48133097680fed3cb906bc65edb9afba",tooltip="Draw a textured 2d triangle. "];
+  Node43 -> Node55 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node55 [label="cimg_library_suffixed\l::CImg\< charT \>::draw_graph",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ac1f792d60d2ced2cfa529ba0f7efb0e7",tooltip="Draw 1d graph. "];
+  Node43 -> Node56 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node56 [label="cimg_library_suffixed\l::CImg\< charT \>::_draw\l_object3d",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a6dba86c8049ae141ffc9936b2eaf5c5c"];
+}

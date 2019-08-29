@@ -1,0 +1,43 @@
+digraph "cimg_library_suffixed::cimg::strcasecmp"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3888 [label="cimg_library_suffixed\l::cimg::strcasecmp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3888 -> Node3889 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3889 [label="cimg_library_suffixed\l::cimg::option",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#ad4c8d06ea82d8a2d6a618c0d678bca79"];
+  Node3888 -> Node3890 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3890 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3888 -> Node3891 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3891 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_stov",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#aee12d443bb77c1a9e08f712491bf90c5"];
+  Node3888 -> Node3892 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3892 [label="cimg_library_suffixed\l::CImg\< charT \>::get\l_hessian",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4eb2ceb90169f0658337de1f5156fda5",tooltip="Return image hessian. "];
+  Node3888 -> Node3893 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3893 [label="cimg_library_suffixed\l::CImg\< charT \>::load",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae8353b28bfbc5c4421c7adfbb98fe32f",tooltip="Load image from a file. "];
+  Node3888 -> Node3894 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3894 [label="cimg_library_suffixed\l::CImg\< charT \>::_load\l_analyze",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a01444df91267a5b4cb8105ac5886f12f"];
+  Node3888 -> Node3895 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3895 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1f1ef95d7faa4c2c7a72d3d347f30dad",tooltip="Load gzipped image file, using external tool &#39;gunzip&#39;. "];
+  Node3888 -> Node3896 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3896 [label="cimg_library_suffixed\l::CImg\< charT \>::load\l_imagemagick_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a8278afa0b313d0f3465ef91dabdac549",tooltip="Load image using ImageMagick&#39;s external tool &#39;convert&#39;. "];
+  Node3888 -> Node3897 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3897 [label="cimg_library_suffixed\l::CImg\< charT \>::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#adb165b37ac226a1c73a96cb1b5827d2e",tooltip="Save image as a file. "];
+  Node3888 -> Node3898 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3898 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_analyze",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a09711118d3b31870942e99adbefffed1",tooltip="Save image as an ANALYZE7.5 or NIFTI file. "];
+  Node3888 -> Node3899 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3899 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_inr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa29c8a2179f282535660800f9b9192e0"];
+  Node3888 -> Node3900 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3900 [label="cimg_library_suffixed\l::CImg\< charT \>::save\l_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a53983bb4f1ebe2a817b68029b8c04cb1",tooltip="Save image using gzip external binary. "];
+  Node3888 -> Node3901 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3901 [label="cimg_library_suffixed\l::CImgList\< charT \>::load",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a63bd67d8dd2301933df7decb4612916e",tooltip="Load a list from a file. "];
+  Node3888 -> Node3902 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3902 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lload_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aae55e9a79bf2f7e08108dd200f63bf2c",tooltip="Load a gzipped list, using external tool &#39;gunzip&#39;. "];
+  Node3888 -> Node3903 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3903 [label="cimg_library_suffixed\l::CImgList\< charT \>::save",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a7186fe44f8d6ce58583e3177ff802445",tooltip="Save list into a file. "];
+  Node3888 -> Node3904 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3904 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lis_saveable",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#ae6a86adfeb4cdeb99f58565a6a49784b",tooltip="Tell if an image list can be saved as one single file. "];
+  Node3888 -> Node3905 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3905 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aad5afe8b913e276dd281255dd787b4ba",tooltip="Save list as a gzipped file, using external tool &#39;gzip&#39;. "];
+  Node3888 -> Node3906 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3906 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_ffmpeg_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#af09a45345581747984f4df0607418f2c",tooltip="Save image sequence, using the external tool &#39;ffmpeg&#39;. "];
+}

@@ -1,0 +1,13 @@
+digraph "cimg_library_suffixed::CImg::atXY"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node516 [label="cimg_library_suffixed\l::CImg::atXY",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node516 -> Node517 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node517 [label="cimg_library_suffixed\l::CImg\< charT \>::_save_off",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a7cba468815b7ce868cc5119e89046420"];
+  Node516 -> Node518 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node518 [label="cimg_library_suffixed\l::CImgList\< charT \>::atNXY",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a7ea7315ffe9bd28eadec75695bc34629",tooltip="Access to pixel value with Dirichlet boundary conditions for the 3 coordinates (pos, x,y) . "];
+  Node516 -> Node519 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node519 [label="cimg_library_suffixed\l::CImgList\< charT \>::\l_atNXY",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#a6a1084bd95f7f75ec89a165ca1c63fdf"];
+}

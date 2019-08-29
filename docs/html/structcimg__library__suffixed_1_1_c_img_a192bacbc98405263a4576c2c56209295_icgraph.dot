@@ -1,0 +1,11 @@
+digraph "cimg_library_suffixed::CImg::XYZtoRGB"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3525 [label="cimg_library_suffixed\l::CImg::XYZtoRGB",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3525 -> Node3526 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3526 [label="cimg_library_suffixed\l::CImg\< charT \>::LabtoRGB",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aacbc856c0a357b58c31e2d09e5626e68",tooltip="Convert pixel values from Lab to RGB color spaces. "];
+  Node3525 -> Node3527 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3527 [label="cimg_library_suffixed\l::CImg\< charT \>::xyYtoRGB",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a4120b423486997772fc643dc6597381e",tooltip="Convert pixel values from xyY to RGB color spaces. "];
+}

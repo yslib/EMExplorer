@@ -1,0 +1,22 @@
+<map id="StrokeMarkItem::sliceIndex" name="StrokeMarkItem::sliceIndex">
+<area shape="rect" id="node2" href="$class_triangulate.html#a006a3440d7973e60f1527f2854246901" title="Triangulate::triangulate" alt="" coords="249,13,403,40"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#aa7e4d6a9ebf4ac59119acd01fa62eeed" title="This is a convenience function to returns the root tree item pointer. " alt="" coords="255,72,397,99"/>
+<area shape="rect" id="node6" href="$class_mark_model.html#ac21d495d673ed2238d7c1df17fa844fb" title="This is a helper function for get specified type to items in the parent of . " alt="" coords="233,129,419,156"/>
+<area shape="rect" id="node19" href="$class_stroke_mark_tree_item.html#ac1f21b0b743cafbeb63938e33af688f7" title="StrokeMarkTreeItem\l::data" alt="" coords="257,181,395,222"/>
+<area shape="rect" id="node20" href="$class_mark_item_info_model.html#a24b51b0bb77f90e7d206fbcbe9518608" title="Returns the data located in index. " alt="" coords="244,247,408,273"/>
+<area shape="rect" id="node3" href="$triangulate_8h.html#ab52637a953ac9855b08014f82ab595c3" title="distanceSquare" alt="" coords="501,5,613,32"/>
+<area shape="rect" id="node5" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="490,57,625,98"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#abd67a8a42ced49d205fc618bcefbc6ab" title="Returns all tree items according to a given parent index parent and a type. " alt="" coords="483,188,631,215"/>
+<area shape="rect" id="node11" href="$class_mark_model.html#ad58bc2e692e3b5a0716e20145d135e50" title="MarkModel::selectionModel\lOfThisModel" alt="" coords="467,122,648,163"/>
+<area shape="rect" id="node8" href="$class_render_widget.html#a54d5421db7ae7377116979c9189c9365" title="This property holds the visibility of the front slice when renders data with slice type render..." alt="" coords="699,187,888,229"/>
+<area shape="rect" id="node9" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="968,179,1115,221"/>
+<area shape="rect" id="node10" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="1203,179,1344,221"/>
+<area shape="rect" id="node12" href="$class_mark_manager.html#a1c5504fe103bdbd2402f1bf35081c04a" title="Set new model model to the widget. " alt="" coords="698,20,889,47"/>
+<area shape="rect" id="node16" href="$class_render_widget.html#ae525129d1fd36fa90f7c6674f4b51d70" title="Sets the slice model as the given model. " alt="" coords="696,71,891,97"/>
+<area shape="rect" id="node18" href="$class_slice_editor_widget.html#ad994c2599b8cee4b75614e230b2214e6" title="This is a convenience function to set right slice visibility. " alt="" coords="719,122,867,163"/>
+<area shape="rect" id="node13" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="975,71,1107,97"/>
+<area shape="rect" id="node15" href="$class_main_window.html#a9cd18140979dd0f5d1312e9c66de19da" title="MainWindow::openMark" alt="" coords="961,20,1122,47"/>
+<area shape="rect" id="node14" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1192,45,1355,72"/>
+<area shape="rect" id="node17" href="$class_volume_main_window.html#a690eac05cd92c04cfd56e9a7f9fe19b5" title="VolumeMainWindow::openMark" alt="" coords="939,121,1144,148"/>
+<area shape="rect" id="node21" href="$class_stroke_mark_tree_item.html#a9b99f4fbcd73531b7f70b12ce930fff0" title="StrokeMarkTreeItem\l::modelIndexChanged" alt="" coords="484,239,631,281"/>
+</map>

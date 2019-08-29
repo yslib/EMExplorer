@@ -1,0 +1,18 @@
+digraph "cimg_library_suffixed::cimg::strbuffersize"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3872 [label="cimg_library_suffixed\l::cimg::strbuffersize",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3872 -> Node3873 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3873 [label="cimg_library_suffixed\l::cimg::mutex",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#a9e739e4b4ac058abfba069466617b914"];
+  Node3873 -> Node3874 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3874 [label="cimg_library_suffixed\l::cimg::Mutex_attr",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed_1_1cimg.html#aa0e1bc96ae6e235dc5b67b8b0a466166"];
+  Node3873 -> Node3875 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3875 [label="cimg_library_suffixed\l::cimg::Mutex_info::unlock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#afac3fa5f107ad4795fb867050f616555"];
+  Node3873 -> Node3876 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3876 [label="cimg_library_suffixed\l::cimg::Mutex_info::lock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a6cc8e26847a1aa649febed03d70182e7"];
+  Node3873 -> Node3877 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3877 [label="cimg_library_suffixed\l::cimg::Mutex_info::trylock",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1cimg_1_1_mutex__info.html#a9bf4ed1e1dfe6f28fa6250cd04f3c900"];
+  Node3877 -> Node3874 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

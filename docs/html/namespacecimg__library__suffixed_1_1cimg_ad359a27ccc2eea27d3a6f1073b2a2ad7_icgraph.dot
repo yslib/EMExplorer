@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::cimg::nb_cpus"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3120 [label="cimg_library_suffixed\l::cimg::nb_cpus",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3120 -> Node3121 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3121 [label="cimg_library_suffixed\l::CImg\< charT \>::FFT",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ae4263ce4b6b6549bc9165a2cf970d83f",tooltip="Compute n-d Fast Fourier Transform. "];
+}

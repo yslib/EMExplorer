@@ -1,0 +1,9 @@
+<map id="Vector3::HasNaN" name="Vector3::HasNaN">
+<area shape="rect" id="node2" href="$class_vector3.html#a0bc5cd207aa5666973246dd002d856f0" title="Vector3::operator+=" alt="" coords="176,5,315,32"/>
+<area shape="rect" id="node3" href="$class_vector3.html#a1c66a722bea95193a2087579371e4bbd" title="Vector3::operator&#45;" alt="" coords="182,56,309,83"/>
+<area shape="rect" id="node4" href="$class_vector3.html#a5f8e3dfb7d3ecfc4e778c6028eccd174" title="Vector3::operator&#45;=" alt="" coords="178,107,313,133"/>
+<area shape="rect" id="node5" href="$class_point3.html#a6df5a5ced5a3547eebb586a708353985" title="Point3::operator+" alt="" coords="184,157,307,184"/>
+<area shape="rect" id="node6" href="$class_point3.html#adcc195d4e9ca11769d43d7299dd12c39" title="Point3::operator+=" alt="" coords="180,208,311,235"/>
+<area shape="rect" id="node7" href="$class_point3.html#adfb755afaae48034488c749ca8b41e6c" title="Point3::operator&#45;" alt="" coords="186,259,305,285"/>
+<area shape="rect" id="node8" href="$class_point3.html#a2290cff57fecafbcf52bd1a6bd194c55" title="Point3::operator&#45;=" alt="" coords="182,309,309,336"/>
+</map>

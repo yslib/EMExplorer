@@ -1,0 +1,23 @@
+digraph "cimg_library_suffixed::CImg::sort"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3232 [label="cimg_library_suffixed\l::CImg::sort",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3232 -> Node3233 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3233 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::compile",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a318c44c5d1f4f0114355f37ace87a4ae"];
+  Node3232 -> Node3234 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3234 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_image_sort",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_1_1__cimg__math__parser.html#a3dc8e03302dcf232f3f72dfd6f0feb96"];
+  Node3232 -> Node3235 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3235 [label="cimg_library_suffixed\l::CImg\< charT \>::variance_mean",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aae8fb87bbd9424e931c491a2f37676d4",tooltip="Return the variance as well as the average of the pixel values. "];
+  Node3232 -> Node3236 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3236 [label="cimg_library_suffixed\l::CImg\< charT \>::symmetric_eigen",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a53284105886c5eb684b26e7dba5ede66",tooltip="Compute eigenvalues and eigenvectors of the instance image, viewed as a symmetric matrix..."];
+  Node3232 -> Node3237 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3237 [label="cimg_library_suffixed\l::CImg\< charT \>::get_sort",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a38c173e824721b1541e93d4cec9a1692",tooltip="Sort pixel values and get sorting permutations . "];
+  Node3232 -> Node3238 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3238 [label="cimg_library_suffixed\l::CImg\< charT \>::sort",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aa5a7f39985713471c4289a68040242a6",tooltip="Sort pixel values. "];
+  Node3232 -> Node3239 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3239 [label="cimg_library_suffixed\l::CImg\< charT \>::SVD",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a33c8a817208b7aa571350457969e9dbe",tooltip="Compute the SVD of the instance image, viewed as a general matrix. "];
+  Node3232 -> Node3240 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3240 [label="cimg_library_suffixed\l::CImg\< charT \>::draw\l_polygon",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#aba5835eafcb8746755d164f3f9d20b81",tooltip="Draw a filled 2d polygon. "];
+}

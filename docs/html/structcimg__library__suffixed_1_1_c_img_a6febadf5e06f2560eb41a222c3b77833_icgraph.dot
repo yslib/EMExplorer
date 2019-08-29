@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::cut"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node701 [label="cimg_library_suffixed\l::CImg::cut",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node701 -> Node702 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node702 [label="cimg_library_suffixed\l::CImg\< charT \>::get_cut",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a9c09aed552cc83f2de60b823561cd027",tooltip="Cut pixel values in specified range . "];
+}

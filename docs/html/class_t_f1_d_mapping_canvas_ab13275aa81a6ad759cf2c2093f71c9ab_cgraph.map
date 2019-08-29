@@ -1,0 +1,17 @@
+<map id="TF1DMappingCanvas::mousePressEvent" name="TF1DMappingCanvas::mousePressEvent">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_canvas.html#a970c5f906847bb48f06878d0f3a646ea" title="TF1DMappingCanvas::\lhitLine" alt="" coords="219,105,371,146"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_canvas.html#a1e6883c271c8181ae9439d8ea8be6923" title="TF1DMappingCanvas::wtos" alt="" coords="443,7,621,34"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a14755a6845284b15750bd61e292c65cc" title="TF1DMappingKey::getIntensity" alt="" coords="432,62,632,88"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="438,112,626,139"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_mapping_key.html#a9f3a66b2b43f544cf4b776e8b9fb52ea" title="TF1DMappingKey::isSplit" alt="" coords="447,432,617,459"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="437,163,627,190"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_mapping_canvas.html#a06f9499ccc11f3f135d2966441335366" title="TF1DMappingCanvas::stow" alt="" coords="205,507,384,534"/>
+<area shape="rect" id="node9" href="$class_t_f1_d_mapping_canvas.html#a7cc658b2c8ccdd02ff68236b9b945220" title="TF1DMappingCanvas::\lshowNoKeyContextMenu" alt="" coords="211,558,379,600"/>
+<area shape="rect" id="node10" href="$class_t_f1_d_mapping_canvas.html#a4d74bc88f89ac6dcfa087556e6036742" title="TF1DMappingCanvas::\lshowKeyContextMenu" alt="" coords="219,441,371,482"/>
+<area shape="rect" id="node11" href="$_t_f1_d_mapping_canvas_8h.html#ad71c1fff1d5975fad19c7c14a4625e3b" title="Clamp" alt="" coords="503,382,561,408"/>
+<area shape="rect" id="node12" href="$class_t_f1_d_mapping_canvas.html#aa887696adc8f0f92cad26d8c51617ab8" title="TF1DMappingCanvas::\lupdateCoordinates" alt="" coords="219,624,371,665"/>
+<area shape="rect" id="node13" href="$class_t_f1_d_mapping_canvas.html#a4fae8b70589e690c7f0d2a0cb4366e05" title="TF1DMappingCanvas::\linsertNewKey" alt="" coords="219,273,371,314"/>
+<area shape="rect" id="node14" href="$class_t_f1_d_mapping_canvas.html#aafab30102c7949d6c0815dae499bd480" title="TF1DMappingCanvas::\lgetOtherKey" alt="" coords="456,214,608,256"/>
+<area shape="rect" id="node15" href="$class_t_f1_d_mapping_key.html#a6a38e949788a1790769dd47708ac5988" title="TF1DMappingKey::setColorL" alt="" coords="438,280,626,307"/>
+<area shape="rect" id="node16" href="$class_t_f1_d_mapping_key.html#ab3d028d8ef1d779505caac0d6ddac7ac" title="TF1DMappingKey::setAlphaL" alt="" coords="437,331,627,358"/>
+</map>

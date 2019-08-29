@@ -1,0 +1,11 @@
+<map id="ZoomWidget::zoomRegion" name="ZoomWidget::zoomRegion">
+<area shape="rect" id="node2" href="$class_zoom_widget.html#a32352561bee374aa48ab86fe16eaff7b" title="This function set the image to be displayed in the zoomviewer. " alt="" coords="255,5,411,32"/>
+<area shape="rect" id="node3" href="$class_zoom_widget.html#a6c9faab15eff0c934f3cbbe8e70ecb3f" title="ZoomWidget::clearImage" alt="" coords="250,56,417,83"/>
+<area shape="rect" id="node4" href="$class_zoom_widget.html#ae2ffb7c35ae6c3163c5744418cb7108f" title="ZoomWidget::setZoomRegion" alt="" coords="237,107,430,133"/>
+<area shape="rect" id="node5" href="$class_zoom_widget.html#a62806e45b9bd8adaa1787f7fb087a263" title="ZoomWidget::zoomPosition" alt="" coords="242,157,425,184"/>
+<area shape="rect" id="node6" href="$class_zoom_widget.html#a79ef87c943aa2261ea6b7326b0a02408" title="ZoomWidget::setMinZoomFactor" alt="" coords="228,208,439,235"/>
+<area shape="rect" id="node8" href="$class_zoom_widget.html#a17ac4cb299904cc18921cd8508b064dc" title="ZoomWidget::mousePressEvent" alt="" coords="229,259,437,285"/>
+<area shape="rect" id="node10" href="$class_zoom_widget.html#a4af66e273926feab0387f2a1fdc802e9" title="ZoomWidget::wheelEvent" alt="" coords="249,309,417,336"/>
+<area shape="rect" id="node7" href="$class_zoom_widget.html#a8000852b85e76af464a7d03191359dbf" title="ZoomWidget::zoomFactor" alt="" coords="497,208,669,235"/>
+<area shape="rect" id="node9" href="$class_zoom_widget.html#a6315d2780370bd899b6bf23257414c87" title="ZoomWidget::minZoomFactor" alt="" coords="487,284,680,311"/>
+</map>

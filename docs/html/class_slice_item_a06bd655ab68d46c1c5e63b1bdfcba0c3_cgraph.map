@@ -1,0 +1,7 @@
+<map id="SliceItem::type" name="SliceItem::type">
+<area shape="rect" id="node2" href="$class_slice_item.html#ab590ef911a05699b8c2358bfa0b643b6" title="SliceItem::~SliceItem" alt="" coords="191,5,337,32"/>
+<area shape="rect" id="node3" href="$class_slice_item.html#a468b8788fc33d9ca6b195336e30f7f27" title="SliceItem::mousePressEvent" alt="" coords="169,56,359,83"/>
+<area shape="rect" id="node4" href="$class_slice_item.html#ad615d1f415dae53008b0d7c2f9ec989a" title="SliceItem::mouseMoveEvent" alt="" coords="171,107,357,133"/>
+<area shape="rect" id="node5" href="$class_slice_item.html#a90b190d3e58c0cdc6f6b527359f4bd36" title="SliceItem::mouseReleaseEvent" alt="" coords="163,157,365,184"/>
+<area shape="rect" id="node6" href="$class_slice_item.html#a383f9254d9061655fa9f2787562090dd" title="SliceItem::wheelEvent" alt="" coords="189,208,339,235"/>
+</map>

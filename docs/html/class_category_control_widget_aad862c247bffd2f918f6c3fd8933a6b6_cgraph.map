@@ -1,0 +1,13 @@
+<map id="CategoryControlWidget::categoryCount" name="CategoryControlWidget::categoryCount">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a462f93f51d3898bdcb7c45f60569c15a" title="Returns the top slice model. " alt="" coords="219,5,354,47"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#aa508ade08f133b58b03322f698f19df8" title="Returns the categories that the current mark model holds. " alt="" coords="219,71,354,112"/>
+<area shape="rect" id="node6" href="$class_slice_editor_widget.html#a37ddc32b97cc4e8771745046cb88ff35" title="Returns the top slice widget. " alt="" coords="219,136,354,177"/>
+<area shape="rect" id="node7" href="$class_slice_widget.html#a7816b406651f2c4f388bd7626255024c" title="SliceWidget::pen" alt="" coords="429,359,550,386"/>
+<area shape="rect" id="node8" href="$class_slice_editor_widget.html#aa551b44db6ac4ad9f737cc09ec64816f" title="Sets the slice widgets&#39; pen to be the given pen. " alt="" coords="219,201,354,243"/>
+<area shape="rect" id="node10" href="$class_slice_editor_widget.html#a37537ce0a5f55c30c7f942ddc8e6cdaf" title="This property holds the current category that the mark will be painted on. " alt="" coords="219,319,354,360"/>
+<area shape="rect" id="node11" href="$class_slice_editor_widget.html#af2b80216e3b56f0b791510c007289b60" title="Adds a new category into the mark model in the SliceEditorWidget. " alt="" coords="219,384,354,425"/>
+<area shape="rect" id="node12" href="$class_slice_editor_widget.html#a1d33484b159165e85dad00e5731cd561" title="Returns a QPen object used for painting marks. " alt="" coords="209,450,364,477"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#aa9317d9f5a389ced10c3eeb222bf706c" title="Returns the slice index of type type slice. " alt="" coords="422,41,557,83"/>
+<area shape="rect" id="node5" href="$class_slice_widget.html#ad9a08cbf4e0038e5669ac00964bbe86a" title="SliceWidget::setMarks" alt="" coords="412,107,567,134"/>
+<area shape="rect" id="node9" href="$class_slice_widget.html#aff63c87e4f7a99a90d067e47ec9b7de1" title="SliceWidget::setPen" alt="" coords="419,209,560,235"/>
+</map>

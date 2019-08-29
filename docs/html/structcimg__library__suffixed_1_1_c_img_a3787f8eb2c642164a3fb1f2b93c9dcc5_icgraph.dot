@@ -1,0 +1,15 @@
+digraph "cimg_library_suffixed::CImg::get_index"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1537 [label="cimg_library_suffixed\l::CImg::get_index",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1537 -> Node1538 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1538 [label="cimg_library_suffixed\l::CImgDisplay::snapshot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_display.html#a914ee0515249db301dc66275861a6b3e",tooltip="Take a snapshot of the associated window content. "];
+  Node1538 -> Node1539 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1539 [label="cimg_library_suffixed\l::CImg\< charT \>::CImg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a015159d8cee61c2f2316c3e128470a71",tooltip="Construct image from a display window. "];
+  Node1538 -> Node1540 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1540 [label="cimg_library_suffixed\l::CImg\< charT \>::assign",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a668fe887682e7cbb469409842bb98cd2",tooltip="Construct image from a display window . "];
+  Node1538 -> Node1541 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1541 [label="cimg_library_suffixed\l::CImg\< charT \>::operator=",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a75e18966d8e02a9cee85642038e30a08",tooltip="Copy the content of a display window to the current image instance. "];
+}

@@ -1,0 +1,10 @@
+<map id="MarkModel::index" name="MarkModel::index">
+<area shape="rect" id="node2" href="$class_mark_model.html#aa7e4d6a9ebf4ac59119acd01fa62eeed" title="This is a convenience function to returns the root tree item pointer. " alt="" coords="201,5,342,32"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="441,49,575,90"/>
+<area shape="rect" id="node4" href="$class_mark_model.html#a41f493af223c4e686214ab685b46a65a" title="Creates a mark model from a file. " alt="" coords="192,259,351,285"/>
+<area shape="rect" id="node5" href="$class_mark_model.html#afc64d35495ea8bed14bbb102cdf7e13a" title="This is a convenience function for inserting an tree item into the tree model by the pointer itself i..." alt="" coords="420,136,596,163"/>
+<area shape="rect" id="node6" href="$class_mark_model.html#a7da424d8803b0e5aa37a165ff1237a2b" title="This is a convenience function for inserting a bundle of tree items into the tree model by the pointe..." alt="" coords="417,197,599,224"/>
+<area shape="rect" id="node7" href="$class_mark_model.html#a68dda394b983ab9539d44e8973631b71" title="This is a convenience function for removing a item in the the tree model by its pointer &#160;and its pare..." alt="" coords="179,309,364,336"/>
+<area shape="rect" id="node9" href="$class_mark_model.html#ac42f11801e20c62fce0f45c60487a9f2" title="Reimplemented from QAbstractItemModel::setData(const QModelIndex &amp; index, const QVariant &amp; value..." alt="" coords="202,157,341,184"/>
+<area shape="rect" id="node8" href="$class_mark_model.html#aeb22aaa4ec64436cadd6786aa14979e5" title="This is a convenience function for removed a bundle of tree items into the tree model by the pointers..." alt="" coords="412,309,604,336"/>
+</map>

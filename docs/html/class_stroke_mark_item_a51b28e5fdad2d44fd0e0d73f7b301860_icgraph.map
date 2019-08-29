@@ -1,0 +1,7 @@
+<map id="StrokeMarkItem::setItemChangeHandler" name="StrokeMarkItem::setItemChangeHandler">
+<area shape="rect" id="node2" href="$class_stroke_mark_item.html#aa215afb337583ae2343b9d5a7b62df29" title="StrokeMarkItem::type" alt="" coords="263,81,409,108"/>
+<area shape="rect" id="node3" href="$markitem_8cpp.html#acf89c0ecdd63f0a932118a26bbcd1268" title="operator\&lt;\&lt;" alt="" coords="513,5,599,32"/>
+<area shape="rect" id="node4" href="$markitem_8cpp.html#aee61327b82e87baf1d936b7f97dc2d07" title="operator\&gt;\&gt;" alt="" coords="513,56,599,83"/>
+<area shape="rect" id="node5" href="$class_stroke_mark_item.html#a0b68943ad3c213665275fae17181452b" title="StrokeMarkItem::setSliceType" alt="" coords="457,107,655,133"/>
+<area shape="rect" id="node6" href="$class_slice_editor_widget.html#a1ec28842041deac02c57bba58ec2d6a0" title="Reimplemented from QWidget::eventFilter. " alt="" coords="703,125,837,166"/>
+</map>

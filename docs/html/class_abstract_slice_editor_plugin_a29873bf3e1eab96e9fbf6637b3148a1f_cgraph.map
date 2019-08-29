@@ -1,0 +1,5 @@
+<map id="AbstractSliceEditorPlugin::view" name="AbstractSliceEditorPlugin::view">
+<area shape="rect" id="node2" href="$class_slice_editor_widget.html#a37ddc32b97cc4e8771745046cb88ff35" title="Returns the top slice widget. " alt="" coords="224,5,359,47"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#aca98a3731da7f8fcf6db8de5fdb09dc7" title="Returns the right slice widget. " alt="" coords="224,71,359,112"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#a5e4c4a47ad244e38f7106aecb902b820" title="Returns the front slice widget. " alt="" coords="224,136,359,177"/>
+</map>

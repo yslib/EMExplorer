@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::save_gzip_external"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node3044 [label="cimg_library_suffixed\l::CImg::save_gzip_external",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node3044 -> Node3045 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3045 [label="cimg_library_suffixed\l::CImgList\< charT \>::\lsave_gzip_external",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img_list.html#aad5afe8b913e276dd281255dd787b4ba",tooltip="Save list as a gzipped file, using external tool &#39;gzip&#39;. "];
+}

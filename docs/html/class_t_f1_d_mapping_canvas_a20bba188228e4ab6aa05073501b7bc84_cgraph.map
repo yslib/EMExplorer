@@ -1,0 +1,5 @@
+<map id="TF1DMappingCanvas::changeCurrentColor" name="TF1DMappingCanvas::changeCurrentColor">
+<area shape="rect" id="node2" href="$class_t_f1_d_mapping_key.html#a9f3a66b2b43f544cf4b776e8b9fb52ea" title="TF1DMappingKey::isSplit" alt="" coords="216,5,385,32"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_mapping_key.html#a0c6e01a4866855bbb284c3d62640e0da" title="TF1DMappingKey::getColorR" alt="" coords="205,56,396,83"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_mapping_key.html#a7fc1f70b7f844977fb1cb4bc26fc3e1b" title="TF1DMappingKey::getColorL" alt="" coords="207,107,395,133"/>
+</map>

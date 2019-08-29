@@ -1,0 +1,12 @@
+<map id="AbstractSliceDataModel::originalFrontSlice" name="AbstractSliceDataModel::originalFrontSlice">
+<area shape="rect" id="node2" href="$class_abstract_slice_data_model.html#a0412a083fb02f79248e7a5c801a2c2d6" title="AbstractSliceDataModel\l::frontSlice" alt="" coords="217,61,379,103"/>
+<area shape="rect" id="node11" href="$class_slice_data_identity_tester.html#a8a5d1e2422becda868c2365db1b31e76" title="SliceDataIdentityTester\l::SliceDataIdentityTester" alt="" coords="216,127,380,168"/>
+<area shape="rect" id="node3" href="$class_slice_editor_widget.html#afb096e8090c67da78ccdabf387a54dd3" title="Sets the current slice index given in index for the slice type type. " alt="" coords="428,61,563,103"/>
+<area shape="rect" id="node4" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="611,17,757,59"/>
+<area shape="rect" id="node6" href="$class_slice_editor_widget.html#a34785ca09d9555c78deb605d6e93efa0" title="Replaces the old slice model with the given model and returns the old one. " alt="" coords="617,104,751,145"/>
+<area shape="rect" id="node5" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="815,5,957,47"/>
+<area shape="rect" id="node7" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="820,71,952,98"/>
+<area shape="rect" id="node8" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="1015,97,1177,123"/>
+<area shape="rect" id="node9" href="$class_slice_main_window.html#a481a5370cf722229b40a452882015eec" title="SliceMainWindow::open" alt="" coords="805,173,967,199"/>
+<area shape="rect" id="node10" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="1071,173,1121,199"/>
+</map>

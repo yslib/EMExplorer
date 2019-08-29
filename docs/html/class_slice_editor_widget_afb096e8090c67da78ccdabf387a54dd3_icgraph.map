@@ -1,0 +1,9 @@
+<map id="SliceEditorWidget::setSliceIndex" name="SliceEditorWidget::setSliceIndex">
+<area shape="rect" id="node2" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="188,17,335,59"/>
+<area shape="rect" id="node4" href="$class_slice_editor_widget.html#a34785ca09d9555c78deb605d6e93efa0" title="Replaces the old slice model with the given model and returns the old one. " alt="" coords="194,104,329,145"/>
+<area shape="rect" id="node3" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="393,5,534,47"/>
+<area shape="rect" id="node5" href="$class_main_window.html#a1e8fb82ba2db0b722d9cd49fb05e4952" title="MainWindow::open" alt="" coords="397,71,529,98"/>
+<area shape="rect" id="node6" href="$class_main_window.html#ade305265b2120df2489a5ebeb07ebbe1" title="MainWindow::eventFilter" alt="" coords="592,97,755,123"/>
+<area shape="rect" id="node7" href="$class_slice_main_window.html#a481a5370cf722229b40a452882015eec" title="SliceMainWindow::open" alt="" coords="383,173,544,199"/>
+<area shape="rect" id="node8" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="648,173,699,199"/>
+</map>

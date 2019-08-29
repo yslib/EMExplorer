@@ -1,0 +1,15 @@
+digraph "SliceVolume::setSliceSphereCoord"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node81 [label="SliceVolume::setSliceSphere\lCoord",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node81 -> Node82 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node82 [label="cimg_library_suffixed::sin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#adadd90e3f405e206a38d01dc80e9be2d"];
+  Node82 -> Node83 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node83 [label="cimg_library_suffixed\l::CImg::get_sin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ada2a306f3b37f5630573447fc9578124",tooltip="Compute the sine of each pixel value . "];
+  Node81 -> Node84 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node84 [label="cimg_library_suffixed::cos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$namespacecimg__library__suffixed.html#a758afc88f8b8d378717648ba797aee12"];
+  Node84 -> Node85 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node85 [label="cimg_library_suffixed\l::CImg::get_cos",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#a1d6d4be9892469025a791f19848d8638",tooltip="Compute the cosine of each pixel value . "];
+}

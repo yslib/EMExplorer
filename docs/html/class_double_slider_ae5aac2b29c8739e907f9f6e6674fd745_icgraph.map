@@ -1,0 +1,9 @@
+<map id="DoubleSlider::setValues" name="DoubleSlider::setValues">
+<area shape="rect" id="node2" href="$class_t_f1_d_editor.html#a8b7b786e01a574835374c2b3592dde19" title="TF1DEditor::resetThresholds" alt="" coords="221,71,407,98"/>
+<area shape="rect" id="node7" href="$class_t_f1_d_editor.html#a556aea7084841f0ffeeafc88b2bfe20a" title="TF1DEditor::restoreThresholds" alt="" coords="215,130,413,157"/>
+<area shape="rect" id="node3" href="$class_t_f1_d_editor.html#a1d09285deec3efd89c9e3eea06a20f4a" title="TF1DEditor::resetTransfer\lFunction" alt="" coords="461,5,632,47"/>
+<area shape="rect" id="node6" href="$class_t_f1_d_editor.html#a794dbf55367dbca8c929eb0deae82c05" title="TF1DEditor::getTFFileName" alt="" coords="690,114,873,141"/>
+<area shape="rect" id="node4" href="$class_t_f1_d_editor.html#a6d2ee6ce64d0a61c9fa0ab404ee65d17" title="TF1DEditor::createConnections" alt="" coords="680,30,883,57"/>
+<area shape="rect" id="node5" href="$class_t_f1_d_editor.html#a09bea74dece8749643ad6e55cb8cb8a4" title="TF1DEditor::TF1DEditor" alt="" coords="931,30,1091,57"/>
+<area shape="rect" id="node8" href="$class_t_f1_d_editor.html#a26f799505f51abb6da4bfcbd79442287" title="TF1DEditor::loadTransfer\lFunction" alt="" coords="464,123,629,164"/>
+</map>

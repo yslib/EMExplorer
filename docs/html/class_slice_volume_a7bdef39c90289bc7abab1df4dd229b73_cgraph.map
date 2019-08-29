@@ -1,0 +1,4 @@
+<map id="SliceVolume::cameraTowards" name="SliceVolume::cameraTowards">
+<area shape="rect" id="node2" href="$class_render_widget.html#af8fa871549a1586223a8a36906b83d52" title="RenderWidget::camera" alt="" coords="248,5,403,32"/>
+<area shape="rect" id="node3" href="$class_focus_camera.html#aa87d41592f8f205674fa00e9575f6e41" title="FocusCamera::front" alt="" coords="257,56,393,83"/>
+</map>

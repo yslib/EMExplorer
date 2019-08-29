@@ -1,0 +1,4 @@
+<map id="FocusCamera::position" name="FocusCamera::position">
+<area shape="rect" id="node2" href="$class_slice_volume.html#ac910c9db73459358acfde36c5c7da3a1" title="SliceVolume::cameraPos" alt="" coords="209,5,379,32"/>
+<area shape="rect" id="node3" href="$class_render_widget.html#ab573fc0c7c8667da0dcd17baf96ce235" title="Reimplemented from QOpenGLWidget::paintGL() " alt="" coords="215,56,373,83"/>
+</map>

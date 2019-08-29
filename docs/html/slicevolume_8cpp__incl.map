@@ -1,0 +1,13 @@
+<map id="D:/code/MRCEditor/src/3drender/geometry/slicevolume.cpp" name="D:/code/MRCEditor/src/3drender/geometry/slicevolume.cpp">
+<area shape="rect" id="node3" href="$slicevolume_8h.html" title="slicevolume.h" alt="" coords="1419,95,1519,121"/>
+<area shape="rect" id="node33" href="$abstractslicedatamodel_8h.html" title="abstract/abstractslicedatamodel.h" alt="" coords="1796,95,2015,121"/>
+<area shape="rect" id="node4" href="$volume_8h.html" title="volume.h" alt="" coords="1873,244,1946,271"/>
+<area shape="rect" id="node7" href="$shaderdatainterface_8h.html" title="3drender/shader/shaderdatainterface.h" alt="" coords="392,326,635,353"/>
+<area shape="rect" id="node9" href="$raycastingshader_8h.html" title="3drender/shader/raycastingshader.h" alt="" coords="1605,169,1835,196"/>
+<area shape="rect" id="node15" href="$gradientcalculator_8h.html" title="algorithm/gradientcalculator.h" alt="" coords="1909,169,2101,196"/>
+<area shape="rect" id="node18" href="$renderwidget_8h.html" title="widgets/renderwidget.h" alt="" coords="892,169,1047,196"/>
+<area shape="rect" id="node10" href="$shaderprogram_8h.html" title="3drender/shader/shaderprogram.h" alt="" coords="1612,244,1828,271"/>
+<area shape="rect" id="node22" href="$camera_8h.html" title="3drender/geometry/camera.h" alt="" coords="793,244,981,271"/>
+<area shape="rect" id="node24" href="$mesh_8h.html" title="3drender/geometry/mesh.h" alt="" coords="1206,244,1383,271"/>
+<area shape="rect" id="node28" href="$bimap_8h.html" title="algorithm/bimap.h" alt="" coords="1005,244,1131,271"/>
+</map>

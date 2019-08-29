@@ -1,0 +1,7 @@
+<map id="TitledSliderWithSpinBox::valueChanged" name="TitledSliderWithSpinBox::valueChanged">
+<area shape="rect" id="node2" href="$class_histogram_widget.html#ad3afdcd1e87ed52d02def3c66b272e6f" title="HistogramWidget::updateData\lModel" alt="" coords="238,5,434,47"/>
+<area shape="rect" id="node3" href="$class_slice_control_widget.html#a22f1c1840e4e0bd6bb7daec1ffcdafc8" title="Sets the controlled widget sliceWidge and volumeWidget to present. " alt="" coords="263,71,409,112"/>
+<area shape="rect" id="node5" href="$class_titled_slider_with_spin_box.html#ae01c38ebbd6735185dfbd29e667cca0a" title="TitledSliderWithSpinBox\l::setOrientation" alt="" coords="255,136,417,177"/>
+<area shape="rect" id="node6" href="$class_titled_slider_width_double_spin_box.html#aa5137db557c5a1c713e50b33bdb4c726" title="TitledSliderWidthDoubleSpin\lBox::TitledSliderWidthDoubleSpinBox" alt="" coords="216,201,456,243"/>
+<area shape="rect" id="node4" href="$class_slice_control_widget.html#a57f30c045f08dafbd807c80bd2d862b6" title="Constructs a widget by the given sliceWidget and volumeWidget. " alt="" coords="504,71,645,112"/>
+</map>

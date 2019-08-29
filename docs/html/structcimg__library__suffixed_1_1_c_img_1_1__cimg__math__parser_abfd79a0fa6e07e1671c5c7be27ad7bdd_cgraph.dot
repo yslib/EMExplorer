@@ -1,0 +1,9 @@
+digraph "cimg_library_suffixed::CImg::_cimg_math_parser::mp_trace"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1148 [label="cimg_library_suffixed\l::CImg::_cimg_math_parser\l::mp_trace",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1148 -> Node1149 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1149 [label="cimg_library_suffixed\l::CImg::trace",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structcimg__library__suffixed_1_1_c_img.html#ab3972716dd1378e4906b9ea88c8555e1",tooltip="Compute the trace of the image, viewed as a matrix. "];
+}
