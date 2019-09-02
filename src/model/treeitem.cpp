@@ -24,10 +24,10 @@ void TreeItem::updateChildQPersistentModelIndex(TreeItem*item,int row) {
 	Q_ASSERT_X(item, "TreeItem::updateChildQPersistentModelIndex", "null pointer");
 	const auto m = m_persistentModelIndex.model();
 	if(m == nullptr) {
-		item->m_persistentModelIndex = QModelIndex();
+        item->m_persistentModelIndex = QModelIndex();
 	}else {
 		
-		item->m_persistentModelIndex = m->index(row,0,m_persistentModelIndex);
+        item->m_persistentModelIndex = m->index(row,0,m_persistentModelIndex);
 	}
 }
 
@@ -68,8 +68,6 @@ void TreeItem::appendChild(TreeItem* child) {
  * 
  * \param row The row number of the old child node in the \a TreeItem
  * \param child The new child node that will replace the old one.
- * \param takeSuccess success flag pointer. If it's not a null pointer, the reference is set as \a true 
- * when substitution is successful otherwise it is set as \a false.
  * 
  * \return Return tje old child node pointer
  * 
@@ -77,15 +75,12 @@ void TreeItem::appendChild(TreeItem* child) {
  * if it's not a \a nullptr. The ownership of the old child pointer is returned to the caller and its parent 
  * item is set as \a nullptr.
  */
-TreeItem * TreeItem::takeChild(int row, TreeItem * child, bool * takeSuccess)noexcept
+TreeItem * TreeItem::takeChild(int row, TreeItem * child)noexcept
 {
 	Q_ASSERT_X(child, "TreeItem::appendChild", "null pointer");
 
-	if (row >= m_children.size()) {
-		if (takeSuccess != nullptr)
-			*takeSuccess = false;
-		return nullptr;
-	}
+    if (row >= m_children.size())
+        return nullptr;
 
 	const auto c = m_children[row];
 	if(c != nullptr)
@@ -95,28 +90,34 @@ TreeItem * TreeItem::takeChild(int row, TreeItem * child, bool * takeSuccess)noe
 
 	updateChildQPersistentModelIndex(child, row);
 
-	if (takeSuccess != nullptr)
-		*takeSuccess = true;
 	return c;
 }
 
 int TreeItem::row() const {
 	if (m_parent != nullptr)
-		return m_parent->m_children.indexOf(const_cast<TreeItem*>(this));
+        return m_parent->m_children.indexOf(const_cast<TreeItem*>(this));
 
 	return 0;
 }
 
 bool TreeItem::insertChildren(int position, const QVector<TreeItem*>& children) {
 	if (position < 0 || position > m_children.size())
-		return false;
+        return false;
 
 	for (auto row = 0; row < children.size(); row++) {
         Q_ASSERT_X(children[row],"TreeItem::insertChildren","null pointer");
 		m_children.insert(position, children[row]);
-	}
+    }
 
 	return true;
+}
+
+bool TreeItem::removeChildren(int position, int count) noexcept {
+    if (position < 0 || position >= m_children.size())
+        return false;
+    for (auto i = 0; i < count; i++)
+        delete m_children.takeAt(position);
+    return true;
 }
 
 /**

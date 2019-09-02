@@ -4,6 +4,7 @@
 #include <QToolButton>
 #include <QLabel>
 #include <QComboBox>
+#include <QMessageBox>
 
 #include "categorycontrolwidget.h"
 #include "sliceeditorwidget.h"
@@ -186,11 +187,18 @@ void CategoryControlWidget::setCategoryInfoPrivate(const QVector<QPair<QString, 
 
 void CategoryControlWidget::addCategoryInfoPrivate(const QString & name, const QColor & color)
 {
-	m_categoryCBBox->addItem(name, color);
-	m_categoryCBBox->setCurrentText(name);
-	//auto ci = CategoryInfo(name, color);
-	m_canvas->addCategory(CategoryInfo(name, color));
-	m_canvas->setCurrentCategory(name);
+    if(m_canvas->addCategory(CategoryInfo(name, color)))
+    {
+        m_categoryCBBox->addItem(name, color);
+        m_categoryCBBox->setCurrentText(name);
+        m_canvas->setCurrentCategory(name);
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please open a file first.");
+        msgBox.exec();
+    }
 }
 
 

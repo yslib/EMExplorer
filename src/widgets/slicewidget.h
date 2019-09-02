@@ -2,29 +2,13 @@
 #define SLICEVIEW_H
 #include <QGraphicsView>
 #include <QSet>
+#include "globals.h"
 #include "model/markitem.h"
 #include "model/commands.h"
+#include "model/sliceitem.h"
+#include "model/markitem.h"
+#include "model/markmodel.h"
 
-class SliceItem;
-
-using AnchorItem = QGraphicsPixmapItem;
-
-
-struct SliceWidgetState {
-	SliceItem * sliceItem;
-	AnchorItem * anchorItem;
-	StrokeMarkItem * paintingItem;
-	QVector<QPoint> m_paintViewPointsBuffer;
-	QPointF prevViewPoint;
-	bool navigationView;
-	bool painting;
-	bool selection;
-	int opState;
-};
-
-class SliceWidgetPrivate {
-	public:
-};
 
 class SliceWidget :public QGraphicsView
 {
@@ -49,37 +33,20 @@ public:
 		 */
 		Erase = 3
 	};
-
 	SliceWidget(QWidget * parent = nullptr);
-
 	void setMarks(const QList<StrokeMarkItem *> & items);
-public slots:
-
 	inline void setOperation(int state);
-
 	void setImage(const QImage & image);
-
 	inline void setPen(const QPen & pen);
-
 	void setDefaultZoom();
-
 	inline void setNavigationViewEnabled(bool enabled);
-
-	bool navigationViewEnabled()const { return m_paintNavigationView; };
-
+    bool navigationViewEnabled()const { return m_paintNavigationView; }
 	inline QPen pen()const;
-
 	void clearSliceMarks();
-
 	QList<StrokeMarkItem*> selectedItems() const;
-
 	int selectedItemCount()const;
-
 	void moveSlice(const QPointF & dir);
-
 	QSize sizeHint()const override;
-
-
 protected:
 	void mousePressEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
@@ -123,8 +90,6 @@ private:
 
 	QRect thumbnailRect(const QRectF & sliceRect,const QRectF & viewRect) const;
 
-	QGraphicsItem * createMarkItem();
-
 	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
 
 	Q_OBJECT
@@ -133,7 +98,7 @@ private:
 		ThumbnailLength = 200
 	};
 
-	//qreal m_scaleFactor;
+
     bool m_paintNavigationView = false;
 	QVector<QPoint> m_paintViewPointsBuffer;
 	QPointF m_prevViewPoint;
@@ -143,7 +108,7 @@ private:
 	//items
     SliceItem * m_currentPaintingSlice = nullptr;
     StrokeMarkItem * m_paintingItem = nullptr;
-    AnchorItem * m_anchorItem = nullptr;
+    QGraphicsPixmapItem * m_anchorItem = nullptr;
 	QSet<StrokeMarkItem *> m_erasingMarks;
 	//state variable
     bool m_paint = false;
@@ -162,16 +127,12 @@ inline void SliceWidget::setOperation(int state)
 		"SliceView::setFunction", "state must be exclusive");
 	m_state = state;
 }
-
 inline void SliceWidget::setPen(const QPen & pen){m_pen = pen;}
 inline QPen SliceWidget::pen()const{return m_pen;}
 inline void SliceWidget::setNavigationViewEnabled(bool enabled)
 {
-	m_paintNavigationView = enabled;
-	update();
-	updateGeometry();
+    m_paintNavigationView = enabled;
+    update();
+    updateGeometry();
 }
-
-
-
 #endif // SLICEVIEW_H

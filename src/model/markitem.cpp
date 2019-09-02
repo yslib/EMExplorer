@@ -71,30 +71,20 @@ static void drawHighlightSelected(
 }
 
 StrokeMarkItem::StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent) :
-QGraphicsPolygonItem(parent),
 m_markInfo(new StrokeMarkItemPrivate),
 m_erase(false)
 {
 	setPolygon(path);
+    this->setParentItem(parent);
 	//updateLength();
 }
 
 StrokeMarkItem::StrokeMarkItem(QGraphicsItem * parent) : 
-QGraphicsPolygonItem(parent),
 m_markInfo(new StrokeMarkItemPrivate),
 m_erase(false)
 {
+    this->setParentItem(parent);
     //updateLength();
-}
-
-StrokeMarkItem::StrokeMarkItem(const StrokeMarkItem &obj)
-{
-    //NEVER USE!
-    m_itemChangeHandler = obj.m_itemChangeHandler;
-    m_modelIndex = obj.modelIndex();
-    m_erase = obj.m_erase;
-    m_segments = obj.m_segments;
-
 }
 
 void StrokeMarkItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

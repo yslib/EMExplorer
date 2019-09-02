@@ -7,19 +7,17 @@
 #include <QLinkedList>
 #include <functional>
 
-
-
 class StrokeMarkItem :public QGraphicsPolygonItem 
 {
 	std::function<QVariant(StrokeMarkItem* mark,QGraphicsItem::GraphicsItemChange, const QVariant &)> m_itemChangeHandler;
-	QPersistentModelIndex m_modelIndex;
-
+    QPersistentModelIndex m_modelIndex;
 	struct StrokeMarkItemPrivate
 	{
         StrokeMarkItemPrivate():m_visibleState(true),isFilled(false){}
 		QString m_name;
+        QString m_category;
 		SliceType m_sliceType;
-		int m_index;
+        int m_index = -1;
 		bool m_visibleState;
         bool isFilled;
 		friend QDataStream & operator<<(QDataStream & stream,const StrokeMarkItemPrivate * info) 
@@ -37,35 +35,30 @@ class StrokeMarkItem :public QGraphicsPolygonItem
 		}
 
 	}*m_markInfo;
-
-
 	bool m_erase;
 	QLinkedList<QPolygonF> m_segments;
-
-
 public:
 
 	enum {Type = StrokeMark};
 	explicit StrokeMarkItem(const QPolygonF& path, QGraphicsItem * parent=nullptr);
 	explicit StrokeMarkItem(QGraphicsItem * parent = nullptr);
-    explicit StrokeMarkItem(const StrokeMarkItem &obj);
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) Q_DECL_OVERRIDE;
 	void appendPoint(const QPointF & p);
 	int type() const override { return Type; }
 	void setItemChangeHandler(const std::function<QVariant(StrokeMarkItem* mark, QGraphicsItem::GraphicsItemChange, const QVariant&)>& handler);
-	QPersistentModelIndex modelIndex()const { return m_modelIndex; }
+    QPersistentModelIndex modelIndex()const { return m_modelIndex; }
 
 	QString	name()const { return m_markInfo->m_name; }
 	void setName(const QString & name) { m_markInfo->m_name = name; }
+    QString category() const {return m_markInfo->m_category;}
+    void setCategory(const QString & category) {m_markInfo->m_category = category;}
 	SliceType sliceType()const { return m_markInfo->m_sliceType; }
 	void setSliceType(SliceType type) { m_markInfo->m_sliceType = type; }
 	double length()const { return polygon().length(); }
 	int sliceIndex()const { return m_markInfo->m_index; }
 	void setSliceIndex(int index) { m_markInfo->m_index = index; }
-
 	bool visibleState()const { return m_markInfo->m_visibleState; }
 	void setVisibleState(bool visible) { m_markInfo->m_visibleState = visible; }
-
     bool isFilled()const{return m_markInfo->isFilled;}
     void setFilled(bool fill){m_markInfo->isFilled = fill;update();}
 
@@ -94,7 +87,5 @@ protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 	friend class StrokeMarkTreeItem;		///< Member m_modelIndex
 };
-
-
 
 #endif // ABSTRACTMARKITEM_H

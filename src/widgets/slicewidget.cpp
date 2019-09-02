@@ -1,12 +1,6 @@
 #include <QWheelEvent>
 #include <QDebug>
-
 #include "slicewidget.h"
-#include "globals.h"
-#include "model/sliceitem.h"
-#include "model/markitem.h"
-#include "model/markmodel.h"
-
 
 SliceWidget::SliceWidget(QWidget *parent) :
     QGraphicsView(parent)
@@ -171,7 +165,7 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 	}
 	else if (m_state == Operation::Paint)		// Drawing a mark
 	{
-        if (m_currentPaintingSlice != nullptr || addingMark == nullptr)
+        if (m_currentPaintingSlice != nullptr && addingMark != nullptr)
 		{
             addingMark->addPoint(m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)));
             m_paintViewPointsBuffer << viewPos; //???
@@ -305,11 +299,6 @@ QRect SliceWidget::thumbnailRect(const QRectF & sliceRect, const QRectF & viewRe
 	return { 0,int(H - s.height()),s.width(),s.height() };
 }
 
-QGraphicsItem * SliceWidget::createMarkItem()
-{
-	return nullptr;
-}
-
 QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 {
 	const auto length = 12;
@@ -334,8 +323,7 @@ QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 }
 
 inline
-void SliceWidget::setMarkHelper(
-	const QList<StrokeMarkItem*>& items)
+void SliceWidget::setMarkHelper(const QList<StrokeMarkItem*>& items)
 {
 	foreach(StrokeMarkItem * item, items)
 	{
@@ -353,7 +341,7 @@ void SliceWidget::clearSliceMarksHelper(SliceItem * slice)
 		qWarning("Top slice is empty.");
 		return;
 	}
-	auto children = slice->childItems();
+    QList<QGraphicsItem *> children = slice->childItems();
 	foreach(QGraphicsItem * item, children)
 	{
 		item->setVisible(false);

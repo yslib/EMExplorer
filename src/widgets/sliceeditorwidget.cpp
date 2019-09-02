@@ -522,12 +522,10 @@ QModelIndex SliceEditorWidget::_hlp_categoryIndex(const QString & category) cons
 }
 
 void SliceEditorWidget::_hlp_categoryAdd(const CategoryInfo & info) const {
-
     int row = m_markModel->rowCount();
 
-    if (!m_markModel->insertRows(row, 1, QModelIndex()))
+    if (!m_markModel->insertRow(row, QModelIndex()))
         return;
-
     const auto newIndex = m_markModel->index(row, 0, QModelIndex());
 	const auto p = new CategoryTreeItem(CategoryItem(info.name, info.color), newIndex, m_markModel->rootItem());
     m_markModel->setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
@@ -570,14 +568,11 @@ QModelIndex SliceEditorWidget::_hlp_instanceAdd(const QString & category, const 
 	auto cIndex = _hlp_categoryIndex(category);
 	Q_ASSERT_X(cIndex.isValid(), "MarkModel::instanceFindHelper", "invalid index");
 
-	const auto c = m_markModel->rowCount(cIndex);
+    int c = m_markModel->rowCount(cIndex);
 
 	// Insert a new row
-	const auto success = m_markModel->insertRows(c, 1, cIndex);
-
-    if (!success)
+    if (!m_markModel->insertRow(c, cIndex))
 		return QModelIndex();
-
 	// Fetch the new inserted index
 	const auto newIndex = m_markModel->MarkModel::index(c, 0, cIndex);
 	// Create a tree item pointer
@@ -590,8 +585,8 @@ QModelIndex SliceEditorWidget::_hlp_instanceAdd(const QString & category, const 
 	const auto p = new InstanceTreeItem(metaData, newIndex, nullptr);
 	p->setBoundingBox(mark->boundingRect().toRect());
 
-	m_markModel->MarkModel::setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
-	return m_markModel->MarkModel::index(c, 0, cIndex);
+    m_markModel->setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
+    return m_markModel->index(c, 0, cIndex);
 }
 
 QStringList SliceEditorWidget::categoryText() const
@@ -612,8 +607,8 @@ QStringList SliceEditorWidget::categoryText() const
 
 bool SliceEditorWidget::removeMark(StrokeMarkItem * mark)
 {
-	const auto parent = m_markModel->parent(mark->modelIndex());
-	m_markModel->removeRows(mark->modelIndex().row(), 1, parent);
+    //const auto parent = m_markModel->parent(mark->modelIndex());
+    //m_markModel->removeRows(mark->modelIndex().row(), 1, parent);
 
 	/// TODO:: 
 	//delete mark;
@@ -637,25 +632,25 @@ int SliceEditorWidget::removeMarks(const QList<StrokeMarkItem*>& marks)
  *
  * \note This is only for class internal use
  */
-void SliceEditorWidget::markAddedHelper(SliceType type, StrokeMarkItem* mark)
+void SliceEditorWidget::addMark(SliceType type, StrokeMarkItem* mark)
 {
 	Q_ASSERT_X(m_markModel, "SliceEditorWidget::markAddedHelper", "m_markModel != nullptr");
-	const auto cate = d_ptr->state->currentCategory;
-	const auto index = currentSliceIndex(type);
-	mark->setSliceType(type);
-	mark->setSliceIndex(index);
+    if(mark->sliceIndex() == -1)
+        mark->setSliceIndex(currentSliceIndex(type));
+    if(mark->category() == "")
+        mark->setCategory(d_ptr->state->currentCategory);
+    mark->setSliceType(type);
 
-    auto instance = _hlp_instanceFind(cate, mark);
+    QModelIndex instance = _hlp_instanceFind(mark->category(), mark);
     if (!instance.isValid())
 	{
-        instance = _hlp_instanceAdd(cate, mark);
+        instance = _hlp_instanceAdd(mark->category(), mark);
 	}
     int row = m_markModel->rowCount(instance);
 	// Insert rows
     m_markModel->insertRows(row, 1, instance);
-
     // Get index of new inserted rows then set data
-    const auto newIndex = m_markModel->MarkModel::index(row, 0, instance);
+    const auto newIndex = m_markModel->index(row, 0, instance);
 	const auto p = new StrokeMarkTreeItem(mark, newIndex, nullptr);
     m_markModel->setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
 }
@@ -666,18 +661,7 @@ void SliceEditorWidget::removeItem(SliceType type, StrokeMarkItem *mark)
     m_markModel->selectionModel()->reset();
     m_markModel->selectionModel()->select(mark->modelIndex(), QItemSelectionModel::Select);
     m_markModel->removeSelectedItems();
-    switch (type)
-    {
-        case SliceType::Top:
-            m_topView->scene()->removeItem(mark);
-            break;
-        case SliceType::Right:
-            m_topView->scene()->removeItem(mark);
-            break;
-        case SliceType::Front:
-            m_topView->scene()->removeItem(mark);
-            break;
-    }
+    mark->hide();
 }
 
 void SliceEditorWidget::addItem(SliceType type, StrokeMarkItem *mark)
@@ -1028,7 +1012,6 @@ void SliceEditorWidget::setOperation(SliceType type, int opt)
  */
 void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 {
-	//
 	Q_ASSERT_X(m_sliceModel, "SliceEditorWidget::setSliceIndex", "null pointer");
 	SliceWidget * view = nullptr;
 	std::function<QImage(int)> sliceGetter;
@@ -1048,7 +1031,6 @@ void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 		emit topSliceChanged(index);
 		break;
 	}
-
 	case SliceType::Right:
 	{
 		if (index > m_sliceModel->rightSliceCount() - 1)
@@ -1073,11 +1055,6 @@ void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 		emit frontSliceChanged(index);
 		break;
 	}
-
-	default:
-		Q_ASSERT_X(false,
-			"ImageView::updateSlice", "SliceType error.");
-		return;
 	}
 	Q_ASSERT_X(static_cast<bool>(sliceGetter) == true,
 		"ImageView::updateSlice", "null function");

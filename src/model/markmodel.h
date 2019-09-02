@@ -26,48 +26,40 @@ class MarkModel :public QAbstractItemModel
 {
 	Q_OBJECT
 
-	/**
-	 * \brief These enums are used to identify the user-defined roles
-	 */
-
-	enum MarkModelItemRole
-	{
-		MeshRole = Qt::ItemDataRole::UserRole + 1,			
-		MetaDataRole = Qt::ItemDataRole::UserRole + 2,
-		TreeItemRole = Qt::ItemDataRole::UserRole + 3
-	};
-	
-	using MarkSliceList = QVector<QList<StrokeMarkItem*>>;
+    /**
+     * \brief These enums are used to identify the user-defined roles
+     */
+    enum MarkModelItemRole
+    {
+        MeshRole = Qt::ItemDataRole::UserRole + 1,
+        MetaDataRole = Qt::ItemDataRole::UserRole + 2,
+        TreeItemRole = Qt::ItemDataRole::UserRole + 3
+    };
+    enum {MagicNumber = 1823615231};
+    using MarkSliceList = QVector<QList<StrokeMarkItem*>>;
 	//state member
-	//const AbstractSliceDataModel * m_dataModel;
+    bool m_dirty = false;
 	const SliceEditorWidget * m_view;
 	QItemSelectionModel * const m_selectionModel;
-
-    bool m_dirty = false;
-
-	//a copy from TreeItem
 	MarkSliceList m_topSliceVisibleMarks;		//store the visible marks for every slice
 	MarkSliceList m_rightSliceVisibleMarks;
 	MarkSliceList m_frontSliceVisibleMarks;
-
-	//Need te be serialized
 	SliceDataIdentityTester m_identity;
     RootTreeItem * m_rootItem = nullptr;
 
+    //Member function
 	inline bool checkMatchHelper(const AbstractSliceDataModel * dataModel)const;
-	void addMarkInSliceHelper(StrokeMarkItem * mark);									//set dirty
-	void removeMarkInSliceHelper(StrokeMarkItem* mark);
-	void updateMarkVisibleHelper(StrokeMarkItem * mark);							//set dirty
+    void addMarkInSliceHelper(StrokeMarkItem * mark);
+    void removeMarkInSliceHelper(StrokeMarkItem * mark);
+    void updateMarkVisibleHelper(StrokeMarkItem * mark);
 	QModelIndex _hlp_indexByItem(TreeItem* parent, TreeItem * item);
-
 	void initSliceMarkContainerHelper();
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
-
 	MarkModel(AbstractSliceDataModel * dataModel,
 		SliceEditorWidget * view, 
 		QObject * parent = nullptr);
 
-	enum {MagicNumber = 1823615231};
+    //friend class
 	friend class SliceEditorWidget;
 signals:
 
@@ -126,6 +118,7 @@ public:
 	QModelIndex indexByItem(TreeItem * item);
 
 	bool removeTreeItem(TreeItem* item);
+
 	QItemSelectionModel * selectionModel()const {return m_selectionModel;}
 
 	void removeSelectedItems();

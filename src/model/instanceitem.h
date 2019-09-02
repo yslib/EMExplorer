@@ -49,9 +49,6 @@ public:
 
 class InstanceTreeItem:public TreeItem
 {
-	//QString m_text;
-	//QRect m_range;
-	//quint8 m_checkState;
 	InstanceTreeItemInfoModel * m_infoModel = nullptr;
 	QAbstractItemView *m_infoView = nullptr;
 	static QVector<QList<StrokeMarkItem*>> refactorMarks(QList<StrokeMarkItem*> &marks);
@@ -74,7 +71,7 @@ public:
 
 	QSharedPointer<Triangulate> mesh()const;
 
-	~InstanceTreeItem();
+    ~InstanceTreeItem() override;
 
 	friend QDataStream & operator<<(QDataStream & stream, const InstanceTreeItem * item);
 	friend QDataStream & operator>>(QDataStream & stream, InstanceTreeItem *& item);

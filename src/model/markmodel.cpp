@@ -32,9 +32,6 @@ TreeItem* MarkModel::treeItem(const QModelIndex& index) const
 	return m_rootItem;
 }
 
-/**
- * \brief  This is a convenience function to returns the root tree item pointer
- */
 TreeItem* MarkModel::rootItem() const 
 {
 	return (m_rootItem);
@@ -288,9 +285,7 @@ QVector<QList<StrokeMarkItem*>> MarkModel::refactorMarks(QList<StrokeMarkItem*> 
  * A mark model can only be constructed by SliceEditorWidget.
  * \sa SliceEditorWidget
  */
-MarkModel::MarkModel(AbstractSliceDataModel* dataModel,
-	SliceEditorWidget * view,
-	QObject * parent) :
+MarkModel::MarkModel(AbstractSliceDataModel* dataModel, SliceEditorWidget * view, QObject * parent) :
 	QAbstractItemModel(parent),
 	m_view(view),
 	m_selectionModel(new QItemSelectionModel(this, this)),
@@ -321,7 +316,6 @@ MarkModel::MarkModel(const QString & fileName) :
 	if (magicNumber != MagicNumber)
 		return;
 
-	/////
 	in >> m_identity;
 	TreeItem * root;
 	in >> root;
@@ -329,42 +323,35 @@ MarkModel::MarkModel(const QString & fileName) :
 		Q_ASSERT_X(false, "MarkModel::MarkModel(const QString & fileName)", "Not a root tree item");
 		return;
 	}
-	m_rootItem = static_cast<RootTreeItem*>(root);
-	m_rootItem->setModelIndexRecursively(createIndex(0,0,m_rootItem));
-	////
+    m_rootItem = static_cast<RootTreeItem*>(root);
+    m_rootItem->setModelIndexRecursively(createIndex(0,0,m_rootItem));
 
 	//construct sliceMarks from the tree
 	initSliceMarkContainerHelper();
-
-	auto items = QList<StrokeMarkItem*>();		//
+    auto items = QList<StrokeMarkItem*>();
 	QVector<QVariant> data;
-	retrieveData(m_rootItem, TreeItemType::Mark, 0, data, MetaDataRole);
+    retrieveData(m_rootItem, TreeItemType::Mark, 0, data, MetaDataRole);
 	foreach(const auto var, data)
 	{
 		Q_ASSERT_X(var.canConvert<void*>(),
 			"MarkModel::marks", "convert failed");
 		items << static_cast<StrokeMarkItem*>(var.value<void*>());
 	}
-
-
 	foreach(auto item,items)
 	{
-		SliceType type = item->sliceType();
-		const auto index = item->sliceIndex();
-
-		item->setFlags(QGraphicsItem::ItemIsSelectable);
-
-		switch(type)
+        item->setFlags(QGraphicsItem::ItemIsSelectable);
+        int index = item->sliceIndex();
+        switch(item->sliceType())
 		{
-		case SliceType::Top:
-			m_topSliceVisibleMarks[index].append(item);
-			break;
-		case SliceType::Right:
-			m_rightSliceVisibleMarks[index].append(item);
-			break;
-		case SliceType::Front:
-			m_frontSliceVisibleMarks[index].append(item);
-			break;
+            case SliceType::Top:
+                m_topSliceVisibleMarks[index].append(item);
+                break;
+            case SliceType::Right:
+                m_rightSliceVisibleMarks[index].append(item);
+                break;
+            case SliceType::Front:
+                m_frontSliceVisibleMarks[index].append(item);
+                break;
 		}
 	}
 }
@@ -554,7 +541,7 @@ bool MarkModel::setData(const QModelIndex & index, const QVariant & value, int r
 		{
 			addMarkInSliceHelper(static_cast<StrokeMarkItem*>(newItem->metaData()));
 		}
-		delete item->takeChild(index.row(), newItem, nullptr);
+        delete item->takeChild(index.row(), newItem);
 		// Update the internal pointer refer to underlying data
 		const auto newIndex = createIndex(index.row(), index.column(), newItem);
 		newItem->setModelIndex(newIndex);
@@ -598,7 +585,7 @@ bool MarkModel::insertRows(int row, int count, const QModelIndex & parent)
 	QVector<TreeItem*> children;
 	for (auto i = 0; i < count; i++)
 	{
-        children << new EmptyTreeItem(QPersistentModelIndex(QModelIndex()), item);
+        children << new TreeItem(QPersistentModelIndex(QModelIndex()), item);
 	}
 	const auto success = item->insertChildren(row, children);
 	endInsertRows();
@@ -623,10 +610,10 @@ bool MarkModel::removeRows(int row, int count, const QModelIndex & parent)
             removeMarkInSliceHelper(static_cast<StrokeMarkItem*>(treeItem->metaData()));
 		}
     }
-    //const auto success = item->removeChildren(row, count);
+    bool success = item->removeChildren(row, count);
 	endRemoveRows();
 	setDirty();
-    return true;
+    return success;
 }
 
 /**

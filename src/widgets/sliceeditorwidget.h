@@ -108,7 +108,7 @@ public:
 
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
-    void markAddedHelper(SliceType type, StrokeMarkItem* mark);
+    void addMark(SliceType type, StrokeMarkItem* mark);
     void removeItem(SliceType type, StrokeMarkItem* mark);
     void addItem(SliceType type, StrokeMarkItem* mark);
     ~SliceEditorWidget()override;
@@ -221,10 +221,8 @@ private:
 	//void changeSliceHelper(int value, SliceType type);
 	SliceWidget * focusOn();
 	static MarkModel * createMarkModel(SliceEditorWidget * view, AbstractSliceDataModel * data);
-
 	QModelIndex _hlp_categoryIndex(const QString& category)const;
     void _hlp_categoryAdd(const CategoryInfo & info) const;
-
 	QModelIndex _hlp_instanceFind(const QString & category, const StrokeMarkItem * item);
 	QModelIndex _hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark);
 	QStringList categoryText()const;

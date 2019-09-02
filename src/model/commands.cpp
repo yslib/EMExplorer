@@ -18,8 +18,6 @@ void AddMarkCommand::undo()
 
 void AddMarkCommand::redo()
 {
-    if(!first)
-        m_widget->addItem(m_type, m_mark);
-    m_widget->markAddedHelper(m_type, m_mark);  
-    first = false;
+    m_widget->addMark(m_type, m_mark);
+    m_mark->show();
 }
