@@ -21,7 +21,7 @@ public:
 	Qt::ItemFlags flags(const QModelIndex& index) const override;
 };
 
-class StrokeMarkTreeItem :public TreeItem {
+class StrokeMarkTreeItem : public TreeItem {
 
 	StrokeMarkItem * m_markItem = nullptr;
 	QAbstractItemModel * m_infoModel = nullptr;
@@ -49,7 +49,9 @@ public:
 
 	void setModelView(QAbstractItemView*view)override;
 
-	~StrokeMarkTreeItem();
+    StrokeMarkItem * markItem() {return m_markItem;}
+
+    ~StrokeMarkTreeItem() override;
 
 	friend QDataStream& operator<<(QDataStream& stream, const StrokeMarkTreeItem * item);
 

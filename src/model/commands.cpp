@@ -12,12 +12,35 @@ AddMarkCommand::~AddMarkCommand()
 
 void AddMarkCommand::undo()
 {
-    if(m_widget)
-        m_widget->removeItem(m_type, m_mark);
+    m_widget->removeMark(m_mark);
 }
 
 void AddMarkCommand::redo()
 {
     m_widget->addMark(m_type, m_mark);
-    m_mark->show();
+}
+
+RemoveMarkCommand::RemoveMarkCommand(SliceEditorWidget * widget)
+{
+    m_widget = widget;
+    for (auto index : m_widget->markModel()->selectionModel()->selectedIndexes()) {
+        m_marks.append(static_cast<StrokeMarkTreeItem *>(index.internalPointer())->markItem());
+    }
+}
+
+RemoveMarkCommand::~RemoveMarkCommand()
+{
+
+}
+
+void RemoveMarkCommand::undo()
+{
+    for(auto mark : m_marks)
+        m_widget->addMark(mark->sliceType(), mark);
+}
+
+void RemoveMarkCommand::redo()
+{
+    for(auto mark : m_marks)
+        m_widget->removeMark(mark);
 }

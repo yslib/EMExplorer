@@ -1,10 +1,12 @@
-#ifndef COMMANDS_H
+﻿#ifndef COMMANDS_H
 #define COMMANDS_H
 
 #include <QUndoCommand>
+#include <QList>
 #include "widgets/sliceeditorwidget.h"
 #include "model/markmodel.h"
 #include "model/sliceitem.h"
+#include "model/marktreeitem.h"
 
 class AddMarkCommand : public QUndoCommand
 {
@@ -19,12 +21,22 @@ public:
     void setType(SliceType type){m_type = type;}
     void setWidget(SliceEditorWidget *widget){m_widget = widget;}
 
-
 private:
     SliceEditorWidget *m_widget;
     StrokeMarkItem * m_mark;
     SliceType m_type;
-    bool first = true;
+};
+
+class RemoveMarkCommand : public QUndoCommand
+{
+public:
+    RemoveMarkCommand(SliceEditorWidget * widget);
+    ~RemoveMarkCommand() override;
+    void undo() override;
+    void redo() override;
+private:
+    SliceEditorWidget *m_widget;
+    QList<StrokeMarkItem *> m_marks;
 };
 
 #endif // COMMANDS_H

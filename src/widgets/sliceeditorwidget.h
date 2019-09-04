@@ -109,8 +109,8 @@ public:
 	MarkModel* takeMarkModel(MarkModel* model, bool * success)noexcept;
 	MarkModel* markModel();
     void addMark(SliceType type, StrokeMarkItem* mark);
-    void removeItem(SliceType type, StrokeMarkItem* mark);
-    void addItem(SliceType type, StrokeMarkItem* mark);
+    void removeMark(StrokeMarkItem* mark);
+    void deleteMarks();
     ~SliceEditorWidget()override;
 signals:
 
@@ -226,9 +226,6 @@ private:
 	QModelIndex _hlp_instanceFind(const QString & category, const StrokeMarkItem * item);
 	QModelIndex _hlp_instanceAdd(const QString & category, const StrokeMarkItem* mark);
 	QStringList categoryText()const;
-
-	bool removeMark(StrokeMarkItem* mark);
-	int removeMarks(const QList<StrokeMarkItem*>& marks = QList<StrokeMarkItem*>());
 
 	// Data Members
 	SliceEditorWidgetPrivate * const d_ptr;

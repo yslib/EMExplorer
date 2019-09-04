@@ -13,18 +13,18 @@
 
 MarkTreeView::MarkTreeView(QWidget * parent) :QTreeView(parent)
 {
-	setContextMenuPolicy(Qt::DefaultContextMenu);
-	setSelectionMode(QAbstractItemView::ExtendedSelection);
-	createAction();
-	setAlternatingRowColors(true);
-	createMenu();
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    createAction();
+    setAlternatingRowColors(true);
+    createMenu();
 }
 
 void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
 {
-	updateAction();
-	///TODO:: need to check if the click position is property to open a context menu
-	m_menu->exec(event->globalPos());
+    updateAction();
+    ///TODO:: need to check if the click position is property to open a context menu
+    m_menu->exec(event->globalPos());
 }
 
 /**
@@ -33,90 +33,90 @@ void MarkTreeView::contextMenuEvent(QContextMenuEvent* event)
  * This override function is used to emit currentIndexChanged() signal
  */
 
-void MarkTreeView::currentChanged(const QModelIndex& current, const QModelIndex& previous) 
+void MarkTreeView::currentChanged(const QModelIndex& current, const QModelIndex& previous)
 {
-	QTreeView::currentChanged(current, previous);
-	emit currentIndexChanged(current,previous);
+    QTreeView::currentChanged(current, previous);
+    emit currentIndexChanged(current,previous);
 }
 
 void MarkTreeView::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected)
 {
-	QTreeView::selectionChanged(selected, deselected);
-	emit selectionIndexChanged(selected, deselected);
+    QTreeView::selectionChanged(selected, deselected);
+    emit selectionIndexChanged(selected, deselected);
 }
 
 void MarkTreeView::createMenu()
 {
-	m_menu = new QMenu(QStringLiteral("MarkTreeView Context Menu"), this);
-	m_menu->addAction(m_markDeleteAction);
-	m_menu->addAction(m_markRenameAction);
+    m_menu = new QMenu(QStringLiteral("MarkTreeView Context Menu"), this);
+    m_menu->addAction(m_markDeleteAction);
+    m_menu->addAction(m_markRenameAction);
 }
 
 void MarkTreeView::createAction()
 {
-	m_markDeleteAction = new QAction(QStringLiteral("Delete"), this);
-	m_markRenameAction = new QAction(QStringLiteral("Rename"), this);
+    m_markDeleteAction = new QAction(QStringLiteral("Delete"), this);
+    m_markRenameAction = new QAction(QStringLiteral("Rename"), this);
 
-	connect(m_markDeleteAction, &QAction::triggered, this, &MarkTreeView::deleteMarksActionTriggered);
-	connect(m_markRenameAction, &QAction::triggered, this, &MarkTreeView::onRenameAction);
+    connect(m_markDeleteAction, &QAction::triggered, this, &MarkTreeView::deleteMarksActionTriggered);
+    connect(m_markRenameAction, &QAction::triggered, this, &MarkTreeView::onRenameAction);
 }
 /**
  * \brief This function will be call at every time the context menu is run
- *		  First, It will check the number of the selected items in the model 
+ *		  First, It will check the number of the selected items in the model
  *		  to determine whether the actions should be enabled.
  *		  1) Rename action would be enabled only if there is one selected item.
  *		  2) Delete action would be enabled if at least one item be selected.
- *		  
+ *
  */
 void MarkTreeView::updateAction()
 {
-	m_renameItem = QModelIndex();
+    m_renameItem = QModelIndex();
 
-	m_deleteItems.clear();
+    m_deleteItems.clear();
 
-	auto indexes = selectedIndexes();
-	const bool deletionEnable = (indexes.count() >= 1);
-	const bool renameEnable = (indexes.count() == 1);
-	if(renameEnable)
-		m_renameItem = indexes.first();
+    auto indexes = selectedIndexes();
+    const bool deletionEnable = (indexes.count() >= 1);
+    const bool renameEnable = (indexes.count() == 1);
+    if(renameEnable)
+        m_renameItem = indexes.first();
 
-	QSet<TreeItem*> parents;
-	//We only need to delete parent node if some marks' parent is selected.
-	foreach(const auto & item,indexes)
-	{
-		auto d = static_cast<TreeItem*>(item.internalPointer());
-		Q_ASSERT_X(d, 
-			"MarkTreeView::updateAction", "null pointer");
+    QSet<TreeItem*> parents;
+    //We only need to delete parent node if some marks' parent is selected.
+    foreach(const auto & item,indexes)
+    {
+        auto d = static_cast<TreeItem*>(item.internalPointer());
+        Q_ASSERT_X(d,
+            "MarkTreeView::updateAction", "null pointer");
         if(d->type() == static_cast<int>(TreeItemType::Category))
-		{
-			parents.insert(d);
-			m_deleteItems.insert(item);
-		}
-	}
-	foreach(const auto & item,indexes)
-	{
-		auto d = static_cast<TreeItem*>(item.internalPointer());
-		Q_ASSERT_X(d,
-			"MarkTreeView::updateAction", "null pointer");
+        {
+            parents.insert(d);
+            m_deleteItems.insert(item);
+        }
+    }
+    foreach(const auto & item,indexes)
+    {
+        auto d = static_cast<TreeItem*>(item.internalPointer());
+        Q_ASSERT_X(d,
+            "MarkTreeView::updateAction", "null pointer");
         if (d->type() == static_cast<int>(TreeItemType::Root))
-			continue;
+            continue;
         if (d->type() == static_cast<int>(TreeItemType::Mark))
-		{
-			if (parents.find(d->parentItem()) == parents.end())
-				m_deleteItems.insert(item);
-		}
-			
-	}
+        {
+            if (parents.find(d->parentItem()) == parents.end())
+                m_deleteItems.insert(item);
+        }
 
-	m_markDeleteAction->setEnabled(deletionEnable);
-	m_markRenameAction->setEnabled(renameEnable);
+    }
+
+    m_markDeleteAction->setEnabled(deletionEnable);
+    m_markRenameAction->setEnabled(renameEnable);
 }
 
 void MarkTreeView::onRenameAction()
 {
-	if (m_renameItem.isValid() == false)
-		return;
-	//TODO::
+    if (m_renameItem.isValid() == false)
+        return;
+    //TODO::
 }
 //In c++, functions in an anonymous namespace are equivalent to be qualified by static, which have a local scope
 //namespace
@@ -188,18 +188,18 @@ void MarkTreeView::onRenameAction()
 
 TreeNodeInfoView::TreeNodeInfoView(QWidget * parent) :QTableView(parent)
 {
-	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	//verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	setShowGrid(true);
-	setAlternatingRowColors(true);
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    //verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    setShowGrid(true);
+    setAlternatingRowColors(true);
 
     auto factory = new QItemEditorFactory();
     auto colorListCreator = new QStandardItemEditorCreator<ColorListEditor>();
-	factory->registerEditor(QVariant::Color, colorListCreator);
+    factory->registerEditor(QVariant::Color, colorListCreator);
 
-	auto dele = new QItemDelegate;
-	dele->setItemEditorFactory(factory);
-	setItemDelegate(dele);
+    auto dele = new QItemDelegate;
+    dele->setItemEditorFactory(factory);
+    setItemDelegate(dele);
 }
 
 
@@ -212,41 +212,41 @@ QWidget(parent),
 m_treeView(nullptr),
 m_infoView(nullptr)
 {
-	m_infoView = new TreeNodeInfoView(this);
-	m_treeView = new MarkTreeView(this);
-	connect(m_treeView, &MarkTreeView::currentIndexChanged, this, &MarkManager::treeViewCurrentIndexChanged);
-	connect(m_treeView, &MarkTreeView::deleteMarksActionTriggered, this, &MarkManager::deleteMarksActionTriggered);
+    m_infoView = new TreeNodeInfoView(this);
+    m_treeView = new MarkTreeView(this);
+    connect(m_treeView, &MarkTreeView::currentIndexChanged, this, &MarkManager::treeViewCurrentIndexChanged);
+    connect(m_treeView, &MarkTreeView::deleteMarksActionTriggered, this, &MarkManager::deleteMarksActionTriggered);
 
-	auto layout = new QVBoxLayout;
-	layout->addWidget(m_treeView);
-	layout->addWidget(m_infoView);
-	layout->setStretchFactor(m_treeView, 7);
-	layout->setStretchFactor(m_infoView, 3);
-	setWindowTitle(QStringLiteral("Mark Manager"));
-	setLayout(layout);
+    auto layout = new QVBoxLayout;
+    layout->addWidget(m_treeView);
+    layout->addWidget(m_infoView);
+    layout->setStretchFactor(m_treeView, 7);
+    layout->setStretchFactor(m_infoView, 3);
+    setWindowTitle(QStringLiteral("Mark Manager"));
+    setLayout(layout);
 }
 
 /**
  * \brief Set new model \a model to the widget
- * 
+ *
  * If the old model is the same as the new one, nothing will be done.
- * \param model 
- * 
+ * \param model
+ *
  * \note This operation will update the selection of model of the tree view also.
  */
 void MarkManager::setMarkModel(MarkModel * model)
 {
-	Q_ASSERT(m_treeView);
+    Q_ASSERT(m_treeView);
 
-	if (m_markModel == model)
-		return;
+    if (m_markModel == model)
+        return;
 
-	disconnect(m_treeView,&MarkTreeView::deleteMarksActionTriggered, m_markModel, &MarkModel::removeSelectedItems);
+    disconnect(m_treeView,&MarkTreeView::deleteMarksActionTriggered, m_markModel, &MarkModel::removeSelectedItems);
 
-	m_markModel = model;
-	m_treeView->setModel(m_markModel);
-	m_treeView->setSelectionModel(m_markModel->selectionModel());
-	connect(m_treeView, &MarkTreeView::deleteMarksActionTriggered, m_markModel, &MarkModel::removeSelectedItems);
+    m_markModel = model;
+    m_treeView->setModel(m_markModel);
+    m_treeView->setSelectionModel(m_markModel->selectionModel());
+    connect(m_treeView, &MarkTreeView::deleteMarksActionTriggered, m_markModel, &MarkModel::removeSelectedItems);
 }
 
 void MarkManager::treeViewSelectionIndexChanged(const QItemSelection & selected, const QModelIndex & deselected)
@@ -255,32 +255,30 @@ void MarkManager::treeViewSelectionIndexChanged(const QItemSelection & selected,
 }
 
 void MarkManager::treeViewClicked(const QModelIndex& index) {
-	const auto item = static_cast<TreeItem *>(index.internalPointer());
-	if (item != nullptr) {
-		//m_infoView->setModel(item->infoModel());
-		item->setModelView(m_infoView);
-		if (item->type() == TreeItemType::Mark) 
-		{
-			const auto m = static_cast<StrokeMarkItem*>(item->metaData());
-			m->setSelected(true);
-		}
-	}
+    const auto item = static_cast<TreeItem *>(index.internalPointer());
+    if (item != nullptr) {
+        //m_infoView->setModel(item->infoModel());
+        item->setModelView(m_infoView);
+        if (item->type() == TreeItemType::Mark)
+        {
+            const auto m = static_cast<StrokeMarkItem*>(item->metaData());
+            m->setSelected(true);
+        }
+    }
 }
 
 /**
- * \brief 
+ * \brief
  */
 void MarkManager::treeViewCurrentIndexChanged(const QModelIndex & current, const QModelIndex& previous)
 {
-	Q_UNUSED(previous);
-	const auto item = static_cast<TreeItem *>(current.internalPointer());
-	if (item != nullptr) {
-		item->setModelView(m_infoView);
-		if(item->type() == TreeItemType::Mark) {
-			const auto m = static_cast<StrokeMarkItem*>(item->metaData());
-			m->setSelected(true);
-		}
-	}
+    Q_UNUSED(previous);
+    const auto item = static_cast<TreeItem *>(current.internalPointer());
+    if (item != nullptr) {
+        item->setModelView(m_infoView);
+        if(item->type() == TreeItemType::Mark) {
+            const auto m = static_cast<StrokeMarkItem*>(item->metaData());
+            m->setSelected(true);
+        }
+    }
 }
-
-

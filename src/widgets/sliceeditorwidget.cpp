@@ -222,6 +222,12 @@ void SliceEditorWidget::addMark(SliceType type, QUndoCommand * addMarkCommand)
     m_undoStack->push(addMarkCommand);
 }
 
+void SliceEditorWidget::deleteMarks()
+{
+   RemoveMarkCommand * deleteMarkCommand = new RemoveMarkCommand(this);
+   m_undoStack->push(deleteMarkCommand);
+}
+
 /**
  * \brief Update states for all widgets that they are should be.
  *
@@ -605,26 +611,6 @@ QStringList SliceEditorWidget::categoryText() const
 	return list;
 }
 
-bool SliceEditorWidget::removeMark(StrokeMarkItem * mark)
-{
-    //const auto parent = m_markModel->parent(mark->modelIndex());
-    //m_markModel->removeRows(mark->modelIndex().row(), 1, parent);
-
-	/// TODO:: 
-	//delete mark;
-
-	return true;
-}
-
-int SliceEditorWidget::removeMarks(const QList<StrokeMarkItem*>& marks)
-{
-	auto success = 0;
-	for (auto item : marks)
-		if (removeMark(item))
-			success++;
-	return success;
-}
-
 /**
  * \brief This is a helper function used to add mark \a mark to a \a type type slice
  *
@@ -653,9 +639,10 @@ void SliceEditorWidget::addMark(SliceType type, StrokeMarkItem* mark)
     const auto newIndex = m_markModel->index(row, 0, instance);
 	const auto p = new StrokeMarkTreeItem(mark, newIndex, nullptr);
     m_markModel->setData(newIndex, QVariant::fromValue(static_cast<void*>(p)), MarkModel::TreeItemRole);
+    mark->show();
 }
 
-void SliceEditorWidget::removeItem(SliceType type, StrokeMarkItem *mark)
+void SliceEditorWidget::removeMark(StrokeMarkItem *mark)
 {
     Q_ASSERT_X(m_markModel, "SliceEditorWidget::markAddedHelper", "m_markModel != nullptr");
     m_markModel->selectionModel()->reset();
@@ -663,23 +650,6 @@ void SliceEditorWidget::removeItem(SliceType type, StrokeMarkItem *mark)
     m_markModel->removeSelectedItems();
     mark->hide();
 }
-
-void SliceEditorWidget::addItem(SliceType type, StrokeMarkItem *mark)
-{
-    switch (type)
-    {
-        case SliceType::Top:
-            m_topView->scene()->addItem(mark);
-            break;
-        case SliceType::Right:
-            m_topView->scene()->addItem(mark);
-            break;
-        case SliceType::Front:
-            m_topView->scene()->addItem(mark);
-            break;
-    }
-}
-
 
 /**
  * \brief This is a slot
