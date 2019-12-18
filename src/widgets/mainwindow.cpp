@@ -530,8 +530,8 @@ void MainWindow::createWidget()
 	m_viewMenu->addAction(m_imageViewDockWidget->toggleViewAction());
 	connect(m_imageViewDockWidget, &QDockWidget::visibilityChanged, [this](bool enable) {if(enable)updateActionsAndControlPanelByWidgetFocus(FocusInSliceWidget); });
 
-	connect(m_imageView->markModel(), &MarkModel::modified, [this]() {setWindowTitle(QStringLiteral("MRC Marker*")); });
-	connect(m_imageView->markModel(), &MarkModel::saved, [this]() {setWindowTitle(QStringLiteral("MRC Marker")); });
+	//connect(m_imageview->markmodel(), &markmodel::modified, [this]() {setwindowtitle(qstringliteral("mrc marker*")); });
+	//connect(m_imageview->markmodel(), &markmodel::saved, [this]() {setwindowtitle(qstringliteral("mrc marker")); });
 
 	connect(m_imageView, &SliceEditorWidget::viewFocus, this, &MainWindow::sliceViewSelected);
 	connect(m_imageView->topView(), &SliceWidget::selectionChanged, this, &MainWindow::updateActionsBySelectionInSliceView);

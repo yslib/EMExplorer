@@ -111,7 +111,7 @@ void CategoryControlWidget::createWidgets()
 	hLayout->addWidget(m_colorAction);
 	vLayout->addLayout(hLayout);
 
-	vLayout->addLayout(hLayout);
+	//vLayout->addLayout(hLayout);
 	group->setLayout(vLayout);
 	mainLayout->addWidget(group);
 	mainLayout->addStretch();

@@ -28,6 +28,7 @@ public:
 	virtual float minValue()const = 0;
 	virtual float maxValue()const = 0;
 
+	virtual QVector<QVector<int>> topSliceGradient(int index)const = 0; //added by dhr on 2019.12.6 
 	//virtual unsigned char * data()=0;
 	//virtual const unsigned char * constData()const = 0;
 
@@ -43,6 +44,7 @@ private:
 	QVector<bool> m_modifiedRightSliceFlags;
 	QVector<QImage> m_modifiedFrontSlice;
 	QVector<bool> m_modifiedFrontSliceFlags;
+	
 };
 
 /**

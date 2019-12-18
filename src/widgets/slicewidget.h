@@ -21,6 +21,19 @@ struct SliceWidgetState {
 	int opState;
 };
 
+struct candidatePoint
+{
+	int x, y, cost;
+	bool operator < (const candidatePoint& a) const
+	{
+		return cost < a.cost;
+	}
+	bool operator > (const candidatePoint& a) const
+	{
+		return cost > a.cost;
+	}
+};
+
 class SliceWidgetPrivate {
 	public:
 };
@@ -58,6 +71,10 @@ public slots:
 
 	void setImage(const QImage & image);
 
+	inline void setGradientMap(QVector<QVector<int>> GradientMap);
+
+	inline void setIntelligentScissorsState(bool is_enable_intelligentScissors);
+
 	inline void setPen(const QPen & pen);
 
 	void setDefaultZoom();
@@ -83,10 +100,14 @@ protected:
 	void mousePressEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
 	void mouseReleaseEvent(QMouseEvent * event)Q_DECL_OVERRIDE;
+	void mouseDoubleClickEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
+
+	void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 	void wheelEvent(QWheelEvent * event)Q_DECL_OVERRIDE;
 	void focusInEvent(QFocusEvent* event) Q_DECL_OVERRIDE;
 	void focusOutEvent(QFocusEvent* event)Q_DECL_OVERRIDE;
 	void paintEvent(QPaintEvent* event) Q_DECL_OVERRIDE;
+
 signals:
 
 	/**
@@ -133,6 +154,10 @@ private:
 
 	static QPixmap createAnchorItemPixmap(const QString & fileName = QString());
 
+	QVector<QPoint> getShortestPath(QPoint s_point, QPoint e_point);
+
+	QPoint snapPoint(QPoint clickPoint, int range = 7);
+
 	Q_OBJECT
 
 	enum {
@@ -141,7 +166,6 @@ private:
 
 	//qreal m_scaleFactor;
 	bool m_paintNavigationView;
-	QVector<QPoint> m_paintViewPointsBuffer;
 	QPointF m_prevViewPoint;
 	QPen m_pen;
 	SliceItem * m_slice;
@@ -155,6 +179,20 @@ private:
 	bool m_paint;
 	bool m_selection;
 	int m_state;
+	//Cost Map  only consider gradient value
+	QVector<QVector<int>> GradientMap;
+	QVector<QPoint> m_paintViewPointsBuffer; //selected points
+	QVector<QPoint> auxiliaryLinePath;  // temp shorest path
+
+	QVector<QVector<QPoint>> path;
+
+	bool is_draw_new_mark;// 开始绘制新的mark
+	bool enable_intelligent_scissor; //是否开启智能剪刀
+	bool pause_intelligent_scissor;//在绘制过程中暂时关闭智能剪刀改用手动绘制
+	StrokeMarkItem* m_resultItem; //temp line
+
+	StrokeMarkItem* tempAuxiliaryLine; //temp line
+
 };
 
 inline void SliceWidget::setOperation(int state)
@@ -165,8 +203,12 @@ inline void SliceWidget::setOperation(int state)
 		state == Operation::Erase,
 		"SliceView::setFunction", "state must be exclusive");
 	m_state = state;
-}
 
+	if (state == Operation::Paint) { setMouseTracking(true); update(); }
+	else { setMouseTracking(false); }
+}
+inline void SliceWidget::setGradientMap(QVector<QVector<int>> GradientMap) { this->GradientMap = GradientMap; }
+inline void SliceWidget::setIntelligentScissorsState(bool is_enable_intelligentScissors) { enable_intelligent_scissor = is_enable_intelligentScissors; }
 inline void SliceWidget::setPen(const QPen & pen){m_pen = pen;}
 inline QPen SliceWidget::pen()const{return m_pen;}
 inline void SliceWidget::setNavigationViewEnabled(bool enabled)

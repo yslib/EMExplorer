@@ -78,7 +78,7 @@ class SliceEditorWidget :public QWidget
 	Q_OBJECT
 public:
 	SliceEditorWidget(QWidget * parent = nullptr,
-		bool topSliceVisible = true, 
+		bool topSlicexVisible = true, 
 		bool rightSliceVisible = true,
 		bool frontSliceVisible = true,
 		AbstractSliceDataModel * model = nullptr);

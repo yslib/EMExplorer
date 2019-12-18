@@ -3,16 +3,17 @@
 #include <QDebug>
 
 #include <cmath>
-
+#define cimg_display 0 //
+#define cimg_OS 0
+#include "algorithm/CImg.h"
 MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data) :
 	AbstractSliceDataModel(data->slice(), data->width(), data->height()),
 	m_d(data)
 {
 	Q_ASSERT_X(m_d->isOpened(),
 		"MRCDataModel::MRCDataModel", "Invalid MRC Data.");
-
 	preCalc();
-
+	calGradient();
 }
 /**
  * \brief  Returns the data type of the internal data
@@ -136,10 +137,10 @@ QImage MRCDataModel::originalRightSlice(int index) const
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for (std::size_t i = 0; i < height; i++)
+		for (auto i = 0; i < height; i++)
 		{
 			const auto scanLine = newImage.scanLine(i);
-			for (std::size_t j = 0; j < slice; j++)
+			for (auto j = 0; j < slice; j++)
 			{
 				const auto idx = index + i * width + j * width*height;
 				Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
@@ -157,10 +158,10 @@ QImage MRCDataModel::originalRightSlice(int index) const
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for (std::size_t i = 0; i < height; i++)
+		for (auto i = 0; i < height; i++)
 		{
 			const auto scanLine = newImage.scanLine(i);
-			for (std::size_t j = 0; j < slice; j++)
+			for (auto j = 0; j < slice; j++)
 			{
 				const auto idx = index + i * width + j * width*height;
 				Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
@@ -179,10 +180,10 @@ QImage MRCDataModel::originalRightSlice(int index) const
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for (std::size_t i = 0; i < height; i++)
+		for (auto i = 0; i < height; i++)
 		{
 			const auto scanLine = newImage.scanLine(i);
-			for (std::size_t j = 0; j < slice; j++)
+			for (auto j = 0; j < slice; j++)
 			{
 				const auto idx = index + i * width + j * width*height;
 				Q_ASSERT_X(idx < size, "MRCDataModel::originalRightSlice", "size error");
@@ -257,10 +258,10 @@ QImage MRCDataModel::originalFrontSlice(int index) const
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-		for (std::size_t i = 0; i < slice; i++)
+		for (auto i = 0; i < slice; i++)
 		{
 			const auto scanLine = newImage.scanLine(i);
-			for (std::size_t j = 0; j < width; j++)
+			for (auto j = 0; j < width; j++)
 			{
 				const auto idx = j + index * width + i * width*height;
 				Q_ASSERT_X(idx < size, "MRCDataModel::originalFrontSlice", "size error");
@@ -323,6 +324,101 @@ void MRCDataModel::adjustImage(QImage& image) const {
 			scanLine[j] = v < 0 ? 0 : (v > 255 ? 255 : v);
 		}
 	}
+}
+
+void MRCDataModel::calGradient()
+{
+	m_d_gradient.clear();
+
+	//当前仅计算二维梯度
+	for(auto i= 0;i<m_d->slice();i++)
+	{
+		QImage currentslice = originalTopSlice(i);
+		/*QImage lastslice = originalTopSlice(i - 1);
+		QImage nextslice = originalTopSlice(i + 1);*/
+		
+		int width = currentslice.width();
+		int height = currentslice.height();
+
+		QVector<QVector<int>> temp_gradient = QVector<QVector<int>>(height, QVector<int>(width, 255));
+
+		
+		float maxGradient = 0.0;
+
+		cimg_library::CImg<unsigned char> imageHelper(
+			currentslice.bits(),
+			currentslice.bytesPerLine(),			// QImage requires 32-bit aligned for each scanLine, but CImg don't.
+			height,
+			1,
+			true);							// Share data
+
+		const auto mean = imageHelper.mean();
+
+		//调整对比度
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif	
+		for (auto h = 0; h < height; ++h) {
+			const auto scanLine = currentslice.scanLine(h);
+			for (auto w = 0; w < width; ++w) {
+				auto t = scanLine[w] - mean;
+				t *= 3; //Adjust contrast
+				t += mean * 1; // Adjust brightness
+				scanLine[w] = (t > 255.0) ? (255) : (t < 0.0 ? (0) : (t));
+			}
+		}
+
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif			
+		for (auto i = 1; i < width - 1; i++)
+		{
+			for (auto j = 1; j < height - 1; j++)
+			{
+				/*
+				p1 p2 p3
+				p4 p5 p6
+				p7 p8 p9
+				*/
+				auto p1 = qGray(currentslice.pixel(i - 1, j - 1));
+				auto p2 = qGray(currentslice.pixel(i, j - 1));
+				auto p3 = qGray(currentslice.pixel(i + 1, j - 1));
+
+				auto p4 = qGray(currentslice.pixel(i - 1, j));
+				auto p5 = qGray(currentslice.pixel(i, j));
+				auto p6 = qGray(currentslice.pixel(i + 1, j));
+
+				auto p7 = qGray(currentslice.pixel(i - 1, j + 1));
+				auto p8 = qGray(currentslice.pixel(i, j + 1));
+				auto p9 = qGray(currentslice.pixel(i + 1, j + 1));
+
+				auto gradient_x = p3 + 2 * p6 + p9 - p1 - 2 * p4 - p7;
+				auto gradient_y = p7 + 2 * p8 + p9 - p1 - 2 * p2 - p3;
+
+				auto gradient = (abs(gradient_x) + abs(gradient_y));
+
+				//auto laplacian = p2 + p4 + p6 + p8 - 4 * p5;
+				temp_gradient[i][j] = gradient;
+
+				if (gradient > maxGradient) maxGradient = gradient;
+			}
+		}
+
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif	
+		for (auto i = 1; i < width - 1; i++)
+		{
+			for (auto j = 1; j < height - 1; j++)
+			{
+				auto gradient = float(1 - temp_gradient[i][j] / maxGradient) * 255;//inverse
+				temp_gradient[i][j] = gradient; //映射到0-255区间
+				//QRgb grayPixel = qRgb(gradient, gradient, gradient);
+				//m_gradientImage->setPixel(i, j, grayPixel);
+			}
+		}
+		m_d_gradient.append(temp_gradient);
+	}	
 }
 
 void MRCDataModel::preCalc()

@@ -1,5 +1,6 @@
 #include <QWheelEvent>
 #include <QDebug>
+#include<queue>
 
 #include "slicewidget.h"
 #include "globals.h"
@@ -7,8 +8,14 @@
 #include "model/markitem.h"
 #include "model/markmodel.h"
 
+#include <chrono>
 
+#define cimg_display 0 //
+#define cimg_OS 0
+#include "algorithm/CImg.h"
 //#define DEBUG_MARK_ERASE
+
+
 
 SliceWidget::SliceWidget(QWidget *parent) :QGraphicsView(parent),
 //m_scaleFactor(0.5),
@@ -33,6 +40,11 @@ m_paintNavigationView(false)
 	m_anchorItem = new QGraphicsPixmapItem(pixel);
 	m_anchorItem->setVisible(false);
 	setStyleSheet(QStringLiteral("border:0px solid white"));
+
+	is_draw_new_mark = false;
+	enable_intelligent_scissor = false;
+	pause_intelligent_scissor = false;
+	tempAuxiliaryLine = nullptr;
 }
 
 void SliceWidget::setMarks(const QList<StrokeMarkItem*>& items)
@@ -57,6 +69,22 @@ void SliceWidget::focusOutEvent(QFocusEvent* event)
 void SliceWidget::paintEvent(QPaintEvent* event)
 {
 	QGraphicsView::paintEvent(event);
+
+	if (enable_intelligent_scissor && m_state == Operation::Paint)
+	{
+		QPainter p(this->viewport());
+		QFont font("黑体", 15, QFont::Bold,true);
+		p.setFont(font);
+
+		if (!pause_intelligent_scissor)
+		{
+			p.drawText(10, 20, QStringLiteral("辅助模式"));
+		}
+		else
+		{
+			p.drawText(10, 20, QStringLiteral("手动模式"));
+		}
+	}
 
 	if (!m_paintNavigationView)
 		return;
@@ -91,6 +119,124 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 
 	p2.drawPixmap(thumbnailRect(sliceRectInScene, viewRectInScene), QPixmap::fromImage(thumbnail));
 	p2.end();
+
+}
+
+void SliceWidget::mouseDoubleClickEvent(QMouseEvent* event) // 开启智能剪刀时，结束绘制一个mark 准备绘制新的
+{
+	if (m_state == Operation::Paint && enable_intelligent_scissor && is_draw_new_mark) {
+
+		// 删除shortest path辅助线
+		if (tempAuxiliaryLine != nullptr)
+		{
+			delete tempAuxiliaryLine;
+			tempAuxiliaryLine = nullptr;
+		}
+
+		//删除temp path辅助线
+		if (m_paintingItem != nullptr)
+		{
+			delete m_paintingItem;
+			m_paintingItem = nullptr;
+		}
+
+		//构建结果图形并绘制
+		m_resultItem = new StrokeMarkItem(m_currentPaintingSlice);
+		m_resultItem->setFlags(QGraphicsItem::ItemIsSelectable);
+		m_resultItem->setPen(m_pen);
+		
+		for (int i = 0; i < path.length(); i++)
+		{
+			auto temp = path[i];
+			for (int i = 0; i < temp.length(); i++)
+			{
+				m_resultItem->appendPoint(temp[i]);
+			}
+		}
+
+		//首尾相连
+		if (path[0].last() != path.last().last())
+		{
+			m_resultItem->appendPoint(path[0].last());
+		}
+
+		if (m_resultItem->polygon().size() > 3)
+			emit markAdded(m_resultItem);
+		else
+			delete m_resultItem;
+
+		path.clear();
+		m_paintViewPointsBuffer.clear();
+		auxiliaryLinePath.clear();
+		is_draw_new_mark = false;
+
+		m_currentPaintingSlice = nullptr;
+	}
+	event->accept();
+	return;
+}
+
+void SliceWidget::keyPressEvent(QKeyEvent* event) //撤回
+{
+	if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Z))
+	{
+		if (m_state == Operation::Paint)
+		{
+			if (m_paintViewPointsBuffer.length()>1)
+			{
+				m_paintViewPointsBuffer.pop_back();
+
+				//删除之间画的那一段
+				path.pop_back();
+
+				//重新绘制
+				if (m_paintingItem != nullptr)
+					delete m_paintingItem;
+
+				if (tempAuxiliaryLine != nullptr)
+				{
+					delete tempAuxiliaryLine;
+					tempAuxiliaryLine = nullptr;
+				}
+
+				m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
+				m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
+				QPen pen(m_pen.color(), 5, Qt::DotLine, Qt::RoundCap, Qt::RoundJoin);
+
+				m_paintingItem->setPen(pen);
+				
+				for (int i = 0; i < path.length(); i++)
+				{
+					auto temp = path[i];
+					for (int i = 0; i < temp.length(); i++)
+					{
+						m_paintingItem->appendPoint(temp[i]);
+					}
+				}
+			}
+		}
+	}
+	else if (event->key() == Qt::Key_Space) 
+	{
+		if (m_state == Operation::Paint)
+		{
+			pause_intelligent_scissor = !pause_intelligent_scissor; //按空格切换手动和辅助模式
+			
+			// 删除shortest path辅助线
+			if (tempAuxiliaryLine != nullptr)
+			{
+				delete tempAuxiliaryLine;
+				tempAuxiliaryLine = nullptr;
+			}
+
+			if (pause_intelligent_scissor) setMouseTracking(false);
+			else setMouseTracking(true);
+			update();
+		}
+	}
+	event->accept();
+	return;
+
 }
 
 void SliceWidget::mousePressEvent(QMouseEvent *event)
@@ -100,13 +246,12 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 	const auto button = event->button();
 	const auto viewPos = event->pos();
 	const auto scenePos = mapToScene(viewPos);
-
-
-
+	
 	m_prevViewPoint = viewPos;
 	auto items = scene()->items(scenePos);
 
-	if (button == Qt::RightButton) {
+	if (button == Qt::RightButton) { // ignore right button event
+		
 		event->accept();
 		return;
 	}
@@ -115,20 +260,72 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 		auto * itm = qgraphicsitem_cast<SliceItem*>(item);
 		if (itm == m_slice) {	 // Operations must perform on slice item.
 
-			if (button == Qt::RightButton) {			// ignore right button event
-				event->accept();
-				return;
-			}
+			//if (button == Qt::RightButton) {			// ignore right button event
+			//	event->accept();
+			//	return;
+			//}
 
 			const auto itemPoint = m_slice->mapFromScene(scenePos);
 			emit sliceSelected(itemPoint.toPoint());
 
 			if (m_state == Operation::Paint) {
-				m_currentPaintingSlice = m_slice;
-				m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
-				m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
-				m_paintingItem->setPen(m_pen);
-				m_paintingItem->appendPoint(itemPoint);
+				if (enable_intelligent_scissor)
+				{
+					if (!is_draw_new_mark) //刚开始绘制新的mark
+					{
+						is_draw_new_mark = true;
+
+						m_currentPaintingSlice = m_slice;
+						m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
+						m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
+						QPen pen(m_pen.color(), 5, Qt::DotLine, Qt::RoundCap, Qt::RoundJoin);
+						m_paintingItem->setPen(pen);
+
+						auto snap_point = snapPoint(itemPoint.toPoint());//对用户点击到的区域周围14X14的像素搜索，snap到附近梯度最小的点				
+						m_paintingItem->appendPoint(snap_point); 
+
+						m_paintViewPointsBuffer.push_back(snap_point);
+
+						QVector<QPoint> tempPath;
+						tempPath.push_back(snap_point);
+						path.push_back(tempPath);
+
+					}
+					else //再先前的mark上继续添加线段
+					{
+						if (!pause_intelligent_scissor)
+						{
+							QVector<QPoint> tempPath;
+							for (auto i = auxiliaryLinePath.length() - 1; i > 0; i--) //将确定的线段加入到目标中
+							{
+								m_paintingItem->appendPoint(auxiliaryLinePath[i]);
+								tempPath.push_back(auxiliaryLinePath[i]);
+							}
+							path.push_back(tempPath);
+
+							m_paintViewPointsBuffer.push_back(snapPoint(itemPoint.toPoint())); //对用户点击到的区域周围14X14的像素搜索，snap到附近梯度最小的点
+						}
+						else
+						{
+							if (m_currentPaintingSlice != nullptr)
+							{
+								m_paintingItem->appendPoint(itemPoint.toPoint());
+								auxiliaryLinePath.clear();
+								auxiliaryLinePath.push_back(itemPoint.toPoint());//用auxiliaryLinePath来存用户手绘的那一段
+							}
+						}
+					}
+					
+				}
+				else
+				{
+					m_currentPaintingSlice = m_slice;
+					m_paintingItem = new StrokeMarkItem(m_currentPaintingSlice);
+					m_paintingItem->setFlags(QGraphicsItem::ItemIsSelectable);
+					m_paintingItem->setPen(m_pen);
+					m_paintingItem->appendPoint(itemPoint);
+				}
+				
 				event->accept();
 				return;
 			}
@@ -157,10 +354,11 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 
 void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 {
+
 	// Note that the returned value for event->button() is always Qt::NoButton for mouse move events.
 	const auto viewPos = event->pos();
 	//const auto scenePos = mapToScene(viewPos);
-	if (m_paintNavigationView) {			// move the navigation rect with mouse
+	if (m_paintNavigationView && m_state != Operation::Paint) {			// move the navigation rect with mouse
 		const auto & sliceRectInScene = m_slice->mapRectToScene(m_slice->boundingRect());
 		const auto & viewRectInScene = mapToScene(rect()).boundingRect();
 		const auto tRect = thumbnailRect(sliceRectInScene, viewRectInScene);
@@ -175,6 +373,7 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 		}
 	}
 
+
 	if (event->buttons() == Qt::RightButton) {		// Move
 		const auto delta = viewPos - m_prevViewPoint;
 		m_prevViewPoint = viewPos;
@@ -183,15 +382,68 @@ void SliceWidget::mouseMoveEvent(QMouseEvent *event)
 		event->accept();
 		return;
 	}
-	else if (m_state == Operation::Paint)		// Drawing a mark
+	else if(m_state == Operation::Paint)		// Drawing a mark
 	{
-		if (m_currentPaintingSlice != nullptr)
+		if (enable_intelligent_scissor)
 		{
-			m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)));
-			m_paintViewPointsBuffer << viewPos;
-			event->accept();
-			return;
+			if (!pause_intelligent_scissor)
+			{
+				if (m_paintViewPointsBuffer.length() > 0)
+				{
+					if (tempAuxiliaryLine != nullptr)
+						delete tempAuxiliaryLine;
+
+					QPen pen;
+					QVector<qreal> dashes;
+					qreal space = 3;
+					dashes << 5 << space << 5 << space;
+					pen.setDashPattern(dashes);
+					pen.setWidth(2);
+					pen.setColor(m_pen.color());
+
+					tempAuxiliaryLine = new StrokeMarkItem(m_slice);
+					tempAuxiliaryLine->setPen(pen);
+					auxiliaryLinePath.clear();
+
+					auto width = m_slice->pixmap().width();
+					auto height = m_slice->pixmap().height();
+					auto pos_x = m_slice->mapFromScene(mapToScene(viewPos)).toPoint().x();
+					auto pos_y = m_slice->mapFromScene(mapToScene(viewPos)).toPoint().y();
+
+					auto delta = abs(m_paintViewPointsBuffer.last().x() - pos_x) + abs(m_paintViewPointsBuffer.last().y() - pos_y);
+					if (pos_x > 0 && pos_x < width && pos_y>0 && pos_y < height && delta < 256) // border checking && if the delta more than 256 stop generate path
+					{
+						auxiliaryLinePath = getShortestPath(m_paintViewPointsBuffer.last(), snapPoint(QPoint(pos_x, pos_y)));
+
+						for (auto i = auxiliaryLinePath.length() - 1; i > 0; i--)
+						{
+							tempAuxiliaryLine->appendPoint(auxiliaryLinePath[i]);
+						}
+					}
+
+				}
+			}
+			else
+			{
+				if (m_currentPaintingSlice != nullptr)
+				{
+					auto itemPoint = m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)).toPoint();
+					m_paintingItem->appendPoint(itemPoint);
+					auxiliaryLinePath.push_back(itemPoint);
+				}
+			}
+		
 		}
+		else
+		{
+			if (m_currentPaintingSlice != nullptr)
+			{
+				m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(viewPos)));
+			}
+		}
+		event->accept();
+		return;
+		
 	}
 	else if (m_state == Operation::Selection)
 	{
@@ -236,25 +488,45 @@ void SliceWidget::mouseReleaseEvent(QMouseEvent *event)
 
 	if (m_state == Operation::Paint)			//create a mark
 	{
-		if (m_currentPaintingSlice == nullptr)
-		{
-			event->accept();
-			return;
-		}
 
-		m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(event->pos())));
-		if (m_currentPaintingSlice == m_slice) {
-			if (m_paintingItem->polygon().size() > 3)
-				emit markAdded(m_paintingItem);
-			else
-				delete m_paintingItem;
-		}
+		if (!enable_intelligent_scissor)
+		{
+			if (m_currentPaintingSlice == nullptr)
+			{
+				event->accept();
+				return;
+			}
+
+			m_paintingItem->appendPoint(m_currentPaintingSlice->mapFromScene(mapToScene(event->pos())));
+			if (m_currentPaintingSlice == m_slice) {
+				if (m_paintingItem->polygon().size() > 3)
+					emit markAdded(m_paintingItem);
+				else
+					delete m_paintingItem;
+			}
 			
-		m_currentPaintingSlice = nullptr;
+			m_currentPaintingSlice = nullptr;
+		}
+		else if(pause_intelligent_scissor)
+		{
+			if (m_currentPaintingSlice == nullptr)
+			{
+				event->accept();
+				return;
+			}
+
+			auxiliaryLinePath.push_back(m_currentPaintingSlice->mapFromScene(mapToScene(event->pos())).toPoint());
+			if (auxiliaryLinePath.length() > 3)
+			{
+				path.push_back(auxiliaryLinePath);
+				m_paintViewPointsBuffer.push_back(auxiliaryLinePath.last());
+				m_paintingItem->appendPoint(auxiliaryLinePath.last());
+			}
+		}
+		
 		event->accept();
 		return;
 	}
-
 	else if (m_state == Operation::Erase)
 	{
 
@@ -347,6 +619,119 @@ QPixmap SliceWidget::createAnchorItemPixmap(const QString & fileName)
 	return pixmap;
 }
 
+QVector<QPoint> SliceWidget::getShortestPath(QPoint s_point, QPoint e_point)
+{
+
+	std::priority_queue<candidatePoint,std::vector<candidatePoint>,std::greater<candidatePoint>> L_Queue;
+
+	candidatePoint g;
+	g.x = s_point.x();
+	g.y = s_point.y();
+	g.cost = 0;
+
+	L_Queue.push(g);
+
+	QVector<QVector<int>> NodeState(GradientMap.length());
+	QVector<QVector<int>> costMap(GradientMap.length());
+	QVector<QVector<QPoint>> prevNodeMap(GradientMap.length());
+
+	QVector<int> temp(GradientMap[0].length(),-1);
+	QVector<int> temp_cost(GradientMap[0].length(),10000);
+	QVector<QPoint> temp_prevNodeMap(GradientMap[0].length(),QPoint(-1,-1));
+
+	NodeState.fill(temp);
+	costMap.fill(temp_cost);
+	prevNodeMap.fill(temp_prevNodeMap);
+
+	costMap[s_point.x()][s_point.y()] = 0;
+
+	while (!L_Queue.empty() && NodeState[e_point.x()][e_point.y()] != 1) //如果e_point已加入到集合中，则结束
+	{
+		QPoint q = QPoint(L_Queue.top().x, L_Queue.top().y);
+		L_Queue.pop();
+
+		NodeState[q.x()][q.y()] = 1;
+		//qDebug() << q;
+		
+		//for each q's neighborhood 
+		for (auto i = -1; i < 2; i++)
+		{
+			for (auto j = -1; j < 2; j++)
+			{
+				QPoint r = q + QPoint(i, j);
+				//boarder checking
+				if (r.x() > NodeState[0].length() - 1 || r.y() > NodeState.length() - 1 || r.x() < 1 || r.y() < 1) continue;
+
+				if (NodeState[r.x()][r.y()] != 1) // if not expanded
+				{
+					float scale = 1.0;
+					if (abs(i) == 1 && abs(j) == 1) { scale = 1.414; } // if diagonal multiple sqrt(2)
+					int tempCost = costMap[q.x()][q.y()] + scale * GradientMap[r.x()][r.y()]; // G_temp = g(q)+l(q,r)
+
+					if (NodeState[r.x()][r.y()] == -1)
+					{
+						costMap[r.x()][r.y()] = tempCost;
+						NodeState[r.x()][r.y()] = 0;
+						prevNodeMap[r.x()][r.y()] = q;
+
+						candidatePoint r_inqueue;
+						r_inqueue.x = r.x();
+						r_inqueue.y = r.y();
+						r_inqueue.cost = tempCost;
+
+						L_Queue.push(r_inqueue);
+					}
+					if (NodeState[r.x()][r.y()] == 0 && tempCost < costMap[r.x()][r.y()])
+					{
+						costMap[r.x()][r.y()] = tempCost;
+						prevNodeMap[r.x()][r.y()] = q;
+					}
+				}
+			}
+		}
+	}
+
+	// 遍历prevNodeMap获取从e_point到s_point的最短路径
+	QVector<QPoint> path = QVector<QPoint>();
+	path.push_back(e_point);
+	while (prevNodeMap[path.back().x()][path.back().y()] != QPoint(-1, -1))
+	{
+		path.push_back(prevNodeMap[path.back().x()][path.back().y()]);
+	}
+
+	//qDebug() <<"path!!!" <<path;
+
+	return path;
+}
+QPoint SliceWidget::snapPoint(QPoint clickPoint, int range)
+{
+	int click_X = clickPoint.x();
+	int click_Y = clickPoint.y();
+	
+	QPoint snapPoint = clickPoint;
+	auto mincost = GradientMap[click_X][click_Y];
+	//对用户点击到的区域周围2*range的像素搜索，snap到附近梯度最小的点
+	for (auto i = -range; i < range; i++)
+	{
+		for (auto j = -range; j < range; j++)
+		{
+			if (click_X + i < 0 || click_Y + j < 0 || click_X + i >= GradientMap.length() || click_Y + j >= GradientMap[0].length()) continue;
+
+			if (GradientMap[click_X + i][click_Y + j] < mincost) 
+			{
+				snapPoint = QPoint(click_X + i, click_Y + j);
+				mincost = GradientMap[click_X + i][click_Y + j];
+			}
+			
+		}
+	}
+
+
+
+		
+	return snapPoint;
+}
+
 inline
 void SliceWidget::setMarkHelper(
 	const QList<StrokeMarkItem*>& items)
@@ -373,7 +758,7 @@ void SliceWidget::clearSliceMarksHelper(SliceItem * slice)
 		item->setVisible(false);
 	}
 }
-/**
+/*
  * \brief
  * \param image
  */
@@ -404,8 +789,166 @@ void SliceWidget::setImage(const QImage& image)
 	{
 		m_slice->setPixmap(QPixmap::fromImage(image));
 	}
-	//setDefaultZoom();
 
+
+//不在本地计算梯度图了
+//	int width = m_slice->pixmap().width();
+//	int height = m_slice->pixmap().height();
+//
+//	if (width == height) //如果是最大的那个，计算梯度图象
+//	{
+//		QImage currentImage = m_slice->pixmap().toImage().convertToFormat(QImage::Format_Grayscale8);
+//
+//		float maxGradient = 0.0;
+//
+//		cimg_library::CImg<unsigned char> imageHelper(
+//			currentImage.bits(),
+//			currentImage.bytesPerLine(),			// QImage requires 32-bit aligned for each scanLine, but CImg don't.
+//			height,
+//			1,
+//			true);							// Share data
+//
+//		const auto mean = imageHelper.mean();
+//
+//#ifdef _OPENMP
+//#pragma omp parallel for
+//#endif	
+//		//调整对比度
+//		for (auto h = 0; h < height; ++h) {
+//			const auto scanLine = currentImage.scanLine(h);
+//			for (auto w = 0; w < width; ++w) {
+//				auto t = scanLine[w] - mean;
+//				t *= 3; //Adjust contrast
+//				t += mean * 1; // Adjust brightness
+//				scanLine[w] = (t > 255.0) ? (255) : (t < 0.0 ? (0) : (t));
+//			}
+//		}
+//		
+//		//currentImage.save("contrast.jpg");
+//
+//		GradientMap.clear();
+//
+//		for (int i = 0; i < height; i++)
+//		{
+//			QVector<int> temp;
+//			for (int j = 0; j < width; j++)
+//			{
+//				temp.push_back(255);
+//			}
+//			GradientMap.push_back(temp);
+//		}
+//
+//		//do not consider
+//		QVector<QVector<int>> LaplacianMap;
+//
+//		for (int i = 0; i < height; i++)
+//		{
+//			QVector<int> temp;
+//			for (int j = 0; j < width; j++)
+//			{
+//				temp.push_back(0);
+//			}
+//			LaplacianMap.push_back(temp);
+//		}
+//
+//
+//		//平滑
+//		//for (auto i = 1; i < width-1; i++)
+//		//{
+//		//	for (auto j = 1; j < height-1; j++)
+//		//	{
+//		//		auto p1 = qGray(currentImage.pixel(i - 1, j - 1));
+//		//		auto p2 = qGray(currentImage.pixel(i, j - 1));
+//		//		auto p3 = qGray(currentImage.pixel(i + 1, j - 1));
+//
+//		//		auto p4 = qGray(currentImage.pixel(i - 1, j));
+//		//		auto p5 = qGray(currentImage.pixel(i, j));
+//		//		auto p6 = qGray(currentImage.pixel(i + 1, j));
+//
+//		//		auto p7 = qGray(currentImage.pixel(i - 1, j + 1));
+//		//		auto p8 = qGray(currentImage.pixel(i, j + 1));
+//		//		auto p9 = qGray(currentImage.pixel(i + 1, j + 1));
+//
+//		//		auto pixelValue = (p1+p2+p3+p4+p5+p6+p7+p8+p9) / 9;
+//		//		QRgb grayPixel = qRgb(pixelValue, pixelValue, pixelValue);
+//
+//		//		currentImage.setPixel(i, j, currentImage.pixel(i, j));
+//		//	}
+//		//}
+//		//currentImage.save("test.png");
+//
+//#ifdef _OPENMP
+//#pragma omp parallel for
+//#endif			
+//		for (auto i = 1; i < width - 1; i++)
+//		{
+//			for (auto j = 1; j < height - 1; j++)
+//			{
+//				/*
+//				p1 p2 p3
+//				p4 p5 p6
+//				p7 p8 p9
+//				*/
+//				auto p1 = qGray(currentImage.pixel(i - 1, j - 1));
+//				auto p2 = qGray(currentImage.pixel(i, j - 1));
+//				auto p3 = qGray(currentImage.pixel(i + 1, j - 1));
+//				
+//				auto p4 = qGray(currentImage.pixel(i - 1, j));
+//				auto p5 = qGray(currentImage.pixel(i, j));
+//				auto p6 = qGray(currentImage.pixel(i + 1, j));
+//				
+//				auto p7 = qGray(currentImage.pixel(i - 1, j + 1));
+//				auto p8 = qGray(currentImage.pixel(i, j + 1));
+//				auto p9 = qGray(currentImage.pixel(i + 1, j + 1));
+//
+//				auto gradient_x = p3+2*p6+p9-p1-2*p4-p7;
+//				auto gradient_y = p7+2*p8+p9-p1-2*p2-p3;
+//
+//				auto gradient = (abs(gradient_x) + abs(gradient_y));
+//				
+//				auto laplacian = p2 + p4 + p6 + p8 - 4 * p5;
+//				//auto gradient = p1 + p2 + p3 + p4 - 8 * p5 + p6 + p7 + p8 + p8;  Laplace
+//				GradientMap[i][j] = gradient;
+//				LaplacianMap[i][j] = laplacian;
+//
+//				if (gradient > maxGradient) maxGradient = gradient;
+//			}
+//		}
+//		//qDebug() << maxGradient;
+//#ifdef _OPENMP
+//#pragma omp parallel for
+//#endif	
+//		for (auto i = 1; i < width - 1; i++)
+//		{
+//			for (auto j = 1; j < height - 1; j++)
+//			{
+//				auto gradient = float(1-GradientMap[i][j]/maxGradient)*255;//inverse
+//				GradientMap[i][j] = gradient; //映射到0-255区间
+//				//QRgb grayPixel = qRgb(gradient, gradient, gradient);
+//				//m_gradientImage->setPixel(i, j, grayPixel);
+//			}
+//		}
+//		//m_gradientImage->save("m_gradientImage.jpg");
+//	
+//		//计算拉普拉斯零点
+//#ifdef _OPENMP
+//#pragma omp parallel for
+//#endif	
+//		for (auto i = 1; i < width - 1; i++)
+//		{
+//			for (auto j = 1; j < height - 1; j++)
+//			{
+//				auto laplacian = LaplacianMap[i][j];
+//				if (laplacian > 0) laplacian = 255;
+//
+//				//QRgb laplacianPixel = qRgb(laplacian, laplacian, laplacian);
+//				//m_laplacianImage->setPixel(i, j, laplacianPixel);
+//			}
+//		}
+//
+//		//m_laplacianImage->save("m_laplacianImage.jpg");
+//	}
+	//std::cout << "trigger setImage function"<<std::endl;
 }
 
 void SliceWidget::setDefaultZoom()
@@ -418,6 +961,7 @@ void SliceWidget::setDefaultZoom()
 void SliceWidget::clearSliceMarks()
 {
 	clearSliceMarksHelper(m_slice);
+	//std::cout << "trigger clearSliceMarks";
 }
 
 QList<StrokeMarkItem*> SliceWidget::selectedItems() const

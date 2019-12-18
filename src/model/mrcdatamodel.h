@@ -18,6 +18,7 @@ public:
     QImage originalRightSlice(int index) const override;
     QImage originalFrontSlice(int index) const override;
 
+	QVector<QVector<int>> topSliceGradient(int index) const { return m_d_gradient[index];}
 	int dataType() override;
 	void * rawData() override;
 	const void * constRawData()override;
@@ -31,6 +32,7 @@ public:
 	~MRCDataModel();
 private:
     QSharedPointer<MRC> m_d;
+	QVector<QVector<QVector<int>>> m_d_gradient;
 	struct MRCStatistic 
 	{
 		double mean;
@@ -40,6 +42,7 @@ private:
 
 	void adjustImage(QImage & image) const;
 	void preCalc();
+	void calGradient();
 };
 
 

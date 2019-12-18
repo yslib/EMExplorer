@@ -348,7 +348,7 @@ SliceEditorWidget::SliceEditorWidget(QWidget *parent,
 	connect(m_topView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::topSliceSelected);
 	connect(m_rightView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::rightSliceSelected);
 	connect(m_frontView, QOverload<const QPoint &>::of(&SliceWidget::sliceSelected), this, &SliceEditorWidget::frontSliceSelected);
-
+	 
 	// Mark added signals
 	connect(m_topView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Top, mark); });
 	connect(m_rightView, &SliceWidget::markAdded, [this](StrokeMarkItem* mark) {markAddedHelper(SliceType::Right, mark); });
@@ -1051,7 +1051,15 @@ void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 		"ImageView::updateSlice", "null function");
 
 	view->setImage(sliceGetter(index));
-
+	
+	if (type == SliceType::Top) // if view is the top, set it's gradientMap for intelligent scissors
+	{
+		if (index > m_sliceModel->topSliceCount() - 1)
+			return;
+		view->setGradientMap(m_sliceModel->topSliceGradient(index));
+		view->setIntelligentScissorsState(true);
+	}
+	
 	view->clearSliceMarks();		// clear previous marks
 
 	// Set Marks
