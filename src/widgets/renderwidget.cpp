@@ -465,7 +465,7 @@ void RenderWidget::mouseReleaseEvent(QMouseEvent* event) {
 		d->selectedObjectId = selectMesh(p.x(), p.y());
 
 
-                onCurrentMeshChanged(d->selectedObjectId, previous);
+                // onCurrentMeshChanged(d->selectedObjectId, previous);
 		d->enableStartPicking = false;
 		repaint();			// Show the result immediately
 	}
