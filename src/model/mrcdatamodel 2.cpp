@@ -1,20 +1,19 @@
 #include "mrcdatamodel.h"
 #include "mrc.h"
 #include <QDebug>
-#include <thread>
+
 #include <cmath>
 #define cimg_display 0 //
 #define cimg_OS 0
 #include "algorithm/CImg.h"
 MRCDataModel::MRCDataModel(const QSharedPointer<MRC> &data) :
 	AbstractSliceDataModel(data->slice(), data->width(), data->height()),
-    m_d(data)
+	m_d(data)
 {
-    m_d_gradient.resize(m_d->slice());
-    m_is_calculated.resize(m_d->slice(), false);
 	Q_ASSERT_X(m_d->isOpened(),
 		"MRCDataModel::MRCDataModel", "Invalid MRC Data.");
 	preCalc();
+	calGradient();
 }
 /**
  * \brief  Returns the data type of the internal data
@@ -54,6 +53,7 @@ QImage MRCDataModel::originalTopSlice(int index) const
 
 	// For 32-bit aligned requirement of the QImage, 
 	// A new image has to be created and copy original data manually.
+
 	switch (m_d->dataType())
 	{
 	case MRC::DataType::Integer8:
@@ -273,17 +273,7 @@ QImage MRCDataModel::originalFrontSlice(int index) const
 
 	}
 	adjustImage(newImage);
-    return newImage;
-}
-
-QVector<QVector<int> > MRCDataModel::topSliceGradient(int index)
-{
-    if (m_is_calculated[index]) {
-        return m_d_gradient[index];
-    }
-
-    calGradient(index);
-    return topSliceGradient(index);
+	return newImage;
 }
 
 inline int MRCDataModel::topSliceCount() const
@@ -336,13 +326,13 @@ void MRCDataModel::adjustImage(QImage& image) const {
 	}
 }
 
-void MRCDataModel::calGradient(int i)
+void MRCDataModel::calGradient()
 {
-    m_is_calculated[i] = false;
+	m_d_gradient.clear();
 
 	//当前仅计算二维梯度
-//	for(auto i= 0;i<m_d->slice();i++)
-//	{
+	for(auto i= 0;i<m_d->slice();i++)
+	{
 		QImage currentslice = originalTopSlice(i);
 		/*QImage lastslice = originalTopSlice(i - 1);
 		QImage nextslice = originalTopSlice(i + 1);*/
@@ -427,10 +417,8 @@ void MRCDataModel::calGradient(int i)
 				//m_gradientImage->setPixel(i, j, grayPixel);
 			}
 		}
-        m_d_gradient[i] = std::move(temp_gradient);
-        m_is_calculated[i] = true;
-//        std::cout << "!!!!calculated: " << i << std::endl;
-//	}
+		m_d_gradient.append(temp_gradient);
+	}	
 }
 
 void MRCDataModel::preCalc()

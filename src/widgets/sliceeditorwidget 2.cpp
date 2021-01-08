@@ -1056,9 +1056,8 @@ void SliceEditorWidget::setSliceIndex(SliceType type, int index)
 	{
 		if (index > m_sliceModel->topSliceCount() - 1)
 			return;
-
-        view->setGradientMap(m_sliceModel->topSliceGradient(index));
-        view->setIntelligentScissorsState(true);
+		view->setGradientMap(m_sliceModel->topSliceGradient(index));
+		view->setIntelligentScissorsState(true);
 	}
 	
 	view->clearSliceMarks();		// clear previous marks

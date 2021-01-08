@@ -2,7 +2,7 @@
 #define ABSTRACTSLICEDATAMODEL_H
 
 #include <QImage>
-#include <future>
+
 
 class AbstractSliceDataModel
 {
@@ -28,8 +28,8 @@ public:
 	virtual float minValue()const = 0;
 	virtual float maxValue()const = 0;
 
-    virtual QVector<QVector<int>> topSliceGradient(int index) = 0; //added by dhr on 2019.12.6
-    //virtual unsigned char * data()=0;
+	virtual QVector<QVector<int>> topSliceGradient(int index)const = 0; //added by dhr on 2019.12.6 
+	//virtual unsigned char * data()=0;
 	//virtual const unsigned char * constData()const = 0;
 
 	virtual int dataType() = 0;
