@@ -73,16 +73,16 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 	if (enable_intelligent_scissor && m_state == Operation::Paint)
 	{
 		QPainter p(this->viewport());
-		QFont font("é»‘ä½“", 15, QFont::Bold,true);
+		QFont font("ºÚÌå", 15, QFont::Bold,true);
 		p.setFont(font);
 
 		if (!pause_intelligent_scissor)
 		{
-			p.drawText(10, 20, QStringLiteral("AUTO"));
+            p.drawText(10, 20, QStringLiteral("Auto"));
 		}
-		else
+        else
 		{
-			p.drawText(10, 20, QStringLiteral("MANUAL"));
+            p.drawText(10, 20, QStringLiteral("MANUAL"));
 		}
 	}
 
@@ -122,25 +122,25 @@ void SliceWidget::paintEvent(QPaintEvent* event)
 
 }
 
-void SliceWidget::mouseDoubleClickEvent(QMouseEvent* event) // å¼€å¯æ™ºèƒ½å‰ªåˆ€æ—¶ï¼Œç»“æŸç»˜åˆ¶ä¸€ä¸ªmark å‡†å¤‡ç»˜åˆ¶æ–°çš„
+void SliceWidget::mouseDoubleClickEvent(QMouseEvent* event) // ¿ªÆôÖÇÄÜ¼ôµ¶Ê±£¬½áÊø»æÖÆÒ»¸ömark ×¼±¸»æÖÆĞÂµÄ
 {
 	if (m_state == Operation::Paint && enable_intelligent_scissor && is_draw_new_mark) {
 
-		// åˆ é™¤shortest pathè¾…åŠ©çº¿
+		// É¾³ıshortest path¸¨ÖúÏß
 		if (tempAuxiliaryLine != nullptr)
 		{
 			delete tempAuxiliaryLine;
 			tempAuxiliaryLine = nullptr;
 		}
 
-		//åˆ é™¤temp pathè¾…åŠ©çº¿
+		//É¾³ıtemp path¸¨ÖúÏß
 		if (m_paintingItem != nullptr)
 		{
 			delete m_paintingItem;
 			m_paintingItem = nullptr;
 		}
 
-		//æ„å»ºç»“æœå›¾å½¢å¹¶ç»˜åˆ¶
+		//¹¹½¨½á¹ûÍ¼ĞÎ²¢»æÖÆ
 		m_resultItem = new StrokeMarkItem(m_currentPaintingSlice);
 		m_resultItem->setFlags(QGraphicsItem::ItemIsSelectable);
 		m_resultItem->setPen(m_pen);
@@ -154,7 +154,7 @@ void SliceWidget::mouseDoubleClickEvent(QMouseEvent* event) // å¼€å¯æ™ºèƒ½å‰ªåˆ
 			}
 		}
 
-		//é¦–å°¾ç›¸è¿
+		//Ê×Î²ÏàÁ¬
 		if (path[0].last() != path.last().last())
 		{
 			m_resultItem->appendPoint(path[0].last());
@@ -176,7 +176,7 @@ void SliceWidget::mouseDoubleClickEvent(QMouseEvent* event) // å¼€å¯æ™ºèƒ½å‰ªåˆ
 	return;
 }
 
-void SliceWidget::keyPressEvent(QKeyEvent* event) //æ’¤å›
+void SliceWidget::keyPressEvent(QKeyEvent* event) //³·»Ø
 {
 	if ((event->modifiers() == Qt::ControlModifier) && (event->key() == Qt::Key_Z))
 	{
@@ -186,10 +186,10 @@ void SliceWidget::keyPressEvent(QKeyEvent* event) //æ’¤å›
 			{
 				m_paintViewPointsBuffer.pop_back();
 
-				//åˆ é™¤ä¹‹é—´ç”»çš„é‚£ä¸€æ®µ
+				//É¾³ıÖ®¼ä»­µÄÄÇÒ»¶Î
 				path.pop_back();
 
-				//é‡æ–°ç»˜åˆ¶
+				//ÖØĞÂ»æÖÆ
 				if (m_paintingItem != nullptr)
 					delete m_paintingItem;
 
@@ -220,9 +220,9 @@ void SliceWidget::keyPressEvent(QKeyEvent* event) //æ’¤å›
 	{
 		if (m_state == Operation::Paint)
 		{
-			pause_intelligent_scissor = !pause_intelligent_scissor; //æŒ‰ç©ºæ ¼åˆ‡æ¢æ‰‹åŠ¨å’Œè¾…åŠ©æ¨¡å¼
+			pause_intelligent_scissor = !pause_intelligent_scissor; //°´¿Õ¸ñÇĞ»»ÊÖ¶¯ºÍ¸¨ÖúÄ£Ê½
 			
-			// åˆ é™¤shortest pathè¾…åŠ©çº¿
+			// É¾³ıshortest path¸¨ÖúÏß
 			if (tempAuxiliaryLine != nullptr)
 			{
 				delete tempAuxiliaryLine;
@@ -271,7 +271,7 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 			if (m_state == Operation::Paint) {
 				if (enable_intelligent_scissor)
 				{
-					if (!is_draw_new_mark) //åˆšå¼€å§‹ç»˜åˆ¶æ–°çš„mark
+					if (!is_draw_new_mark) //¸Õ¿ªÊ¼»æÖÆĞÂµÄmark
 					{
 						is_draw_new_mark = true;
 
@@ -281,7 +281,7 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 						QPen pen(m_pen.color(), 5, Qt::DotLine, Qt::RoundCap, Qt::RoundJoin);
 						m_paintingItem->setPen(pen);
 
-						auto snap_point = snapPoint(itemPoint.toPoint());//å¯¹ç”¨æˆ·ç‚¹å‡»åˆ°çš„åŒºåŸŸå‘¨å›´14X14çš„åƒç´ æœç´¢ï¼Œsnapåˆ°é™„è¿‘æ¢¯åº¦æœ€å°çš„ç‚¹				
+						auto snap_point = snapPoint(itemPoint.toPoint());//¶ÔÓÃ»§µã»÷µ½µÄÇøÓòÖÜÎ§14X14µÄÏñËØËÑË÷£¬snapµ½¸½½üÌİ¶È×îĞ¡µÄµã				
 						m_paintingItem->appendPoint(snap_point); 
 
 						m_paintViewPointsBuffer.push_back(snap_point);
@@ -291,19 +291,19 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 						path.push_back(tempPath);
 
 					}
-					else //å†å…ˆå‰çš„markä¸Šç»§ç»­æ·»åŠ çº¿æ®µ
+					else //ÔÙÏÈÇ°µÄmarkÉÏ¼ÌĞøÌí¼ÓÏß¶Î
 					{
 						if (!pause_intelligent_scissor)
 						{
 							QVector<QPoint> tempPath;
-							for (auto i = auxiliaryLinePath.length() - 1; i > 0; i--) //å°†ç¡®å®šçš„çº¿æ®µåŠ å…¥åˆ°ç›®æ ‡ä¸­
+							for (auto i = auxiliaryLinePath.length() - 1; i > 0; i--) //½«È·¶¨µÄÏß¶Î¼ÓÈëµ½Ä¿±êÖĞ
 							{
 								m_paintingItem->appendPoint(auxiliaryLinePath[i]);
 								tempPath.push_back(auxiliaryLinePath[i]);
 							}
 							path.push_back(tempPath);
 
-							m_paintViewPointsBuffer.push_back(snapPoint(itemPoint.toPoint())); //å¯¹ç”¨æˆ·ç‚¹å‡»åˆ°çš„åŒºåŸŸå‘¨å›´14X14çš„åƒç´ æœç´¢ï¼Œsnapåˆ°é™„è¿‘æ¢¯åº¦æœ€å°çš„ç‚¹
+							m_paintViewPointsBuffer.push_back(snapPoint(itemPoint.toPoint())); //¶ÔÓÃ»§µã»÷µ½µÄÇøÓòÖÜÎ§14X14µÄÏñËØËÑË÷£¬snapµ½¸½½üÌİ¶È×îĞ¡µÄµã
 						}
 						else
 						{
@@ -311,7 +311,7 @@ void SliceWidget::mousePressEvent(QMouseEvent *event)
 							{
 								m_paintingItem->appendPoint(itemPoint.toPoint());
 								auxiliaryLinePath.clear();
-								auxiliaryLinePath.push_back(itemPoint.toPoint());//ç”¨auxiliaryLinePathæ¥å­˜ç”¨æˆ·æ‰‹ç»˜çš„é‚£ä¸€æ®µ
+								auxiliaryLinePath.push_back(itemPoint.toPoint());//ÓÃauxiliaryLinePathÀ´´æÓÃ»§ÊÖ»æµÄÄÇÒ»¶Î
 							}
 						}
 					}
@@ -645,7 +645,7 @@ QVector<QPoint> SliceWidget::getShortestPath(QPoint s_point, QPoint e_point)
 
 	costMap[s_point.x()][s_point.y()] = 0;
 
-	while (!L_Queue.empty() && NodeState[e_point.x()][e_point.y()] != 1) //å¦‚æœe_pointå·²åŠ å…¥åˆ°é›†åˆä¸­ï¼Œåˆ™ç»“æŸ
+	while (!L_Queue.empty() && NodeState[e_point.x()][e_point.y()] != 1) //Èç¹ûe_pointÒÑ¼ÓÈëµ½¼¯ºÏÖĞ£¬Ôò½áÊø
 	{
 		QPoint q = QPoint(L_Queue.top().x, L_Queue.top().y);
 		L_Queue.pop();
@@ -691,7 +691,7 @@ QVector<QPoint> SliceWidget::getShortestPath(QPoint s_point, QPoint e_point)
 		}
 	}
 
-	// éå†prevNodeMapè·å–ä»e_pointåˆ°s_pointçš„æœ€çŸ­è·¯å¾„
+	// ±éÀúprevNodeMap»ñÈ¡´Óe_pointµ½s_pointµÄ×î¶ÌÂ·¾¶
 	QVector<QPoint> path = QVector<QPoint>();
 	path.push_back(e_point);
 	while (prevNodeMap[path.back().x()][path.back().y()] != QPoint(-1, -1))
@@ -710,7 +710,7 @@ QPoint SliceWidget::snapPoint(QPoint clickPoint, int range)
 	
 	QPoint snapPoint = clickPoint;
 	auto mincost = GradientMap[click_X][click_Y];
-	//å¯¹ç”¨æˆ·ç‚¹å‡»åˆ°çš„åŒºåŸŸå‘¨å›´2*rangeçš„åƒç´ æœç´¢ï¼Œsnapåˆ°é™„è¿‘æ¢¯åº¦æœ€å°çš„ç‚¹
+	//¶ÔÓÃ»§µã»÷µ½µÄÇøÓòÖÜÎ§2*rangeµÄÏñËØËÑË÷£¬snapµ½¸½½üÌİ¶È×îĞ¡µÄµã
 	for (auto i = -range; i < range; i++)
 	{
 		for (auto j = -range; j < range; j++)
@@ -791,11 +791,11 @@ void SliceWidget::setImage(const QImage& image)
 	}
 
 
-//ä¸åœ¨æœ¬åœ°è®¡ç®—æ¢¯åº¦å›¾äº†
+//²»ÔÚ±¾µØ¼ÆËãÌİ¶ÈÍ¼ÁË
 //	int width = m_slice->pixmap().width();
 //	int height = m_slice->pixmap().height();
 //
-//	if (width == height) //å¦‚æœæ˜¯æœ€å¤§çš„é‚£ä¸ªï¼Œè®¡ç®—æ¢¯åº¦å›¾è±¡
+//	if (width == height) //Èç¹ûÊÇ×î´óµÄÄÇ¸ö£¬¼ÆËãÌİ¶ÈÍ¼Ïó
 //	{
 //		QImage currentImage = m_slice->pixmap().toImage().convertToFormat(QImage::Format_Grayscale8);
 //
@@ -813,7 +813,7 @@ void SliceWidget::setImage(const QImage& image)
 //#ifdef _OPENMP
 //#pragma omp parallel for
 //#endif	
-//		//è°ƒæ•´å¯¹æ¯”åº¦
+//		//µ÷Õû¶Ô±È¶È
 //		for (auto h = 0; h < height; ++h) {
 //			const auto scanLine = currentImage.scanLine(h);
 //			for (auto w = 0; w < width; ++w) {
@@ -852,7 +852,7 @@ void SliceWidget::setImage(const QImage& image)
 //		}
 //
 //
-//		//å¹³æ»‘
+//		//Æ½»¬
 //		//for (auto i = 1; i < width-1; i++)
 //		//{
 //		//	for (auto j = 1; j < height-1; j++)
@@ -923,14 +923,14 @@ void SliceWidget::setImage(const QImage& image)
 //			for (auto j = 1; j < height - 1; j++)
 //			{
 //				auto gradient = float(1-GradientMap[i][j]/maxGradient)*255;//inverse
-//				GradientMap[i][j] = gradient; //æ˜ å°„åˆ°0-255åŒºé—´
+//				GradientMap[i][j] = gradient; //Ó³Éäµ½0-255Çø¼ä
 //				//QRgb grayPixel = qRgb(gradient, gradient, gradient);
 //				//m_gradientImage->setPixel(i, j, grayPixel);
 //			}
 //		}
 //		//m_gradientImage->save("m_gradientImage.jpg");
 //	
-//		//è®¡ç®—æ‹‰æ™®æ‹‰æ–¯é›¶ç‚¹
+//		//¼ÆËãÀ­ÆÕÀ­Ë¹Áãµã
 //#ifdef _OPENMP
 //#pragma omp parallel for
 //#endif	
