@@ -338,7 +338,7 @@ MarkModel::MarkModel(const QString & fileName) :
 	if (file.isOpen() == false)
 		return;
 	QDataStream in(&file);
-	in.setVersion(QDataStream::Qt_5_9);
+	in.setVersion(QDataStream::Qt_5_8);
 	int magicNumber;
 	in >> magicNumber;
 	if (magicNumber != MagicNumber)
