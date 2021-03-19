@@ -130,7 +130,7 @@ void MainWindow::open(const QString& fileName)
 bool MainWindow::saveMark()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, QStringLiteral("Mark Save"),
-		"", QStringLiteral("Mark Files(*.mar);;Raw Files(*.raw);;Mask Files(*.msk)"));
+		"", QStringLiteral("Mark Files(*.mar);;Raw Files(*.raw);;Mask Files(*.msk)"),nullptr,QFileDialog::DontUseNativeDialog);
 	if (fileName.isEmpty() == true)
 		return false;
 

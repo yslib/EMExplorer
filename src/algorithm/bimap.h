@@ -97,21 +97,24 @@ public:
 		m_id2Index.erase(*itr);
 		m_index2Id.erase(t1);
 	}
-    const T1 & query(const T2 & t2)const
+    // revised by ymw 2020.3.18
+    T1 query(const T2 & t2)const
     {
 		const auto itr = m_id2Index.find(t2);
 		if (itr != m_id2Index.end()) {
 			return itr->second;
 		}
-		return Key1Traits::invalid();
+        return T1();
+//		return Key1Traits::invalid();
 	}
-    const T2 & query(const T1 & t1)const
+    T2 query(const T1 & t1)const
     {
 		const auto itr = m_index2Id.find(t1);
 		if (itr != m_index2Id.end()) {
 			return itr->second;
 		}
-		return Key2Traits::invalid();
+        return static_cast<T2>(-1);
+//		return Key2Traits::invalid();
 	}
 
     const T1 & operator()(const T2 & t2)const

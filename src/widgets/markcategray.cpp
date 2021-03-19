@@ -32,7 +32,7 @@ MarkCategoryDialog::MarkCategoryDialog(QWidget *parent) :QDialog(parent)
 
 	connect(m_colorButton, &QPushButton::clicked, [this]()
 	{
-		m_color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color"));
+		m_color = QColorDialog::getColor(Qt::black, this, QStringLiteral("Color"),QColorDialog::DontUseNativeDialog);
 		m_colorDisplay->setStyleSheet(QString("background-color:rgb(%1,%2,%3)").arg(m_color.red()).arg(m_color.green()).arg( m_color.blue()));
 	});
 	connect(m_createButton, &QPushButton::clicked, this, &MarkCategoryDialog::createButtonClick);

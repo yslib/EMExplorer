@@ -232,7 +232,7 @@ void CategoryControlWidget::colorChanged()
 	auto d = m_categoryCBBox->itemData(m_categoryCBBox->currentIndex());
 	QColor defaultColor = d.canConvert<QColor>() ? d.value<QColor>() : Qt::black;
 	QPen pen = m_canvas->pen();
-	pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color")));
+	pen.setColor(QColorDialog::getColor(defaultColor, this, QStringLiteral("Color"),QColorDialog::DontUseNativeDialog));
 	m_canvas->setPen(pen);
 }
 
